@@ -2,6 +2,7 @@
 
 namespace App\Jobs\StatusPipeline;
 
+use App\Media;
 use App\Status;
 use Cache;
 use Illuminate\Bus\Queueable;
@@ -44,6 +45,23 @@ class NewStatusPipeline implements ShouldQueue
      */
     public function handle()
     {
+        if (!Status::where('id', $this->status->id)->exists()) {
+            // The status has already been deleted by the time the job is running
+            // Don't publish the status, and just no-op
+            return;
+        }
+        if (config_cache('pixelfed.cloud_storage') && !config('pixelfed.media_fast_process')) {
+            $still_processing = Media::whereStatusId($this->status->id)
+                ->whereNull('cdn_url')
+                ->exists();
+            if ($still_processing) {
+                // The media items in the status are still being processed.
+                // We can't publish the status to ActivityPub because the final remote URL is not
+                // yet known. Instead, do nothing here. The media pipeline will re-call the NewStatusPipeline
+                // once all media items are finished processing
+                return;
+            }
+        }
         StatusEntityLexer::dispatch($this->status);
     }
 }
