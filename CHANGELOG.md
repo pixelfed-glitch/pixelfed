@@ -1,8 +1,14 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.11.9...dev)
+## [v0.11.9-glitch.1.0.0 (Pre-Release)](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...main)
 
-### Added
+### Glitch improvements
+* Refactor Docker/Compose by @jippi & @Murazaki in https://github.com/pixelfed-glitch/pixelfed/pull/3 and https://github.com/pixelfed-glitch/pixelfed/pull/5 (based on https://github.com/pixelfed/pixelfed/pull/4844)
+* Docker now uses PHP 8.3, Debian Bookworm by default. Latest is based on Nginx (Apache and FPM are available as flavors)
+* Introducing proper docker tagging and semantic versioning based on upstream
+* Small fixes around tagging
+
+### Added (from Upstream)
 - Resilient Media Storage ([#4665](https://github.com/pixelfed/pixelfed/pull/4665)) ([fb1deb6](https://github.com/pixelfed/pixelfed/commit/fb1deb6))
 - Video WebP2P ([#4713](https://github.com/pixelfed/pixelfed/pull/4713)) ([0405ef12](https://github.com/pixelfed/pixelfed/commit/0405ef12))
 - Added user:2fa command to easily disable 2FA for given account ([c6408fd7](https://github.com/pixelfed/pixelfed/commit/c6408fd7))
@@ -15,13 +21,14 @@
 - Added User Domain Blocks ([#4834](https://github.com/pixelfed/pixelfed/pull/4834)) ([fa0380ac](https://github.com/pixelfed/pixelfed/commit/fa0380ac))
 - Added Parental Controls ([#4862](https://github.com/pixelfed/pixelfed/pull/4862)) ([c91f1c59](https://github.com/pixelfed/pixelfed/commit/c91f1c59))
 - Added Forgot Email Feature ([67c650b1](https://github.com/pixelfed/pixelfed/commit/67c650b1))
+- Added S3 IG Import Media Storage support ([#4891](https://github.com/pixelfed/pixelfed/pull/4891)) ([081360b9](https://github.com/pixelfed/pixelfed/commit/081360b9))
 
-### Federation
+### Federation (from Upstream)
 - Update Privacy Settings, add support for Mastodon `indexable` search flag ([fc24630e](https://github.com/pixelfed/pixelfed/commit/fc24630e))
 - Update AP Helpers, consume actor `indexable` attribute ([fbdcdd9d](https://github.com/pixelfed/pixelfed/commit/fbdcdd9d))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
-### Updates
+### Updates (from Upstream)
 - Update FollowerService, add forget method to RelationshipService call to reduce load when mass purging ([347e4f59](https://github.com/pixelfed/pixelfed/commit/347e4f59))
 - Update FollowServiceWarmCache, improve handling larger following/follower lists ([61a6d904](https://github.com/pixelfed/pixelfed/commit/61a6d904))
 - Update StoryApiV1Controller, add viewers route to view story viewers ([941736ce](https://github.com/pixelfed/pixelfed/commit/941736ce))
@@ -89,6 +96,8 @@
 - Update meta tags, improve descriptions and seo/og tags ([fd44c80c](https://github.com/pixelfed/pixelfed/commit/fd44c80c))
 - Update login view, add email prefill logic ([d76f0168](https://github.com/pixelfed/pixelfed/commit/d76f0168))
 - Update LoginController, fix captcha validation error message ([0325e171](https://github.com/pixelfed/pixelfed/commit/0325e171))
+- Update ApiV1Controller, properly cast boolean sensitive parameter. Fixes #4888 ([0aff126a](https://github.com/pixelfed/pixelfed/commit/0aff126a))
+- Update AccountImport.vue, fix new IG export format ([59aa6a4b](https://github.com/pixelfed/pixelfed/commit/59aa6a4b))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.11.9 (2023-08-21)](https://github.com/pixelfed/pixelfed/compare/v0.11.8...v0.11.9)
