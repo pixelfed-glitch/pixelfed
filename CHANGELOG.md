@@ -1,6 +1,6 @@
 # Release Notes
 
-## [v0.11.9-glitch.1.0.0 (Pre-Release)](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...main)
+## [v0.11.9-glitch.1.0.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...main)
 
 ### Glitch improvements
 * Refactor Docker/Compose by @jippi & @Murazaki in https://github.com/pixelfed-glitch/pixelfed/pull/3 and https://github.com/pixelfed-glitch/pixelfed/pull/5 (based on https://github.com/pixelfed/pixelfed/pull/4844)
