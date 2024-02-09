@@ -1,6 +1,11 @@
 # Release Notes
 
-## [v0.11.9-glitch.1.0.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...main)
+## [v0.11.9-glitch.1.0.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9-glitch.1.0.0...v0.11.9-glitch.1.0.1)
+
+### Glitch improvements
+*  Fix nginx permissions ([#6](https://github.com/pixelfed-glitch/pixelfed/pull/6)) ([dbb9fed](https://github.com/pixelfed-glitch/pixelfed/commit/dbb9fed9b6b4c9cbdcba039ea208e71a29b12171))
+
+## [v0.11.9-glitch.1.0.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...v0.11.9-glitch.1.0.0)
 
 ### Glitch improvements
 * Refactor Docker/Compose by @jippi & @Murazaki in https://github.com/pixelfed-glitch/pixelfed/pull/3 and https://github.com/pixelfed-glitch/pixelfed/pull/5 (based on https://github.com/pixelfed/pixelfed/pull/4844)
