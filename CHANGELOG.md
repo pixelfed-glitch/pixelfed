@@ -9,6 +9,11 @@
 
 ## [v0.11.10 (2024-02-09)](https://github.com/pixelfed/pixelfed/compare/v0.11.9...v0.11.10)
 
+## [v0.11.9-glitch.1.0.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9-glitch.1.0.0...v0.11.9-glitch.1.0.1)
+
+### Glitch improvements
+*  Fix nginx permissions ([#6](https://github.com/pixelfed-glitch/pixelfed/pull/6)) ([dbb9fed](https://github.com/pixelfed-glitch/pixelfed/commit/dbb9fed9b6b4c9cbdcba039ea208e71a29b12171))
+
 ## [v0.11.9-glitch.1.0.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...v0.11.9-glitch.1.0.0)
 
 ### Glitch improvements
