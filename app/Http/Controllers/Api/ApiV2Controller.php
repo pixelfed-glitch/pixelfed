@@ -96,6 +96,9 @@ class ApiV2Controller extends Controller
                     'streaming' => 'wss://' . config('pixelfed.domain.app'),
                     'status' => null
                 ],
+                'vapid' => [
+                    'public_key' => config('webpush.vapid.public_key'),
+                ],
                 'accounts' => [
                     'max_featured_tags' => 0,
                 ],
@@ -145,7 +148,8 @@ class ApiV2Controller extends Controller
      */
     public function search(Request $request)
     {
-        abort_if(!$request->user(), 403);
+        abort_if(!$request->user() || !$request->user()->token(), 403);
+        abort_unless($request->user()->tokenCan('read'), 403);
 
         $this->validate($request, [
             'q' => 'required|string|min:1|max:100',
@@ -196,7 +200,8 @@ class ApiV2Controller extends Controller
      */
     public function mediaUploadV2(Request $request)
     {
-        abort_if(!$request->user(), 403);
+        abort_if(!$request->user() || !$request->user()->token(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
 
         $this->validate($request, [
             'file.*' => [
