@@ -15,11 +15,13 @@ class SoftwareUpdateService
     {
         $curVersion = config('pixelfed.version');
 
-        $versions = Cache::remember(self::CACHE_KEY . 'latest:v1.0.0', 1800, function() {
+        $version = Cache::remember(self::CACHE_KEY . $curVersion, 1800, function() {
             return self::fetchLatest();
         });
 
-        if(!$versions || !isset($versions['latest'], $versions['latest']['version'])) {
+        $version_regex = '/v*([0-9]+\.[0-9]+\.[0-9]+(?:-?[0-9a-zA-Z-\._]+)?(?:\+|-)glitch\.?([0-9]+\.[0-9]+\.[0-9](?:-?[0-9a-zA-Z-_]+)?))/';
+
+        if(!$version || !isset($version['tag_name']) || !preg_match($version_regex, $version['tag_name'], $latest_matches)) {
             $hideWarning = (bool) config('instance.software-update.disable_failed_warning');
             return [
                 'current' => $curVersion,
@@ -32,14 +34,20 @@ class SoftwareUpdateService
             ];
         }
 
+        preg_match($version_regex, $curVersion, $current_matches);
+
+        $latest_version = $latest_matches[1];
+        $glitch_latest = $latest_matches[2];
+        $glitch_current = $current_matches[2];
+
         return [
             'current' => $curVersion,
             'latest' => [
-                'version' => $versions['latest']['version'],
-                'published_at' => $versions['latest']['published_at'],
-                'url' => $versions['latest']['url'],
+                'version' => $latest_version,
+                'published_at' => $version['published_at'],
+                'url' => $version['html_url'],
             ],
-            'running_latest' => strval($versions['latest']['version']) === strval($curVersion)
+            'running_latest' => version_compare($glitch_current, $glitch_latest, '>=')
         ];
     }
 
@@ -50,7 +58,7 @@ class SoftwareUpdateService
                 ->timeout(5)
                 ->connectTimeout(5)
                 ->retry(2, 500)
-                ->get('https://versions.pixelfed.org/versions.json');
+                ->get('https://api.github.com/repos/pixelfed-glitch/pixelfed/releases/latest');
         } catch (RequestException $e) {
             return;
         } catch (ConnectionException $e) {
