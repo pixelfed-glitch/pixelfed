@@ -1,16 +1,30 @@
 # Release Notes
 
+## [v0.11.12+glitch.1.2.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.11-glitch.1.0.0...v0.11.12+glitch.1.2.0)
+
+### Glitch improvements
+- Merging latest upstream changes
+- Merging back latest changes in Refactor Docker/Compose by @jippi (https://github.com/pixelfed/pixelfed/pull/4844)
+
+## [v0.11.12 (2024-02-16)](https://github.com/pixelfed/pixelfed/compare/v0.11.11...v0.11.12)
+
+### Features (from Upstream)
+- Autospam Live Filters - block remote activities based on comma separated keywords ([40b45b2a](https://github.com/pixelfed/pixelfed/commit/40b45b2a))
+- Added Software Update banner to admin home feeds ([b0fb1988](https://github.com/pixelfed/pixelfed/commit/b0fb1988))
+
 ## [v0.11.11+glitch.1.1.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9-glitch.1.0.0...v0.11.11+glitch.1.1.0)
 
 ### Updated
 
 - Update ApiV1Controller, fix network timeline ([0faf59e3](https://github.com/pixelfed/pixelfed/commit/0faf59e3))
 - Update public/network timelines, fix non-redis response and fix reblogs in home feed ([8b4ac5cc](https://github.com/pixelfed/pixelfed/commit/8b4ac5cc))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
+- Update Federation, use proper Content-Type headers for following/follower collections ([fb0bb9a3](https://github.com/pixelfed/pixelfed/commit/fb0bb9a3))
+- Update ActivityPubFetchService, enforce stricter Content-Type validation ([1232cfc8](https://github.com/pixelfed/pixelfed/commit/1232cfc8))
+- Update status view, fix unlisted/private scope bug ([0f3ca194](https://github.com/pixelfed/pixelfed/commit/0f3ca194))
 
 ## [v0.11.11 (2024-02-09)](https://github.com/pixelfed/pixelfed/compare/v0.11.10...v0.11.11)
 
-### Fixes
+### Fixes (from Upstream)
 - Fix api endpoints ([fd7f5dbb](https://github.com/pixelfed/pixelfed/commit/fd7f5dbb))
 
 ## [v0.11.10 (2024-02-09)](https://github.com/pixelfed/pixelfed/compare/v0.11.9...v0.11.10)
@@ -18,15 +32,15 @@
 ## [v0.11.9-glitch.1.0.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9-glitch.1.0.0...v0.11.9-glitch.1.0.1)
 
 ### Glitch improvements
-*  Fix nginx permissions ([#6](https://github.com/pixelfed-glitch/pixelfed/pull/6)) ([dbb9fed](https://github.com/pixelfed-glitch/pixelfed/commit/dbb9fed9b6b4c9cbdcba039ea208e71a29b12171))
+-  Fix nginx permissions ([#6](https://github.com/pixelfed-glitch/pixelfed/pull/6)) ([dbb9fed](https://github.com/pixelfed-glitch/pixelfed/commit/dbb9fed9b6b4c9cbdcba039ea208e71a29b12171))
 
 ## [v0.11.9-glitch.1.0.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...v0.11.9-glitch.1.0.0)
 
 ### Glitch improvements
-* Refactor Docker/Compose by @jippi & @Murazaki in https://github.com/pixelfed-glitch/pixelfed/pull/3 and https://github.com/pixelfed-glitch/pixelfed/pull/5 (based on https://github.com/pixelfed/pixelfed/pull/4844)
-* Docker now uses PHP 8.3, Debian Bookworm by default. Latest is based on Nginx (Apache and FPM are available as flavors)
-* Introducing proper docker tagging and semantic versioning based on upstream
-* Small fixes around tagging
+- Refactor Docker/Compose by @jippi & @Murazaki in https://github.com/pixelfed-glitch/pixelfed/pull/3 and https://github.com/pixelfed-glitch/pixelfed/pull/5 (based on https://github.com/pixelfed/pixelfed/pull/4844)
+- Docker now uses PHP 8.3, Debian Bookworm by default. Latest is based on Nginx (Apache and FPM are available as flavors)
+- Introducing proper docker tagging and semantic versioning based on upstream
+- Small fixes around tagging
 
 ### Added (from Upstream)
 - Resilient Media Storage ([#4665](https://github.com/pixelfed/pixelfed/pull/4665)) ([fb1deb6](https://github.com/pixelfed/pixelfed/commit/fb1deb6))
