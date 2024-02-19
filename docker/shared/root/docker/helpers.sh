@@ -24,7 +24,6 @@ declare -Ag lock_fds=()
 
 # dot-env files to source when reading config
 declare -a dot_env_files=(
-    /var/www/.env.docker
     /var/www/.env
 )
 
@@ -168,7 +167,7 @@ function log-error()
         log-error-and-exit "[${FUNCNAME[0]}] did not receive any input arguments and STDIN is empty"
     fi
 
-    echo -e "${error_message_color}${log_prefix}ERROR -${color_clear} ${msg}" > /dev/stderr
+    echo -e "${error_message_color}${log_prefix}ERROR -${color_clear} ${msg}" >/dev/stderr
 }
 
 # @description Print the given error message to stderr and exit 1
@@ -199,7 +198,7 @@ function log-warning()
         log-error-and-exit "[${FUNCNAME[0]}] did not receive any input arguments and STDIN is empty"
     fi
 
-    echo -e "${warn_message_color}${log_prefix}WARNING -${color_clear} ${msg}" > /dev/stderr
+    echo -e "${warn_message_color}${log_prefix}WARNING -${color_clear} ${msg}" >/dev/stderr
 }
 
 # @description Print the given message to stdout unless [ENTRYPOINT_QUIET_LOGS] is set
@@ -238,7 +237,7 @@ function log-info-stderr()
     fi
 
     if [ -z "${ENTRYPOINT_QUIET_LOGS:-}" ]; then
-        echo -e "${notice_message_color}${log_prefix}${color_clear}${msg}" > /dev/stderr
+        echo -e "${notice_message_color}${log_prefix}${color_clear}${msg}" >/dev/stderr
     fi
 }
 
@@ -409,8 +408,9 @@ function release-lock()
     log-info "🔓 Releasing lock [${file}]"
 
     [[ -v lock_fds[$name] ]] || return
+
     # shellcheck disable=SC1083,SC2086
-    exec {lock_fds[$name]}>&-
+    flock --unlock ${lock_fds[$name]}
     unset 'lock_fds[$name]'
 }
 
@@ -458,14 +458,14 @@ function await-database-ready()
     case "${DB_CONNECTION:-}" in
         mysql)
             # shellcheck disable=SC2154
-            while ! echo "SELECT 1" | mysql --user="${DB_USERNAME}" --password="${DB_PASSWORD}" --host="${DB_HOST}" "${DB_DATABASE}" --silent > /dev/null; do
+            while ! echo "SELECT 1" | mysql --user="${DB_USERNAME}" --password="${DB_PASSWORD}" --host="${DB_HOST}" "${DB_DATABASE}" --silent >/dev/null; do
                 staggered-sleep
             done
             ;;
 
         pgsql)
             # shellcheck disable=SC2154
-            while ! echo "SELECT 1" | PGPASSWORD="${DB_PASSWORD}" psql --user="${DB_USERNAME}" --host="${DB_HOST}" "${DB_DATABASE}" > /dev/null; do
+            while ! echo "SELECT 1" | PGPASSWORD="${DB_PASSWORD}" psql --user="${DB_USERNAME}" --host="${DB_HOST}" "${DB_DATABASE}" >/dev/null; do
                 staggered-sleep
             done
             ;;

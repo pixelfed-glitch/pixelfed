@@ -40,21 +40,6 @@ packages+=(
     pngquant
 )
 
-# Image Processing
-packages+=(
-    libjpeg62-turbo-dev
-    libmagickwand-dev
-    libpng-dev
-)
-
-# Required for GD
-packages+=(
-    libwebp-dev
-    libwebp7
-    libxpm-dev
-    libxpm4
-)
-
 # Video Processing
 packages+=(
     ffmpeg
@@ -74,6 +59,3 @@ apt-get install -y "${packages[@]}"
 
 locale-gen
 update-locale
-
-# Install dotenv linter (https://github.com/dotenv-linter/dotenv-linter)
-curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s -- -b /usr/local/bin "${DOTENV_LINTER_VERSION:-}"
