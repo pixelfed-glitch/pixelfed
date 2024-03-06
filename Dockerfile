@@ -21,7 +21,7 @@ ARG FOREGO_VERSION="0.17.2"
 ARG GOMPLATE_VERSION="v3.11.6"
 
 # See: https://github.com/jippi/dottie
-ARG DOTTIE_VERSION="v0.8.0"
+ARG DOTTIE_VERSION="v0.9.5"
 
 ###
 # PHP base configuration
@@ -98,8 +98,8 @@ FROM ghcr.io/jippi/dottie:${DOTTIE_VERSION} AS dottie-image
 # It's in its own layer so it can be fetched in parallel with other build steps
 FROM php:${PHP_VERSION}-${PHP_BASE_TYPE}-${PHP_DEBIAN_RELEASE} AS gomplate-image
 
-ARG BUILDARCH
-ARG BUILDOS
+ARG TARGETARCH
+ARG TARGETOS
 ARG GOMPLATE_VERSION
 
 RUN set -ex \
@@ -108,7 +108,7 @@ RUN set -ex \
         --show-error \
         --location \
         --output /usr/local/bin/gomplate \
-        https://github.com/hairyhenderson/gomplate/releases/download/${GOMPLATE_VERSION}/gomplate_${BUILDOS}-${BUILDARCH} \
+        https://github.com/hairyhenderson/gomplate/releases/download/${GOMPLATE_VERSION}/gomplate_${TARGETOS}-${TARGETARCH} \
     && chmod +x /usr/local/bin/gomplate \
     && /usr/local/bin/gomplate --version
 
@@ -142,6 +142,7 @@ ENV APT_PACKAGES_EXTRA=${APT_PACKAGES_EXTRA}
 
 # Install and configure base layer
 COPY docker/shared/root/docker/install/base.sh /docker/install/base.sh
+
 RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/lib/apt \
     --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/cache/apt \
     /docker/install/base.sh
@@ -219,9 +220,6 @@ COPY --chown=${RUNTIME_UID}:${RUNTIME_GID} . /var/www/
 
 FROM php-extensions AS shared-runtime
 
-ARG BUILDARCH
-ARG BUILDOS
-ARG GOMPLATE_VERSION
 ARG RUNTIME_GID
 ARG RUNTIME_UID
 

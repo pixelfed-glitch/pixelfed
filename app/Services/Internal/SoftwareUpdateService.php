@@ -11,11 +11,18 @@ class SoftwareUpdateService
 {
     const CACHE_KEY = 'pf:services:software-update:';
 
+    public static function cacheKey()
+    {
+        $curVersion = config('pixelfed.version');
+        
+        return self::CACHE_KEY . $curVersion;
+    }
+
     public static function get()
     {
         $curVersion = config('pixelfed.version');
 
-        $version = Cache::remember(self::CACHE_KEY . $curVersion, 1800, function() {
+        $versions = Cache::remember(self::cacheKey(), 1800, function() {
             return self::fetchLatest();
         });
 

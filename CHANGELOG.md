@@ -4,7 +4,11 @@
 
 ### Features (from Upstream)
 
-- Curated Onboarding ([8dac2caf](https://github.com/pixelfed/pixelfed/commit/8dac2caf))
+- Account Migrations ([#4968](https://github.com/pixelfed/pixelfed/pull/4968)) ([4a6be6212](https://github.com/pixelfed/pixelfed/pull/4968/commits/4a6be6212))
+- Curated Onboarding ([#4946](https://github.com/pixelfed/pixelfed/pull/4946)) ([8dac2caf](https://github.com/pixelfed/pixelfed/commit/8dac2caf))
+- Add Curated Onboarding Templates ([071163b4](https://github.com/pixelfed/pixelfed/commit/071163b4))
+- Add Remote Reports to Admin Dashboard Reports page ([ef0ff78e](https://github.com/pixelfed/pixelfed/commit/ef0ff78e))
+- Improved Docker Support ([#4844](https://github.com/pixelfed/pixelfed/pull/4844)) ([d92cf7f](https://github.com/pixelfed/pixelfed/commit/d92cf7f))
 
 ### Updates (from Upstream)
 
@@ -14,14 +18,9 @@
 - Update .gitattributes to collapse diffs on generated files ([ThisIsMissEm](https://github.com/pixelfed/pixelfed/commit/9978b2b9))
 - Update api v1/v2 instance endpoints, bump mastoapi version from 2.7.2 to 3.5.3 ([545f7d5e](https://github.com/pixelfed/pixelfed/commit/545f7d5e))
 - Update ApiV1Controller, implement better limit logic to gracefully handle requests with limits that exceed the max ([1f74a95d](https://github.com/pixelfed/pixelfed/commit/1f74a95d))
+- Update SoftwareUpdateService, add command to refresh latest versions ([632f2cb6](https://github.com/pixelfed/pixelfed/commit/632f2cb6))
 
-## [v0.11.12+glitch.1.2.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.11+glitch.1.1.0...v0.11.12-glitch.1.2.0)
-
-### Glitch improvements
-- Merging latest upstream changes
-- Merging back latest changes in Refactor Docker/Compose by @jippi (https://github.com/pixelfed/pixelfed/pull/4844)
-
-## [v0.11.12 (2024-02-16)](https://github.com/pixelfed/pixelfed/compare/v0.11.11...v0.11.12)
+## [v0.11.12+glitch.1.2.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.11-glitch.1.1.0...v0.11.12+glitch.1.2.0)
 
 ### Features (from Upstream)
 - Autospam Live Filters - block remote activities based on comma separated keywords ([40b45b2a](https://github.com/pixelfed/pixelfed/commit/40b45b2a))
@@ -29,7 +28,7 @@
 
 ## [v0.11.11+glitch.1.1.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9-glitch.1.0.0...v0.11.11+glitch.1.1.0)
 
-### Updates
+### Updates (from Upstream)
 
 - Update ApiV1Controller, fix network timeline ([0faf59e3](https://github.com/pixelfed/pixelfed/commit/0faf59e3))
 - Update public/network timelines, fix non-redis response and fix reblogs in home feed ([8b4ac5cc](https://github.com/pixelfed/pixelfed/commit/8b4ac5cc))
@@ -37,12 +36,8 @@
 - Update ActivityPubFetchService, enforce stricter Content-Type validation ([1232cfc8](https://github.com/pixelfed/pixelfed/commit/1232cfc8))
 - Update status view, fix unlisted/private scope bug ([0f3ca194](https://github.com/pixelfed/pixelfed/commit/0f3ca194))
 
-## [v0.11.11 (2024-02-09)](https://github.com/pixelfed/pixelfed/compare/v0.11.10...v0.11.11)
-
 ### Fixes (from Upstream)
 - Fix api endpoints ([fd7f5dbb](https://github.com/pixelfed/pixelfed/commit/fd7f5dbb))
-
-## [v0.11.10 (2024-02-09)](https://github.com/pixelfed/pixelfed/compare/v0.11.9...v0.11.10)
 
 ## [v0.11.9-glitch.1.0.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9-glitch.1.0.0...v0.11.9-glitch.1.0.1)
 
