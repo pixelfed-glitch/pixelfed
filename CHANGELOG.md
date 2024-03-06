@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.12-glitch.1.2.0...develop)
+## [v0.11.13+glitch.1.3.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.12-glitch.1.2.0..v0.11.13-glitch.1.3.0)
 
 ### Features (from Upstream)
 
@@ -20,7 +20,7 @@
 - Update ApiV1Controller, implement better limit logic to gracefully handle requests with limits that exceed the max ([1f74a95d](https://github.com/pixelfed/pixelfed/commit/1f74a95d))
 - Update SoftwareUpdateService, add command to refresh latest versions ([632f2cb6](https://github.com/pixelfed/pixelfed/commit/632f2cb6))
 
-## [v0.11.12+glitch.1.2.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.11-glitch.1.1.0...v0.11.12+glitch.1.2.0)
+## [v0.11.12+glitch.1.2.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.11+glitch.1.1.0...v0.11.12-glitch.1.2.0)
 
 ### Features (from Upstream)
 - Autospam Live Filters - block remote activities based on comma separated keywords ([40b45b2a](https://github.com/pixelfed/pixelfed/commit/40b45b2a))
