@@ -424,7 +424,7 @@ class AdminController extends Controller
 
 	public function customEmojiHome(Request $request)
 	{
-		if(!config('federation.custom_emoji.enabled')) {
+		if(!(bool) config_cache('federation.custom_emoji.enabled')) {
 			return view('admin.custom-emoji.not-enabled');
 		}
 		$this->validate($request, [
@@ -497,7 +497,7 @@ class AdminController extends Controller
 
 	public function customEmojiToggleActive(Request $request, $id)
 	{
-		abort_unless(config('federation.custom_emoji.enabled'), 404);
+		abort_unless((bool) config_cache('federation.custom_emoji.enabled'), 404);
 		$emoji = CustomEmoji::findOrFail($id);
 		$emoji->disabled = !$emoji->disabled;
 		$emoji->save();
@@ -508,13 +508,13 @@ class AdminController extends Controller
 
 	public function customEmojiAdd(Request $request)
 	{
-		abort_unless(config('federation.custom_emoji.enabled'), 404);
+		abort_unless((bool) config_cache('federation.custom_emoji.enabled'), 404);
 		return view('admin.custom-emoji.add');
 	}
 
 	public function customEmojiStore(Request $request)
 	{
-		abort_unless(config('federation.custom_emoji.enabled'), 404);
+		abort_unless((bool) config_cache('federation.custom_emoji.enabled'), 404);
 		$this->validate($request, [
 			'shortcode' => [
 				'required',
@@ -545,7 +545,7 @@ class AdminController extends Controller
 
 	public function customEmojiDelete(Request $request, $id)
 	{
-		abort_unless(config('federation.custom_emoji.enabled'), 404);
+		abort_unless((bool) config_cache('federation.custom_emoji.enabled'), 404);
 		$emoji = CustomEmoji::findOrFail($id);
 		Storage::delete("public/{$emoji->media_path}");
 		Cache::forget('pf:custom_emoji');
@@ -555,7 +555,7 @@ class AdminController extends Controller
 
 	public function customEmojiShowDuplicates(Request $request, $id)
 	{
-		abort_unless(config('federation.custom_emoji.enabled'), 404);
+		abort_unless((bool) config_cache('federation.custom_emoji.enabled'), 404);
 		$emoji = CustomEmoji::orderBy('id')->whereDisabled(false)->whereShortcode($id)->firstOrFail();
 		$emojis = CustomEmoji::whereShortcode($id)->where('id', '!=', $emoji->id)->cursorPaginate(10);
 		return view('admin.custom-emoji.duplicates', compact('emoji', 'emojis'));

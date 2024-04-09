@@ -72,7 +72,7 @@ class DomainBlockController extends Controller
         abort_if(config_cache('pixelfed.domain.app') == $domain, 400, 'Cannot ban your own server');
 
         $existingCount = UserDomainBlock::whereProfileId($pid)->count();
-        $maxLimit = config('instance.user_filters.max_domain_blocks');
+        $maxLimit = (int) config_cache('instance.user_filters.max_domain_blocks');
         $errorMsg =  __('profile.block.domain.max', ['max' => $maxLimit]);
 
         abort_if($existingCount >= $maxLimit, 400, $errorMsg);

@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('gc:passwordreset')->dailyAt('09:41')->onOneServer();
         $schedule->command('gc:sessions')->twiceDaily(13, 23)->onOneServer();
 
-        if (in_array(config_cache('pixelfed.cloud_storage'), ['1', true, 'true']) && config('media.delete_local_after_cloud')) {
+        if ((bool) config_cache('pixelfed.cloud_storage') && (bool) config_cache('media.delete_local_after_cloud')) {
             $schedule->command('media:s3gc')->hourlyAt(15);
         }
 

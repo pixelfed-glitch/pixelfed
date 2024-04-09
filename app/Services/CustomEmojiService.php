@@ -13,7 +13,7 @@ class CustomEmojiService
 {
 	public static function get($shortcode)
 	{
-		if(config('federation.custom_emoji.enabled') == false) {
+		if((bool) config_cache('federation.custom_emoji.enabled') == false) {
 			return;
 		}
 
@@ -22,7 +22,7 @@ class CustomEmojiService
 
 	public static function import($url, $id = false)
 	{
-		if(config('federation.custom_emoji.enabled') == false) {
+		if((bool) config_cache('federation.custom_emoji.enabled') == false) {
 			return;
 		}
 

@@ -74,10 +74,10 @@ class LoginController extends Controller
         $messages = [];
 
         if(
-        	config('captcha.enabled') ||
-        	config('captcha.active.login') ||
+        	(bool) config_cache('captcha.enabled') &&
+        	(bool) config_cache('captcha.active.login') ||
         	(
-				config('captcha.triggers.login.enabled') &&
+				(bool) config_cache('captcha.triggers.login.enabled') &&
 				request()->session()->has('login_attempts') &&
 				request()->session()->get('login_attempts') >= config('captcha.triggers.login.attempts')
 			)

@@ -39,7 +39,7 @@
                 <hr>
             </li>
 
-            @if(config_cache('pixelfed.oauth_enabled') == true)
+            @if((bool) config_cache('pixelfed.oauth_enabled') == true)
             <li class="nav-item pl-3 {{request()->is('settings/applications')?'active':''}}">
                 <a class="nav-link font-weight-light text-muted" href="{{route('settings.applications')}}">Applications</a>
             </li>

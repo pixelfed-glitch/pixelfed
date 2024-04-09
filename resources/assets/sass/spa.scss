@@ -189,6 +189,10 @@ a.text-dark:hover {
 
 .border {
     border: 1px solid var(--border-color) !important;
+
+    &-right {
+        border-color: var(--border-color) !important;
+    }
 }
 
 .bg-white,
@@ -390,6 +394,14 @@ span.twitter-typeahead .tt-suggestion:focus {
 
 .ft-std {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.timestamp-overlay-badge {
+    color: var(--dark);
+}
+
+.modal-backdrop {
+    opacity: 0.8;
 }
 
 .timeline-status-component {

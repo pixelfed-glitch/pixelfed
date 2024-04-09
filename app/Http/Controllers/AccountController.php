@@ -157,7 +157,7 @@ class AccountController extends Controller
 
 		$pid = $request->user()->profile_id;
 		$count = UserFilterService::muteCount($pid);
-		$maxLimit = intval(config('instance.user_filters.max_user_mutes'));
+		$maxLimit = (int) config_cache('instance.user_filters.max_user_mutes');
 		abort_if($count >= $maxLimit, 422, self::FILTER_LIMIT_MUTE_TEXT . $maxLimit . ' accounts');
 		if($count == 0) {
 			$filterCount = UserFilter::whereUserId($pid)->count();
@@ -260,7 +260,7 @@ class AccountController extends Controller
 		]);
 		$pid = $request->user()->profile_id;
 		$count = UserFilterService::blockCount($pid);
-		$maxLimit = intval(config('instance.user_filters.max_user_blocks'));
+		$maxLimit = (int) config_cache('instance.user_filters.max_user_blocks');
 		abort_if($count >= $maxLimit, 422, self::FILTER_LIMIT_BLOCK_TEXT . $maxLimit . ' accounts');
 		if($count == 0) {
 			$filterCount = UserFilter::whereUserId($pid)->whereFilterType('block')->count();

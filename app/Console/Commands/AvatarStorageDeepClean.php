@@ -44,7 +44,7 @@ class AvatarStorageDeepClean extends Command
         $this->line(' ');
 
         $storage = [
-            'cloud' => boolval(config_cache('pixelfed.cloud_storage')),
+            'cloud' => (bool) config_cache('pixelfed.cloud_storage'),
             'local' => boolval(config_cache('federation.avatars.store_local'))
         ];
 

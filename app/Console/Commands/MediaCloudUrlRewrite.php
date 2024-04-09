@@ -47,7 +47,7 @@ class MediaCloudUrlRewrite extends Command implements PromptsForMissingInput
 
     protected function preflightCheck()
     {
-        if(config_cache('pixelfed.cloud_storage') != true) {
+        if(!(bool) config_cache('pixelfed.cloud_storage')) {
             $this->info('Error: Cloud storage is not enabled!');
             $this->error('Aborting...');
             exit;

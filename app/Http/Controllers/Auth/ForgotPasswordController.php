@@ -62,7 +62,7 @@ class ForgotPasswordController extends Controller
 
 		usleep(random_int(100000, 3000000));
 
-    	if(config('captcha.enabled')) {
+    	if((bool) config_cache('captcha.enabled')) {
             $rules = [
 	    		'email' => 'required|email',
             	'h-captcha-response' => 'required|captcha'

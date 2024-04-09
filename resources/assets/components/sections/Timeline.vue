@@ -91,6 +91,8 @@
             v-on:delete="deletePost"
             v-on:report-modal="handleReport"
             v-on:edit="handleEdit"
+            v-on:muted="handleMuted"
+            v-on:unfollow="handleUnfollow"
         />
 
         <likes-modal
@@ -543,6 +545,7 @@
 
             deletePost() {
                 this.feed.splice(this.postIndex, 1);
+                this.forceUpdateIdx++;
             },
 
             counterChange(index, type) {
@@ -787,6 +790,21 @@
                 })
                 .then(res => {
                 })
+            },
+
+            handleMuted(post) {
+                this.feed = this.feed.filter(p => {
+                   return p.account.id !== post.account.id;
+                });
+            },
+
+            handleUnfollow(post) {
+                if(this.scope === 'home') {
+                    this.feed = this.feed.filter(p => {
+                       return p.account.id !== post.account.id;
+                    });
+                }
+                this.updateProfile({ following_count: this.profile.following_count - 1 });
             },
         },
 

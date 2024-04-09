@@ -54,7 +54,7 @@
 	                            </div>
 	                        </div>
 
-							@if(config('captcha.enabled'))
+							@if((bool) config_cache('captcha.enabled'))
 							<label class="font-weight-bold small text-muted">Captcha</label>
 	                        <div class="d-flex flex-grow-1">
 	                            {!! Captcha::display(['data-theme' => 'dark']) !!}

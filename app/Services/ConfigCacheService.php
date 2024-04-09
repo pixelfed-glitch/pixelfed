@@ -8,6 +8,14 @@ use Cache;
 class ConfigCacheService
 {
     const CACHE_KEY = 'config_cache:_v0-key:';
+    const PROTECTED_KEYS = [
+        'filesystems.disks.s3.key',
+        'filesystems.disks.s3.secret',
+        'filesystems.disks.spaces.key',
+        'filesystems.disks.spaces.secret',
+        'captcha.secret',
+        'captcha.sitekey',
+    ];
 
     public static function get($key)
     {
@@ -75,6 +83,55 @@ class ConfigCacheService
                 'instance.curated_registration.enabled',
 
                 'federation.migration',
+
+                'pixelfed.max_caption_length',
+                'pixelfed.max_bio_length',
+                'pixelfed.max_name_length',
+                'pixelfed.min_password_length',
+                'pixelfed.max_avatar_size',
+                'pixelfed.max_altext_length',
+                'pixelfed.allow_app_registration',
+                'pixelfed.app_registration_rate_limit_attempts',
+                'pixelfed.app_registration_rate_limit_decay',
+                'pixelfed.app_registration_confirm_rate_limit_attempts',
+                'pixelfed.app_registration_confirm_rate_limit_decay',
+                'instance.embed.profile',
+                'instance.embed.post',
+
+                'captcha.enabled',
+                'captcha.secret',
+                'captcha.sitekey',
+                'captcha.active.login',
+                'captcha.active.register',
+                'captcha.triggers.login.enabled',
+                'captcha.triggers.login.attempts',
+                'federation.custom_emoji.enabled',
+
+                'pixelfed.optimize_image',
+                'pixelfed.optimize_video',
+                'pixelfed.max_collection_length',
+                'media.delete_local_after_cloud',
+                'instance.user_filters.max_user_blocks',
+                'instance.user_filters.max_user_mutes',
+                'instance.user_filters.max_domain_blocks',
+
+                'filesystems.disks.s3.key',
+                'filesystems.disks.s3.secret',
+                'filesystems.disks.s3.region',
+                'filesystems.disks.s3.bucket',
+                'filesystems.disks.s3.visibility',
+                'filesystems.disks.s3.url',
+                'filesystems.disks.s3.endpoint',
+                'filesystems.disks.s3.use_path_style_endpoint',
+
+                'filesystems.disks.spaces.key',
+                'filesystems.disks.spaces.secret',
+                'filesystems.disks.spaces.region',
+                'filesystems.disks.spaces.bucket',
+                'filesystems.disks.spaces.visibility',
+                'filesystems.disks.spaces.url',
+                'filesystems.disks.spaces.endpoint',
+                'filesystems.disks.spaces.use_path_style_endpoint',
                 // 'system.user_mode'
             ];
 
@@ -86,20 +143,34 @@ class ConfigCacheService
                 return config($key);
             }
 
+            $protect = false;
+            $protected = null;
+            if(in_array($key, self::PROTECTED_KEYS)) {
+                $protect = true;
+            }
+
             $v = config($key);
             $c = ConfigCacheModel::where('k', $key)->first();
 
             if ($c) {
-                return $c->v ?? config($key);
+                if($protect) {
+                    return decrypt($c->v) ?? config($key);
+                } else {
+                    return $c->v ?? config($key);
+                }
             }
 
             if (! $v) {
                 return;
             }
 
+            if($protect && $v) {
+                $protected = encrypt($v);
+            }
+
             $cc = new ConfigCacheModel;
             $cc->k = $key;
-            $cc->v = $v;
+            $cc->v = $protect ? $protected : $v;
             $cc->save();
 
             return $v;
@@ -110,8 +181,15 @@ class ConfigCacheService
     {
         $exists = ConfigCacheModel::whereK($key)->first();
 
+        $protect = false;
+        $protected = null;
+        if(in_array($key, self::PROTECTED_KEYS)) {
+            $protect = true;
+            $protected = encrypt($val);
+        }
+
         if ($exists) {
-            $exists->v = $val;
+            $exists->v = $protect ? $protected : $val;
             $exists->save();
             Cache::put(self::CACHE_KEY.$key, $val, now()->addHours(12));
 
@@ -120,7 +198,7 @@ class ConfigCacheService
 
         $cc = new ConfigCacheModel;
         $cc->k = $key;
-        $cc->v = $val;
+        $cc->v = $protect ? $protected : $val;
         $cc->save();
 
         Cache::put(self::CACHE_KEY.$key, $val, now()->addHours(12));

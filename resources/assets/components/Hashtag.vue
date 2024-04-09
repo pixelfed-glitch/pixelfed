@@ -202,15 +202,11 @@
 					if(res.data && res.data.length) {
 						this.feed = res.data;
 						this.maxId = res.data[res.data.length - 1].id;
-						return true;
+					    this.canLoadMore = true;
 					} else {
 						this.feedLoaded = true;
 						this.isLoaded = true;
-						return false;
 					}
-				})
-				.then(res => {
-					this.canLoadMore = res;
 				})
 				.finally(() => {
 					this.feedLoaded = true;
@@ -242,13 +238,10 @@
 					if(res.data && res.data.length) {
 						this.feed.push(...res.data);
 						this.maxId = res.data[res.data.length - 1].id;
-						return true;
+                        this.canLoadMore = true;
 					} else {
-						return false;
+                        this.canLoadMore = false;
 					}
-				})
-				.then(res => {
-					this.canLoadMore = res;
 				})
 				.finally(() => {
 					this.isIntersecting = false;

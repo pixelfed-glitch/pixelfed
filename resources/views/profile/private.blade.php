@@ -1,4 +1,4 @@
-@extends('layouts.app-guest',['title' => $user->username . " on " . config('app.name')])
+@extends('layouts.app-guest',['title' => $user->username . " on " . config_cache('app.name')])
 
 @section('content')
 @if (session('error'))

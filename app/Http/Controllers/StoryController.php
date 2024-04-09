@@ -34,7 +34,7 @@ class StoryController extends StoryComposeController
 {
     public function recent(Request $request)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
         $user = $request->user();
         if($user->has_roles && !UserRoleService::can('can-use-stories', $user->id)) {
             return [];
@@ -117,7 +117,7 @@ class StoryController extends StoryComposeController
 
     public function profile(Request $request, $id)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
 
         $user = $request->user();
         if($user->has_roles && !UserRoleService::can('can-use-stories', $user->id)) {
@@ -176,7 +176,7 @@ class StoryController extends StoryComposeController
 
     public function viewed(Request $request)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
 
         $this->validate($request, [
             'id'    => 'required|min:1',
@@ -221,7 +221,7 @@ class StoryController extends StoryComposeController
 
     public function exists(Request $request, $id)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
         $user = $request->user();
         if($user->has_roles && !UserRoleService::can('can-use-stories', $user->id)) {
             return response()->json(false);
@@ -233,7 +233,7 @@ class StoryController extends StoryComposeController
 
     public function iRedirect(Request $request)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
 
         $user = $request->user();
         abort_if(!$user, 404);
@@ -243,7 +243,7 @@ class StoryController extends StoryComposeController
 
     public function viewers(Request $request)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
 
         $this->validate($request, [
             'sid' => 'required|string'
@@ -274,7 +274,7 @@ class StoryController extends StoryComposeController
 
     public function remoteStory(Request $request, $id)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
 
         $profile = Profile::findOrFail($id);
         if($profile->user_id != null || $profile->domain == null) {
@@ -286,7 +286,7 @@ class StoryController extends StoryComposeController
 
     public function pollResults(Request $request)
     {
-        abort_if(!config_cache('instance.stories.enabled') || !$request->user(), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled') || !$request->user(), 404);
 
         $this->validate($request, [
             'sid' => 'required|string'
@@ -304,7 +304,7 @@ class StoryController extends StoryComposeController
 
     public function getActivityObject(Request $request, $username, $id)
     {
-        abort_if(!config_cache('instance.stories.enabled'), 404);
+        abort_if(!(bool) config_cache('instance.stories.enabled'), 404);
 
         if(!$request->wantsJson()) {
             return redirect('/stories/' . $username);

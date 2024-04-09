@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mb-0" :style="{ 'font-size':`${fontSize}px` }">{{ contentText }}</div>
-        <p class="mb-0"><a v-if="canStepExpand || (canExpand && !expanded)" class="font-weight-bold small" href="#" @click="expand()">Read more</a></p>
+        <p class="mb-0"><a v-if="canStepExpand || (canExpand && !expanded)" class="font-weight-bold small" href="#" @click.prevent="expand()">Read more</a></p>
     </div>
 </template>
 

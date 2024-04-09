@@ -66,7 +66,7 @@
 		</li>
 		<li>
 			<strong><span class="badge badge-primary">OAUTH</span> enabled: </strong>
-			<span>{{ config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span>
+			<span>{{ (bool) config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span>
 		</li>
 		<li>
 			<strong><span class="badge badge-primary">OAUTH</span> token_expiration</strong>
@@ -298,7 +298,7 @@
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
 		<td><strong>ACTIVITY_PUB</strong></td>
-		<td><span>{{config_cache('federation.activitypub.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('federation.activitypub.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
@@ -358,7 +358,7 @@
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
 		<td><strong>PF_NETWORK_TIMELINE</strong></td>
-		<td><span>{{config_cache('federation.network_timeline') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('federation.network_timeline') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
@@ -368,7 +368,7 @@
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
 		<td><strong>CUSTOM_EMOJI</strong></td>
-		<td><span>{{config_cache('federation.custom_emoji.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('federation.custom_emoji.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">FEDERATION</span></td>
@@ -545,7 +545,7 @@
 	<tr>
 		<td><span class="badge badge-primary">INSTANCE</span></td>
 		<td><strong>STORIES_ENABLED</strong></td>
-		<td><span>{{config_cache('instance.stories.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('instance.stories.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">INSTANCE</span></td>
@@ -740,7 +740,7 @@
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>PF_ENABLE_CLOUD</strong></td>
-		<td><span>{{config_cache('pixelfed.cloud_storage') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('pixelfed.cloud_storage') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
@@ -750,12 +750,12 @@
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>PF_OPTIMIZE_IMAGES</strong></td>
-		<td><span>{{config_cache('pixelfed.optimize_image') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('pixelfed.optimize_image') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>PF_OPTIMIZE_VIDEOS</strong></td>
-		<td><span>{{config_cache('pixelfed.optimize_video') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('pixelfed.optimize_video') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
@@ -810,12 +810,12 @@
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>OAUTH_ENABLED</strong></td>
-		<td><span>{{config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{ (bool) config_cache('pixelfed.oauth_enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>
 		<td><strong>PF_BOUNCER_ENABLED</strong></td>
-		<td><span>{{config_cache('pixelfed.bouncer.enabled') ? '✅ true' : '❌ false' }}</span></td>
+		<td><span>{{(bool) config_cache('pixelfed.bouncer.enabled') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>
 	<tr>
 		<td><span class="badge badge-primary">PIXELFED</span></td>

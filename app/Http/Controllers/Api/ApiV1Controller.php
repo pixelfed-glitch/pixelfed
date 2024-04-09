@@ -37,6 +37,7 @@ use App\Models\Conversation;
 use App\Notification;
 use App\Profile;
 use App\Services\AccountService;
+use App\Services\AdminShadowFilterService;
 use App\Services\BookmarkService;
 use App\Services\BouncerService;
 use App\Services\CollectionService;
@@ -130,7 +131,7 @@ class ApiV1Controller extends Controller
      */
     public function apps(Request $request)
     {
-        abort_if(! config_cache('pixelfed.oauth_enabled'), 404);
+        abort_if(! (bool) config_cache('pixelfed.oauth_enabled'), 404);
 
         $this->validate($request, [
             'client_name' => 'required',
@@ -1102,7 +1103,7 @@ class ApiV1Controller extends Controller
         }
 
         $count = UserFilterService::blockCount($pid);
-        $maxLimit = intval(config('instance.user_filters.max_user_blocks'));
+        $maxLimit = (int) config_cache('instance.user_filters.max_user_blocks');
         if ($count == 0) {
             $filterCount = UserFilter::whereUserId($pid)
                 ->whereFilterType('block')
@@ -1199,8 +1200,8 @@ class ApiV1Controller extends Controller
         if ($filter) {
             $filter->delete();
             UserFilterService::unblock($pid, $profile->id);
-            RelationshipService::refresh($pid, $id);
         }
+        RelationshipService::refresh($pid, $id);
 
         $resource = new Fractal\Resource\Item($profile, new RelationshipTransformer());
         $res = $this->fractal->createData($resource)->toArray();
@@ -1631,7 +1632,7 @@ class ApiV1Controller extends Controller
 
             return [
                 'uri' => config('pixelfed.domain.app'),
-                'title' => config('app.name'),
+                'title' => config_cache('app.name'),
                 'short_description' => config_cache('app.short_description'),
                 'description' => config_cache('app.description'),
                 'email' => config('instance.email'),
@@ -1649,11 +1650,11 @@ class ApiV1Controller extends Controller
                 'configuration' => [
                     'media_attachments' => [
                         'image_matrix_limit' => 16777216,
-                        'image_size_limit' => config('pixelfed.max_photo_size') * 1024,
-                        'supported_mime_types' => explode(',', config('pixelfed.media_types')),
+                        'image_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
+                        'supported_mime_types' => explode(',', config_cache('pixelfed.media_types')),
                         'video_frame_rate_limit' => 120,
                         'video_matrix_limit' => 2304000,
-                        'video_size_limit' => config('pixelfed.max_photo_size') * 1024,
+                        'video_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                     ],
                     'polls' => [
                         'max_characters_per_option' => 50,
@@ -1663,8 +1664,8 @@ class ApiV1Controller extends Controller
                     ],
                     'statuses' => [
                         'characters_reserved_per_url' => 23,
-                        'max_characters' => (int) config('pixelfed.max_caption_length'),
-                        'max_media_attachments' => (int) config('pixelfed.max_album_length'),
+                        'max_characters' => (int) config_cache('pixelfed.max_caption_length'),
+                        'max_media_attachments' => (int) config_cache('pixelfed.max_album_length'),
                     ],
                 ],
             ];
@@ -2144,7 +2145,7 @@ class ApiV1Controller extends Controller
         }
 
         $count = UserFilterService::muteCount($pid);
-        $maxLimit = intval(config('instance.user_filters.max_user_mutes'));
+        $maxLimit = (int) config_cache('instance.user_filters.max_user_mutes');
         if ($count == 0) {
             $filterCount = UserFilter::whereUserId($pid)
                 ->whereFilterType('mute')
@@ -2206,8 +2207,9 @@ class ApiV1Controller extends Controller
         if ($filter) {
             $filter->delete();
             UserFilterService::unmute($pid, $profile->id);
-            RelationshipService::refresh($pid, $id);
         }
+
+        RelationshipService::refresh($pid, $id);
 
         $resource = new Fractal\Resource\Item($profile, new RelationshipTransformer());
         $res = $this->fractal->createData($resource)->toArray();
@@ -2648,7 +2650,7 @@ class ApiV1Controller extends Controller
         $domainBlocks = UserFilterService::domainBlocks($user->profile_id);
         $hideNsfw = config('instance.hide_nsfw_on_public_feeds');
         $amin = SnowflakeService::byDate(now()->subDays(config('federation.network_timeline_days_falloff')));
-
+        $asf = AdminShadowFilterService::getHideFromPublicFeedsList();
         if ($local && $remote) {
             $feed = Status::select(
                 'id',
@@ -2823,6 +2825,21 @@ class ApiV1Controller extends Controller
                 $domain = strtolower(parse_url($s['url'], PHP_URL_HOST));
 
                 return ! in_array($domain, $domainBlocks);
+            })
+            ->filter(function ($s) use ($asf, $user) {
+                if (! $asf || count($asf) === 0) {
+                    return true;
+                }
+
+                if (in_array($s['account']['id'], $asf)) {
+                    if ($user->profile_id == $s['account']['id']) {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                return true;
             })
             ->take($limit)
             ->values();
@@ -3292,9 +3309,9 @@ class ApiV1Controller extends Controller
         abort_unless($request->user()->tokenCan('write'), 403);
 
         $this->validate($request, [
-            'status' => 'nullable|string',
+            'status' => 'nullable|string|max:'.(int) config_cache('pixelfed.max_caption_length'),
             'in_reply_to_id' => 'nullable',
-            'media_ids' => 'sometimes|array|max:'.config_cache('pixelfed.max_album_length'),
+            'media_ids' => 'sometimes|array|max:'.(int) config_cache('pixelfed.max_album_length'),
             'sensitive' => 'nullable',
             'visibility' => 'string|in:private,unlisted,public',
             'spoiler_text' => 'sometimes|max:140',
@@ -3420,7 +3437,7 @@ class ApiV1Controller extends Controller
             $mimes = [];
 
             foreach ($ids as $k => $v) {
-                if ($k + 1 > config_cache('pixelfed.max_album_length')) {
+                if ($k + 1 > (int) config_cache('pixelfed.max_album_length')) {
                     continue;
                 }
                 $m = Media::whereUserId($user->id)->whereNull('status_id')->findOrFail($v);
@@ -4050,7 +4067,7 @@ class ApiV1Controller extends Controller
 
         $pid = $request->user()->profile_id;
 
-        $ids = Cache::remember('api:v1.1:discover:accounts:popular', 3600, function () {
+        $ids = Cache::remember('api:v1.1:discover:accounts:popular', 14400, function () {
             return DB::table('profiles')
                 ->where('is_private', false)
                 ->whereNull('status')
@@ -4059,6 +4076,7 @@ class ApiV1Controller extends Controller
                 ->get();
         });
         $filters = UserFilterService::filters($pid);
+        $asf = AdminShadowFilterService::getHideFromPublicFeedsList();
         $ids = $ids->map(function ($profile) {
             return AccountService::get($profile->id, true);
         })
@@ -4070,6 +4088,9 @@ class ApiV1Controller extends Controller
             })
             ->filter(function ($profile) use ($pid) {
                 return ! FollowerService::follows($pid, $profile['id'], true);
+            })
+            ->filter(function ($profile) use ($asf) {
+                return ! in_array($profile['id'], $asf);
             })
             ->filter(function ($profile) use ($filters) {
                 return ! in_array($profile['id'], $filters);

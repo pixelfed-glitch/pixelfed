@@ -251,10 +251,11 @@
 			</div>
 		  <div>
 			  <b-button
-				variant="secondary"
-				@click="showInstanceModal = false"
+				variant="link-dark"
+                size="sm"
+				@click="onViewMoreInstance"
 			  >
-				Close
+				View More
 			  </b-button>
 			  <b-button
 				variant="primary"
@@ -885,8 +886,12 @@
 						};
 					}
 				}
-			}
+			},
 
+            onViewMoreInstance() {
+                this.showInstanceModal = false;
+                window.location.href = '/i/admin/instances/show/' + this.instanceModal.id
+            }
 		}
 	}
 </script>

@@ -171,5 +171,12 @@ Route::domain(config('pixelfed.domain.admin'))->prefix('i/admin')->group(functio
         Route::post('curated-onboarding/show/{id}/reject', 'AdminCuratedRegisterController@apiHandleReject');
         Route::post('curated-onboarding/show/{id}/approve', 'AdminCuratedRegisterController@apiHandleApprove');
         Route::get('curated-onboarding/templates/get', 'AdminCuratedRegisterController@getActiveTemplates');
+        Route::get('settings/fetch', 'AdminController@settingsApiFetch');
+        Route::post('settings/rules/add', 'AdminController@settingsApiRulesAdd');
+        Route::post('settings/rules/delete', 'AdminController@settingsApiRulesDelete');
+        Route::post('settings/rules/delete/all', 'AdminController@settingsApiRulesDeleteAll');
+        Route::post('settings/autofollow/add', 'AdminController@settingsApiAutofollowAdd');
+        Route::post('settings/autofollow/delete', 'AdminController@settingsApiAutofollowDelete');
+        Route::post('settings/update/{type}', 'AdminController@settingsApiUpdateType');
     });
 });

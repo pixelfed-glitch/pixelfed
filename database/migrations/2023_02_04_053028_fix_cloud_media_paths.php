@@ -19,7 +19,7 @@ return new class extends Migration
     public function up()
     {
         ini_set('memory_limit', '-1');
-        if(config_cache('pixelfed.cloud_storage') == false) {
+        if((bool) config_cache('pixelfed.cloud_storage') == false) {
             return;
         }
 

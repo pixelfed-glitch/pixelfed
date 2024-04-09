@@ -8,7 +8,7 @@
 
 	<meta name="mobile-web-app-capable" content="yes">
 
-	<title>{{ config('app.name', 'Pixelfed') }}</title>
+	<title>{{ config_cache('app.name', 'Pixelfed') }}</title>
 
 	<link rel="canonical" href="{{ request()->url() }}" />
 

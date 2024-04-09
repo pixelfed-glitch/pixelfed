@@ -37,9 +37,19 @@ Vue.component(
 );
 
 Vue.component(
+    'admin-settings',
+    require('./../components/admin/AdminSettings.vue').default
+);
+
+Vue.component(
     'instances-component',
     require('./../components/admin/AdminInstances.vue').default
 );
+
+// Vue.component(
+//     'instance-details-component',
+//     require('./../components/admin/AdminInstanceDetails.vue').default
+// );
 
 Vue.component(
     'hashtag-component',
