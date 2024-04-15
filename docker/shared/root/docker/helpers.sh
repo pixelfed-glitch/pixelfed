@@ -467,14 +467,14 @@ function await-database-ready()
     case "${DB_CONNECTION:-}" in
         mysql)
             # shellcheck disable=SC2154
-            while ! echo "SELECT 1" | mysql --user="${DB_USERNAME}" --password="${DB_PASSWORD}" --host="${DB_HOST}" "${DB_DATABASE}" --silent >/dev/null; do
+            while ! echo "SELECT 1" | mysql --user="${DB_USERNAME}" --password="${DB_PASSWORD}" --host="${DB_HOST}" --port="${DOCKER_DB_HOST_PORT}" "${DB_DATABASE}" --silent >/dev/null; do
                 staggered-sleep
             done
             ;;
 
         pgsql)
             # shellcheck disable=SC2154
-            while ! echo "SELECT 1" | PGPASSWORD="${DB_PASSWORD}" psql --user="${DB_USERNAME}" --host="${DB_HOST}" "${DB_DATABASE}" >/dev/null; do
+            while ! echo "SELECT 1" | PGPASSWORD="${DB_PASSWORD}" psql --user="${DB_USERNAME}" --host="${DB_HOST}" --port="${DOCKER_DB_HOST_PORT}" "${DB_DATABASE}" >/dev/null; do
                 staggered-sleep
             done
             ;;

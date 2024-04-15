@@ -62,6 +62,10 @@
 - Update PrivacySettings controller, refresh RelationshipService when unmute/unblocking ([b7322b68](https://github.com/pixelfed/pixelfed/commit/b7322b68))
 - Update ApiV1Controller, improve refresh relations logic when (un)muting or (un)blocking ([b8e96a5f](https://github.com/pixelfed/pixelfed/commit/b8e96a5f))
 - Update context menu, add mute/block/unfollow actions and update relationship store accordingly ([81d1e0fd](https://github.com/pixelfed/pixelfed/commit/81d1e0fd))
+- Update docker env, fix config_cache. Fixes #5033 ([858fcbf6](https://github.com/pixelfed/pixelfed/commit/858fcbf6))
+- Update UnfollowPipeline, fix follower count cache bug ([6bdf73de](https://github.com/pixelfed/pixelfed/commit/6bdf73de))
+- Update VideoPresenter component, add webkit-playsinline attribute to video element to prevent the full screen video player ([ad032916](https://github.com/pixelfed/pixelfed/commit/ad032916))
+- Update VideoPlayer component, add playsinline attribute to video element ([8af23607](https://github.com/pixelfed/pixelfed/commit/8af23607))
 
 ## [v0.11.13+glitch.1.3.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.12-glitch.1.2.0..v0.11.13-glitch.1.3.0)
 

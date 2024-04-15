@@ -237,7 +237,7 @@ USER ${RUNTIME_UID}:${RUNTIME_GID}
 
 # Generate optimized autoloader now that we have all files around
 RUN set -ex \
-    && composer dump-autoload --optimize
+    && ENABLE_CONFIG_CACHE=false composer dump-autoload --optimize
 
 USER root
 

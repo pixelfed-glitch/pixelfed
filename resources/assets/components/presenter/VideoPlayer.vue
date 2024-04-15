@@ -29,10 +29,10 @@
             </div>
 
             <template v-else>
-                <video v-if="hasHls" ref="video" :class="{ fixedHeight: fixedHeight }" style="margin:0" playsinline controls autoplay="false" :poster="getPoster(status)">
+                <video v-if="hasHls" ref="video" :class="{ fixedHeight: fixedHeight }" style="margin:0" playsinline webkit-playsinline controls autoplay="false" :poster="getPoster(status)">
                 </video>
 
-                <video v-else class="card-img-top shadow" :class="{ fixedHeight: fixedHeight }" style="border-radius:15px;object-fit: contain;background-color: #000;" autoplay="false" controls :poster="getPoster(status)">
+                <video v-else class="card-img-top shadow" :class="{ fixedHeight: fixedHeight }" style="border-radius:15px;object-fit: contain;background-color: #000;" autoplay="false" playsinline webkit-playsinline controls :poster="getPoster(status)">
                     <source :src="status.media_attachments[0].url" :type="status.media_attachments[0].mime">
                 </video>
             </template>
