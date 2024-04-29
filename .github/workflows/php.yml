@@ -97,7 +97,7 @@ jobs:
       - run: php artisan key:generate
 
       - name: Run tests
-        run: ./vendor/bin/phpunit
+        run: php artisan test
 
   code-style:
     name: Code Style
