@@ -13,9 +13,7 @@ class SoftwareUpdateService
 
     public static function cacheKey()
     {
-        $curVersion = config('pixelfed.version');
-
-        return self::CACHE_KEY . $curVersion;
+        return self::CACHE_KEY . 'latest:v1.0.0';
     }
 
     public static function get()
