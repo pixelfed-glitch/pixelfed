@@ -133,6 +133,7 @@ class CustomEmojiService
 			return CustomEmoji::when(!$pgsql, function($q, $pgsql) {
 					return $q->groupBy('shortcode');
 				})
+                ->whereNull('uri')
 				->get()
 				->map(function($emojo) {
 					$url = url('storage/' . $emojo->media_path);

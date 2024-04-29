@@ -8,6 +8,7 @@ use App\Jobs\SharePipeline\UndoSharePipeline;
 use App\Jobs\StatusPipeline\RemoteStatusDelete;
 use App\Jobs\StatusPipeline\StatusDelete;
 use App\Profile;
+use App\Services\AccountService;
 use App\Services\HashidService;
 use App\Services\ReblogService;
 use App\Services\StatusService;
@@ -113,19 +114,33 @@ class StatusController extends Controller
             return response($res)->withHeaders(['X-Frame-Options' => 'ALLOWALL']);
         }
 
-        $profile = Profile::whereNull(['domain', 'status'])
-            ->whereIsPrivate(false)
-            ->whereUsername($username)
-            ->first();
+        $status = StatusService::get($id);
 
-        if (! $profile) {
+        if (
+            ! $status ||
+            ! isset($status['account'], $status['account']['id'], $status['local']) ||
+            ! $status['local'] ||
+            strtolower($status['account']['username']) !== strtolower($username)
+        ) {
+            $content = view('status.embed-removed');
+
+            return response($content, 404)->header('X-Frame-Options', 'ALLOWALL');
+        }
+
+        $profile = AccountService::get($status['account']['id'], true);
+
+        if (! $profile || $profile['locked'] || ! $profile['local']) {
             $content = view('status.embed-removed');
 
             return response($content)->header('X-Frame-Options', 'ALLOWALL');
         }
 
-        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile->id, 86400, function () use ($profile) {
-            $exists = AccountInterstitial::whereUserId($profile->user_id)->where('is_spam', 1)->count();
+        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile['id'], 3600, function () use ($profile) {
+            $user = Profile::find($profile['id']);
+            if (! $user) {
+                return true;
+            }
+            $exists = AccountInterstitial::whereUserId($user->user_id)->where('is_spam', 1)->count();
             if ($exists) {
                 return true;
             }
@@ -138,17 +153,22 @@ class StatusController extends Controller
 
             return response($res)->withHeaders(['X-Frame-Options' => 'ALLOWALL']);
         }
-        $status = Status::whereProfileId($profile->id)
-            ->whereNull('uri')
-            ->whereScope('public')
-            ->whereIsNsfw(false)
-            ->whereIn('type', ['photo', 'video', 'photo:album'])
-            ->find($id);
-        if (! $status) {
+
+        $status = StatusService::get($id);
+
+        if (
+            ! $status ||
+            ! isset($status['account'], $status['account']['id']) ||
+            intval($status['account']['id']) !== intval($profile['id']) ||
+            $status['sensitive'] ||
+            $status['visibility'] !== 'public' ||
+            $status['pf_type'] !== 'photo'
+        ) {
             $content = view('status.embed-removed');
 
             return response($content)->header('X-Frame-Options', 'ALLOWALL');
         }
+
         $showLikes = $request->filled('likes') && $request->likes == true;
         $showCaption = $request->filled('caption') && $request->caption !== false;
         $layout = $request->filled('layout') && $request->layout == 'compact' ? 'compact' : 'full';

@@ -169,7 +169,7 @@
 <script type="text/javascript">
 	import BigPicture from 'bigpicture';
 	import ReadMore from './ReadMore.vue';
-    import VideoPlayer from './../../presenter/VideoPlayer.vue';
+    import VideoPlayer from '@/presenter/VideoPlayer.vue';
 
 	export default {
 		props: ['status'],

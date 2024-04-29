@@ -9,7 +9,7 @@ class Like extends Model
 {
     use SoftDeletes;
 
-    const MAX_PER_DAY = 500;
+    const MAX_PER_DAY = 1500;
 
     /**
      * The attributes that should be mutated to dates.

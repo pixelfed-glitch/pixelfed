@@ -172,7 +172,7 @@ class ProfileController extends Controller
 
         $user = $this->getCachedUser($username);
 
-        abort_if(!$user, 404);
+        abort_if(! $user, 404);
 
         return redirect($user->url());
     }
@@ -254,7 +254,7 @@ class ProfileController extends Controller
 
         abort_if(! $profile || $profile['locked'] || ! $profile['local'], 404);
 
-        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile['id'], 86400, function () use ($profile) {
+        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile['id'], 3600, function () use ($profile) {
             $uid = User::whereProfileId($profile['id'])->first();
             if (! $uid) {
                 return true;
@@ -348,7 +348,7 @@ class ProfileController extends Controller
             return response($res)->withHeaders(['X-Frame-Options' => 'ALLOWALL']);
         }
 
-        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile->id, 86400, function () use ($profile) {
+        $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile->id, 3600, function () use ($profile) {
             $exists = AccountInterstitial::whereUserId($profile->user_id)->where('is_spam', 1)->count();
             if ($exists) {
                 return true;
@@ -373,7 +373,7 @@ class ProfileController extends Controller
 
     public function stories(Request $request, $username)
     {
-        abort_if(!(bool) config_cache('instance.stories.enabled') || ! $request->user(), 404);
+        abort_if(! (bool) config_cache('instance.stories.enabled') || ! $request->user(), 404);
         $profile = Profile::whereNull('domain')->whereUsername($username)->firstOrFail();
         $pid = $profile->id;
         $authed = Auth::user()->profile_id;
