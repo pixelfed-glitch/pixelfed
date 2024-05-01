@@ -1,0 +1,10 @@
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.mkShell {
+  name = "pixelfed-nix-shell";
+  buildInputs = with pkgs; [ act docker php83Packages.composer nodejs nodePackages.npm ];
+  runScript = "$SHELL";
+  shellHook = ''
+      export PATH="$PWD/node_modules/.bin/:$PATH"
+      export PATH="$PWD/vendor/bin/:$PATH"
+  '';
+}

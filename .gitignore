@@ -3,6 +3,7 @@
 /.bash_profile
 /.bashrc
 /.composer
+/.direnv
 /.env
 /.env.dottie-backup
 #/.git
