@@ -309,6 +309,7 @@ class DirectMessageController extends Controller
 
         $user = $request->user();
         abort_if($user->has_roles && !UserRoleService::can('can-direct-message', $user->id), 403, 'Invalid permissions for this action');
+        abort_if($user->created_at->gt(now()->subHours(72)), 400, 'You need to wait a bit before you can DM another account');
         $profile = $user->profile;
         $recipient = Profile::where('id', '!=', $profile->id)->findOrFail($request->input('to_id'));
 

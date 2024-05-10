@@ -174,7 +174,7 @@ class AdminCuratedRegisterController extends Controller
     public function apiMessageSendStore(Request $request, $id)
     {
         $this->validate($request, [
-            'message' => 'required|string|min:5|max:1000',
+            'message' => 'required|string|min:5|max:3000',
         ]);
         $record = CuratedRegister::findOrFail($id);
         abort_if($record->email_verified_at === null, 400, 'Cannot message an unverified email');
