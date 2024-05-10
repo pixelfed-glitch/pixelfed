@@ -84,8 +84,6 @@ jobs:
 
       - name: Install composer dependencies
         run: php composer.phar install --no-interaction --prefer-dist
-        env:
-          ENABLE_CONFIG_CACHE: false
 
       - name: Setup Environment
         run: |
@@ -142,13 +140,9 @@ jobs:
 
       - name: Install laravel/pint
         run: php composer.phar require laravel/pint --dev
-        env:
-          ENABLE_CONFIG_CACHE: false
 
       - name: Install composer dependencies
         run: php composer.phar install --no-interaction --prefer-dist
-        env:
-          ENABLE_CONFIG_CACHE: false
 
       # - name: Run laravel/pint
       #   run: ./vendor/bin/pint --test

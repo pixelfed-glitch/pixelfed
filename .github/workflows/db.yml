@@ -123,8 +123,6 @@ jobs:
 
       - name: Install composer dependencies
         run: php composer.phar install -n --prefer-dist
-        env:
-          ENABLE_CONFIG_CACHE: false
 
       - name: Setup Environment
         run: |
@@ -237,8 +235,6 @@ jobs:
 
       - name: Install composer dependencies
         run: php composer.phar install -n --prefer-dist
-        env:
-          ENABLE_CONFIG_CACHE: false
 
       - name: Setup Environment
         run: |
