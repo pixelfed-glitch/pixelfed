@@ -105,7 +105,7 @@
 $(document).ready(function() {
 
   function latestRelease() {
-    let api = 'https://api.github.com/repos/pixelfed/pixelfed/releases';
+    let api = 'https://api.github.com/repos/pixelfed-glitch/pixelfed/releases';
     delete window.axios.defaults.headers.common['X-CSRF-TOKEN'];
     axios.get(api)
       .then(res => {

@@ -76,7 +76,7 @@ class ApiV2Controller extends Controller
                 'domain' => config('pixelfed.domain.app'),
                 'title' => config_cache('app.name'),
                 'version' => '3.5.3 (compatible; Pixelfed ' . config('pixelfed.version') .')',
-                'source_url' => 'https://github.com/pixelfed/pixelfed',
+                'source_url' => 'https://github.com/pixelfed-glitch/pixelfed',
                 'description' => config_cache('app.short_description'),
                 'usage' => [
                     'users' => [

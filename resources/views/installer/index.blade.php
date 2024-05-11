@@ -65,7 +65,7 @@
 						<router-view></router-view>
 
 						<p class="d-flex justify-content-between text-white pt-2 px-2">
-							<a class="font-weight-bold text-white" href="https://docs.pixelfed.org/running-pixelfed/installation.html" target="_blank">Help</a>
+							<a class="font-weight-bold text-white" href="https://pixelfed-glitch.github.io/docs/running-pixelfed/installation.html" target="_blank">Help</a>
 							<span class="font-weight-bold">v{{config('pixelfed.version')}}</span>
 						</p>
 					</div>

@@ -16,7 +16,7 @@ If you want to contribute to this repository, please file your pull request agai
 Pixelfed Beta currently uses the `dev` branch for deployable code. When v1.0 is released, the stable branch will be changed to `master`, with `dev` branch being used for development and testing.
 
 ## Compiled Assets
-If you are submitting a change that will affect a compiled file, such as most of the files in ```resources/assets/sass``` or ```resources/assets/js``` of the pixelfed/pixelfed repository, do not commit the compiled files. Due to their large size, they cannot realistically be reviewed by a maintainer. This could be exploited as a way to inject malicious code into Pixelfed. In order to defensively prevent this, all compiled files will be generated and committed by Pixelfed maintainers.
+If you are submitting a change that will affect a compiled file, such as most of the files in ```resources/assets/sass``` or ```resources/assets/js``` of the pixelfed-glitch/pixelfed repository, do not commit the compiled files. Due to their large size, they cannot realistically be reviewed by a maintainer. This could be exploited as a way to inject malicious code into Pixelfed. In order to defensively prevent this, all compiled files will be generated and committed by Pixelfed maintainers.
 
 ## Security Vulnerabilities
 If you discover a security vulnerability within Pixelfed, please send an email to Daniel Supernault at hello@pixelfed.org. All security vulnerabilities will be promptly addressed.
