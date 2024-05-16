@@ -240,6 +240,11 @@ class AdminCuratedRegisterController extends Controller
         $record->is_closed = true;
         $record->action_taken_at = now();
         $record->save();
+
+        if (User::withTrashed()->whereEmail($record->email)->exists()) {
+            return [200];
+        }
+
         $user = User::create([
             'name' => $record->username,
             'username' => $record->username,

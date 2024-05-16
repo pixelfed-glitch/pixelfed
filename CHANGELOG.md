@@ -1,12 +1,19 @@
 # Release Notes
 
+## [Unreleased](https://github.com/pixelfed/pixelfed-glitch/compare/v0.12.1-glitch.1.4.1...develop)
+
+### Updates (from Upstream)
+- Update ApiV1Controller, add pe (pixelfed entity) support to /api/v1/statuses/{id}/context endpoint ([d645d6ca](https://github.com/pixelfed/pixelfed/commit/d645d6ca))
+- Update Admin Curated Onboarding, add select-all/mass action operations ([b22cac94](https://github.com/pixelfed/pixelfed/commit/b22cac94))
+- Update AdminCuratedRegisterController, fix existing account approval ([cbb96cfd](https://github.com/pixelfed/pixelfed/commit/cbb96cfd))
+
 ## [v0.12.1+glitch.1.4.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.0-glitch.1.4.0..v0.12.1-glitch.1.4.1)
 
 ### Updates (from Upstream)
 - Update ApiV1Dot1Controller, fix in app registration bug that prevents proper auth flow due to missing oauth scopes ([cbf996c9](https://github.com/pixelfed/pixelfed/commit/cbf996c9))
 - Update ConfigCacheService, fix database race condition and fallback to file config and enable by default ([60a62b59](https://github.com/pixelfed/pixelfed/commit/60a62b59))
 - Update DirectMessageController, add 72 hour delay for new accounts before they can send a DM ([61d105fd](https://github.com/pixelfed/pixelfed/commit/61d105fd))
-- Update AdminCuratedRegisterController, increase message length from 1000 to 3000 ([9a5e3471](https://github.com/pixelfed/pixelfed/commit/))
+- Update AdminCuratedRegisterController, increase message length from 1000 to 3000 ([9a5e3471](https://github.com/pixelfed/pixelfed/commit/9a5e3471))
 
 ## [v0.12.0+glitch.1.4.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.13-glitch.1.3.0..v0.12.0-glitch.1.4.0)
 

@@ -3020,9 +3020,9 @@ class ApiV1Controller extends Controller
         abort_unless($request->user()->tokenCan('read'), 403);
 
         $user = $request->user();
-        AccountService::setLastActive($user->id);
         $pid = $user->profile_id;
         $status = StatusService::getMastodon($id, false);
+        $pe = $request->has(self::PF_API_ENTITY_KEY);
 
         if (! $status || ! isset($status['account'])) {
             return response('', 404);
@@ -3049,7 +3049,9 @@ class ApiV1Controller extends Controller
         $descendants = [];
 
         if ($status['in_reply_to_id']) {
-            $ancestors[] = StatusService::getMastodon($status['in_reply_to_id'], false);
+            $ancestors[] = $pe ?
+            StatusService::get($status['in_reply_to_id'], false) :
+            StatusService::getMastodon($status['in_reply_to_id'], false);
         }
 
         if ($status['replies_count']) {
@@ -3059,8 +3061,10 @@ class ApiV1Controller extends Controller
                 ->where('in_reply_to_id', $id)
                 ->limit(20)
                 ->pluck('id')
-                ->map(function ($sid) {
-                    return StatusService::getMastodon($sid, false);
+                ->map(function ($sid) use ($pe) {
+                    return $pe ?
+                     StatusService::get($sid, false) :
+                     StatusService::getMastodon($sid, false);
                 })
                 ->filter(function ($post) use ($filters) {
                     return $post && isset($post['account'], $post['account']['id']) && ! in_array($post['account']['id'], $filters);
