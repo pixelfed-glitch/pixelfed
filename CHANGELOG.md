@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed-glitch/compare/v0.12.1-glitch.1.4.1...develop)
+## [v0.12.1+glitch.1.4.2](https://github.com/pixelfed/pixelfed-glitch/compare/v0.12.1-glitch.1.4.1...v0.12.1-glitch.1.4.2)
 
 ### Updates
 
