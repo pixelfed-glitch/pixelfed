@@ -22,7 +22,7 @@ Pixelfed is a free and ethical photo sharing platform, powered by ActivityPub fe
 
 Documentation for Pixelfed Glitch can be found on the [Pixelfed Glitch documentation website](https://pixelfed-glitch.github.io/docs).
 
-Additionnally, you can find the official documentation for Pixelfed on the [Pixelfed documentation website](https://pixelfed-glitch.github.io/docs/).
+Additionally, you can find the official documentation for Pixelfed on the [Pixelfed documentation website](https://pixelfed-glitch.github.io/docs/).
 
 ## Run with Docker
 
