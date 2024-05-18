@@ -31,7 +31,7 @@ class Nodeinfo
                 'metadata' => [
                     'nodeName' => config_cache('app.name'),
                     'software' => [
-                        'homepage'  => 'https://pixelfed.org',
+                        'homepage'  => 'https://pixelfed-glitch.github.io/docs',
                         'repo'      => 'https://github.com/pixelfed-glitch/pixelfed',
                     ],
                     'config' => $features

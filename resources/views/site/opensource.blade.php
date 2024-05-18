@@ -7,10 +7,10 @@
   </div>
   <hr>
   <section>
-    <p class="lead">The software that powers this website is called <a href="https://pixelfed-glitch.github.io/docs/">Pixelfed Glitch</a> and anyone can <a href="https://github.com/pixelfed-glitch/pixelfed">download</a> or <a href="https://github.com/pixelfed-glitch/pixelfed">view</a> the source code and run their own instance!</p>
+    <p class="lead">The software that powers this website is called <a href="https://github.com/pixelfed-glitch/pixelfed">Pixelfed Glitch</a> and anyone can <a href="https://github.com/pixelfed-glitch/pixelfed">download</a> or <a href="https://github.com/pixelfed-glitch/pixelfed">view</a> the source code and run their own instance!</p>
   </section>
 @endsection
 
 @push('meta')
-<meta property="og:description" content="Open source in Pixelfed">
+<meta property="og:description" content="Open source in Pixelfed Glitch">
 @endpush

@@ -34,6 +34,6 @@ Pixelfed and Pixelfed Glitch are open-sourced software licensed under the AGPL l
 
 ## Communication
 
-Maintainer : @Murazaki (@mehdi_benadel@mastodon.balamb.fr)
+Maintainer : @Murazaki ([@mehdi_benadel@mastodon.balamb.fr](https://mastodon.balamb.fr/@mehdi_benadel))
 
-Discord Server : https://discord.gg/qbSsr5pa
+Discord Server : [Pixelfed Glitch Discord](https://discord.gg/HuZc6jr25X)

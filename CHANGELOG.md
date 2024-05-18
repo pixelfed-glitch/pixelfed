@@ -2,6 +2,12 @@
 
 ## [Unreleased](https://github.com/pixelfed/pixelfed-glitch/compare/v0.12.1-glitch.1.4.1...develop)
 
+### Updates
+
+- Added [Docker Hub repository](https://hub.docker.com/r/pixelfedglitch/pixelfed/)
+- Several fixes on docker build
+- Updated links on the app
+
 ### Updates (from Upstream)
 - Update ApiV1Controller, add pe (pixelfed entity) support to /api/v1/statuses/{id}/context endpoint ([d645d6ca](https://github.com/pixelfed/pixelfed/commit/d645d6ca))
 - Update Admin Curated Onboarding, add select-all/mass action operations ([b22cac94](https://github.com/pixelfed/pixelfed/commit/b22cac94))
