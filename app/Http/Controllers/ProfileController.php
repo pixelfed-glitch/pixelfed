@@ -269,7 +269,7 @@ class ProfileController extends Controller
 
         abort_if($aiCheck, 404);
 
-        $enabled = Cache::remember('profile:atom:enabled:'.$profile['id'], 84600, function () use ($profile) {
+        $enabled = Cache::remember('profile:atom:enabled:'.$profile['id'], 86400, function () use ($profile) {
             $uid = User::whereProfileId($profile['id'])->first();
             if (! $uid) {
                 return false;

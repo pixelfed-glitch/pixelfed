@@ -28,7 +28,13 @@ class ActivityPubFetchService
         $headers['User-Agent'] = 'PixelFedBot/1.0.0 (Pixelfed/'.config('pixelfed.version').'; +'.config('app.url').')';
 
         try {
-            $res = Http::withOptions(['allow_redirects' => false])
+            $res = Http::withoutVerifying()
+                ->withOptions([
+                    'allow_redirects' => [
+                        'max' => 2,
+                        'protocols' => ['https'],
+                    ]
+                ])
                 ->withHeaders($headers)
                 ->timeout(30)
                 ->connectTimeout(5)
