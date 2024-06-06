@@ -16,12 +16,8 @@ entrypoint-set-script-name "$0"
 declare template_file relative_template_file_path output_file_dir
 
 # load all dot-env config files
-load-config-files
+load-and-export-config-files
 
-# export all dot-env variables so they are available in templating
-#
-# shellcheck disable=SC2068
-export ${seen_dot_env_variables[@]}
 
 find "${ENTRYPOINT_TEMPLATE_DIR}" -follow -type f -print | while read -r template_file; do
     # Example: template_file=/docker/templates/usr/local/etc/php/php.ini

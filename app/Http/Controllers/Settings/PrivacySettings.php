@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Follower;
 use App\Profile;
+use App\Services\AccountService;
 use App\Services\RelationshipService;
 use App\UserFilter;
 use Auth;
@@ -19,7 +20,13 @@ trait PrivacySettings
         $settings = $user->settings;
         $profile = $user->profile;
         $is_private = $profile->is_private;
+        $cachedSettings = AccountService::getAccountSettings($profile->id);
         $settings['is_private'] = (bool) $is_private;
+        if ($cachedSettings && isset($cachedSettings['disable_embeds'])) {
+            $settings['disable_embeds'] = (bool) $cachedSettings['disable_embeds'];
+        } else {
+            $settings['disable_embeds'] = false;
+        }
 
         return view('settings.privacy', compact('settings', 'profile'));
     }
@@ -28,6 +35,7 @@ trait PrivacySettings
     {
         $settings = $request->user()->settings;
         $profile = $request->user()->profile;
+        $other = $settings->other;
         $fields = [
             'is_private',
             'crawlable',
@@ -41,6 +49,16 @@ trait PrivacySettings
         $profile->indexable = $request->input('indexable') == 'on';
         $profile->is_suggestable = $request->input('is_suggestable') == 'on';
         $profile->save();
+
+        if ($request->has('disable_embeds')) {
+            $other['disable_embeds'] = true;
+            $settings->other = $other;
+            $settings->save();
+        } else {
+            $other['disable_embeds'] = false;
+            $settings->other = $other;
+            $settings->save();
+        }
 
         foreach ($fields as $field) {
             $form = $request->input($field);
@@ -91,6 +109,7 @@ trait PrivacySettings
         Cache::forget('pf:acct-trans:hideFollowers:'.$pid);
         Cache::forget('pfc:cached-user:wt:'.strtolower($profile->username));
         Cache::forget('pfc:cached-user:wot:'.strtolower($profile->username));
+        AccountService::forgetAccountSettings($profile->id);
 
         return redirect(route('settings.privacy'))->with('status', 'Settings successfully updated!');
     }

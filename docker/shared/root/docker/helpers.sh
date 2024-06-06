@@ -27,9 +27,6 @@ declare -a dot_env_files=(
     /var/www/.env
 )
 
-# environment keys seen when source dot files (so we can [export] them)
-declare -ga seen_dot_env_variables=()
-
 declare -g docker_state_path
 docker_state_path="$(readlink -f ./storage/docker)"
 
@@ -250,13 +247,23 @@ function log-info-stderr()
     fi
 }
 
-# @description Loads the dot-env files used by Docker and track the keys present in the configuration.
-# @sets seen_dot_env_variables array List of config keys discovered during loading
-function load-config-files()
-{
-    # Associative array (aka map/dictionary) holding the unique keys found in dot-env files
-    local -A _tmp_dot_env_keys
+# @description Loads the dot-env files used by Docker
+function load-config-files() {
+    local export_vars=0
+    load-config-files-impl "$export_vars"
+}
 
+# @description Loads the dot-env files used by Docker and exports the variables to subshells
+function load-and-export-config-files() {
+    local export_vars=1
+    load-config-files-impl "$export_vars"
+}
+
+# @description Implementation of the [load-config-files] and [load-and-export-config-files] functions. Loads th
+# @arg $1 int Whether to export the variables or just have them available in the current shell
+function load-config-files-impl()
+{
+    local export_vars=${1:-0}
     for file in "${dot_env_files[@]}"; do
         if ! file-exists "${file}"; then
             log-warning "Could not source file [${file}]: does not exists"
@@ -264,19 +271,11 @@ function load-config-files()
         fi
 
         log-info "Sourcing ${file}"
+        if ((export_vars)); then set -o allexport; fi
         # shellcheck disable=SC1090
         source "${file}"
-
-        # find all keys in the dot-env file and store them in our temp associative array
-        for k in $(grep -v '^#' "${file}" | cut -d"=" -f1 | xargs); do
-            _tmp_dot_env_keys[$k]=1
-        done
+        if ((export_vars)); then set +o allexport; fi
     done
-
-    # Used in other scripts (like templating) for [export]-ing the values
-    #
-    # shellcheck disable=SC2034
-    seen_dot_env_variables=("${!_tmp_dot_env_keys[@]}")
 }
 
 # @description Checks if $needle exists in $haystack

@@ -361,7 +361,7 @@ class ProfileController extends Controller
             return response($res)->withHeaders(['X-Frame-Options' => 'ALLOWALL']);
         }
 
-        if (AccountService::canEmbed($profile->user_id) == false) {
+        if (AccountService::canEmbed($profile->id) == false) {
             return response($res)->withHeaders(['X-Frame-Options' => 'ALLOWALL']);
         }
 

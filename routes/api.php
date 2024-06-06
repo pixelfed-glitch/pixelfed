@@ -26,6 +26,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
         Route::post('apps', 'Api\ApiV1Controller@apps');
         Route::get('apps/verify_credentials', 'Api\ApiV1Controller@getApp')->middleware($middleware);
         Route::get('instance', 'Api\ApiV1Controller@instance');
+        Route::get('instance/peers', 'Api\ApiV1Controller@instancePeers');
         Route::get('bookmarks', 'Api\ApiV1Controller@bookmarks')->middleware($middleware);
 
         Route::get('accounts/verify_credentials', 'Api\ApiV1Controller@verifyCredentials')->middleware($middleware);
@@ -133,6 +134,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::post('update/{id}', 'CollectionController@store')->middleware($middleware);
             Route::delete('delete/{id}', 'CollectionController@delete')->middleware($middleware);
             Route::post('remove', 'CollectionController@deleteId')->middleware($middleware);
+            Route::get('self', 'CollectionController@getSelfCollections')->middleware($middleware);
         });
 
         Route::group(['prefix' => 'direct'], function () use($middleware) {
@@ -264,6 +266,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
                 Route::post('update/{id}', 'CollectionController@store')->middleware($middleware);
                 Route::delete('delete/{id}', 'CollectionController@delete')->middleware($middleware);
                 Route::post('remove', 'CollectionController@deleteId')->middleware($middleware);
+                Route::get('self', 'CollectionController@getSelfCollections')->middleware($middleware);
             });
 
             Route::group(['prefix' => 'compose'], function () use($middleware) {

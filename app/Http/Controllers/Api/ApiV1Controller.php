@@ -193,6 +193,10 @@ class ApiV1Controller extends Controller
             'fields' => [],
         ];
 
+        if ($request->has(self::PF_API_ENTITY_KEY)) {
+            $res['settings'] = AccountService::getAccountSettings($user->profile_id);
+        }
+
         return $this->json($res);
     }
 
@@ -326,7 +330,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('locked')) {
-            $locked = $request->input('locked') == 'true';
+            $locked = $request->boolean('locked');
             if ($profile->is_private != $locked) {
                 $profile->is_private = $locked;
                 $changes = true;
@@ -334,7 +338,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('reduce_motion')) {
-            $reduced = $request->input('reduce_motion');
+            $reduced = $request->boolean('reduce_motion');
             if ($settings->reduce_motion != $reduced) {
                 $settings->reduce_motion = $reduced;
                 $changes = true;
@@ -342,7 +346,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('high_contrast_mode')) {
-            $contrast = $request->input('high_contrast_mode');
+            $contrast = $request->boolean('high_contrast_mode');
             if ($settings->high_contrast_mode != $contrast) {
                 $settings->high_contrast_mode = $contrast;
                 $changes = true;
@@ -350,7 +354,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('video_autoplay')) {
-            $autoplay = $request->input('video_autoplay');
+            $autoplay = $request->boolean('video_autoplay');
             if ($settings->video_autoplay != $autoplay) {
                 $settings->video_autoplay = $autoplay;
                 $changes = true;
@@ -370,7 +374,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('media_descriptions')) {
-            $md = $request->input('media_descriptions') == true;
+            $md = $request->boolean('media_descriptions');
             if ($composeSettings['media_descriptions'] != $md) {
                 $composeSettings['media_descriptions'] = $md;
                 $changes = true;
@@ -378,7 +382,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('crawlable')) {
-            $crawlable = $request->input('crawlable');
+            $crawlable = $request->boolean('crawlable');
             if ($settings->crawlable != $crawlable) {
                 $settings->crawlable = $crawlable;
                 $changes = true;
@@ -386,7 +390,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('show_profile_follower_count')) {
-            $show_profile_follower_count = $request->input('show_profile_follower_count');
+            $show_profile_follower_count = $request->boolean('show_profile_follower_count');
             if ($settings->show_profile_follower_count != $show_profile_follower_count) {
                 $settings->show_profile_follower_count = $show_profile_follower_count;
                 $changes = true;
@@ -395,7 +399,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('show_profile_following_count')) {
-            $show_profile_following_count = $request->input('show_profile_following_count');
+            $show_profile_following_count = $request->boolean('show_profile_following_count');
             if ($settings->show_profile_following_count != $show_profile_following_count) {
                 $settings->show_profile_following_count = $show_profile_following_count;
                 $changes = true;
@@ -404,7 +408,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('public_dm')) {
-            $public_dm = $request->input('public_dm');
+            $public_dm = $request->boolean('public_dm');
             if ($settings->public_dm != $public_dm) {
                 $settings->public_dm = $public_dm;
                 $changes = true;
@@ -422,7 +426,7 @@ class ApiV1Controller extends Controller
         }
 
         if ($request->has('disable_embeds')) {
-            $disabledEmbeds = $request->input('disable_embeds');
+            $disabledEmbeds = $request->boolean('disable_embeds');
             if ($other['disable_embeds'] != $disabledEmbeds) {
                 $other['disable_embeds'] = $disabledEmbeds;
                 $changes = true;
@@ -441,8 +445,16 @@ class ApiV1Controller extends Controller
             Cache::forget('profile:following_count:'.$profile->id);
             Cache::forget('profile:embed:'.$profile->id);
             Cache::forget('profile:compose:settings:'.$user->id);
-            Cache::forget('profile:view:'.$user->username);
+            Cache::forget('profile:view:'.$profile->username);
+            Cache::forget('profile:atom:enabled:'.$profile->id);
+            Cache::forget('pfc:cached-user:wt:'.strtolower($profile->username));
+            Cache::forget('pfc:cached-user:wot:'.strtolower($profile->username));
+            Cache::forget('pf:acct:settings:hidden-followers:'.$profile->id);
+            Cache::forget('pf:acct:settings:hidden-following:'.$profile->id);
+            Cache::forget('pf:acct-trans:hideFollowing:'.$profile->id);
+            Cache::forget('pf:acct-trans:hideFollowers:'.$profile->id);
             AccountService::del($user->profile_id);
+            AccountService::forgetAccountSettings($profile->id);
         }
 
         if ($syncLicenses && $licenseChanged) {
@@ -4203,5 +4215,27 @@ class ApiV1Controller extends Controller
         }
 
         return $this->json([]);
+    }
+
+    /**
+     * GET /api/v1/instance/peers
+     *
+     *
+     * @return array
+     */
+    public function instancePeers(Request $request)
+    {
+        if ((bool) config('instance.show_peers') == false) {
+            return $this->json([]);
+        }
+
+        return $this->json(
+            Cache::remember(InstanceService::CACHE_KEY_API_PEERS_LIST, now()->addHours(24), function () {
+                return Instance::whereNotNull('nodeinfo_last_fetched')
+                    ->whereBanned(false)
+                    ->where('nodeinfo_last_fetched', '>', now()->subDays(8))
+                    ->pluck('domain');
+            })
+        );
     }
 }

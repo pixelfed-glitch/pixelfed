@@ -132,6 +132,10 @@ ENV DEBIAN_FRONTEND="noninteractive"
 # Ensure we run all scripts through 'bash' rather than 'sh'
 SHELL ["/bin/bash", "-c"]
 
+# Set www-data to be RUNTIME_UID/RUNTIME_GID
+RUN groupmod --gid ${RUNTIME_GID} www-data \
+    && usermod --uid ${RUNTIME_UID} --gid ${RUNTIME_GID} www-data
+
 RUN set -ex \
     && mkdir -pv /var/www/ \
     && chown -R ${RUNTIME_UID}:${RUNTIME_GID} /var/www

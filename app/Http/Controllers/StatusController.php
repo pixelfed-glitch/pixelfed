@@ -135,6 +135,14 @@ class StatusController extends Controller
             return response($content)->header('X-Frame-Options', 'ALLOWALL');
         }
 
+        $embedCheck = AccountService::canEmbed($profile['id']);
+
+        if (! $embedCheck) {
+            $content = view('status.embed-removed');
+
+            return response($content)->header('X-Frame-Options', 'ALLOWALL');
+        }
+
         $aiCheck = Cache::remember('profile:ai-check:spam-login:'.$profile['id'], 3600, function () use ($profile) {
             $user = Profile::find($profile['id']);
             if (! $user) {

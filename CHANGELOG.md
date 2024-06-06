@@ -1,6 +1,20 @@
 # Release Notes
 
-## [v0.12.1+glitch.1.4.2](https://github.com/pixelfed/pixelfed-glitch/compare/v0.12.1-glitch.1.4.1...v0.12.1-glitch.1.4.2)
+## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.1-glitch.1.4.2...develop)
+
+### Updates (from Upstream)
+- New api/v1/instance/peers API endpoint, disabled by default ([4aad1c22](https://github.com/pixelfed/pixelfed/commit/4aad1c22))
+- Added disable_embeds setting, and fix cache invalidation in other settings ([c5e7e917](https://github.com/pixelfed/pixelfed/commit/c5e7e917))
+- Update CollectionsController, add new self route ([bc2495c6](https://github.com/pixelfed/pixelfed/commit/bc2495c6))
+- Update FederationController, add webfinger support for actor uri. Fixes #5068 ([24194f7d](https://github.com/pixelfed/pixelfed/commit/24194f7d))
+- Update FetchNodeinfoPipeline, set last_fetched_at timestamp ([a7fce91e](https://github.com/pixelfed/pixelfed/commit/a7fce91e))
+- Update task scheduler, add weekly instance scan to check nodeinfo for known instances ([dc6b9f46](https://github.com/pixelfed/pixelfed/commit/dc6b9f46))
+- Update AP fetch service and domain service ([42915ff9](https://github.com/pixelfed/pixelfed/commit/42915ff9))
+- Update ApiV1Controller, add settings to verify_credentials endpoint ([3f4e0b94](https://github.com/pixelfed/pixelfed/commit/3f4e0b94))
+- Update ApiV1Controller, fix update_credentials boolean handling ([19c62aaa](https://github.com/pixelfed/pixelfed/commit/19c62aaa))
+- Update ApiV1Controller, fix cache invalidation bug in update_credentials ([d56a4108](https://github.com/pixelfed/pixelfed/commit/d56a4108))
+
+## [v0.12.1+glitch.1.4.2](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.1-glitch.1.4.1...v0.12.1-glitch.1.4.2)
 
 ### Updates
 

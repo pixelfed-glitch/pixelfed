@@ -45,8 +45,11 @@ class FederationController extends Controller
         $resource = $request->input('resource');
         $domain = config('pixelfed.domain.app');
 
-        if (config('federation.activitypub.sharedInbox') &&
-            $resource == 'acct:'.$domain.'@'.$domain) {
+        // Instance Actor
+        if (
+            config('federation.activitypub.sharedInbox') &&
+            $resource == 'acct:'.$domain.'@'.$domain
+        ) {
             $res = [
                 'subject' => 'acct:'.$domain.'@'.$domain,
                 'aliases' => [
@@ -68,6 +71,34 @@ class FederationController extends Controller
 
             return response()->json($res, 200, [], JSON_UNESCAPED_SLASHES);
         }
+
+        if (str_starts_with($resource, 'https://')) {
+            if (str_starts_with($resource, 'https://'.$domain.'/users/')) {
+                $username = str_replace('https://'.$domain.'/users/', '', $resource);
+                if (strlen($username) > 15) {
+                    return response('', 400);
+                }
+                $stripped = str_replace(['_', '.', '-'], '', $username);
+                if (! ctype_alnum($stripped)) {
+                    return response('', 400);
+                }
+                $key = 'federation:webfinger:sha256:url-username:'.$username;
+                if ($cached = Cache::get($key)) {
+                    return response()->json($cached, 200, [], JSON_UNESCAPED_SLASHES);
+                }
+                $profile = Profile::whereUsername($username)->first();
+                if (! $profile || $profile->status !== null || $profile->domain) {
+                    return response('', 400);
+                }
+                $webfinger = (new Webfinger($profile))->generate();
+                Cache::put($key, $webfinger, 1209600);
+
+                return response()->json($webfinger, 200, [], JSON_UNESCAPED_SLASHES)
+                    ->header('Access-Control-Allow-Origin', '*');
+            } else {
+                return response('', 400);
+            }
+        }
         $hash = hash('sha256', $resource);
         $key = 'federation:webfinger:sha256:'.$hash;
         if ($cached = Cache::get($key)) {
@@ -81,8 +112,8 @@ class FederationController extends Controller
             return response('', 400);
         }
         $username = $parsed['username'];
-        $profile = Profile::whereNull('domain')->whereUsername($username)->first();
-        if (! $profile || $profile->status !== null) {
+        $profile = Profile::whereUsername($username)->first();
+        if (! $profile || $profile->status !== null || $profile->domain) {
             return response('', 400);
         }
         $webfinger = (new Webfinger($profile))->generate();

@@ -28,7 +28,7 @@ entrypoint-set-script-name "entrypoint.sh"
 # Convert ENTRYPOINT_SKIP_SCRIPTS into a native bash array for easier lookup
 declare -a skip_scripts
 # shellcheck disable=SC2034
-IFS=' ' read -ar skip_scripts <<< "$ENTRYPOINT_SKIP_SCRIPTS"
+IFS=' ' read -r -a skip_scripts <<< "$ENTRYPOINT_SKIP_SCRIPTS"
 
 # Ensure the entrypoint root folder exists
 mkdir -p "${ENTRYPOINT_D_ROOT}"

@@ -97,6 +97,14 @@
       <p class="text-muted small help-text">Display following count on profile</p>
     </div>
 
+    <div class="form-check pb-3">
+      <input class="form-check-input" type="checkbox" name="disable_embeds" id="disable_embeds" {{$settings->disable_embeds ? 'checked=""':''}}>
+      <label class="form-check-label font-weight-bold" for="disable_embeds">
+        {{__('Disable Embeds')}}
+      </label>
+      <p class="text-muted small help-text">Disable post and profile embeds</p>
+    </div>
+
     @if(!$settings->is_private)
     <div class="form-check pb-3">
       <input class="form-check-input" type="checkbox" name="show_atom" id="show_atom" {{$settings->show_atom ? 'checked=""':''}}>
