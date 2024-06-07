@@ -31,7 +31,7 @@ ARG DOTTIE_VERSION="v0.9.5"
 ARG PHP_VERSION="8.3"
 
 # See: https://github.com/docker-library/docs/blob/master/php/README.md#image-variants
-ARG PHP_BASE_TYPE="apache"
+ARG PHP_BASE_TYPE="fpm"
 ARG PHP_DEBIAN_RELEASE="bookworm"
 
 ARG RUNTIME_UID=33 # often called 'www-data'

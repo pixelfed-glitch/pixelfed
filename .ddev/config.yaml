@@ -1,10 +1,11 @@
+name: pixelfed
 type: laravel
 docroot: public
-php_version: "8.1"
+php_version: "8.3"
 webserver_type: nginx-fpm
 database:
   type: mariadb
-  version: "10.4"
+  version: "10.11"
 disable_settings_management: true
 web_environment:
   - DB_CONNECTION=mysql
@@ -28,5 +29,5 @@ web_environment:
   - APP_DOMAIN=pixelfed.ddev.site
   - ADMIN_DOMAIN=pixelfed.ddev.site
   - SESSION_DOMAIN=pixelfed.ddev.site
-  - "TRUST_PROXIES=*"
+  - TRUST_PROXIES=*
   - LOG_CHANNEL=stack
