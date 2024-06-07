@@ -1,6 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.1-glitch.1.4.2...develop)
+## [v0.12.1+glitch.1.4.3](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.1-glitch.1.4.2...v0.12.1-glitch.1.4.3)
 
 ### Updates (from Upstream)
 - New api/v1/instance/peers API endpoint, disabled by default ([4aad1c22](https://github.com/pixelfed/pixelfed/commit/4aad1c22))
