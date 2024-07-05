@@ -8,6 +8,7 @@ use App\Media;
 use App\UserSetting;
 use App\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use App\Services\AccountService;
 use App\Services\BouncerService;
 use App\Services\InstanceService;

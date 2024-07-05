@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Status;
 use App\User;
 use App\Util\Site\Nodeinfo;
 use Illuminate\Support\Facades\Cache;
@@ -18,9 +17,7 @@ class LandingService
             return User::count();
         });
 
-        $postCount = Cache::remember('api:nodeinfo:statuses', 21600, function () {
-            return Status::whereLocal(true)->count();
-        });
+        $postCount = InstanceService::totalLocalStatuses();
 
         $contactAccount = Cache::remember('api:v1:instance-data:contact', 604800, function () {
             if (config_cache('instance.admin.pid')) {

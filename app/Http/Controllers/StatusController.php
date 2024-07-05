@@ -35,8 +35,21 @@ class StatusController extends Controller
             }
         }
 
-        $user = Profile::whereNull('domain')->whereUsername($username)->firstOrFail();
+        $status = StatusService::get($id, false);
 
+        abort_if(
+            ! $status ||
+            ! isset($status['account'], $status['account']['username']) ||
+            $status['account']['username'] != $username ||
+            isset($status['reblog']), 404);
+
+        abort_if(! in_array($status['visibility'], ['public', 'unlisted']) && ! $request->user(), 403, 'Invalid permission');
+
+        if ($request->wantsJson() && (bool) config_cache('federation.activitypub.enabled')) {
+            return $this->showActivityPub($request, $status);
+        }
+
+        $user = Profile::whereNull('domain')->whereUsername($username)->firstOrFail();
         if ($user->status != null) {
             return ProfileController::accountCheck($user);
         }
@@ -69,18 +82,6 @@ class StatusController extends Controller
             if (Auth::user()->profile_id !== $status->profile_id) {
                 abort(404);
             }
-        }
-
-        if ($request->user() && $request->user()->profile_id != $status->profile_id) {
-            StatusView::firstOrCreate([
-                'status_id' => $status->id,
-                'status_profile_id' => $status->profile_id,
-                'profile_id' => $request->user()->profile_id,
-            ]);
-        }
-
-        if ($request->wantsJson() && (bool) config_cache('federation.activitypub.enabled')) {
-            return $this->showActivityPub($request, $status);
         }
 
         $template = $status->in_reply_to_id ? 'status.reply' : 'status.show';
@@ -170,7 +171,7 @@ class StatusController extends Controller
             intval($status['account']['id']) !== intval($profile['id']) ||
             $status['sensitive'] ||
             $status['visibility'] !== 'public' ||
-            $status['pf_type'] !== 'photo'
+            ! in_array($status['pf_type'], ['photo', 'photo:album'])
         ) {
             $content = view('status.embed-removed');
 
@@ -347,12 +348,17 @@ class StatusController extends Controller
 
     public function showActivityPub(Request $request, $status)
     {
-        $object = $status->type == 'poll' ? new Question() : new Note();
-        $fractal = new Fractal\Manager();
-        $resource = new Fractal\Resource\Item($status, $object);
-        $res = $fractal->createData($resource)->toArray();
+        $key = 'pf:status:ap:v1:sid:'.$status['id'];
 
-        return response()->json($res['data'], 200, ['Content-Type' => 'application/activity+json'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return Cache::remember($key, 3600, function () use ($status) {
+            $status = Status::findOrFail($status['id']);
+            $object = $status->type == 'poll' ? new Question() : new Note();
+            $fractal = new Fractal\Manager();
+            $resource = new Fractal\Resource\Item($status, $object);
+            $res = $fractal->createData($resource)->toArray();
+
+            return response()->json($res['data'], 200, ['Content-Type' => 'application/activity+json'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        });
     }
 
     public function edit(Request $request, $username, $id)

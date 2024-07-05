@@ -6,11 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class AddSnowflakeidsToUsersTable extends Migration
 {
-    public function __construct()
-    {
-        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-    }
-
     /**
      * Run the migrations.
      *

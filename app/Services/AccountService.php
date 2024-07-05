@@ -202,15 +202,14 @@ class AccountService
         }
 
         $count = Status::whereProfileId($id)
-            ->whereNull('in_reply_to_id')
-            ->whereNull('reblog_of_id')
+            ->whereNull(['in_reply_to_id','reblog_of_id'])
             ->whereIn('scope', ['public', 'unlisted', 'private'])
             ->count();
 
         $profile->status_count = $count;
         $profile->save();
 
-        Cache::put($key, 1, 900);
+        Cache::put($key, 1, 259200);
 
         return true;
     }

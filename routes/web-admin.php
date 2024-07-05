@@ -3,6 +3,8 @@
 Route::domain(config('pixelfed.domain.admin'))->prefix('i/admin')->group(function () {
     Route::redirect('/', '/dashboard');
     Route::redirect('timeline', config('app.url').'/timeline');
+    Route::get('settings/custom-css', 'AdminController@customCss')->name('admin.custom-css');
+    Route::post('settings/custom-css', 'AdminController@saveCustomCss');
     Route::get('dashboard', 'AdminController@home')->name('admin.home');
     Route::get('stats', 'AdminController@stats')->name('admin.stats');
     Route::get('reports', 'AdminController@reports')->name('admin.reports');

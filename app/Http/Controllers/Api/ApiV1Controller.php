@@ -211,6 +211,7 @@ class ApiV1Controller extends Controller
         abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('read'), 403);
 
+        $withInstanceMeta = $request->has('_wim');
         $res = $request->has(self::PF_API_ENTITY_KEY) ? AccountService::get($id, true) : AccountService::getMastodon($id, true);
         if (! $res) {
             return response()->json(['error' => 'Record not found'], 404);
@@ -752,7 +753,15 @@ class ApiV1Controller extends Controller
 
         $dir = $min_id ? '>' : '<';
         $id = $min_id ?? $max_id;
-        $res = Status::whereProfileId($profile['id'])
+        $res = Status::select(
+            'profile_id',
+            'in_reply_to_id',
+            'reblog_of_id',
+            'type',
+            'id',
+            'scope'
+        )
+            ->whereProfileId($profile['id'])
             ->whereNull('in_reply_to_id')
             ->whereNull('reblog_of_id')
             ->whereIn('type', $scope)
@@ -972,10 +981,22 @@ class ApiV1Controller extends Controller
         $napi = $request->has(self::PF_API_ENTITY_KEY);
         $pid = $request->user()->profile_id ?? $request->user()->profile->id;
         $res = collect($ids)
-            ->filter(function ($id) use ($pid) {
-                return intval($id) !== intval($pid);
-            })
             ->map(function ($id) use ($pid, $napi) {
+                if (intval($id) === intval($pid)) {
+                    return [
+                        'id' => $id,
+                        'following' => false,
+                        'followed_by' => false,
+                        'blocking' => false,
+                        'muting' => false,
+                        'muting_notifications' => false,
+                        'requested' => false,
+                        'domain_blocking' => false,
+                        'showing_reblogs' => false,
+                        'endorsed' => false,
+                    ];
+                }
+
                 return $napi ?
                  RelationshipService::getWithDate($pid, $id) :
                  RelationshipService::get($pid, $id);
@@ -1340,7 +1361,8 @@ class ApiV1Controller extends Controller
         $user = $request->user();
         abort_if($user->has_roles && ! UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
 
-        $status = StatusService::getMastodon($id, false);
+        $napi = $request->has(self::PF_API_ENTITY_KEY);
+        $status = $napi ? StatusService::get($id, false) : StatusService::getMastodon($id, false);
 
         abort_unless($status, 404);
 
@@ -1408,34 +1430,47 @@ class ApiV1Controller extends Controller
         $user = $request->user();
         abort_if($user->has_roles && ! UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
 
+        $napi = $request->has(self::PF_API_ENTITY_KEY);
+        $status = $napi ? StatusService::get($id, false) : StatusService::getMastodon($id, false);
+
+        abort_unless($status && isset($status['account']), 404);
+
+        if ($status && isset($status['account'], $status['account']['acct']) && strpos($status['account']['acct'], '@') != -1) {
+            $domain = parse_url($status['account']['url'], PHP_URL_HOST);
+            abort_if(in_array($domain, InstanceService::getBannedDomains()), 404);
+        }
+
+        $spid = $status['account']['id'];
+
         AccountService::setLastActive($user->id);
 
-        $status = Status::findOrFail($id);
-
-        if (intval($status->profile_id) !== intval($user->profile_id)) {
-            if ($status->scope == 'private') {
-                abort_if(! $status->profile->followedBy($user->profile), 403);
+        if (intval($spid) !== intval($user->profile_id)) {
+            if ($status['visibility'] == 'private') {
+                abort_if(! FollowerService::follows($user->profile_id, $spid), 403);
             } else {
-                abort_if(! in_array($status->scope, ['public', 'unlisted']), 403);
+                abort_if(! in_array($status['visibility'], ['public', 'unlisted']), 403);
             }
         }
 
         $like = Like::whereProfileId($user->profile_id)
-            ->whereStatusId($status->id)
+            ->whereStatusId($status['id'])
             ->first();
 
         if ($like) {
             $like->forceDelete();
-            $status->likes_count = $status->likes_count > 1 ? $status->likes_count - 1 : 0;
-            $status->save();
+            $ogStatus = Status::find($status['id']);
+            if ($ogStatus) {
+                $ogStatus->likes_count = $ogStatus->likes_count > 1 ? $ogStatus->likes_count - 1 : 0;
+                $ogStatus->save();
+            }
         }
 
-        StatusService::del($status->id);
+        StatusService::del($status['id']);
 
-        $res = StatusService::getMastodon($status->id, false);
-        $res['favourited'] = false;
+        $status['favourited'] = false;
+        $status['favourites_count'] = isset($ogStatus) ? $ogStatus->likes_count : $status['favourites_count'] - 1;
 
-        return $this->json($res);
+        return $this->json($status);
     }
 
     /**
@@ -1623,7 +1658,7 @@ class ApiV1Controller extends Controller
             $stats = Cache::remember('api:v1:instance-data:stats', 43200, function () {
                 return [
                     'user_count' => User::count(),
-                    'status_count' => Status::whereNull('uri')->count(),
+                    'status_count' => StatusService::totalLocalStatuses(),
                     'domain_count' => Instance::count(),
                 ];
             });
@@ -2246,14 +2281,17 @@ class ApiV1Controller extends Controller
             'max_id' => 'nullable|integer|min:1|max:'.PHP_INT_MAX,
             'since_id' => 'nullable|integer|min:1|max:'.PHP_INT_MAX,
             'types[]' => 'sometimes|array',
+            'types[].*' => 'string|in:mention,reblog,follow,favourite',
             'type' => 'sometimes|string|in:mention,reblog,follow,favourite',
             '_pe' => 'sometimes',
         ]);
 
         $pid = $request->user()->profile_id;
         $limit = $request->input('limit', 20);
+        $ogLimit = $request->input('limit', 20);
         if ($limit > 40) {
             $limit = 40;
+            $ogLimit = 40;
         }
 
         $since = $request->input('since_id');
@@ -2270,6 +2308,10 @@ class ApiV1Controller extends Controller
         }
 
         $types = $request->input('types');
+
+        if ($request->has('types')) {
+            $limit = 150;
+        }
 
         $maxId = null;
         $minId = null;
@@ -2293,7 +2335,12 @@ class ApiV1Controller extends Controller
             }
         }
 
-        $baseUrl = config('app.url').'/api/v1/notifications?limit='.$limit.'&';
+        if ($request->has('types')) {
+            $typesParams = collect($types)->implode('&types[]=');
+            $baseUrl = config('app.url').'/api/v1/notifications?types[]='.$typesParams.'&limit='.$ogLimit.'&';
+        } else {
+            $baseUrl = config('app.url').'/api/v1/notifications?limit='.$ogLimit.'&';
+        }
 
         if ($minId == $maxId) {
             $minId = null;
@@ -2335,7 +2382,16 @@ class ApiV1Controller extends Controller
                 }
 
                 return true;
-            })->values();
+            })
+            ->filter(function ($n) use ($types) {
+                if (! $types) {
+                    return true;
+                }
+
+                return in_array($n['type'], $types);
+            })
+            ->take($ogLimit)
+            ->values();
 
         if ($maxId) {
             $link = '<'.$baseUrl.'max_id='.$minId.'>; rel="next"';
@@ -3377,10 +3433,9 @@ class ApiV1Controller extends Controller
         $limitKey = 'compose:rate-limit:store:'.$user->id;
         $limitTtl = now()->addMinutes(15);
         $limitReached = Cache::remember($limitKey, $limitTtl, function () use ($user) {
+            $minId = SnowflakeService::byDate(now()->subDays(1));
             $dailyLimit = Status::whereProfileId($user->profile_id)
-                ->whereNull('in_reply_to_id')
-                ->whereNull('reblog_of_id')
-                ->where('created_at', '>', now()->subDays(1))
+                ->where('id', '>', $minId)
                 ->count();
 
             return $dailyLimit >= 1000;
@@ -3729,7 +3784,6 @@ class ApiV1Controller extends Controller
         }
 
         $res = StatusHashtag::whereHashtagId($tag->id)
-            ->whereIn('status_visibility', ['public', 'private', 'unlisted'])
             ->where('status_id', $dir, $id)
             ->orderBy('status_id', 'desc')
             ->limit(100)

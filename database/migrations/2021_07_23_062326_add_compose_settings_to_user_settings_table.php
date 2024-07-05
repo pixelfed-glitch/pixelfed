@@ -41,15 +41,15 @@ class AddComposeSettingsToUserSettingsTable extends Migration
         Schema::table('media', function (Blueprint $table) {
             $table->string('caption')->change();
 
-            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound  = $schemaManager->listTableIndexes('media');
-            if (array_key_exists('media_profile_id_index', $indexesFound)) {
+            $indexes = Schema::getIndexes('media');
+            $indexesFound = collect($indexes)->map(function($i) { return $i['name']; })->toArray();
+            if (in_array('media_profile_id_index', $indexesFound)) {
                 $table->dropIndex('media_profile_id_index');
             }
-            if (array_key_exists('media_mime_index', $indexesFound)) {
+            if (in_array('media_mime_index', $indexesFound)) {
                 $table->dropIndex('media_mime_index');
             }
-            if (array_key_exists('media_license_index', $indexesFound)) {
+            if (in_array('media_license_index', $indexesFound)) {
                 $table->dropIndex('media_license_index');
             }
         });

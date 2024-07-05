@@ -1,5 +1,27 @@
 # Release Notes
 
+## [v0.12.3+glitch.1.5.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.1-glitch.1.4.3...v0.12.3-glitch.1.5.0)
+
+### Updates (from Upstream)
+- Update ApiV1Controller, fix self relationship response ([28bc7aa4](https://github.com/pixelfed/pixelfed/commit/28bc7aa4))
+- Update ApiController, add pe support to like/unlike endpoints ([679ef677](https://github.com/pixelfed/pixelfed/commit/679ef677))
+- Update ApiV1Dot1Controller, fix username to id endpoint ([4d6cea9a](https://github.com/pixelfed/pixelfed/commit/4d6cea9a))
+- Update StatusController, cache AP object ([a75b89b2](https://github.com/pixelfed/pixelfed/commit/a75b89b2))
+- Update status embed, add support for album carousels ([f4898db9](https://github.com/pixelfed/pixelfed/commit/f4898db9))
+- Update profile embeds, add support for albums ([4fd156c4](https://github.com/pixelfed/pixelfed/commit/4fd156c4))
+- Update DirectMessageController, add timestamps to threads ([b24d2554](https://github.com/pixelfed/pixelfed/commit/b24d2554))
+- Update DirectMessageController, add carousel entity to threads ([96f24f33](https://github.com/pixelfed/pixelfed/commit/96f24f33))
+- Update and refactor total local post count logic, cache value and schedule updates twice daily to eliminate the perf issue on larger instances ([4f2b8ed2](https://github.com/pixelfed/pixelfed/commit/4f2b8ed2))
+- Update Media model, fix broken thumbnail/gray thumbnail bug ([e33643c2](https://github.com/pixelfed/pixelfed/commit/e33643c2))
+- Update StatusController, fix unlisted post guest/ap access bug ([83098428](https://github.com/pixelfed/pixelfed/commit/83098428))
+- Update discover, add network trending using Beagle API ([2cae8b48](https://github.com/pixelfed/pixelfed/commit/2cae8b48))
+- Fix migrations bug ([4d1180b1](https://github.com/pixelfed/pixelfed/commit/4d1180b1))
+- Update ApiV1Controller, add support for notification filter types ([f61159a1](https://github.com/pixelfed/pixelfed/commit/f61159a1))
+- Update ApiV1Dot1Controller, fix mutual api ([a8bb97b2](https://github.com/pixelfed/pixelfed/commit/a8bb97b2))
+
+### Framework (from Upstream)
+- Updated to Laravel 11 (requires php 8.2+)
+
 ## [v0.12.1+glitch.1.4.3](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.1-glitch.1.4.2...v0.12.1-glitch.1.4.3)
 
 ### Updates (from Upstream)

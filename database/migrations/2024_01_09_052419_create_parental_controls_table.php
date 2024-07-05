@@ -25,9 +25,9 @@ return new class extends Migration
         });
 
         Schema::table('user_roles', function (Blueprint $table) {
-            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound  = $schemaManager->listTableIndexes('user_roles');
-            if (array_key_exists('user_roles_profile_id_unique', $indexesFound)) {
+            $indexes = Schema::getIndexes('user_roles');
+            $indexesFound = collect($indexes)->map(function($i) { return $i['name']; })->toArray();
+            if (in_array('user_roles_profile_id_unique', $indexesFound)) {
                 $table->dropUnique('user_roles_profile_id_unique');
             }
             $table->unsignedBigInteger('profile_id')->unique()->nullable()->index()->change();
@@ -42,9 +42,9 @@ return new class extends Migration
         Schema::dropIfExists('parental_controls');
 
         Schema::table('user_roles', function (Blueprint $table) {
-            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound  = $schemaManager->listTableIndexes('user_roles');
-            if (array_key_exists('user_roles_profile_id_unique', $indexesFound)) {
+            $indexes = Schema::getIndexes('user_roles');
+            $indexesFound = collect($indexes)->map(function($i) { return $i['name']; })->toArray();
+            if (in_array('user_roles_profile_id_unique', $indexesFound)) {
                 $table->dropUnique('user_roles_profile_id_unique');
             }
             $table->unsignedBigInteger('profile_id')->unique()->index()->change();

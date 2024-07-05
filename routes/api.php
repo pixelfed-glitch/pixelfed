@@ -124,6 +124,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::get('emails-from-pixelfed', 'Api\ApiV1Dot1Controller@accountEmailsFromPixelfed')->middleware($middleware);
             Route::get('apps-and-applications', 'Api\ApiV1Dot1Controller@accountApps')->middleware($middleware);
             Route::get('mutuals/{id}', 'Api\ApiV1Dot1Controller@getMutualAccounts')->middleware($middleware);
+            Route::get('username/{username}', 'Api\ApiV1Dot1Controller@accountUsernameToId')->middleware($middleware);
         });
 
         Route::group(['prefix' => 'collections'], function () use($middleware) {
@@ -176,6 +177,7 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::get('accounts/popular', 'Api\ApiV1Controller@discoverAccountsPopular')->middleware($middleware);
             Route::get('posts/trending', 'DiscoverController@trendingApi')->middleware($middleware);
             Route::get('posts/hashtags', 'DiscoverController@trendingHashtags')->middleware($middleware);
+            Route::get('posts/network/trending', 'DiscoverController@discoverNetworkTrending')->middleware($middleware);
         });
 
         Route::group(['prefix' => 'directory'], function () use($middleware) {

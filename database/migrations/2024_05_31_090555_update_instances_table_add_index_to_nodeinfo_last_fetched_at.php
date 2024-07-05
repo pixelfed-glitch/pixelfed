@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('instances', function (Blueprint $table) {
-            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound = $schemaManager->listTableIndexes('instances');
-            if (! array_key_exists('instances_nodeinfo_last_fetched_index', $indexesFound)) {
+            $indexes = Schema::getIndexes('instances');
+            $indexesFound = collect($indexes)->map(function($i) { return $i['name']; })->toArray();
+            if (!in_array('instances_nodeinfo_last_fetched_index', $indexesFound)) {
                 $table->index('nodeinfo_last_fetched');
             }
         });
@@ -26,9 +26,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('instances', function (Blueprint $table) {
-            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound = $schemaManager->listTableIndexes('instances');
-            if (array_key_exists('instances_nodeinfo_last_fetched_index', $indexesFound)) {
+            $indexes = Schema::getIndexes('instances');
+            $indexesFound = collect($indexes)->map(function($i) { return $i['name']; })->toArray();
+            if (in_array('instances_nodeinfo_last_fetched_index', $indexesFound)) {
                 $table->dropIndex('instances_nodeinfo_last_fetched_index');
             }
         });

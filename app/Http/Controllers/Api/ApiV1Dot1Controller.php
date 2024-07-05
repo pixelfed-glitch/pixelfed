@@ -487,8 +487,7 @@ class ApiV1Dot1Controller extends Controller
             abort_if(BouncerService::checkIp($request->ip()), 404);
         }
 
-        $rl = RateLimiter::attempt('pf:apiv1.1:iar:'.$request->ip(), config('pixelfed.app_registration_rate_limit_attempts', 3), function () {
-        }, config('pixelfed.app_registration_rate_limit_decay', 1800));
+        $rl = RateLimiter::attempt('pf:apiv1.1:iar:'.$request->ip(), config('pixelfed.app_registration_rate_limit_attempts', 3), function () {}, config('pixelfed.app_registration_rate_limit_decay', 1800));
         abort_if(! $rl, 400, 'Too many requests');
 
         $this->validate($request, [
@@ -618,8 +617,7 @@ class ApiV1Dot1Controller extends Controller
             abort_if(BouncerService::checkIp($request->ip()), 404);
         }
 
-        $rl = RateLimiter::attempt('pf:apiv1.1:iarc:'.$request->ip(), config('pixelfed.app_registration_confirm_rate_limit_attempts', 20), function () {
-        }, config('pixelfed.app_registration_confirm_rate_limit_decay', 1800));
+        $rl = RateLimiter::attempt('pf:apiv1.1:iarc:'.$request->ip(), config('pixelfed.app_registration_confirm_rate_limit_attempts', 20), function () {}, config('pixelfed.app_registration_confirm_rate_limit_decay', 1800));
         abort_if(! $rl, 429, 'Too many requests');
 
         $request->validate([
@@ -929,7 +927,7 @@ class ApiV1Dot1Controller extends Controller
     public function getMutualAccounts(Request $request, $id)
     {
         abort_if(! $request->user() || ! $request->user()->token(), 403);
-        abort_unless($request->user()->tokenCan('follows'), 403);
+        abort_unless($request->user()->tokenCan('follow'), 403);
 
         $account = AccountService::get($id, true);
         if (! $account || ! isset($account['id'])) {
@@ -944,5 +942,70 @@ class ApiV1Dot1Controller extends Controller
             ->values();
 
         return $this->json($res);
+    }
+
+    public function accountUsernameToId(Request $request, $username)
+    {
+        abort_if(! $request->user() || ! $request->user()->token() || ! $username, 403);
+        abort_unless($request->user()->tokenCan('read'), 403);
+        $username = trim($username);
+        $rateLimiting = (bool) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.enabled');
+        $ipRateLimiting = (bool) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.ip_enabled');
+        if ($ipRateLimiting) {
+            $userLimit = (int) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.ip_limit');
+            $userDecay = (int) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.ip_decay');
+            $userKey = 'pf:apiv1.1:acctU2ID:byIp:'.$request->ip();
+
+            if (RateLimiter::tooManyAttempts($userKey, $userLimit)) {
+                $limits = [
+                    'X-Rate-Limit-Limit' => $userLimit,
+                    'X-Rate-Limit-Remaining' => RateLimiter::remaining($userKey, $userLimit),
+                    'X-Rate-Limit-Reset' => RateLimiter::availableIn($userKey),
+                ];
+
+                return $this->json(['error' => 'Too many attempts!'], 429, $limits);
+            }
+
+            RateLimiter::increment($userKey, $userDecay);
+            $limits = [
+                'X-Rate-Limit-Limit' => $userLimit,
+                'X-Rate-Limit-Remaining' => RateLimiter::remaining($userKey, $userLimit),
+                'X-Rate-Limit-Reset' => RateLimiter::availableIn($userKey),
+            ];
+        }
+        if ($rateLimiting) {
+            $userLimit = (int) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.limit');
+            $userDecay = (int) config_cache('api.rate-limits.v1Dot1.accounts.usernameToId.decay');
+            $userKey = 'pf:apiv1.1:acctU2ID:byUid:'.$request->user()->id;
+
+            if (RateLimiter::tooManyAttempts($userKey, $userLimit)) {
+                $limits = [
+                    'X-Rate-Limit-Limit' => $userLimit,
+                    'X-Rate-Limit-Remaining' => RateLimiter::remaining($userKey, $userLimit),
+                    'X-Rate-Limit-Reset' => RateLimiter::availableIn($userKey),
+                ];
+
+                return $this->json(['error' => 'Too many attempts!'], 429, $limits);
+            }
+
+            RateLimiter::increment($userKey, $userDecay);
+            $limits = [
+                'X-Rate-Limit-Limit' => $userLimit,
+                'X-Rate-Limit-Remaining' => RateLimiter::remaining($userKey, $userLimit),
+                'X-Rate-Limit-Reset' => RateLimiter::availableIn($userKey),
+            ];
+        }
+        if (str_ends_with($username, config_cache('pixelfed.domain.app'))) {
+            $pre = str_starts_with($username, '@') ? substr($username, 1) : $username;
+            $parts = explode('@', $pre);
+            $username = $parts[0];
+        }
+        $accountId = AccountService::usernameToId($username, true);
+        if (! $accountId) {
+            return [];
+        }
+        $account = AccountService::get($accountId);
+
+        return $this->json($account, 200, $rateLimiting ? $limits : []);
     }
 }

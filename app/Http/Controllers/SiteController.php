@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Page;
 use App\Profile;
 use App\Services\FollowerService;
-use App\Status;
+use App\Services\StatusService;
 use App\User;
 use App\Util\ActivityPub\Helpers;
 use App\Util\Localization\Localization;
@@ -60,7 +60,7 @@ class SiteController extends Controller
     {
         return Cache::remember('site.about_v2', now()->addMinutes(15), function () {
             $user_count = number_format(User::count());
-            $post_count = number_format(Status::count());
+            $post_count = number_format(StatusService::totalLocalStatuses());
             $rules = config_cache('app.rules') ? json_decode(config_cache('app.rules'), true) : null;
 
             return view('site.about', compact('rules', 'user_count', 'post_count'))->render();

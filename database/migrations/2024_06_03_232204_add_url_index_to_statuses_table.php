@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('statuses', function (Blueprint $table) {
-            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound = $schemaManager->listTableIndexes('statuses');
-            if (! array_key_exists('statuses_url_index', $indexesFound)) {
+            $indexes = Schema::getIndexes('statuses');
+            $indexesFound = collect($indexes)->map(function($i) { return $i['name']; })->toArray();
+            if (!in_array('statuses_url_index', $indexesFound)) {
                 $table->index('url');
             }
         });
@@ -26,9 +26,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('statuses', function (Blueprint $table) {
-            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexesFound = $schemaManager->listTableIndexes('statuses');
-            if (array_key_exists('statuses_url_index', $indexesFound)) {
+            $indexes = Schema::getIndexes('statuses');
+            $indexesFound = collect($indexes)->map(function($i) { return $i['name']; })->toArray();
+            if (in_array('statuses_url_index', $indexesFound)) {
                 $table->dropIndex('statuses_url_index');
             }
         });
