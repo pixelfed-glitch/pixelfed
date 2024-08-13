@@ -20,6 +20,73 @@ Route::redirect('.well-known/change-password', '/settings/password');
 Route::get('api/nodeinfo/2.0.json', 'FederationController@nodeinfo');
 Route::get('api/service/health-check', 'HealthCheckController@get');
 
+Route::prefix('api/v0/groups')->middleware($middleware)->group(function() {
+    Route::get('config', 'Groups\GroupsApiController@getConfig');
+    Route::post('permission/create', 'Groups\CreateGroupsController@checkCreatePermission');
+    Route::post('create', 'Groups\CreateGroupsController@storeGroup');
+
+    Route::post('search/invite/friends/send', 'Groups\GroupsSearchController@inviteFriendsToGroup');
+    Route::post('search/invite/friends', 'Groups\GroupsSearchController@searchFriendsToInvite');
+    Route::post('search/global', 'Groups\GroupsSearchController@searchGlobalResults');
+    Route::post('search/lac', 'Groups\GroupsSearchController@searchLocalAutocomplete');
+    Route::post('search/addrec', 'Groups\GroupsSearchController@searchAddRecent');
+    Route::get('search/getrec', 'Groups\GroupsSearchController@searchGetRecent');
+    Route::get('comments', 'Groups\GroupsCommentController@getComments');
+    Route::post('comment', 'Groups\GroupsCommentController@storeComment');
+    Route::post('comment/photo', 'Groups\GroupsCommentController@storeCommentPhoto');
+    Route::post('comment/delete', 'Groups\GroupsCommentController@deleteComment');
+    Route::get('discover/popular', 'Groups\GroupsDiscoverController@getDiscoverPopular');
+    Route::get('discover/new', 'Groups\GroupsDiscoverController@getDiscoverNew');
+    Route::post('delete', 'Groups\GroupsMetaController@deleteGroup');
+    Route::post('status/new', 'Groups\GroupsPostController@storePost');
+    Route::post('status/delete', 'Groups\GroupsPostController@deletePost');
+    Route::post('status/like', 'Groups\GroupsPostController@likePost');
+    Route::post('status/unlike', 'Groups\GroupsPostController@unlikePost');
+    Route::get('topics/list', 'Groups\GroupsTopicController@groupTopics');
+    Route::get('topics/tag', 'Groups\GroupsTopicController@groupTopicTag');
+    Route::get('accounts/{gid}/{pid}', 'Groups\GroupsApiController@getGroupAccount');
+    Route::get('categories/list', 'Groups\GroupsApiController@getGroupCategories');
+    Route::get('category/list', 'Groups\GroupsApiController@getGroupsByCategory');
+    Route::get('self/recommended/list', 'Groups\GroupsApiController@getRecommendedGroups');
+    Route::get('self/list', 'Groups\GroupsApiController@getSelfGroups');
+    Route::get('media/list', 'Groups\GroupsPostController@getGroupMedia');
+    Route::get('members/list', 'Groups\GroupsMemberController@getGroupMembers');
+    Route::get('members/requests', 'Groups\GroupsMemberController@getGroupMemberJoinRequests');
+    Route::post('members/request', 'Groups\GroupsMemberController@handleGroupMemberJoinRequest');
+    Route::get('members/get', 'Groups\GroupsMemberController@getGroupMember');
+    Route::get('member/intersect/common', 'Groups\GroupsMemberController@getGroupMemberCommonIntersections');
+    Route::get('status', 'Groups\GroupsPostController@getStatus');
+    Route::post('like', 'GroupController@likePost');
+    Route::post('comment/like', 'Groups\GroupsCommentController@likePost');
+    Route::post('comment/unlike', 'Groups\GroupsCommentController@unlikePost');
+    Route::get('self/feed', 'Groups\GroupsFeedController@getSelfFeed');
+    Route::get('self/notifications', 'Groups\GroupsNotificationsController@selfGlobalNotifications');
+    Route::get('{id}/user/{pid}/feed', 'Groups\GroupsFeedController@getGroupProfileFeed');
+    Route::get('{id}/feed', 'Groups\GroupsFeedController@getGroupFeed');
+    Route::get('{id}/atabs', 'Groups\GroupsAdminController@getAdminTabs');
+    Route::get('{id}/admin/interactions', 'Groups\GroupsAdminController@getInteractionLogs');
+    Route::get('{id}/admin/blocks', 'Groups\GroupsAdminController@getBlocks');
+    Route::post('{id}/admin/blocks/add', 'Groups\GroupsAdminController@addBlock');
+    Route::post('{id}/admin/blocks/undo', 'Groups\GroupsAdminController@undoBlock');
+    Route::post('{id}/admin/blocks/export', 'Groups\GroupsAdminController@exportBlocks');
+    Route::get('{id}/reports/list', 'Groups\GroupsAdminController@getReportList');
+
+    Route::get('{id}/members/interaction-limits', 'GroupController@getMemberInteractionLimits');
+    Route::post('{id}/invite/check', 'GroupController@groupMemberInviteCheck');
+    Route::post('{id}/invite/accept', 'GroupController@groupMemberInviteAccept');
+    Route::post('{id}/invite/decline', 'GroupController@groupMemberInviteDecline');
+    Route::post('{id}/members/interaction-limits', 'GroupController@updateMemberInteractionLimits');
+    Route::post('{id}/report/action', 'GroupController@reportAction');
+    Route::post('{id}/report/create', 'GroupController@reportCreate');
+    Route::post('{id}/admin/mbs', 'GroupController@metaBlockSearch');
+    Route::post('{id}/join', 'GroupController@joinGroup');
+    Route::post('{id}/cjr', 'GroupController@cancelJoinRequest');
+    Route::post('{id}/leave', 'GroupController@groupLeave');
+    Route::post('{id}/settings', 'GroupController@updateGroup');
+    Route::get('{id}/likes/{sid}', 'GroupController@showStatusLikes');
+    Route::get('{id}', 'GroupController@getGroup');
+});
+
 Route::group(['prefix' => 'api'], function() use($middleware) {
 
     Route::group(['prefix' => 'v1'], function() use($middleware) {
@@ -102,6 +169,14 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
 
         Route::get('statuses/{id}/history', 'StatusEditController@history')->middleware($middleware);
         Route::put('statuses/{id}', 'StatusEditController@store')->middleware($middleware);
+
+        Route::group(['prefix' => 'admin'], function() use($middleware) {
+            Route::get('domain_blocks', 'Api\V1\Admin\DomainBlocksController@index')->middleware($middleware);
+            Route::post('domain_blocks', 'Api\V1\Admin\DomainBlocksController@create')->middleware($middleware);
+            Route::get('domain_blocks/{id}', 'Api\V1\Admin\DomainBlocksController@show')->middleware($middleware);
+            Route::put('domain_blocks/{id}', 'Api\V1\Admin\DomainBlocksController@update')->middleware($middleware);
+            Route::delete('domain_blocks/{id}', 'Api\V1\Admin\DomainBlocksController@delete')->middleware($middleware);
+        })->middleware($middleware);
     });
 
     Route::group(['prefix' => 'v2'], function() use($middleware) {
@@ -194,6 +269,14 @@ Route::group(['prefix' => 'api'], function() use($middleware) {
             Route::post('invite/admin/uc', 'AdminInviteController@apiUsernameCheck')->middleware('throttle:20,120');
             Route::post('invite/admin/ec', 'AdminInviteController@apiEmailCheck')->middleware('throttle:10,1440');
         });
+
+        Route::group(['prefix' => 'expo'], function() use($middleware) {
+            Route::get('push-notifications', 'Api\ApiV1Dot1Controller@getExpoPushNotifications')->middleware($middleware);
+            Route::post('push-notifications/update', 'Api\ApiV1Dot1Controller@updateExpoPushNotifications')->middleware($middleware);
+            Route::post('push-notifications/disable', 'Api\ApiV1Dot1Controller@disableExpoPushNotifications')->middleware($middleware);
+        });
+
+        Route::post('status/create', 'Api\ApiV1Dot1Controller@statusCreate')->middleware($middleware);
     });
 
     Route::group(['prefix' => 'live'], function() use($middleware) {

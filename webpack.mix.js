@@ -40,6 +40,9 @@ mix.js('resources/assets/js/app.js', 'public/js')
 .js('resources/assets/js/admin_invite.js', 'public/js')
 .js('resources/assets/js/landing.js', 'public/js')
 .js('resources/assets/js/remote_auth.js', 'public/js')
+.js('resources/assets/js/groups.js', 'public/js')
+.js('resources/assets/js/group-status.js', 'public/js')
+.js('resources/assets/js/group-topic-feed.js', 'public/js')
 .vue({ version: 2 });
 
 mix.extract();
