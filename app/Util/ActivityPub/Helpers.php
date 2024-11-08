@@ -9,6 +9,7 @@ use App\Jobs\MediaPipeline\MediaStoragePipeline;
 use App\Jobs\StatusPipeline\StatusReplyPipeline;
 use App\Jobs\StatusPipeline\StatusTagsPipeline;
 use App\Media;
+use App\Models\ModeratedProfile;
 use App\Models\Poll;
 use App\Profile;
 use App\Services\Account\AccountStatService;
@@ -155,7 +156,7 @@ class Helpers
         return in_array($url, $audience['to']) || in_array($url, $audience['cc']);
     }
 
-    public static function validateUrl($url = null, $disableDNSCheck = false)
+    public static function validateUrl($url = null, $disableDNSCheck = false, $forceBanCheck = false)
     {
         if (is_array($url) && ! empty($url)) {
             $url = $url[0];
@@ -212,7 +213,7 @@ class Helpers
                 }
             }
 
-            if ($disableDNSCheck !== true && app()->environment() === 'production') {
+            if ($forceBanCheck || $disableDNSCheck !== true && app()->environment() === 'production') {
                 $bannedInstances = InstanceService::getBannedDomains();
                 if (in_array($host, $bannedInstances)) {
                     return false;
@@ -739,7 +740,7 @@ class Helpers
             $width = isset($media['width']) ? $media['width'] : false;
             $height = isset($media['height']) ? $media['height'] : false;
 
-            $media = new Media();
+            $media = new Media;
             $media->blurhash = $blurhash;
             $media->remote_media = true;
             $media->status_id = $status->id;
@@ -801,12 +802,24 @@ class Helpers
         return self::profileUpdateOrCreate($url);
     }
 
-    public static function profileUpdateOrCreate($url)
+    public static function profileUpdateOrCreate($url, $movedToCheck = false)
     {
+        $movedToPid = null;
         $res = self::fetchProfileFromUrl($url);
         if (! $res || isset($res['id']) == false) {
             return;
         }
+        if (! self::validateUrl($res['inbox'])) {
+            return;
+        }
+        if (! self::validateUrl($res['id'])) {
+            return;
+        }
+
+        if (ModeratedProfile::whereProfileUrl($res['id'])->whereIsBanned(true)->exists()) {
+            return;
+        }
+
         $urlDomain = parse_url($url, PHP_URL_HOST);
         $domain = parse_url($res['id'], PHP_URL_HOST);
         if (strtolower($urlDomain) !== strtolower($domain)) {
@@ -829,18 +842,18 @@ class Helpers
         $remoteUsername = $username;
         $webfinger = "@{$username}@{$domain}";
 
-        if (! self::validateUrl($res['inbox'])) {
-            return;
-        }
-        if (! self::validateUrl($res['id'])) {
-            return;
-        }
-
         $instance = Instance::updateOrCreate([
             'domain' => $domain,
         ]);
         if ($instance->wasRecentlyCreated == true) {
             \App\Jobs\InstancePipeline\FetchNodeinfoPipeline::dispatch($instance)->onQueue('low');
+        }
+
+        if (! $movedToCheck && isset($res['movedTo']) && Helpers::validateUrl($res['movedTo'])) {
+            $movedTo = self::profileUpdateOrCreate($res['movedTo'], true);
+            if ($movedTo) {
+                $movedToPid = $movedTo->id;
+            }
         }
 
         $profile = Profile::updateOrCreate(
@@ -859,6 +872,7 @@ class Helpers
                 'outbox_url' => isset($res['outbox']) ? $res['outbox'] : null,
                 'public_key' => $res['publicKey']['publicKeyPem'],
                 'indexable' => isset($res['indexable']) && is_bool($res['indexable']) ? $res['indexable'] : false,
+                'moved_to_profile_id' => $movedToPid,
             ]
         );
 

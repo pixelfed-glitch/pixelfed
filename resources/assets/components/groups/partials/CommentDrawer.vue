@@ -343,7 +343,8 @@
 				childReplyContent: null,
 				postingChildComment: false,
 				loadingChildComments: false,
-				replyChildMinId: undefined
+				replyChildMinId: undefined,
+                replyCursorId: null
 			}
 		},
 
@@ -584,6 +585,7 @@
 				}
 
 				this.replyChildId = status.id;
+                this.replyCursorId = status.id
 				this.replyChildIndex = index;
 
 				if(!status.hasOwnProperty('replies_loaded') || !status.replies_loaded) {
@@ -591,7 +593,9 @@
 						this.fetchChildReplies(status, index);
 					});
 				} else {
-
+                    this.$nextTick(() => {
+                        this.fetchChildReplies(status, index);
+                    });
 				}
 			},
 
@@ -600,7 +604,7 @@
 					params: {
 						gid: this.groupId,
 						sid: status.id,
-						cid: 1,
+						cid: this.replyCursorId,
 						limit: 3
 					}
 				}).then(res => {

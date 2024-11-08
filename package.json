@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@fancyapps/fancybox": "^3.5.7",
+		"@glidejs/glide": "^3.6.2",
 		"@hcaptcha/vue-hcaptcha": "^1.3.0",
 		"@peertube/p2p-media-loader-core": "^1.0.14",
 		"@peertube/p2p-media-loader-hlsjs": "^1.0.14",

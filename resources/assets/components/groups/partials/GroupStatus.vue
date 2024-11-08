@@ -17,6 +17,7 @@
                         :profile="profile"
                         :showGroupHeader="showGroupHeader"
                         :showGroupChevron="showGroupChevron"
+                        v-on:delete="statusDeleted"
                     />
 
 					<div>

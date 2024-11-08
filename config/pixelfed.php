@@ -195,7 +195,7 @@ return [
 	| Max User Limit
 	|--------------------------------------------------------------------------
 	|
-	| Allow a maximum number of user accounts. Default: off
+	| Allow a maximum number of user accounts. Default: enabled w/ 1000 max users
 	|
 	*/
     'max_users' => env('PF_MAX_USERS', 1000),

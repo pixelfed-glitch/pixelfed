@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use NotificationChannels\Expo\ExpoPushToken;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable
@@ -46,6 +45,7 @@ class User extends Authenticatable
         'last_active_at',
         'register_source',
         'expo_token',
+        'notify_enabled',
         'notify_like',
         'notify_follow',
         'notify_mention',

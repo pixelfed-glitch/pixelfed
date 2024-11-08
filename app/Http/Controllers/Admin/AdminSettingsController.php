@@ -195,7 +195,9 @@ trait AdminSettingsController
             if ($key == 'mobile_apis' &&
                 $active &&
                 ! file_exists(storage_path('oauth-public.key')) &&
-                ! file_exists(storage_path('oauth-private.key'))
+                ! config_cache('passport.public_key') &&
+                ! file_exists(storage_path('oauth-private.key')) &&
+                ! config_cache('passport.private_key')
             ) {
                 Artisan::call('passport:keys');
                 Artisan::call('route:cache');

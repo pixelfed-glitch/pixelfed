@@ -125,7 +125,8 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
 
         Route::get('warning', 'AccountInterstitialController@get');
         Route::post('warning', 'AccountInterstitialController@read');
-        Route::get('my2020', 'SeasonalController@yearInReview');
+
+        Route::get('contact-admin-response/{id}', 'ContactController@showAdminResponse');
 
         Route::get('web/my-portfolio', 'PortfolioController@myRedirect');
         Route::get('web/hashtag/{tag}', 'SpaController@hashtagRedirect');

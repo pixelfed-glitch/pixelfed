@@ -13,6 +13,7 @@ mix.sass('resources/assets/sass/app.scss', 'public/css')
 .sass('resources/assets/sass/admin.scss', 'public/css')
 .sass('resources/assets/sass/portfolio.scss', 'public/css')
 .sass('resources/assets/sass/spa.scss', 'public/css')
+.sass('resources/assets/sass/profile.scss', 'public/css')
 .sass('resources/assets/sass/landing.scss', 'public/css').version();
 
 mix.js('resources/assets/js/app.js', 'public/js')

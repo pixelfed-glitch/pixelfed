@@ -119,10 +119,11 @@ class ComposeController extends Controller
         $media->media_path = $path;
         $media->original_sha256 = $hash;
         $media->size = $photo->getSize();
+        $media->caption = "";
         $media->mime = $mime;
         $media->filter_class = $filterClass;
         $media->filter_name = $filterName;
-        $media->version = 3;
+        $media->version = '3';
         $media->save();
 
         $preview_url = $media->url().'?v='.time();

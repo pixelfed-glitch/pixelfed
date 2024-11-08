@@ -209,8 +209,8 @@
 				permissionChecked: false,
                 membershipCategories: [
                     { key: 'Public', value: 'public' },
-                    { key: 'Private', value: 'private' },
-                    { key: 'Local', value: 'local' },
+                    // { key: 'Private', value: 'private' },
+                    // { key: 'Local', value: 'local' },
                 ],
 			}
 		},

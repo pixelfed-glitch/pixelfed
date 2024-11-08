@@ -110,12 +110,12 @@
                         <span class="fas fa-ellipsis-h text-lighter"></span>
                       </button>
                       <div class="dropdown-menu  dropdown-menu-right">
-                        <a class="dropdown-item" href="#">View Post</a>
-                        <a class="dropdown-item" href="#">View Profile</a>
-                        <a class="dropdown-item" href="#">Copy Link</a>
+                        <a class="dropdown-item" :href="statusUrl()">View Post</a>
+                        <a class="dropdown-item" :href="profileUrl()">View Profile</a>
+                        <!-- <a class="dropdown-item" href="#">Copy Link</a> -->
                         <a class="dropdown-item" href="#" @click.prevent="sendReport()">Report</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                        <a class="dropdown-item text-danger" href="#" @click.prevent="onDelete()">Delete</a>
                       </div>
                     </div>
                     <!-- <button class="btn btn-link text-dark py-0" type="button" @click="ctxMenu()">
@@ -171,12 +171,12 @@
                 return App.util.format.count(count);
             },
 
-            statusUrl(status) {
-                return '/groups/' + status.gid + '/p/' + status.id;
+            statusUrl() {
+                return '/groups/' + this.status.gid + '/p/' + this.status.id;
             },
 
-            profileUrl(status) {
-                return '/groups/' + status.gid + '/user/' + status.account.id;
+            profileUrl() {
+                return '/groups/' + this.status.gid + '/user/' + this.status.account.id;
             },
 
             timestampFormat(timestamp) {
@@ -266,6 +266,28 @@
                     })
                 } else {
                   swal("Cancelled", "Your report was not submitted.", "error");
+                }
+              });
+            },
+            onDelete() {
+              swal({
+                title: "Delete Post Confirmation",
+                text: 'Are you sure you want to delete this post?',
+                icon: "warning",
+                dangerMode: true,
+                buttons: true
+              }).then((confirm) => {
+                if(confirm) {
+                    axios.post('/api/v0/groups/status/delete', {
+                        id: this.status.id,
+                        gid: this.status.gid,
+                    })
+                    .then(res => {
+                        this.$emit('delete', this.status)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
                 }
               });
             }

@@ -19,6 +19,7 @@ use App\Media;
 use App\Place;
 use App\Profile;
 use App\Report;
+use App\Rules\ExpoPushTokenRule;
 use App\Services\AccountService;
 use App\Services\BouncerService;
 use App\Services\EmailService;
@@ -26,8 +27,10 @@ use App\Services\FollowerService;
 use App\Services\MediaBlocklistService;
 use App\Services\MediaPathService;
 use App\Services\NetworkTimelineService;
+use App\Services\NotificationAppGatewayService;
 use App\Services\ProfileStatusService;
 use App\Services\PublicTimelineService;
+use App\Services\PushNotificationService;
 use App\Services\StatusService;
 use App\Services\UserStorageService;
 use App\Status;
@@ -46,7 +49,6 @@ use Jenssegers\Agent\Agent;
 use League\Fractal;
 use League\Fractal\Serializer\ArraySerializer;
 use Mail;
-use NotificationChannels\Expo\ExpoPushToken;
 
 class ApiV1Dot1Controller extends Controller
 {
@@ -54,8 +56,8 @@ class ApiV1Dot1Controller extends Controller
 
     public function __construct()
     {
-        $this->fractal = new Fractal\Manager();
-        $this->fractal->setSerializer(new ArraySerializer());
+        $this->fractal = new Fractal\Manager;
+        $this->fractal->setSerializer(new ArraySerializer);
     }
 
     public function json($res, $code = 200, $headers = [])
@@ -317,7 +319,7 @@ class ApiV1Dot1Controller extends Controller
         if (config('pixelfed.bouncer.cloud_ips.ban_signups')) {
             abort_if(BouncerService::checkIp($request->ip()), 404);
         }
-        $agent = new Agent();
+        $agent = new Agent;
         $currentIp = $request->ip();
 
         $activity = AccountLog::whereUserId($user->id)
@@ -575,7 +577,7 @@ class ApiV1Dot1Controller extends Controller
 
         $rtoken = Str::random(64);
 
-        $verify = new EmailVerification();
+        $verify = new EmailVerification;
         $verify->user_id = $user->id;
         $verify->email = $user->email;
         $verify->user_token = $user->app_register_token;
@@ -1019,14 +1021,20 @@ class ApiV1Dot1Controller extends Controller
         return $this->json($account, 200, $rateLimiting ? $limits : []);
     }
 
-    public function getExpoPushNotifications(Request $request)
+    public function getPushState(Request $request)
     {
+        abort_unless($request->hasHeader('X-PIXELFED-APP'), 404, 'Not found');
         abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('push'), 403);
-        abort_unless(config('services.expo.access_token') && strlen(config('services.expo.access_token')) > 10, 404, 'Push notifications are not supported on this server.');
+        abort_unless(NotificationAppGatewayService::enabled(), 404, 'Push notifications are not supported on this server.');
         $user = $request->user();
+        abort_if($user->status, 422, 'Cannot access this resource at this time');
         $res = [
-            'expo_token' => (bool) $user->expo_token,
+            'version' => PushNotificationService::PUSH_GATEWAY_VERSION,
+            'username' => (string) $user->username,
+            'profile_id' => (string) $user->profile_id,
+            'notify_enabled' => (bool) $user->notify_enabled,
+            'has_token' => (bool) $user->expo_token,
             'notify_like' => (bool) $user->notify_like,
             'notify_follow' => (bool) $user->notify_follow,
             'notify_mention' => (bool) $user->notify_mention,
@@ -1036,45 +1044,147 @@ class ApiV1Dot1Controller extends Controller
         return $this->json($res);
     }
 
-    public function disableExpoPushNotifications(Request $request)
+    public function disablePush(Request $request)
     {
+        abort_unless($request->hasHeader('X-PIXELFED-APP'), 404, 'Not found');
         abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('push'), 403);
-        abort_unless(config('services.expo.access_token') && strlen(config('services.expo.access_token')) > 10, 404, 'Push notifications are not supported on this server.');
+        abort_unless(NotificationAppGatewayService::enabled(), 404, 'Push notifications are not supported on this server.');
+        abort_if($request->user()->status, 422, 'Cannot access this resource at this time');
+
         $request->user()->update([
+            'notify_enabled' => false,
             'expo_token' => null,
+            'notify_like' => false,
+            'notify_follow' => false,
+            'notify_mention' => false,
+            'notify_comment' => false,
         ]);
 
-        return $this->json(['expo_token' => null]);
+        PushNotificationService::removeMemberFromAll($request->user()->profile_id);
+
+        $user = $request->user();
+
+        return $this->json([
+            'version' => PushNotificationService::PUSH_GATEWAY_VERSION,
+            'username' => (string) $user->username,
+            'profile_id' => (string) $user->profile_id,
+            'notify_enabled' => (bool) $user->notify_enabled,
+            'has_token' => (bool) $user->expo_token,
+            'notify_like' => (bool) $user->notify_like,
+            'notify_follow' => (bool) $user->notify_follow,
+            'notify_mention' => (bool) $user->notify_mention,
+            'notify_comment' => (bool) $user->notify_comment,
+        ]);
     }
 
-    public function updateExpoPushNotifications(Request $request)
+    public function comparePush(Request $request)
     {
+        abort_unless($request->hasHeader('X-PIXELFED-APP'), 404, 'Not found');
         abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('push'), 403);
-        abort_unless(config('services.expo.access_token') && strlen(config('services.expo.access_token')) > 10, 404, 'Push notifications are not supported on this server.');
+        abort_unless(NotificationAppGatewayService::enabled(), 404, 'Push notifications are not supported on this server.');
+        abort_if($request->user()->status, 422, 'Cannot access this resource at this time');
+
         $this->validate($request, [
-            'expo_token' => ['required', ExpoPushToken::rule()],
+            'expo_token' => ['required', 'string', new ExpoPushTokenRule],
+        ]);
+
+        $user = $request->user();
+
+        if (empty($user->expo_token)) {
+            return $this->json([
+                'version' => PushNotificationService::PUSH_GATEWAY_VERSION,
+                'username' => (string) $user->username,
+                'profile_id' => (string) $user->profile_id,
+                'notify_enabled' => (bool) $user->notify_enabled,
+                'match' => false,
+                'has_existing' => false,
+            ]);
+        }
+
+        $token = $request->input('expo_token');
+        $knownToken = $user->expo_token;
+        $match = hash_equals($knownToken, $token);
+
+        return $this->json([
+            'version' => PushNotificationService::PUSH_GATEWAY_VERSION,
+            'username' => (string) $user->username,
+            'profile_id' => (string) $user->profile_id,
+            'notify_enabled' => (bool) $user->notify_enabled,
+            'match' => $match,
+            'has_existing' => true,
+        ]);
+    }
+
+    public function updatePush(Request $request)
+    {
+        abort_unless($request->hasHeader('X-PIXELFED-APP'), 404, 'Not found');
+        abort_if(! $request->user() || ! $request->user()->token(), 403);
+        abort_unless($request->user()->tokenCan('push'), 403);
+        abort_unless(NotificationAppGatewayService::enabled(), 404, 'Push notifications are not supported on this server.');
+        abort_if($request->user()->status, 422, 'Cannot access this resource at this time');
+
+        $this->validate($request, [
+            'notify_enabled' => 'required',
+            'token' => ['required', 'string', new ExpoPushTokenRule],
             'notify_like' => 'sometimes',
             'notify_follow' => 'sometimes',
             'notify_mention' => 'sometimes',
             'notify_comment' => 'sometimes',
         ]);
 
-        $user = $request->user()->update([
-            'expo_token' => $request->input('expo_token'),
-            'notify_like' => $request->has('notify_like') && $request->boolean('notify_like'),
-            'notify_follow' => $request->has('notify_follow') && $request->boolean('notify_follow'),
-            'notify_mention' => $request->has('notify_mention') && $request->boolean('notify_mention'),
-            'notify_comment' => $request->has('notify_comment') && $request->boolean('notify_comment'),
+        $pid = $request->user()->profile_id;
+        abort_if(! $pid, 422, 'An error occured');
+        $expoToken = $request->input('token');
+
+        $existing = User::where('profile_id', '!=', $pid)->whereExpoToken($expoToken)->count();
+        abort_if($existing && $existing > 5, 400, 'Push token is already used by another account');
+
+        $request->user()->update([
+            'notify_enabled' => $request->boolean('notify_enabled'),
+            'expo_token' => $expoToken,
         ]);
 
+        if ($request->filled('notify_like')) {
+            $request->user()->update(['notify_like' => (bool) $request->boolean('notify_like')]);
+            $request->boolean('notify_like') == true ?
+                PushNotificationService::set('like', $pid) :
+                PushNotificationService::removeMember('like', $pid);
+        }
+        if ($request->filled('notify_follow')) {
+            $request->user()->update(['notify_follow' => (bool) $request->boolean('notify_follow')]);
+            $request->boolean('notify_follow') == true ?
+                PushNotificationService::set('follow', $pid) :
+                PushNotificationService::removeMember('follow', $pid);
+        }
+        if ($request->filled('notify_mention')) {
+            $request->user()->update(['notify_mention' => (bool) $request->boolean('notify_mention')]);
+            $request->boolean('notify_mention') == true ?
+                PushNotificationService::set('mention', $pid) :
+                PushNotificationService::removeMember('mention', $pid);
+        }
+        if ($request->filled('notify_comment')) {
+            $request->user()->update(['notify_comment' => (bool) $request->boolean('notify_comment')]);
+            $request->boolean('notify_comment') == true ?
+                PushNotificationService::set('comment', $pid) :
+                PushNotificationService::removeMember('comment', $pid);
+        }
+
+        if ($request->boolean('notify_enabled') == false) {
+            PushNotificationService::removeMemberFromAll($request->user()->profile_id);
+        }
+
+        $user = $request->user();
+
         $res = [
-            'expo_token' => (bool) $request->user()->expo_token,
-            'notify_like' => (bool) $request->user()->notify_like,
-            'notify_follow' => (bool) $request->user()->notify_follow,
-            'notify_mention' => (bool) $request->user()->notify_mention,
-            'notify_comment' => (bool) $request->user()->notify_comment,
+            'version' => PushNotificationService::PUSH_GATEWAY_VERSION,
+            'notify_enabled' => (bool) $user->notify_enabled,
+            'has_token' => (bool) $user->expo_token,
+            'notify_like' => (bool) $user->notify_like,
+            'notify_follow' => (bool) $user->notify_follow,
+            'notify_mention' => (bool) $user->notify_mention,
+            'notify_comment' => (bool) $user->notify_comment,
         ];
 
         return $this->json($res);
@@ -1203,7 +1313,7 @@ class ApiV1Dot1Controller extends Controller
             abort(500, 'An error occured.');
         }
 
-        $media = new Media();
+        $media = new Media;
         $media->status_id = $status->id;
         $media->profile_id = $profile->id;
         $media->user_id = $user->id;
@@ -1251,5 +1361,14 @@ class ApiV1Dot1Controller extends Controller
         $res['card'] = null;
 
         return $this->json($res);
+    }
+
+    public function nagState(Request $request)
+    {
+        abort_unless((bool) config_cache('pixelfed.oauth_enabled'), 404);
+
+        return [
+            'active' => NotificationAppGatewayService::enabled(),
+        ];
     }
 }
