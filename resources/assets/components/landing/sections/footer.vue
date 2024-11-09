@@ -13,7 +13,7 @@
 		<div class="footer-component-attribution">
 			<div><span>© {{ getYear() }} {{config.domain}}</span></div>
 			<div class="spacer">·</div>
-			<div><a href="https://pixelfed.org" class="text-bluegray-500 font-weight-bold">Powered by Pixelfed</a></div>
+			<div><a href="https://pixelfed-glitch.github.io/docs/" class="text-bluegray-500 font-weight-bold">Powered by Pixelfed Glitch</a></div>
 			<div class="spacer">·</div>
 			<div><span>v{{config.version}}</span></div>
 		</div>

@@ -1,12 +1,15 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.3-glitch.1.5.0...develop)
+## [v0.12.3+glitch.1.6.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.3-glitch.1.5.0...v0.12.3-glitch.1.6.0)
+
+## Breaking Changes
+- Dropping PHP 8.2 support in favor of 8.3
 
 ### Updates
 - Moved composer autoload on Dockerfile
 - Allow login with full handle
 - Composer lock update
-- Dropping PHP 8.2 support in favor of 8.3
+- Update UI to reflect project name
 
 ### Updates (from Upstream)
 - Implement Admin Domain Blocks API (Mastodon API Compatible) [ThisIsMissEm](https://github.com/ThisIsMissEm) ([#5021](https://github.com/pixelfed/pixelfed/pull/5021))

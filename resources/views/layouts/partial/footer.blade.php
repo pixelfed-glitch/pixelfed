@@ -14,7 +14,7 @@
         <p class="text-center text-muted small mb-0">
           <span class="text-muted">© {{date('Y')}} {{config('pixelfed.domain.app')}}</span>
           <span class="mx-2">·</span>
-          <a href="https://pixelfed.org" class="text-muted font-weight-bold" rel="noopener">Powered by Pixelfed</a>
+          <a href="https://pixelfed-glitch.github.io/docs/" class="text-muted font-weight-bold" rel="noopener">Powered by Pixelfed Glitch</a>
           <span class="mx-2">·</span>
           <span class="text-muted">v{{config('pixelfed.version')}}</span>
         </p>
