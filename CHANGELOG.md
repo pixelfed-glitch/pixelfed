@@ -2,6 +2,12 @@
 
 ## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.3-glitch.1.5.0...develop)
 
+### Updates
+- Moved composer autoload on Dockerfile
+- Allow login with full handle
+- Composer lock update
+- Dropping PHP 8.2 support in favor of 8.3
+
 ### Updates (from Upstream)
 - Implement Admin Domain Blocks API (Mastodon API Compatible) [ThisIsMissEm](https://github.com/ThisIsMissEm) ([#5021](https://github.com/pixelfed/pixelfed/pull/5021))
 - Authorize Interaction support (for handling remote interactions) ([4ca7c6c3](https://github.com/pixelfed/pixelfed/commit/4ca7c6c3))
@@ -9,13 +15,11 @@
 - Profile Carousels ([8af77a3f](https://github.com/pixelfed/pixelfed/commit/8af77a3f))
 - Moderated Profiles ([39f16321](https://github.com/pixelfed/pixelfed/commit/39f16321))
 
-### Federation
 - Add ActiveSharedInboxService, for efficient sharedInbox caching ([1a6a3397](https://github.com/pixelfed/pixelfed/commit/1a6a3397))
 - Add MovePipeline queue jobs ([9904d05f](https://github.com/pixelfed/pixelfed/commit/9904d05f))
 - Add ActivityPub Move validator ([909a6c72](https://github.com/pixelfed/pixelfed/commit/909a6c72))
 - Add delay to move handler to allow for remote cache invalidation ([8a362c12](https://github.com/pixelfed/pixelfed/commit/8a362c12))
 
-### Updates
 - Update ApiV1Controller, add support for notification filter types ([f61159a1](https://github.com/pixelfed/pixelfed/commit/f61159a1))
 - Update ApiV1Dot1Controller, fix mutual api ([a8bb97b2](https://github.com/pixelfed/pixelfed/commit/a8bb97b2))
 - Update ApiV1Controller, fix /api/v1/favourites pagination ([72f68160](https://github.com/pixelfed/pixelfed/commit/72f68160))
