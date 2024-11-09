@@ -41,10 +41,7 @@ ARG RUNTIME_GID=33 # often called 'www-data'
 ARG APT_PACKAGES_EXTRA=
 
 # Extensions installed via [pecl install]
-# ! NOTE: imagick is installed from [master] branch on GitHub due to 8.3 bug on ARM that haven't
-# ! been released yet (after +10 months)!
-# ! See: https://github.com/Imagick/imagick/pull/641
-ARG PHP_PECL_EXTENSIONS="redis https://codeload.github.com/Imagick/imagick/tar.gz/28f27044e435a2b203e32675e942eb8de620ee58"
+ARG PHP_PECL_EXTENSIONS="redis imagick"
 ARG PHP_PECL_EXTENSIONS_EXTRA=
 
 # Extensions installed via [docker-php-ext-install]
