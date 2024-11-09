@@ -1,6 +1,6 @@
 # Release Notes
 
-## [v0.12.3+glitch.1.6.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.3-glitch.1.5.0...v0.12.3-glitch.1.6.0)
+## [v0.12.4+glitch.1.6.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.3-glitch.1.5.0...v0.12.4-glitch.1.6.0)
 
 ## Breaking Changes
 - Dropping PHP 8.2 support in favor of 8.3
@@ -43,6 +43,7 @@
 - Update config, allow Beagle discover service to be disabled ([de4ce3c8](https://github.com/pixelfed/pixelfed/commit/de4ce3c8))
 - Update ApiV1Dot1Controller, allow upto 5 similar push tokens ([7820b506](https://github.com/pixelfed/pixelfed/commit/7820b506))
 - Update AdminReports, add missing click handler. Fixes #5332 ([fe48b8ad](https://github.com/pixelfed/pixelfed/commit/fe48b8ad))
+- Improve media filtering by using OffscreenCanvas, if supported ([aea5392](https://github.com/pixelfed/pixelfed/commit/aea5392))
 
 ## [v0.12.3+glitch.1.5.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.1-glitch.1.4.3...v0.12.3-glitch.1.5.0)
 

@@ -257,6 +257,7 @@ COPY --link --from=composer-image /usr/bin/composer /usr/bin/composer
 #! Changing user to runtime user
 USER ${RUNTIME_UID}:${RUNTIME_GID}
 
+
 # Install composer dependencies
 # NOTE: we skip the autoloader generation here since we don't have all files avaliable (yet)
 RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},sharing=locked,uid=${RUNTIME_UID},gid=${RUNTIME_GID},target=/cache/composer \
