@@ -210,8 +210,8 @@ return [
 		'selectReason' => 'Einen Grund auswählen',
 		'reported' => 'Gemeldet',
 		'sendingReport' => 'Meldung wird gesendet',
-		'thanksMsg' => 'Vielen Dank für die Meldung, Leute wie du helfen, unsere Community sicher zu halten!',
-		'contactAdminMsg' => 'Wenn du einen Administrator zu diesem Beitrag oder dieser Meldung kontaktieren möchtest',
+		'thanksMsg' => 'Danke für deine Meldung! Damit erhöhst du die Sicherheit der Community!',
+		'contactAdminMsg' => 'Wenn du die Administration wegen diesem Beitrag oder dieser Meldung kontaktieren möchtest',
 	],
 
 ];
