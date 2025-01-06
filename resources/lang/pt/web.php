@@ -20,7 +20,7 @@ return [
 		'delete' => 'Eliminar',
 		'error' => 'Erro',
 		'errorMsg' => 'Algo correu mal. Por favor, tente novamente mais tarde.',
-		'oops' => 'Oops!',
+		'oops' => 'Opa!',
 		'other' => 'Outro',
 		'readMore' => 'Ler mais',
 		'success' => 'Sucesso',
@@ -57,7 +57,7 @@ return [
 
 		// Self links
 		'profile' => 'Perfil',
-		'drive' => 'Disco',
+		'drive' => 'Drive',
 		'settings' => 'Definições',
 		'compose' => 'Criar novo',
 		'logout' => 'Terminar Sessão',
@@ -70,7 +70,7 @@ return [
 		'terms' => 'Termos',
 
 		// Temporary links
-		'backToPreviousDesign' => 'Voltar ao design antigo'
+		'backToPreviousDesign' => 'Voltar ao design anterior'
 	],
 
 	'directMessages' => [
@@ -80,13 +80,13 @@ return [
 	],
 
 	'notifications' => [
-		'liked' => 'gostou do seu',
-		'commented' => 'comentou no seu',
+		'liked' => 'curtiu seu',
+		'commented' => 'comentou em seu',
 		'reacted' => 'reagiu ao seu',
-		'shared' => 'Partilhou o seu',
-		'tagged' => 'marcou você numa publicação',
+		'shared' => 'compartilhou seu',
+		'tagged' => 'marcou você em um',
 
-		'updatedA' => 'atualizou',
+		'updatedA' => 'atualizou um(a)',
 		'sentA' => 'enviou um',
 
 		'followed' => 'seguiu',
@@ -95,13 +95,13 @@ return [
 
 		'yourApplication' => 'A sua candidatura para se juntar',
 		'applicationApproved' => 'foi aprovado!',
-		'applicationRejected' => 'foi rejeitado. Você pode inscrever-se novamente em 6 meses.',
+		'applicationRejected' => 'foi rejeitado. Você pode se inscrever novamente para participar em 6 meses.',
 
-		'dm' => 'dm',
-		'groupPost' => 'publicação de grupo',
+		'dm' => 'mensagem direta',
+		'groupPost' => 'postagem do grupo',
 		'modlog' => 'histórico de moderação',
 		'post' => 'publicação',
-		'story' => 'story',
+		'story' => 'história',
 		'noneFound' => 'Nenhuma notificação encontrada',
 	],
 
@@ -116,7 +116,7 @@ return [
 		'posts' => 'Publicações',
 		'followers' => 'Seguidores',
 		'following' => 'A seguir',
-		'admin' => 'Admin',
+		'admin' => 'Administrador',
 		'collections' => 'Coleções',
 		'follow' => 'Seguir',
 		'unfollow' => 'Deixar de seguir',
@@ -141,14 +141,14 @@ return [
 		'unlistFromTimelines' => 'Remover das cronologias',
 		'addCW' => 'Adicionar aviso de conteúdo',
 		'removeCW' => 'Remover aviso de conteúdo',
-		'markAsSpammer' => 'Marcar como spammer',
+		'markAsSpammer' => 'Marcar como Spammer',
 		'markAsSpammerText' => 'Remover das cronologias e adicionar um aviso de conteúdo às publicações existentes e futuras',
-		'spam' => 'Spam',
+		'spam' => 'Lixo Eletrônico',
 		'sensitive' => 'Conteúdo Sensível',
 		'abusive' => 'Abusivo ou prejudicial',
 		'underageAccount' => 'Conta de menor de idade',
 		'copyrightInfringement' => 'Violação de direitos de autor',
-		'impersonation' => 'Roubo de Identidade',
+		'impersonation' => 'Roubo de identidade',
 		'scamOrFraud' => 'Esquema ou fraude',
 		'confirmReport' => 'Confirmar denúncia',
 		'confirmReportText' => 'Tem a certeza que deseja denunciar esta mensagem?',
@@ -162,15 +162,15 @@ return [
 		'modRemoveCWSuccess' => 'Removeu com sucesso o aviso de conteúdo',
 		'modUnlistConfirm' => 'Tem a certeza que pretende deslistar este post?',
 		'modUnlistSuccess' => 'Deslistou com sucesso este post',
-		'modMarkAsSpammerConfirm' => 'Tem a certeza que deseja marcar este utilizador como spammer? Todos os posts existentes e futuros serão deslistados da timeline e o alerta de conteúdo será aplicado.',
+		'modMarkAsSpammerConfirm' => 'Você realmente quer denunciar este usuário por spam? Todas as suas publicações anteriores e futuras serão marcadas com um aviso de conteúdo e removidas das linhas do tempo.',
 		'modMarkAsSpammerSuccess' => 'Marcou com sucesso esta conta como spammer',
 
-		'toFollowers' => 'para Seguidores',
+		'toFollowers' => 'para seguidores',
 
 		'showCaption' => 'Mostar legenda',
 		'showLikes' => 'Mostrar Gostos',
 		'compactMode' => 'Modo compacto',
-		'embedConfirmText' => 'Ao utilizar este conteúdo, aceita os nossos',
+		'embedConfirmText' => 'Ao usar de forma “embed”, você concorda com nossas',
 
 		'deletePostConfirm' => 'Tem a certeza que pretende apagar esta publicação?',
 		'archivePostConfirm' => 'Tem a certeza que pretende arquivar esta publicação?',
@@ -178,7 +178,7 @@ return [
 	],
 
 	'story' => [
-		'add' => 'Adicionar Storie'
+		'add' => 'Adicionar Story'
 	],
 
 	'timeline' => [
@@ -193,7 +193,7 @@ return [
 	],
 
 	'hashtags' => [
-		'emptyFeed' => 'Não conseguimos encontrar publicações com essa hashtag'
+		'emptyFeed' => 'Não encontramos nenhuma publicação com esta hashtag'
 	],
 
 	'report' => [
