@@ -25,6 +25,7 @@
 		"laravel/helpers": "^1.1",
 		"laravel/horizon": "^5.0",
 		"laravel/passport": "^12.0",
+		"laravel/pulse": "^1.3",
 		"laravel/tinker": "^2.9",
 		"laravel/ui": "^4.2",
 		"lcobucci/clock": "^3.2",

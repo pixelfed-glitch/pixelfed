@@ -25,12 +25,12 @@ use App\Services\UserStorageService;
 use App\Status;
 use App\Transformer\Api\MediaTransformer;
 use App\UserFilter;
-use App\Util\Lexer\Autolink;
 use App\Util\Media\Filter;
 use App\Util\Media\License;
 use Auth;
 use Cache;
 use DB;
+use Purify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use League\Fractal;
@@ -43,8 +43,8 @@ class ComposeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->fractal = new Fractal\Manager();
-        $this->fractal->setSerializer(new ArraySerializer());
+        $this->fractal = new Fractal\Manager;
+        $this->fractal->setSerializer(new ArraySerializer);
     }
 
     public function show(Request $request)
@@ -112,14 +112,14 @@ class ComposeController extends Controller
 
         abort_if(MediaBlocklistService::exists($hash) == true, 451);
 
-        $media = new Media();
+        $media = new Media;
         $media->status_id = null;
         $media->profile_id = $profile->id;
         $media->user_id = $user->id;
         $media->media_path = $path;
         $media->original_sha256 = $hash;
         $media->size = $photo->getSize();
-        $media->caption = "";
+        $media->caption = '';
         $media->mime = $mime;
         $media->filter_class = $filterClass;
         $media->filter_name = $filterName;
@@ -151,7 +151,7 @@ class ComposeController extends Controller
         $user->save();
 
         Cache::forget($limitKey);
-        $resource = new Fractal\Resource\Item($media, new MediaTransformer());
+        $resource = new Fractal\Resource\Item($media, new MediaTransformer);
         $res = $this->fractal->createData($resource)->toArray();
         $res['preview_url'] = $preview_url;
         $res['url'] = $url;
@@ -570,8 +570,9 @@ class ComposeController extends Controller
             $status->cw_summary = $request->input('spoiler_text');
         }
 
-        $status->caption = strip_tags($request->caption);
-        $status->rendered = Autolink::create()->autolink($status->caption);
+        $defaultCaption = "";
+        $status->caption = strip_tags($request->input('caption')) ?? $defaultCaption;
+        $status->rendered = $defaultCaption;
         $status->scope = 'draft';
         $status->visibility = 'draft';
         $status->profile_id = $profile->id;
@@ -675,6 +676,7 @@ class ComposeController extends Controller
         $place = $request->input('place');
         $cw = $request->input('cw');
         $tagged = $request->input('tagged');
+        $defaultCaption = config_cache('database.default') === 'mysql' ? null : "";
 
         if ($place && is_array($place)) {
             $status->place_id = $place['id'];
@@ -684,7 +686,8 @@ class ComposeController extends Controller
             $status->comments_disabled = (bool) $request->input('comments_disabled');
         }
 
-        $status->caption = strip_tags($request->caption);
+        $status->caption = $request->filled('caption') ? strip_tags($request->caption) : $defaultCaption;
+        $status->rendered = $defaultCaption;
         $status->profile_id = $profile->id;
         $entities = [];
         $visibility = $profile->unlisted == true && $visibility == 'public' ? 'unlisted' : $visibility;
@@ -693,7 +696,6 @@ class ComposeController extends Controller
         $status->visibility = $visibility;
         $status->scope = $visibility;
         $status->type = 'text';
-        $status->rendered = Autolink::create()->autolink($status->caption);
         $status->entities = json_encode(array_merge([
             'timg' => [
                 'version' => 0,
@@ -806,7 +808,6 @@ class ComposeController extends Controller
         $status = new Status;
         $status->profile_id = $request->user()->profile_id;
         $status->caption = $request->input('caption');
-        $status->rendered = Autolink::create()->autolink($status->caption);
         $status->visibility = 'draft';
         $status->scope = 'draft';
         $status->type = 'poll';

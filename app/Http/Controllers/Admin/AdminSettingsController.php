@@ -600,7 +600,7 @@ trait AdminSettingsController
         $this->validate($request, [
             'image_quality' => 'required|integer|min:1|max:100',
             'max_album_length' => 'required|integer|min:1|max:20',
-            'max_photo_size' => 'required|integer|min:100|max:50000',
+            'max_photo_size' => 'required|integer|min:100|max:1000000',
             'media_types' => 'required',
             'optimize_image' => 'required',
             'optimize_video' => 'required',

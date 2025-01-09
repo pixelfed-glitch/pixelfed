@@ -3,30 +3,35 @@
 return [
 
 	'common' => [
-		'comment' => 'Comentario',
+		'comment' => 'Comentar',
 		'commented' => 'Comentado',
 		'comments' => 'Comentarios',
 		'like' => 'Me gusta',
 		'liked' => 'Te gusta',
-		'likes' => 'Me gustas',
+		'likes' => 'Me gusta',
 		'share' => 'Compartir',
 		'shared' => 'Compartido',
 		'shares' => 'Compartidos',
 		'unshare' => 'No compartir',
+		'bookmark' => 'Marcador',
 
 		'cancel' => 'Cancelar',
 		'copyLink' => 'Copiar Enlace',
 		'delete' => 'Eliminar',
 		'error' => 'Error',
-		'errorMsg' => 'Algo fue mal. Por favor inténtelo de nuevo más tarde.',
+		'errorMsg' => 'Algo salió mal. Por favor inténtalo de nuevo más tarde.',
 		'oops' => 'Upss!',
 		'other' => 'Otros',
 		'readMore' => 'Ver más',
 		'success' => 'Correcto',
+		'proceed' => 'Proceder',
+		'next' => 'Siguiente',
+		'close' => 'Cerrar',
+		'clickHere' => 'haz click aquí',
 
 		'sensitive' => 'Sensible',
 		'sensitiveContent' => 'Contenido Sensible',
-		'sensitiveContentWarning' => 'Este post podría tener contenido sensible',
+		'sensitiveContentWarning' => 'Esta publicación podría contener contenido sensible',
 	],
 
 	'site' => [
@@ -55,7 +60,7 @@ return [
 		'drive' => 'Multimedia',
 		'settings' => 'Ajustes',
 		'compose' => 'Crear Nuevo',
-		'logout' => 'Logout',
+		'logout' => 'Cerrar sesión',
 
 		// Nav footer
 		'about' => 'Acerca de',
@@ -97,6 +102,7 @@ return [
 		'modlog' => 'modlog',
 		'post' => 'publicación',
 		'story' => 'historia',
+		'noneFound' => 'No se han encontrado notificaciones',
 	],
 
 	'post' => [
@@ -118,8 +124,8 @@ return [
 		'followRequested' => 'Seguimiento Solicitado',
 		'joined' => 'Se unió',
 
-		'emptyCollections' => 'We can\'t seem to find any collections',
-		'emptyPosts' => 'We can\'t seem to find any posts',
+		'emptyCollections' => 'Parece que no podemos encontrar ninguna colección',
+		'emptyPosts' => 'Parece que no podemos encontrar ningún post',
 	],
 
 	'menu' => [
@@ -141,8 +147,8 @@ return [
 		'sensitive' => 'Contenido Sensible',
 		'abusive' => 'Abusivo o Dañino',
 		'underageAccount' => 'Cuenta de Menor de Edad',
-		'copyrightInfringement' => 'Violación de Copyright',
-		'impersonation' => 'Suplantación',
+		'copyrightInfringement' => 'Infracción de derechos de autor',
+		'impersonation' => 'Suplantación de identidad',
 		'scamOrFraud' => 'Scam o Fraude',
 		'confirmReport' => 'Confirmar Reporte',
 		'confirmReportText' => '¿Seguro que quieres reportar esta publicación?',
@@ -166,8 +172,8 @@ return [
 		'compactMode' => 'Modo Compacto',
 		'embedConfirmText' => 'Usando este incrustado, usted acepta',
 
-		'deletePostConfirm' => '¿Seguro que desea eliminar esta publicación?',
-		'archivePostConfirm' => '¿Seguro que desea archivar esta publicación?',
+		'deletePostConfirm' => '¿Seguro que deseas eliminar esta publicación?',
+		'archivePostConfirm' => '¿Seguro que deseas archivar esta publicación?',
 		'unarchivePostConfirm' => '¿Seguro que desea desarchivar esta publicación?',
 	],
 
@@ -176,11 +182,27 @@ return [
 	],
 
 	'timeline' => [
-		'peopleYouMayKnow' => 'Gente que podrías conocer'
+		'peopleYouMayKnow' => 'Personas que quizás conozcas',
+
+		'onboarding' => [
+			'welcome' => 'Bienvenido/a',
+			'thisIsYourHomeFeed' => 'Este es tu cronología principal, que muestra de manera cronológica las publicaciones de cuentas que sigues.',
+			'letUsHelpYouFind' => 'Déjanos ayudarte a encontrar algunas personas interesantes para seguir',
+			'refreshFeed' => 'Actualizar mi cronología',
+		],
 	],
 
 	'hashtags' => [
-		'emptyFeed' => 'We can\'t seem to find any posts for this hashtag'
+		'emptyFeed' => 'Parece que no podemos encontrar posts para este hashtag'
+	],
+
+	'report' => [
+		'report' => 'Reportar',
+		'selectReason' => 'Seleccionar un motivo',
+		'reported' => 'Reportado',
+		'sendingReport' => 'Enviando reporte',
+		'thanksMsg' => 'Gracias por el reporte, ¡personas como tú ayudan a mantener nuestra comunidad segura!',
+		'contactAdminMsg' => 'Si quieres contactar un administrador sobre esta publicación o reporte',
 	],
 
 ];
