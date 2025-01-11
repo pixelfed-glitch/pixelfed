@@ -1,6 +1,9 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.6.0...develop)
+## [v0.12.4+glitch.1.7.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.6.0...v0.12.4-glitch.1.7.0)
+
+### Updates
+- Fix photo_reblogs_only not working (wasn't implemented) ([aee2eed1](https://github.com/pixelfed-glitch/pixelfed/pull/12))
 
 ### Features (from Upstream)
 - WebGL photo filters ([#5374](https://github.com/pixelfed/pixelfed/pull/5374))
