@@ -9,19 +9,19 @@
 ARG DOCKER_PHP_EXTENSION_INSTALLER_VERSION="2.1.80"
 
 # See: https://github.com/composer/composer
-ARG COMPOSER_VERSION="2.6"
+ARG COMPOSER_VERSION="2.8"
 
 # See: https://nginx.org/
-ARG NGINX_VERSION="1.25.3"
+ARG NGINX_VERSION="1.27.3"
 
-# See: https://github.com/ddollar/forego
-ARG FOREGO_VERSION="0.17.2"
+# See: https://github.com/nginx-proxy/forego
+ARG FOREGO_VERSION="0.18.2"
 
 # See: https://github.com/hairyhenderson/gomplate
-ARG GOMPLATE_VERSION="v3.11.6"
+ARG GOMPLATE_VERSION="v4.3.0"
 
 # See: https://github.com/jippi/dottie
-ARG DOTTIE_VERSION="v0.9.5"
+ARG DOTTIE_VERSION="v0.14.3"
 
 ###
 # PHP base configuration
@@ -248,7 +248,7 @@ ENV COMPOSER_CACHE_DIR="/cache/composer"
 # Don't enforce any memory limits for composer
 ENV COMPOSER_MEMORY_LIMIT=-1
 
-# Disable interactvitity from composer
+# Disable interactivity from composer
 ENV COMPOSER_NO_INTERACTION=1
 
 # Copy composer from https://hub.docker.com/_/composer
@@ -257,24 +257,28 @@ COPY --link --from=composer-image /usr/bin/composer /usr/bin/composer
 #! Changing user to runtime user
 USER ${RUNTIME_UID}:${RUNTIME_GID}
 
+# Copy all other files over
+COPY --chown=${RUNTIME_UID}:${RUNTIME_GID} . /var/www/
 
 # Install composer dependencies
-# NOTE: we skip the autoloader generation here since we don't have all files avaliable (yet)
 RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},sharing=locked,uid=${RUNTIME_UID},gid=${RUNTIME_GID},target=/cache/composer \
     --mount=type=bind,source=composer.json,target=/var/www/composer.json \
     --mount=type=bind,source=composer.lock,target=/var/www/composer.lock \
     set -ex \
     && composer install --prefer-dist --no-autoloader --ignore-platform-reqs --no-scripts
 
-# Copy all other files over
-COPY --chown=${RUNTIME_UID}:${RUNTIME_GID} . /var/www/
-
 # Generate optimized autoloader now that we have all files around
-RUN set -ex \
+RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},sharing=locked,uid=${RUNTIME_UID},gid=${RUNTIME_GID},target=/cache/composer \
+    --mount=type=bind,source=composer.json,target=/var/www/composer.json \
+    --mount=type=bind,source=composer.lock,target=/var/www/composer.lock \
+    set -ex \
     && ENABLE_CONFIG_CACHE=false composer dump-autoload --optimize
 
 # Now we can run the post-install scripts
-RUN set -ex \
+RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},sharing=locked,uid=${RUNTIME_UID},gid=${RUNTIME_GID},target=/cache/composer \
+    --mount=type=bind,source=composer.json,target=/var/www/composer.json \
+    --mount=type=bind,source=composer.lock,target=/var/www/composer.lock \
+    set -ex \
     && composer run-script post-update-cmd
 
 #######################################################
@@ -290,7 +294,7 @@ ENV RUNTIME_UID=${RUNTIME_UID}
 ENV RUNTIME_GID=${RUNTIME_GID}
 
 COPY --link --from=forego-image /usr/local/bin/forego /usr/local/bin/forego
-COPY --link --from=dottie-image /dottie /usr/local/bin/dottie
+COPY --link --from=dottie-image /usr/local/bin/dottie /usr/local/bin/dottie
 COPY --link --from=gomplate-image /usr/local/bin/gomplate /usr/local/bin/gomplate
 COPY --link --from=composer-image /usr/bin/composer /usr/bin/composer
 COPY --link --from=composer-and-src --chown=${RUNTIME_UID}:${RUNTIME_GID} /var/www /var/www
