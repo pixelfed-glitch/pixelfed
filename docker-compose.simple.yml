@@ -1,0 +1,85 @@
+---
+# version: '3'
+
+# This is a bare minimum docker compose for you to use if the
+# env variable heavy one doesn't suit you.
+# In order to set configuration, please use a .env.docker
+# file in your compose project directory (the same directory
+# as your docker-compose.yml), and set database options,
+# application name, key, and other settings there.
+# Please note that this docker compose ignore all `DOCKER_`
+# variables.
+# A list of available settings is available in .env.example
+#
+# The services should scale properly across a swarm cluster
+# if the volumes are properly shared between cluster members.
+
+services:
+## App and Worker
+  web:
+    image: ghcr.io/pixelfed-glitch/pixelfed:latest
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    volumes:
+      - ./data:/var/www/storage
+      - ./bootstrap:/var/www/bootstrap
+      - "./.env.docker:/var/www/.env"
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: 'curl --header "Host: ${APP_DOMAIN}" --fail http://localhost/api/service/health-check'
+      interval: 10s
+      retries: 2
+      timeout: 5s
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    image: ghcr.io/pixelfed-glitch/pixelfed:latest
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    volumes:
+      - ./data:/var/www/storage
+      - ./bootstrap:/var/www/bootstrap
+      - "./.env.docker:/var/www/.env"
+    command: gosu www-data php artisan horizon
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: gosu www-data php artisan horizon:status | grep running
+      interval: 10s
+      timeout: 5s
+      retries: 2
+
+## DB and Cache
+  db:
+    image: mariadb:jammy
+    restart: unless-stopped
+    healthcheck:
+        test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect']
+        start_period: 5s
+        timeout: 5s
+        interval: 5s
+        retries: 5
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env.docker
+    volumes:
+      - "./db:/var/lib/mysql"
+
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    command: " --requirepass '${REDIS_PASSWORD:-}'"
+    environment:
+      - REDISCLI_AUTH=${REDIS_PASSWORD:-}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+    env_file:
+      - .env.docker
+    volumes:
+      - "./redis:/data"
