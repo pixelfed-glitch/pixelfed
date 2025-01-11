@@ -27,7 +27,7 @@ return [
 		'proceed' => 'Proceder',
 		'next' => 'Siguiente',
 		'close' => 'Cerrar',
-		'clickHere' => 'haz click aquí',
+		'clickHere' => 'haz clic aquí',
 
 		'sensitive' => 'Sensible',
 		'sensitiveContent' => 'Contenido Sensible',
@@ -108,7 +108,7 @@ return [
 	'post' => [
 		'shareToFollowers' => 'Compartir a seguidores',
 		'shareToOther' => 'Compartir a otros',
-		'noLikes' => 'No hay me gustas',
+		'noLikes' => 'Aún no hay "me gusta"',
 		'uploading' => 'Subiendo',
 	],
 
@@ -168,7 +168,7 @@ return [
 		'toFollowers' => 'a Seguidores',
 
 		'showCaption' => 'Mostrar subtítulos',
-		'showLikes' => 'Mostrar me gustas',
+		'showLikes' => 'Mostrar "me gusta"',
 		'compactMode' => 'Modo Compacto',
 		'embedConfirmText' => 'Usando este incrustado, usted acepta',
 
