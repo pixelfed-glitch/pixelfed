@@ -8,7 +8,7 @@ return [
 		'comments' => 'Kommentare',
 		'like' => 'Gefällt mir',
 		'liked' => 'Gefällt',
-		'likes' => 'Gefällt',
+		'likes' => 'Gefiel',
 		'share' => 'Teilen',
 		'shared' => 'Geteilt',
 		'shares' => 'Geteilt',
