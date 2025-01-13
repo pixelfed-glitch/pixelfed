@@ -185,7 +185,7 @@ return [
 		'peopleYouMayKnow' => 'Leute, die du vielleicht kennst',
 
 		'onboarding' => [
-			'welcome' => 'Herzlich Willkommen',
+			'welcome' => 'Herzlich willkommen',
 			'thisIsYourHomeFeed' => 'Dies ist dein Heim-Feed, ein chronologischer Feed von Beiträgen aus den Konten, denen du folgst.',
 			'letUsHelpYouFind' => 'Lass uns dir helfen, einige interessante Leute zu finden, denen du folgen kannst',
 			'refreshFeed' => 'Feed aktualisieren',
@@ -211,7 +211,7 @@ return [
 		'reported' => 'Gemeldet',
 		'sendingReport' => 'Meldung wird gesendet',
 		'thanksMsg' => 'Danke für deine Meldung! Damit erhöhst du die Sicherheit der Community!',
-		'contactAdminMsg' => 'Wenn du die Administration wegen diesem Beitrag oder dieser Meldung kontaktieren möchtest',
+		'contactAdminMsg' => 'Wenn du die Administration wegen dieses Beitrags oder dieser Meldung kontaktieren möchtest',
 	],
 
 ];
