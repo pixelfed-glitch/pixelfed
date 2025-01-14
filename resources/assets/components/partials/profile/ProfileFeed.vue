@@ -438,7 +438,7 @@
 			<div v-if="!archives || !archives.length" class="row justify-content-center">
 				<div class="col-12 col-md-8 text-center">
 					<img src="/img/illustrations/dk-nature-man-monochrome.svg" class="img-fluid" style="opacity: 0.6;">
-					<p class="lead text-muted font-weight-bold">We can't seem to find any posts you have bookmarked</p>
+					<p class="lead text-muted font-weight-bold">We can't seem to find any posts you have archived</p>
 				</div>
 			</div>
 		</div>
