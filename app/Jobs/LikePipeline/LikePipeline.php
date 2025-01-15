@@ -32,7 +32,7 @@ class LikePipeline implements ShouldQueue
      */
     public $deleteWhenMissingModels = true;
 
-    public $timeout = 5;
+    public $timeout = 10;
 
     public $tries = 1;
 
