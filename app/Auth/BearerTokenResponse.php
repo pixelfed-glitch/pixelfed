@@ -17,7 +17,7 @@ class BearerTokenResponse extends \League\OAuth2\Server\ResponseTypes\BearerToke
     protected function getExtraParams(AccessTokenEntityInterface $accessToken)
     {
         return [
-            'scope' => array_map(fn ($scope) => $scope->getIdentifier(), $accessToken->getScopes()),
+            'scope' => implode(' ', array_map(fn ($scope) => $scope->getIdentifier(), $accessToken->getScopes())),
             'created_at' => time(),
         ];
     }

@@ -519,7 +519,7 @@ class ApiV1Dot1Controller extends Controller
             'username' => [
                 'required',
                 'min:2',
-                'max:15',
+                'max:30',
                 'unique:users',
                 function ($attribute, $value, $fail) {
                     $dash = substr_count($value, '-');
@@ -1058,8 +1058,6 @@ class ApiV1Dot1Controller extends Controller
             'notify_comment' => false,
         ]);
 
-        PushNotificationService::removeMemberFromAll($request->user()->profile_id);
-
         $user = $request->user();
 
         return $this->json([
@@ -1145,31 +1143,15 @@ class ApiV1Dot1Controller extends Controller
 
         if ($request->filled('notify_like')) {
             $request->user()->update(['notify_like' => (bool) $request->boolean('notify_like')]);
-            $request->boolean('notify_like') == true ?
-                PushNotificationService::set('like', $pid) :
-                PushNotificationService::removeMember('like', $pid);
         }
         if ($request->filled('notify_follow')) {
             $request->user()->update(['notify_follow' => (bool) $request->boolean('notify_follow')]);
-            $request->boolean('notify_follow') == true ?
-                PushNotificationService::set('follow', $pid) :
-                PushNotificationService::removeMember('follow', $pid);
         }
         if ($request->filled('notify_mention')) {
             $request->user()->update(['notify_mention' => (bool) $request->boolean('notify_mention')]);
-            $request->boolean('notify_mention') == true ?
-                PushNotificationService::set('mention', $pid) :
-                PushNotificationService::removeMember('mention', $pid);
         }
         if ($request->filled('notify_comment')) {
             $request->user()->update(['notify_comment' => (bool) $request->boolean('notify_comment')]);
-            $request->boolean('notify_comment') == true ?
-                PushNotificationService::set('comment', $pid) :
-                PushNotificationService::removeMember('comment', $pid);
-        }
-
-        if ($request->boolean('notify_enabled') == false) {
-            PushNotificationService::removeMemberFromAll($request->user()->profile_id);
         }
 
         $user = $request->user();

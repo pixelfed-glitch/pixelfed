@@ -27,7 +27,7 @@ return [
 		'proceed' => 'Proceder',
 		'next' => 'Siguiente',
 		'close' => 'Cerrar',
-		'clickHere' => 'haz click aquí',
+		'clickHere' => 'haz clic aquí',
 
 		'sensitive' => 'Sensible',
 		'sensitiveContent' => 'Contenido Sensible',
@@ -106,9 +106,9 @@ return [
 	],
 
 	'post' => [
-		'shareToFollowers' => 'Compartir a seguidores',
-		'shareToOther' => 'Compartir a otros',
-		'noLikes' => 'No hay me gustas',
+		'shareToFollowers' => 'Compartir con seguidores',
+		'shareToOther' => 'Compartir con otros',
+		'noLikes' => 'Aún no hay "me gusta"',
 		'uploading' => 'Subiendo',
 	],
 
@@ -125,7 +125,7 @@ return [
 		'joined' => 'Se unió',
 
 		'emptyCollections' => 'Parece que no podemos encontrar ninguna colección',
-		'emptyPosts' => 'Parece que no podemos encontrar ningún post',
+		'emptyPosts' => 'Parece que no podemos encontrar ninguna publicación',
 	],
 
 	'menu' => [
@@ -168,9 +168,9 @@ return [
 		'toFollowers' => 'a Seguidores',
 
 		'showCaption' => 'Mostrar subtítulos',
-		'showLikes' => 'Mostrar me gustas',
+		'showLikes' => 'Mostrar "me gusta"',
 		'compactMode' => 'Modo Compacto',
-		'embedConfirmText' => 'Usando este incrustado, usted acepta',
+		'embedConfirmText' => 'Al utilizar esta incrustación, usted acepta nuestros',
 
 		'deletePostConfirm' => '¿Seguro que deseas eliminar esta publicación?',
 		'archivePostConfirm' => '¿Seguro que deseas archivar esta publicación?',

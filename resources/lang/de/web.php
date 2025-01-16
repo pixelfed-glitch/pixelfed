@@ -8,7 +8,7 @@ return [
 		'comments' => 'Kommentare',
 		'like' => 'Gefällt mir',
 		'liked' => 'Gefällt',
-		'likes' => 'Gefällt',
+		'likes' => 'Gefiel',
 		'share' => 'Teilen',
 		'shared' => 'Geteilt',
 		'shares' => 'Geteilt',
@@ -185,7 +185,7 @@ return [
 		'peopleYouMayKnow' => 'Leute, die du vielleicht kennst',
 
 		'onboarding' => [
-			'welcome' => 'Herzlich Willkommen',
+			'welcome' => 'Herzlich willkommen',
 			'thisIsYourHomeFeed' => 'Dies ist dein Heim-Feed, ein chronologischer Feed von Beiträgen aus den Konten, denen du folgst.',
 			'letUsHelpYouFind' => 'Lass uns dir helfen, einige interessante Leute zu finden, denen du folgen kannst',
 			'refreshFeed' => 'Feed aktualisieren',
@@ -210,8 +210,8 @@ return [
 		'selectReason' => 'Einen Grund auswählen',
 		'reported' => 'Gemeldet',
 		'sendingReport' => 'Meldung wird gesendet',
-		'thanksMsg' => 'Vielen Dank für die Meldung, Leute wie du helfen, unsere Community sicher zu halten!',
-		'contactAdminMsg' => 'Wenn du einen Administrator zu diesem Beitrag oder dieser Meldung kontaktieren möchtest',
+		'thanksMsg' => 'Danke für deine Meldung! Damit erhöhst du die Sicherheit der Community!',
+		'contactAdminMsg' => 'Wenn du die Administration wegen dieses Beitrags oder dieser Meldung kontaktieren möchtest',
 	],
 
 ];
