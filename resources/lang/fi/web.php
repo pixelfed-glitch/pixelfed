@@ -13,7 +13,7 @@ return [
 		'shared' => 'Jaettu',
 		'shares' => 'Jaot',
 		'unshare' => 'Peru jakaminen',
-		'bookmark' => 'Bookmark',
+		'bookmark' => 'Kirjanmerkki',
 
 		'cancel' => 'Peruuta',
 		'copyLink' => 'Kopioi linkki',
@@ -24,10 +24,10 @@ return [
 		'other' => 'Muu',
 		'readMore' => 'Lue lisää',
 		'success' => 'Onnistui',
-		'proceed' => 'Proceed',
-		'next' => 'Next',
-		'close' => 'Close',
-		'clickHere' => 'click here',
+		'proceed' => 'Jatka',
+		'next' => 'Seuraava',
+		'close' => 'Sulje',
+		'clickHere' => 'klikkaa tästä',
 
 		'sensitive' => 'Sensitiivinen',
 		'sensitiveContent' => 'Sensitiivinen sisältö',
@@ -82,12 +82,12 @@ return [
 	'notifications' => [
 		'liked' => 'tykkäsi sinun',
 		'commented' => 'kommentoi sinun',
-		'reacted' => 'reacted to your',
-		'shared' => 'shared your',
-		'tagged' => 'tagged you in a',
+		'reacted' => 'reagoi sinun',
+		'shared' => 'jakoi sinun',
+		'tagged' => 'merkitsi sinut',
 
-		'updatedA' => 'updated a',
-		'sentA' => 'sent a',
+		'updatedA' => 'päivitetty',
+		'sentA' => 'lähetti',
 
 		'followed' => 'followed',
 		'mentioned' => 'mentioned',
