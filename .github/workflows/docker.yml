@@ -75,6 +75,7 @@ jobs:
       matrix:
         php_version:
           - 8.3
+          - 8.4
         debian_release:
           - bookworm
         target_runtime:

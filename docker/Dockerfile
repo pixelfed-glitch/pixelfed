@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7-labs
+# syntax=docker/dockerfile:1
 # See https://hub.docker.com/r/docker/dockerfile
 
 #######################################################
@@ -48,7 +48,7 @@ ARG RUNTIME_GID=33 # often called 'www-data'
 ARG PHP_VERSION="8.3"
 
 # See: https://github.com/docker-library/docs/blob/master/php/README.md#image-variants
-ARG PHP_BASE_TYPE="apache"
+ARG PHP_BASE_TYPE="fpm"
 ARG PHP_DEBIAN_RELEASE="bookworm"
 ARG APT_PACKAGES_EXTRA=
 
@@ -241,9 +241,7 @@ RUN --mount=type=cache,id=pixelfed-node-${BUILDARCH},sharing=locked,target=/tmp/
 EOF
 
 # Copy the frontend source into the image before building
-COPY --chown=${RUNTIME_UID}:${RUNTIME_GID} \
-    --exclude=docker/* --exclude=scripts/* \
-    . /var/www/
+COPY --chown=${RUNTIME_UID}:${RUNTIME_GID} . /var/www/
 
 # Build the frontend with "mix" (See package.json)
 RUN \
@@ -275,9 +273,7 @@ RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},sharing=locked,target
     && composer install --prefer-dist --no-autoloader --ignore-platform-reqs
 
 # Copy all other files over
-COPY --chown=${RUNTIME_UID}:${RUNTIME_GID} \
-    --exclude=docker/* --exclude=scripts/* \
-    . /var/www/
+COPY --chown=${RUNTIME_UID}:${RUNTIME_GID} . /var/www/
 
 #######################################################
 # Runtime: base
@@ -345,6 +341,14 @@ RUN set -ex \
     && a2enconf remoteip
 
 CMD ["apache2-foreground"]
+
+#######################################################
+# Runtime: fpm
+#######################################################
+
+FROM shared-runtime AS fpm-runtime
+
+CMD ["php-fpm"]
 
 #######################################################
 # Runtime: nginx
