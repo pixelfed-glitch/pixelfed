@@ -599,7 +599,7 @@ class Helpers
         $reply_to = self::getReplyTo($activity);
         $ts = self::pluckval($activity['published']);
         $scope = self::getScope($activity, $url);
-        $commentsDisabled = $activity['commentsEnabled'] ?? false;
+        $commentsDisabled = isset($activity['commentsEnabled']) ? (bool)$activity['commentsEnabled'] == false : false;
         $cw = self::getSensitive($activity, $url);
 
         if ($profile->unlisted) {
