@@ -37,6 +37,7 @@ jobs:
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: docker/Dockerfile
+          config: docker/.hadolint.yaml
           failure-threshold: error
 
   shellcheck:
@@ -44,6 +45,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - run: cp .env.docker .env
+
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         env:
@@ -58,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run bats
-        run: docker run -v "$PWD:/var/www" bats/bats:latest /var/www/tests/bats
+        run: docker run -v "$PWD/docker/:/var/www" bats/bats:latest /var/www/tests/bats
 
   build:
     name: Build, Test, and Push
