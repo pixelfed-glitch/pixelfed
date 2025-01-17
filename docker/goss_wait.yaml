@@ -1,0 +1,3 @@
+file:
+  /tmp/entrypoint-ran-to-completion:
+    exists: true

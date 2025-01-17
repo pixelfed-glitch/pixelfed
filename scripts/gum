@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -e -o errexit -o nounset -o pipefail
+
+declare project_root="${PWD}"
+command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
+
+# shellcheck source=lib/shared.sh
+source "${project_root}/scripts/lib/shared.sh"
+
+declare -r release="${GUM_VERSION:-latest}"
+declare -r update_check_file="/tmp/.gum-update-check"         # file to check age of since last update
+declare -i update_check_max_age=$((8 * 60 * 60))              # 8 hours between checking for gum version
+declare -i update_check_cur_age=$((update_check_max_age + 1)) # by default the "update" event should happen
+
+# default [docker run] flags
+declare -a flags=(
+    --quiet
+)
+
+# if update file exists, find its age since last modification
+if [[ -f "${update_check_file}" ]]; then
+    now=$(date +%s)
+    changed=$(date -r "${update_check_file}" +%s)
+    update_check_cur_age=$((now - changed))
+fi
+
+# if update file is older than max allowed poll for new version of gum
+if [[ $update_check_cur_age -gt $update_check_max_age ]]; then
+    flags+=(--pull always)
+
+    touch "${update_check_file}"
+fi
+
+case $(uname) in
+Darwin)
+    has_command "gum" || {
+        brew install gum || action_error_exit "failed to install 'gum' via 'brew'"
+    }
+
+    exec gum "$@"
+    ;;
+
+Linux)
+    has_command "/tmp/gum" || {
+        action_start_newline "'gum' is not installed, temporarily installing it into '/tmp/gum'"
+        echo "Please see https://github.com/charmbracelet/gum?tab=readme-ov-file#installation for a permanent installation method"
+
+        docker create "${flags[@]}" --name tmp-gum "ghcr.io/charmbracelet/gum:${release}"
+        docker cp tmp-gum:/usr/local/bin/gum /tmp/gum
+        docker rm -f tmp-gum
+    }
+
+    exec /tmp/gum "$@"
+    ;;
+
+*)
+    has_command "gum" || {
+        action_error_exit "'gum' is not installed and don't know how to install it. Please see https://github.com/charmbracelet/gum?tab=readme-ov-file#installation"
+    }
+
+    exec gum "$@"
+    ;;
+
+esac

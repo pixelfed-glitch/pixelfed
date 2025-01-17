@@ -31,7 +31,7 @@ services:
       # NEW
       - "${DOCKER_REDIS_HOST_DATA_PATH}:/migrate/redis-data/new"
 
-# Volumes from the old [docker-compose.yml] file
+# Volumes from the old [compose.yaml] file
 # https://github.com/pixelfed/pixelfed/blob/b1ff44ca2f75c088a11576fb03b5bad2fbed4d5c/docker-compose.yml#L72-L76
 volumes:
   db-data:

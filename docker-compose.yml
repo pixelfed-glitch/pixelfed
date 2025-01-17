@@ -46,7 +46,7 @@ services:
   #
   # See: https://github.com/nginx-proxy/acme-companion/tree/main/docs
   proxy-acme:
-    image: nginxproxy/acme-companion
+    image: nginxproxy/acme-companion:2.5
     container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-proxy-acme"
     restart: unless-stopped
     profiles:
@@ -72,9 +72,10 @@ services:
     profiles:
       - ${DOCKER_WEB_PROFILE:-}
     build:
+      dockerfile: docker/Dockerfile
       target: ${DOCKER_APP_RUNTIME}-runtime
       cache_from:
-        - "type=registry,ref=${DOCKER_APP_IMAGE}-cache:${DOCKER_APP_TAG}"
+        - "type=registry,ref=${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
       args:
         APT_PACKAGES_EXTRA: "${DOCKER_APP_APT_PACKAGES_EXTRA:-}"
         BUILD_FRONTEND: "${DOCKER_APP_BUILD_FRONTEND:-0}"
@@ -124,9 +125,10 @@ services:
     profiles:
       - ${DOCKER_WORKER_PROFILE:-}
     build:
+      dockerfile: docker/Dockerfile
       target: ${DOCKER_APP_RUNTIME}-runtime
       cache_from:
-        - "type=registry,ref=${DOCKER_APP_IMAGE}-cache:${DOCKER_APP_TAG}"
+        - "type=registry,ref=${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
       args:
         APT_PACKAGES_EXTRA: "${DOCKER_APP_APT_PACKAGES_EXTRA:-}"
         BUILD_FRONTEND: "${DOCKER_APP_BUILD_FRONTEND:-0}"
@@ -154,6 +156,42 @@ services:
       interval: "${DOCKER_WORKER_HEALTHCHECK_INTERVAL:?error}"
       timeout: 5s
       retries: 2
+
+  cron:
+    image: "${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
+    container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-cron"
+    command: gosu www-data php artisan schedule:work -vvv
+    restart: unless-stopped
+    stop_signal: SIGTERM
+    profiles:
+      - ${DOCKER_CRON_PROFILE:-}
+    build:
+      dockerfile: docker/Dockerfile
+      target: ${DOCKER_APP_RUNTIME}-runtime
+      cache_from:
+        - "type=registry,ref=${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
+      args:
+        APT_PACKAGES_EXTRA: "${DOCKER_APP_APT_PACKAGES_EXTRA:-}"
+        BUILD_FRONTEND: "${DOCKER_APP_BUILD_FRONTEND:-0}"
+        PHP_BASE_TYPE: "${DOCKER_APP_BASE_TYPE}"
+        PHP_DEBIAN_RELEASE: "${DOCKER_APP_DEBIAN_RELEASE}"
+        PHP_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_EXTENSIONS_EXTRA:-}"
+        PHP_PECL_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_PECL_EXTENSIONS_EXTRA:-}"
+        PHP_VERSION: "${DOCKER_APP_PHP_VERSION:?error}"
+    environment:
+      # Used by Pixelfed Docker init script
+      DOCKER_SERVICE_NAME: "cron"
+      DOCKER_APP_ENTRYPOINT_DEBUG: ${DOCKER_APP_ENTRYPOINT_DEBUG:-0}
+      ENTRYPOINT_SKIP_SCRIPTS: ${ENTRYPOINT_SKIP_SCRIPTS:-}
+    volumes:
+      - "./.env:/var/www/.env"
+      - "${DOCKER_ALL_HOST_CONFIG_ROOT_PATH}/proxy/conf.d:/shared/proxy/conf.d"
+      - "${DOCKER_APP_HOST_CACHE_PATH}:/var/www/bootstrap/cache"
+      - "${DOCKER_APP_HOST_OVERRIDES_PATH}:/docker/overrides:ro"
+      - "${DOCKER_APP_HOST_STORAGE_PATH}:/var/www/storage"
+    depends_on:
+      - db
+      - redis
 
   db:
     image: ${DOCKER_DB_IMAGE:?error}

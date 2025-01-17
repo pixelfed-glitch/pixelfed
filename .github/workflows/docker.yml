@@ -36,7 +36,7 @@ jobs:
       - name: Docker Lint
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: docker/Dockerfile
           failure-threshold: error
 
   shellcheck:
@@ -71,6 +71,8 @@ jobs:
       matrix:
         php_version:
           - 8.3
+        debian_release:
+          - bookworm
         target_runtime:
           - apache
           - fpm
@@ -171,31 +173,11 @@ jobs:
         env:
           DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
 
-      - name: Docker meta (Cache)
-        uses: docker/metadata-action@v5
-        id: cache
-        with:
-          images: |
-            name=ghcr.io/${{ github.repository }}-cache,enable=true
-            name=${{ env.DOCKER_HUB_ORGANISATION }}/${{ env.DOCKER_HUB_REPO }}-cache,enable=${{ env.HAS_DOCKER_HUB_CONFIGURED }}
-          tags: |
-            type=raw,value=latest,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=raw,value=nightly,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'staging') }}
-            type=raw,value=develop,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') && matrix.target_runtime == 'nginx' }}
-            type=raw,value=nightly,enable=${{ github.ref == format('refs/heads/{0}', 'staging') && matrix.target_runtime == 'nginx' }}
-            type=raw,value=develop,enable=${{ github.ref == format('refs/heads/{0}', 'develop') && matrix.target_runtime == 'nginx' }}
-            type=semver,pattern={{version}},enable=${{ matrix.target_runtime == 'nginx' }}
-            type=semver,pattern={{version}},prefix=${{ matrix.target_runtime }}-
-            type=ref,event=pr,prefix=${{ matrix.target_runtime }}-pr-
-        env:
-          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: Dockerfile
+          file: docker/Dockerfile
           target: ${{ matrix.target_runtime }}-runtime
           platforms: linux/amd64,linux/arm64
           builder: ${{ steps.buildx.outputs.name }}
@@ -215,11 +197,63 @@ jobs:
       # See: https://github.com/goss-org/goss
       - uses: e1himself/goss-installation-action@v1
         with:
-          version: "v0.4.4"
+          version: "v0.4.9"
+
       - name: Execute Goss tests
-        run: |
-          dgoss run \
-            -v "./.env.testing:/var/www/.env" \
-            -e "EXPECTED_PHP_VERSION=${{ matrix.php_version }}" \
-            -e "PHP_BASE_TYPE=${{ matrix.php_base }}" \
-            ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+        working-directory: docker/
+        run: tests/goss.sh
+        env:
+          TAGS: "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+          DOCKER_APP_PHP_VERSION: ${{ matrix.php_version }}
+          PHP_BASE_TYPE: ${{ matrix.php_base }}
+
+      - name: "Setup NodeJS"
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          cache-dependency-path: "docker/package-lock.json"
+
+      - name: Run E2E tests
+        run: docker/tests/e2e.sh
+        env:
+          CI: true
+          DOCKER_APP_TAG: "${{ steps.meta.outputs.version }}"
+
+      - if: always()
+        name: Show docker compose config
+        run: docker compose config
+
+      - if: always()
+        name: Show docker compose logs (web)
+        run: docker compose logs web
+
+      - if: always()
+        name: Show docker compose logs (worker)
+        run: docker compose logs worker
+
+      - if: always()
+        name: Show docker compose logs (cron)
+        run: docker compose logs cron
+
+      - if: always()
+        name: Show docker compose logs (proxy)
+        run: docker compose logs proxy proxy-acme
+
+      - if: always()
+        name: Show docker compose logs (db)
+        run: docker compose logs db
+
+      - if: always()
+        name: Show docker compose logs (redis)
+        run: docker compose logs redis
+
+      - if: always()
+        name: Show docker compose logs (combined)
+        run: docker compose logs
+
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.ref }}-${{ matrix.target_runtime }}-${{ matrix.php_base }}-${{ matrix.php_version }}-${{ matrix.debian_release }}
+          path: test-results/
+          retention-days: 30

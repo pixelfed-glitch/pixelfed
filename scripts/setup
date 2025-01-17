@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+set -e -o errexit -o nounset -o pipefail
+
+declare project_root="${PWD}"
+command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
+
+# shellcheck source=lib/shared.sh
+source "${project_root}/scripts/lib/shared.sh"
+
+# ensure gum is installed or available
+__gum -v >/dev/null
+
+# Check if the .env file exist, or copy the template
+if [[ ! -f "${project_root}/.env" ]]; then
+    action_start_newline "No '.env' file found, copying the default one for you"
+    cp -v "${project_root}/.env.docker" "${project_root}/.env" || action_error_exit "copy operation failed"
+    action_ok "OK"
+    echo
+
+    action_start_newline "Ensuring permissions are correct (0660)"
+    chmod 0660 "${project_root}/.env" || action_error_exit "chmod operation failed"
+    action_ok "OK"
+    echo
+fi
+
+# Check if the .env file is writable
+if [[ ! -w "${project_root}/.env" ]]; then
+    action_error_exit ".env file is not writable by you - please fix the permissions"
+fi
+
+# Bastic site setup
+ask_input "APP_NAME" "The name/title for your site"
+ask_input "APP_DOMAIN" "Application domain used for routing. (e.g., pixelfed.org)"
+ask_input "INSTANCE_CONTACT_EMAIL" "The public e-mail address people can use to contact you by"
+
+# Just-In-Time generate safe DB_PASSWORD if not configured yet
+declare DB_PASSWORD
+DB_PASSWORD=$(__dottie value "DB_PASSWORD")
+
+if [[ $DB_PASSWORD == "__CHANGE_ME__" ]]; then
+    action_start "${BLUE}Generating new unique password for your database password${NO_COLOR}"
+    DB_PASSWORD=$(random_string 25) && action_ok "Done!"
+    __dottie set DB_PASSWORD="$DB_PASSWORD"
+    echo ""
+fi
+
+ask_input "DB_PASSWORD" "The password to your database"
+
+# Boolean toggles
+ask_confirm_boolean "OPEN_REGISTRATION" "Enable new local account registrations"
+ask_confirm_boolean "ENFORCE_EMAIL_VERIFICATION" "Require email verification before a new user can do anything (you need to setup SMTP outside of this guide for it to work!)"
+ask_confirm_boolean "OAUTH_ENABLED" "Enable OAuth? (required for using mobile apps)"
+
+# Use the included Docker Proxy or not
+if ask_confirm_profile "DOCKER_PROXY_PROFILE" "Do you want to use the included HTTP(S) proxy?"; then
+    ask_confirm_profile "DOCKER_PROXY_ACME_PROFILE" "Do you want to use the included HTTP(S) LetsEncrypt side-car?" || :
+else
+    __feature enable-proxy-acme
+fi
+
+# Yay, everything is fine
+echo -e "🎉 ${GREEN}All configuration successfully written! You can now use [$(highlight "docker compose up -d")]${GREEN} to start your Pixelfed site${NO_COLOR}"
+echo ""
+
+if [[ -n $(__dottie value --with-disabled DOCKER_PROXY_PROFILE) ]]; then
+    action_warn "Since you have DISABLED the included Nginx Proxy, please make sure that:"
+    action_warn "   * HTTP traffic is sent to port $(highlight "$(__dottie value --with-disabled DOCKER_WEB_PORT_EXTERNAL_HTTP)")${YELLOW} - can be changed via ($(highlight "DOCKER_WEB_PORT_EXTERNAL_HTTP")${YELLOW}) in your .env file"
+    action_warn "   * HTTPS traffic is terminated at your own HTTPS proxy"
+    action_warn "To ENABLE the included Nginx proxy run this script again and answer 'yes' instead"
+else
+    action_warn "Since you have ENABLED the included Nginx Proxy, please make sure that:"
+    action_warn "   * HTTP traffic is sent to port $(highlight "$(__dottie value --with-disabled DOCKER_PROXY_HOST_PORT_HTTP)")${YELLOW} - can be changed via ($(highlight "DOCKER_PROXY_HOST_PORT_HTTP")${YELLOW}) in your .env file"
+    action_warn "   * HTTPS traffic is sent to port $(highlight "$(__dottie value --with-disabled DOCKER_PROXY_HOST_PORT_HTTPS)")${YELLOW} - can be changed via ($(highlight "DOCKER_PROXY_HOST_PORT_HTTPS")${YELLOW}) in your .env file"
+    action_warn "To DISABLE the included Nginx proxy run this script again and answer 'no' instead"
+fi

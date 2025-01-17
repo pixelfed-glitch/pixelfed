@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+set -e -o errexit -o nounset -o pipefail
+
+declare project_root="${PWD}"
+command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
+
+# shellcheck source=lib/shared.sh
+source "${project_root}/scripts/lib/shared.sh"
+
+#
+# Configuration
+#
+
+declare -r min_docker_compose_version_arr=(2 17)
+
+#
+# Help text
+#
+
+DOCKER_HELP="
+
+\tWe recommend installing Docker (and Compose) directly from Docker.com instead of your Operation System package registry.
+\tPlease see $(highlight "https://docs.docker.com/engine/install/")${RED} for information on how to install Docker on your system.
+
+\tA convinience script is provided by Docker to automate the installation that should work on all supported platforms:
+
+\t\t ${GREEN}\$${BLUE} curl -fsSL https://get.docker.com -o get-docker.sh
+\t\t ${GREEN}\$${BLUE} sudo sh ./get-docker.sh
+${RED}
+\tPlease see $(highlight "https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script")${RED} for more information
+
+\tAlternatively, you can update *JUST* the Compose plugin by following the guide here:
+\t$(highlight "https://docs.docker.com/compose/install/linux/#install-the-plugin-manually")${RED}
+
+\tLearn more about Docker compose release history here:
+\t$(highlight "https://docs.docker.com/compose/release-notes/")${RED}${NO_COLOR}"
+declare -r DOCKER_HELP
+
+#
+# System checks
+#
+
+echo -e "👋 ${GREEN}Hello!"
+echo -e ""
+echo -e "This script will check your system for the minimum requirements outlined in the Pixelfed Docker install guide"
+echo -e "You can find the guide here ${BLUE}https://jippi.github.io/docker-pixelfed/installation/prerequisites/#software${GREEN}."
+echo -e "${NO_COLOR}"
+
+# git installed?
+action_start "Checking if [$(highlight "git")] command is available"
+command -v git >/dev/null 2>&1 || {
+    action_error_exit "Pixelfed require the 'git' command, but it's not installed"
+}
+action_ok "git is installed"
+
+# docker installed?
+action_start "Checking if [$(highlight "docker")] command is available"
+command -v docker >/dev/null 2>&1 || {
+    action_error_exit "Pixelfed require the 'docker' command, but it's not installed. ${DOCKER_HELP}"
+}
+action_ok "docker is installed"
+
+# docker compose installed?
+action_start "Checking if [$(highlight "docker compose")] command is available"
+docker compose >/dev/null 2>&1 || {
+    action_error_exit "Pixelfed require the 'docker compose' command, but it's not installed. ${DOCKER_HELP}"
+}
+action_ok "docker compose is installed"
+
+# docker compose version is acceptable?
+compose_version=$(docker compose version --short)
+
+declare -a compose_version_arr
+IFS="." read -r -a compose_version_arr <<<"$compose_version"
+
+## major version
+action_start "Checking if [$(highlight "docker compose version")] major version (${min_docker_compose_version_arr[0]}) is acceptable"
+[[ ${compose_version_arr[0]} -eq ${min_docker_compose_version_arr[0]} ]] || {
+    action_error_exit "Pixelfed require minimum Docker Compose major version ${min_docker_compose_version_arr[0]}.x.x - found ${compose_version}.${DOCKER_HELP}"
+}
+action_ok "You're using major version ${compose_version_arr[0]}"
+
+## minor version
+action_start "Checking if [$(highlight "docker compose version")] minor version (${min_docker_compose_version_arr[1]}) is acceptable"
+[[ ${compose_version_arr[1]} -ge ${min_docker_compose_version_arr[1]} ]] || {
+    action_error_exit "Pixelfed require minimum Docker Compose minor version ${min_docker_compose_version_arr[0]}.${min_docker_compose_version_arr[1]} - found ${compose_version}.${DOCKER_HELP}"
+}
+action_ok "You're using minor version ${compose_version_arr[1]}"
+
+# if docker-compose binary exists
+command -v docker-compose >/dev/null 2>&1 && {
+    # docker compose version is acceptable?
+    action_start "Checking if [$(highlight "docker compose")] and [$(highlight "docker-compose")] are the same binary"
+    docker_compose_version=$(docker-compose version --short || :)
+    if [[ "${docker_compose_version}" != "${compose_version}" ]]; then
+        action_warn "[docker compose] (${compose_version}) and [docker-compose] (${docker_compose_version}) are NOT the same, make sure to use [docker compose] and *NOT* [docker-compose]"
+    else
+        action_ok "[docker-compose] and [docker compose] are the same binary"
+    fi
+}
+
+# Yay, everything is fine
+echo ""
+echo -e "🎉 ${GREEN}All required checks passed, you should be ready to run Pixelfed on this server!${NO_COLOR}"
