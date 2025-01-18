@@ -83,7 +83,54 @@ command:
       - zlib
     stderr: []
 
-  php-info:
+  php-cli-info:
+    exec: php -i
+    exit-status: 0
+    stdout:
+      # Make sure we don't run any debug builds
+      - Debug Build => no
+      # Make sure signal handling is enabled
+      - Zend Signal Handling => enabled
+      # Ensure mbstring is around and used
+      - Zend Multibyte Support => provided by mbstring
+      # For the modern hipsters out there
+      - IPv6 Support => enabled
+      # Security: not expose PHP information to users
+      - expose_php => Off => Off
+      # Ensure memory limit is configured correctly
+      - memory_limit => 128M => 128M
+      # Ensure post_max_size is configured correctly
+      - post_max_size => 61M => 61M
+      # EXIF is enabled
+      - EXIF Support => enabled
+      # GD is enabled and configured correctly
+      - GD Support => enabled
+      - FreeType Support => enabled
+      - FreeType Linkage => with freetype
+      - GIF Read Support => enabled
+      - GIF Create Support => enabled
+      - JPEG Support => enabled
+      - PNG Support => enabled
+      - WBMP Support => enabled
+      - XPM Support => enabled
+      - XBM Support => enabled
+      - WebP Support => enabled
+      - BMP Support => enabled
+      - AVIF Support => enabled
+      - TGA Read Support => enabled
+      # imagick is enabled and configured correctly
+      - "imagick module => enabled"
+      # PDO is enabled with the right drivers
+      - PDO support => enabled
+      - PDO drivers => mysql, pgsql, sqlite
+      # Redis is enabled
+      - Redis Support => enabled
+      # session is enabled and configured correctly
+      - Session Support => enabled
+      - Registered save handlers => files user redis rediscluster
+
+{{ if neq .Env.PHP_BASE_TYPE "apache" }}
+  php-fpm-info:
     exec: php-fpm{{ .Env.EXPECTED_PHP_VERSION }} -i
     exit-status: 0
     stdout:
@@ -128,6 +175,7 @@ command:
       # session is enabled and configured correctly
       - Session Support => enabled
       - Registered save handlers => files user redis rediscluster
+{{ end }}
 
   forego-version:
     exit-status: 0
