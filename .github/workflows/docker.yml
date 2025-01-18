@@ -201,7 +201,7 @@ jobs:
         run: docker/tests/setup.sh
         env:
           CI: true
-          DOCKER_APP_TAG: "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+          DOCKER_APP_TAG: "${{ steps.meta.outputs.version }}"
 
       # goss validate the image
       #
@@ -214,7 +214,7 @@ jobs:
         working-directory: docker/
         run: tests/goss.sh
         env:
-          TAGS: "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+          TAGS: "${{ steps.meta.outputs.tags }}"
           DOCKER_APP_PHP_VERSION: ${{ matrix.php_version }}
           PHP_BASE_TYPE: ${{ matrix.php_base }}
 
@@ -228,7 +228,7 @@ jobs:
         run: docker/tests/e2e.sh
         env:
           CI: true
-          DOCKER_APP_TAG: "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+          DOCKER_APP_TAG: "${{ steps.meta.outputs.version }}"
 
       - if: always()
         name: Show docker compose config
