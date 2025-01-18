@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck source=SCRIPTDIR/../helpers.sh
 
 : "${ENTRYPOINT_ROOT:="/docker"}"

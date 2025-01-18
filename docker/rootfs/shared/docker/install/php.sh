@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -ex -o errexit -o nounset -o pipefail
 
 PHP_BASE_TYPE=${PHP_BASE_TYPE:?Missing PHP_BASE_TYPE - must be [fpm] or [apache]}

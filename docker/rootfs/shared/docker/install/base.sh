@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -ex -o errexit -o nounset -o pipefail
 
 # Ensure we keep apt cache around in a Docker environment

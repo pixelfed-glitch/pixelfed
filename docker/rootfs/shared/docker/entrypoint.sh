@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # short circuit the entrypoint if $ENTRYPOINT_SKIP isn't set to 0
 if [[ ${ENTRYPOINT_SKIP:=0} != 0 ]]; then
     exec "$@"

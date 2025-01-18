@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e -o errexit -o nounset -o pipefail
 
 [[ ${DOCKER_APP_ENTRYPOINT_DEBUG:=0} == 1 ]] && set -x
