@@ -348,9 +348,13 @@ CMD ["apache2-foreground"]
 
 FROM shared-runtime AS fpm-runtime
 
+ARG PHP_VERSION
+
+ENV PHP_VERSION $PHP_VERSION
+
 COPY docker/rootfs/fpm /etc/php/${PHP_VERSION}/fpm
 
-CMD ["php-fpm"]
+CMD ["php-fpm${PHP_VERSION}"]
 
 #######################################################
 # Runtime: nginx
@@ -364,6 +368,8 @@ ARG NGINX_VERSION
 ARG PHP_DEBIAN_RELEASE
 ARG PHP_VERSION
 ARG TARGETPLATFORM
+
+ENV PHP_VERSION $PHP_VERSION
 
 # Install nginx dependencies
 RUN --mount=type=cache,id=pixelfed-apt-lists-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/lib/apt/lists \

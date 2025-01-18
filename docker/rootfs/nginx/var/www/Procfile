@@ -1,2 +1,2 @@
-fpm: php-fpm
+fpm: php-fpm${PHP_VERSION}
 nginx: nginx -g "daemon off;"
