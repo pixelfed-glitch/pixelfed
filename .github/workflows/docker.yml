@@ -222,7 +222,7 @@ jobs:
         run: docker/tests/e2e.sh
         env:
           CI: true
-          DOCKER_APP_TAG: "${{ steps.meta.outputs.version }}"
+          DOCKER_APP_TAG: "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
 
       - if: always()
         name: Show docker compose config

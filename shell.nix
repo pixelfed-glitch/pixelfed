@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
   name = "pixelfed-nix-shell";
-  buildInputs = with pkgs; [ act docker php83 php83Packages.composer nodejs nodePackages.npm mkcert ddev ];
+  buildInputs = with pkgs; [ act docker php84 php84Packages.composer nodejs nodePackages.npm mkcert ddev hadolint dgoss ];
   runScript = "$SHELL";
   shellHook = ''
       mkcert -install
