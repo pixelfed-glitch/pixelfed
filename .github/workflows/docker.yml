@@ -197,6 +197,12 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.target_runtime }}-${{ matrix.php_base }}
           cache-to: type=gha,mode=max,scope=${{ matrix.target_runtime }}-${{ matrix.php_base }}
 
+      - name: Setup
+        run: docker/tests/setup.sh
+        env:
+          CI: true
+          DOCKER_APP_TAG: "${{ fromJSON(steps.meta.outputs.json).tags[0] }}"
+
       # goss validate the image
       #
       # See: https://github.com/goss-org/goss
