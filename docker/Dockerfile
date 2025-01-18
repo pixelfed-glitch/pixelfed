@@ -353,8 +353,9 @@ ARG PHP_VERSION
 ENV PHP_VERSION $PHP_VERSION
 
 COPY docker/rootfs/fpm /etc/php/${PHP_VERSION}/fpm
+COPY docker/rootfs/fpm /etc/php/${PHP_VERSION}/cli
 
-CMD ["php-fpm${PHP_VERSION}"]
+CMD ["sh", "-c", "php-fpm${PHP_VERSION}"]
 
 #######################################################
 # Runtime: nginx
@@ -385,6 +386,9 @@ RUN --mount=type=cache,id=pixelfed-apt-lists-${PHP_VERSION}-${PHP_DEBIAN_RELEASE
 COPY --link --from=nginx-image /docker-entrypoint.d /docker/entrypoint.d/
 COPY docker/rootfs/nginx /
 COPY docker/rootfs/fpm /nginx/docker/templates/etc/php/${PHP_VERSION}/fpm
+COPY docker/rootfs/fpm /nginx/docker/templates/etc/php/${PHP_VERSION}/cli
+COPY docker/rootfs/fpm /etc/php/${PHP_VERSION}/fpm
+COPY docker/rootfs/fpm /etc/php/${PHP_VERSION}/cli
 
 STOPSIGNAL SIGQUIT
 

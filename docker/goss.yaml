@@ -84,7 +84,7 @@ command:
     stderr: []
 
   php-info:
-    exec: php -i
+    exec: php-fpm{{ .Env.EXPECTED_PHP_VERSION }} -i
     exit-status: 0
     stdout:
       # Make sure we don't run any debug builds
