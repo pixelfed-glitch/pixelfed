@@ -129,7 +129,7 @@ command:
       - Session Support => enabled
       - Registered save handlers => files user redis rediscluster
 
-{{ if neq .Env.PHP_BASE_TYPE "apache" }}
+{{ if ne .Env.PHP_BASE_TYPE "apache" }}
   php-fpm-info:
     exec: php-fpm{{ .Env.EXPECTED_PHP_VERSION }} -i
     exit-status: 0
