@@ -170,9 +170,6 @@ jobs:
             name=ghcr.io/${{ github.repository }},enable=true
             name=${{ env.DOCKER_HUB_ORGANISATION }}/${{ env.DOCKER_HUB_REPO }},enable=${{ env.HAS_DOCKER_HUB_CONFIGURED }}
           tags: |
-            type=raw,value=latest,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=raw,value=nightly,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'staging') }}
-            type=raw,value=develop,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') &&
                                             matrix.target_runtime == env.PREFERRED_TARGET_RUNTIME &&
                                             matrix.php_version == env.PREFERRED_PHP_VERSION }}
@@ -182,9 +179,17 @@ jobs:
             type=raw,value=develop,enable=${{ github.ref == format('refs/heads/{0}', 'develop') &&
                                             matrix.target_runtime == env.PREFERRED_TARGET_RUNTIME &&
                                             matrix.php_version == env.PREFERRED_PHP_VERSION }}
-            type=semver,pattern={{version}},enable=${{ matrix.target_runtime == 'nginx' }}
-            type=semver,pattern={{version}},prefix=${{ matrix.target_runtime }}-
-            type=ref,event=pr,prefix=${{ matrix.target_runtime }}-pr-
+            type=semver,pattern={{version}},enable=${{ matrix.target_runtime == env.PREFERRED_TARGET_RUNTIME &&
+                                            matrix.php_version == env.PREFERRED_PHP_VERSION }}
+            type=raw,value=latest,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'main') && matrix.php_version == env.PREFERRED_PHP_VERSION }}
+            type=raw,value=nightly,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'staging') && matrix.php_version == env.PREFERRED_PHP_VERSION }}
+            type=raw,value=develop,prefix=${{ matrix.target_runtime }}-,enable=${{ github.ref == format('refs/heads/{0}', 'develop') && matrix.php_version == env.PREFERRED_PHP_VERSION }}
+            type=raw,value=latest,prefix=${{ matrix.target_runtime }}-${{ matrix.php_version }}-,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value=nightly,prefix=${{ matrix.target_runtime }}-${{ matrix.php_version }}-,enable=${{ github.ref == format('refs/heads/{0}', 'staging') }}
+            type=raw,value=develop,prefix=${{ matrix.target_runtime }}-${{ matrix.php_version }}-,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
+            type=semver,pattern={{version}},prefix=${{ matrix.target_runtime }}-,enable=${{ matrix.php_version == env.PREFERRED_PHP_VERSION }}
+            type=semver,pattern={{version}},prefix=${{ matrix.target_runtime }}-${{ matrix.php_version }}-
+            type=ref,event=pr,prefix=${{ matrix.target_runtime }}-${{ matrix.php_version }}-pr-
         env:
           DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
 
@@ -204,8 +209,8 @@ jobs:
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
             PHP_BASE_TYPE=${{ matrix.php_base }}
-          cache-from: type=gha,scope=${{ matrix.target_runtime }}-${{ matrix.php_base }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.target_runtime }}-${{ matrix.php_base }}
+          cache-from: type=gha,scope=-${{ matrix.target_runtime }}-${{ matrix.php_base }}-${{ matrix.php_version }}-${{ matrix.debian_release }}
+          cache-to: type=gha,mode=max,scope=-${{ matrix.target_runtime }}-${{ matrix.php_base }}-${{ matrix.php_version }}-${{ matrix.debian_release }}
 
       - name: Setup
         run: docker/tests/setup.sh
