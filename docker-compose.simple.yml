@@ -57,7 +57,7 @@ services:
 
 ## DB and Cache
   db:
-    image: mariadb:jammy
+    image: mariadb:lts
     restart: unless-stopped
     healthcheck:
         test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect']

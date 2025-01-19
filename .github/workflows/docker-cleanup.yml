@@ -43,7 +43,7 @@ jobs:
         with:
           dry-run: ${{ github.event.inputs.dry-run || false }}
           keep-n-tagged: 10
-          delete-tags: nightly*
+          delete-tags: nightly-*
           exclude-tags: latest*,develop*
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
@@ -53,7 +53,7 @@ jobs:
         with:
           dry-run: ${{ github.event.inputs.dry-run || false }}
           keep-n-tagged: 10
-          delete-tags: develop*
+          delete-tags: develop-*
           exclude-tags: latest*,nightly*
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
@@ -67,7 +67,6 @@ jobs:
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           dry-run: ${{ github.event.inputs.dry-run || false }}
-          keep-n-untagged: 10
           delete-untagged: true
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
