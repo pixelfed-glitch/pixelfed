@@ -352,6 +352,8 @@ ARG PHP_VERSION
 
 ENV PHP_VERSION $PHP_VERSION
 
+EXPOSE 9000
+
 CMD ["sh", "-c", "php-fpm${PHP_VERSION}"]
 
 #######################################################

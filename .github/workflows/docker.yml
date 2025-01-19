@@ -236,6 +236,7 @@ jobs:
 
       - name: Run E2E tests
         run: docker/tests/e2e.sh
+        if: ${{ matrix.target_runtime != 'fpm'}}
         env:
           CI: true
           DOCKER_APP_TAG: "${{ steps.meta.outputs.version }}"
