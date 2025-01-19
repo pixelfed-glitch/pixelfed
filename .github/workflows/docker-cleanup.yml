@@ -2,6 +2,10 @@ name: Docker Cleanup
 
 on:
   workflow_dispatch:
+    inputs:
+      dry-run:
+        required: true
+        type: boolean
 
   # See: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
   schedule:
@@ -16,30 +20,38 @@ on:
     - cron: "30 3 * * 1" # run at 03:30 AM UTC on mondays
 
 jobs:
+
   clean_registry:
     name: Clean the container registry
     runs-on: ubuntu-latest
+
     steps:
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
-      - name: Delete old PR + Branch images
+      - if: always()
+        name: Delete old PR + Branch images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
+          dry-run: ${{ github.event.inputs.dry-run || false }}
           keep-n-tagged: 10
           delete-tags: pr-*
           exclude-tags: latest*,develop*,nightly*
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
-      - name: Delete old nightly images
+      - if: always()
+        name: Delete old nightly images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
+          dry-run: ${{ github.event.inputs.dry-run || false }}
           keep-n-tagged: 10
           delete-tags: nightly*
           exclude-tags: latest*,develop*
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
-      - name: Delete old develop images
+      - if: always()
+        name: Delete old develop images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
+          dry-run: ${{ github.event.inputs.dry-run || false }}
           keep-n-tagged: 10
           delete-tags: develop*
           exclude-tags: latest*,nightly*
@@ -50,15 +62,19 @@ jobs:
       #   The tool supports multi-arch images, so it checks if any untagged images is referenced
       #   by a tagged one before deleting - meaning that "untagged" here is NOT the same as the
       #   'untagged images' tab in the GHCR UI
-      - name: "Delete all untagged images"
+      - if: always()
+        name: "Delete all untagged images"
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
+          dry-run: ${{ github.event.inputs.dry-run || false }}
           keep-n-untagged: 10
           delete-untagged: true
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
-      - name: "Delete all invalid images"
+      - if: always()
+        name: "Delete all invalid images"
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
+          dry-run: ${{ github.event.inputs.dry-run || false }}
           delete-ghost-images: true
           delete-orphaned-images: true
