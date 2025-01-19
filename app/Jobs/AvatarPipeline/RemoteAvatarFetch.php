@@ -30,7 +30,7 @@ class RemoteAvatarFetch implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 3; # Retry this action, it can often fail due to network issues
+    public $tries = 3; // Retry this action, it can often fail due to network issues
 
     public $timeout = 300;
 
