@@ -1,5 +1,14 @@
 # Release Notes
 
+## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.7.0...develop)
+
+## Breaking Changes
+- Switching to PHP 8.4
+
+### Updates
+- Merging docker updates from jippi/docker-pixelfed (https://github.com/pixelfed-glitch/pixelfed/pull/15)
+- Adjusting task retries and timeouts in order to reduce transient horizon errors (https://github.com/pixelfed-glitch/pixelfed/pull/14)
+
 ## [v0.12.4+glitch.1.7.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.6.0...v0.12.4-glitch.1.7.0)
 
 ### Updates
