@@ -24,16 +24,25 @@ jobs:
       - name: Delete old PR + Branch images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          delete-tags: "pr-*"
-          exclude-tags: "latest-*"
-          older-than: 1 week
+          keep-n-tagged: 10
+          delete-tags: pr-*
+          exclude-tags: latest*,develop*,nightly*
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
       - name: Delete old nightly images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          delete-tags: "nightly-*"
-          older-than: 6 months
+          keep-n-tagged: 10
+          delete-tags: nightly*
+          exclude-tags: latest*,develop*
+
+      # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
+      - name: Delete old develop images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          keep-n-tagged: 10
+          delete-tags: develop*
+          exclude-tags: latest*,nightly*
 
       # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
       #
@@ -44,4 +53,12 @@ jobs:
       - name: "Delete all untagged images"
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
+          keep-n-untagged: 10
           delete-untagged: true
+
+      # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
+      - name: "Delete all invalid images"
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          delete-ghost-images: true
+          delete-orphaned-images: true
