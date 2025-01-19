@@ -23,8 +23,13 @@ output=$(run-as-runtime-user php artisan migrate:status || :)
 # By default we have no new migrations
 declare -i new_migrations=0
 
-# Detect if any new migrations are available by checking for "No" in the output
-echo "$output" | grep No && new_migrations=1
+# Detect if any new migrations are available by checking for "Pending" in the output
+#
+# ! NOTE:
+#   Case-sensitivity is important here since the output is [ INFO  No pending migrations. ]
+#   in case there are no pending migrations. This is a lower case [p]ending where
+#   the 2nd column when there ARE migrations are upper case [P]ending
+echo "$output" | grep Pending && new_migrations=1
 
 if is-false "${new_migrations}"; then
     log-info "No new migrations detected"
