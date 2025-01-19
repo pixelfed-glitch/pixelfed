@@ -9,6 +9,17 @@
 - Merging docker updates from jippi/docker-pixelfed (https://github.com/pixelfed-glitch/pixelfed/pull/15)
 - Adjusting task retries and timeouts in order to reduce transient horizon errors (https://github.com/pixelfed-glitch/pixelfed/pull/14)
 
+### Updates (from Upstream)
+- Update PublicApiController ([629fb5a4](https://github.com/pixelfed/pixelfed/commit/629fb5a4))
+- Update AP Helpers, fix comment bug ([22eae69f](https://github.com/pixelfed/pixelfed/commit/22eae69f))
+- Add story components ([f82dfe8b](https://github.com/pixelfed/pixelfed/commit/f82dfe8b))
+- Fix text no posts archived ([15276629](https://github.com/pixelfed/pixelfed/commit/15276629))
+- Update Discover, fix account bug ([b27679fc](https://github.com/pixelfed/pixelfed/commit/b27679fc))
+- Increase username length limit from 15 to 30 ([207bb36c](https://github.com/pixelfed/pixelfed/commit/207bb36c))
+- Update SearchApiV2Service, fix hashtag search ([83c1a7fd](https://github.com/pixelfed/pixelfed/commit/83c1a7fd))
+- Add a push notification when a user is mentioned in a comment ([64bad4ee](https://github.com/pixelfed/pixelfed/commit/64bad4ee))
+- Fix notifications not being delivered by directly checking the state from the database ([4d0cb32f](https://github.com/pixelfed/pixelfed/commit/4d0cb32f))
+
 ## [v0.12.4+glitch.1.7.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.6.0...v0.12.4-glitch.1.7.0)
 
 ### Updates
