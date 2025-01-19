@@ -1,0 +1,47 @@
+name: Docker Cleanup
+
+on:
+  workflow_dispatch:
+
+  # See: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+  schedule:
+    #        ┌───────────── minute (0 - 59)
+    #        │  ┌───────────── hour (0 - 23)
+    #        │  │ ┌───────────── day of the month (1 - 31)
+    #        │  │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #        │  │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    #        │  │ │ │ │
+    - cron: "30 3 * * 1" # run at 03:30 AM UTC on mondays
+
+jobs:
+  clean_registry:
+    name: Clean the container registry
+    runs-on: ubuntu-latest
+    steps:
+      # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
+      - name: Delete old PR + Branch images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          delete-tags: "pr-*"
+          exclude-tags: "latest-*"
+          older-than: 1 week
+
+      # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
+      - name: Delete old nightly images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          delete-tags: "nightly-*"
+          older-than: 6 months
+
+      # See: https://github.com/dataaxiom/ghcr-cleanup-action?tab=readme-ov-file#action-options
+      #
+      # NOTE:
+      #   The tool supports multi-arch images, so it checks if any untagged images is referenced
+      #   by a tagged one before deleting - meaning that "untagged" here is NOT the same as the
+      #   'untagged images' tab in the GHCR UI
+      - name: "Delete all untagged images"
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          delete-untagged: true
