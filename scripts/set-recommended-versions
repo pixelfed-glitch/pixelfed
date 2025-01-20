@@ -12,7 +12,7 @@ source "${project_root}/scripts/lib/shared.sh"
 DB_VERSION="11.4"
 
 # @renovate datasource=docker depName=php versioning=semver-coerced
-DOCKER_APP_PHP_VERSION="8.3"
+DOCKER_APP_PHP_VERSION="8.4"
 
 # @renovate datasource=github-releases depName=jippi/docker-pixelfed versioning=semver-coerced
 DOCKER_APP_RELEASE="v0.14"

@@ -40,7 +40,7 @@ ARG RUNTIME_GID=33 # often called 'www-data'
 # See: https://hub.docker.com/_/php/tags
 #
 # renovate: datasource=docker depName=php versioning=semver-coerced
-ARG PHP_VERSION="8.3"
+ARG PHP_VERSION="8.4"
 
 # See: https://github.com/docker-library/docs/blob/master/php/README.md#image-variants
 ARG PHP_BASE_TYPE="fpm"
@@ -53,7 +53,7 @@ ARG PHP_PECL_EXTENSIONS_EXTRA=
 
 # PHP extensions installed via https://deb.sury.org/
 # ! NOTE: Must not include the "php8.x-" prefix for packages
-# !       so [php8.3-bcmath] should just be [bcmath] here
+# !       so [php8.4-bcmath] should just be [bcmath] here
 ARG PHP_EXTENSIONS="bcmath curl gd imagick intl mbstring redis xml yaml zip"
 ARG PHP_EXTENSIONS_EXTRA=""
 ARG PHP_EXTENSIONS_DATABASE="pgsql mysql sqlite"

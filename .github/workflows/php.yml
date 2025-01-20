@@ -37,7 +37,7 @@ jobs:
       # See: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
       matrix:
         php_version:
-          - 8.3
+          - 8.4
 
     container:
       image: php:${{ matrix.php_version }}-cli
@@ -100,12 +100,20 @@ jobs:
     name: Code Style
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+
+      # See: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
+      matrix:
+        php_version:
+          - 8.4
+
     container:
-      image: php:8.3-cli
+      image: php:${{ matrix.php_version }}-cli
 
     # See: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-concurrency-and-the-default-behavior
     concurrency:
-      group: php-code-style-${{ github.ref }}-8.3
+      group: php-code-style-${{ github.ref }}-${{ matrix.php_version }}
       cancel-in-progress: false
 
     steps:
@@ -135,7 +143,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: vendor/
-          key: composer-8.3-${{ hashFiles('composer.lock') }}
+          key: composer-${{ matrix.php_version }}-${{ hashFiles('composer.lock') }}
 
       - name: Install laravel/pint
         run: php composer.phar require laravel/pint --dev

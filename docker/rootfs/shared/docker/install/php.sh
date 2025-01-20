@@ -29,7 +29,7 @@ if [[ "${PHP_BASE_TYPE}" == "fpm" ]]; then
     php_extensions+=("fpm")
 fi
 
-# join the strings and prefix them with [php${version}-], so [gd] turns into [php8.3-gd]
+# join the strings and prefix them with [php${version}-], so [gd] turns into [php8.4-gd]
 php_extensions_string="${php_extensions[*]/#/php${PHP_VERSION}-}"
 
 if [[ "${PHP_BASE_TYPE}" == "apache" ]]; then
