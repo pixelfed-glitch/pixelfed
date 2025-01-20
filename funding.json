@@ -3,15 +3,28 @@
     "entity": {
         "type": "individual",
         "role": "owner",
-        "name": "Daniel Supernault",
-        "email": "danielsupernault@gmail.com",
+        "name": "Mehdi Benadel",
+        "email": "mehdi.benadel@gmail.com",
         "phone": "",
-        "description": "I'm the developer behind Pixelfed, an open-source, federated photo-sharing platform that prioritizes privacy, community, and creativity. With a passion for building ethical alternatives to mainstream social networks, I have championed decentralized technologies and empowered users to share their stories without compromising their digital autonomy. As the driving force behind Pixelfed, I combine innovative development with a thoughtful approach to user experience, fostering an online space that feels personal, authentic, and inclusive.",
+        "description": "Maintainer of Pixelfed Glitch, fork of Pixelfed, an open-source, federated photo-sharing platform that prioritizes privacy, community, and creativity. With a passion for building ethical alternatives to mainstream social networks, I have championed decentralized technologies and empowered users to share their stories without compromising their digital autonomy. As the driving force behind Pixelfed, I combine innovative development with a thoughtful approach to user experience, fostering an online space that feels personal, authentic, and inclusive.",
         "webpageUrl": {
-            "url": "https://github.com/pixelfed/pixelfed"
+            "url": "https://github.com/pixelfed-glitch/pixelfed"
         }
     },
     "projects": [
+        {
+            "guid": "pixelfed-glitch",
+            "name": "Pixelfed Glitch",
+            "description": "Pixelfed Glitch is a fork of Pixelfed, a free, open-source photo-sharing platform designed to put users in control of their content. Built on the principles of decentralization, Pixelfed offers a refreshing alternative to traditional social media, prioritizing privacy, community, and ethical design. Whether you're an artist, photographer, or someone who loves sharing moments, Pixelfed lets you connect and create without intrusive ads, algorithms, or data exploitation. Fully federated and part of the Fediverse, Pixelfed empowers users to join or host their own instances while still connecting with a global network of creatives and communities. It's not just a platform—it's a movement toward a better, more user-centered internet.",
+            "webpageUrl": {
+                "url": "https://github.com/pixelfed-glitch/pixelfed"
+            },
+            "repositoryUrl": {
+                "url": "https://github.com/pixelfed-glitch/pixelfed"
+            },
+            "licenses": ["spdx:AGPL-3.0"],
+            "tags": ["activitypub", "fediverse", "laravel", "pixelfed"]
+        },
         {
             "guid": "pixelfed",
             "name": "Pixelfed",
@@ -29,16 +42,10 @@
     "funding": {
         "channels": [
             {
-                "guid": "github-sponsors",
+                "guid": "liberapay",
                 "type": "payment-provider",
-                "address": "https://github.com/sponsors/dansup",
-                "description": "Sponsor me through Github."
-            },
-            {
-                "guid": "paypal-sponsors",
-                "type": "payment-provider",
-                "address": "https://www.paypal.com/paypalme/dansup",
-                "description": "Sponsor me through Paypal."
+                "address": "https://liberapay.com/Murazaki",
+                "description": "Sponsor me through Liberapay."
             }
         ],
         "plans": [
@@ -50,7 +57,7 @@
                 "amount": 0,
                 "currency": "USD",
                 "frequency": "monthly",
-                "channels": ["github-sponsors", "paypal-sponsors"]
+                "channels": ["liberapay"]
             },
             {
                 "guid": "support-plan",
@@ -60,7 +67,7 @@
                 "amount": 0,
                 "currency": "USD",
                 "frequency": "one-time",
-                "channels": ["github-sponsors", "paypal-sponsors"]
+                "channels": ["liberapay"]
             }
         ],
         "history": []
