@@ -117,7 +117,7 @@ services:
       timeout: 5s
 
   worker:
-    image: "${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
+    image: "${DOCKER_WORKER_IMAGE}:${DOCKER_WORKER_TAG}"
     container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-worker"
     command: gosu www-data php artisan horizon
     restart: unless-stopped
@@ -158,7 +158,7 @@ services:
       retries: 2
 
   cron:
-    image: "${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
+    image: "${DOCKER_CRON_IMAGE}:${DOCKER_CRON_TAG}"
     container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-cron"
     command: gosu www-data php artisan schedule:work -vvv
     restart: unless-stopped
