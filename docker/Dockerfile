@@ -25,11 +25,6 @@ ARG GOMPLATE_VERSION="4.3.0"
 # renovate: datasource=docker depName=ghcr.io/jippi/dottie
 ARG DOTTIE_VERSION="v0.14.3"
 
-# See: https://github.com/alpine-docker/multi-arch-docker-images/tree/master/curl
-#
-# renovate: datasource=docker depName=alpine/curl
-ARG CURL_VERSION="latest"
-
 # See: https://github.com/composer/composer
 #
 # renovate: datasource=github-releases depName=composer/composer
@@ -93,27 +88,6 @@ FROM ghcr.io/nginx-proxy/forego:${FOREGO_VERSION}-debian AS forego-image
 #
 # See: https://github.com/jippi/dottie
 FROM ghcr.io/jippi/dottie:${DOTTIE_VERSION} AS dottie-image
-
-# gomplate-image grabs the gomplate binary from GitHub releases
-#
-# It's in its own layer so it can be fetched in parallel with other build steps
-FROM alpine/curl:${CURL_VERSION} AS gomplate-image
-
-ARG TARGETARCH
-ARG TARGETOS
-ARG GOMPLATE_VERSION
-
-USER root
-
-RUN set -ex \
-    && curl \
-        --silent \
-        --show-error \
-        --location \
-        --output /usr/local/bin/gomplate \
-        https://github.com/hairyhenderson/gomplate/releases/download/v${GOMPLATE_VERSION}/gomplate_${TARGETOS}-${TARGETARCH} \
-    && chmod +x /usr/local/bin/gomplate \
-    && /usr/local/bin/gomplate --version
 
 #######################################################
 # Base image
@@ -265,7 +239,7 @@ ARG RUNTIME_UID
 ARG RUNTIME_GID
 
 # Install composer dependencies
-# NOTE: we skip the autoloader generation here since we don't have all files avaliable (yet)
+# NOTE: we skip the autoloader generation here since we don't have all files available (yet)
 RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},sharing=locked,target=/cache/composer \
     --mount=type=bind,source=composer.json,target=/var/www/composer.json \
     --mount=type=bind,source=composer.lock,target=/var/www/composer.lock \
@@ -287,11 +261,23 @@ ARG RUNTIME_GID
 ENV RUNTIME_UID=${RUNTIME_UID}
 ENV RUNTIME_GID=${RUNTIME_GID}
 
+ARG TARGETARCH
+ARG TARGETOS
+ARG GOMPLATE_VERSION
+
 USER root
 
 COPY --link --from=forego-image /usr/local/bin/forego /usr/local/bin/forego
-COPY --link --from=dottie-image /usr/local/bin/dottie /usr/local/bin/dottie
-COPY --link --from=gomplate-image /usr/local/bin/gomplate /usr/local/bin/gomplate
+COPY --link --from=dottie-image /usr/local/bin/dottie /usr/local/bin/Dottie
+
+# Fetch gomplate
+RUN set -ex \
+    && wget \
+        --quiet \
+        -O /usr/local/bin/gomplate \
+        https://github.com/hairyhenderson/gomplate/releases/download/v${GOMPLATE_VERSION}/gomplate_${TARGETOS}-${TARGETARCH} \
+    && chmod +x /usr/local/bin/gomplate \
+    && /usr/local/bin/gomplate --version
 
 #! Changing user to runtime user
 USER ${RUNTIME_UID}:${RUNTIME_GID}

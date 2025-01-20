@@ -36,8 +36,8 @@ services:
     healthcheck:
       test: 'curl --fail http://localhost/api/service/health-check'
       interval: 10s
-      retries: 2
       timeout: 5s
+      retries: 2
 
   worker:
     image: ghcr.io/pixelfed-glitch/pixelfed:fpm-latest
@@ -80,6 +80,11 @@ services:
     depends_on:
       - db
       - redis
+    healthcheck:
+      test: ps aux | egrep 'php artisan [s]chedule:work -vvv'
+      interval: 10s
+      timeout: 5s
+      retries: 2
 
 ## DB and Cache
   db:
@@ -87,11 +92,10 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     healthcheck:
-        test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect']
-        start_period: 5s
-        timeout: 5s
-        interval: 5s
-        retries: 5
+      test: ["CMD", "healthcheck.sh", "--connect"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
     env_file:
       - .env.docker
     volumes:
@@ -105,6 +109,9 @@ services:
       - REDISCLI_AUTH=${REDIS_PASSWORD:-}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
     env_file:
       - .env.docker
     volumes:

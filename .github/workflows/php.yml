@@ -23,8 +23,8 @@ on:
 
 env:
   EXTRA_PHP_EXTENSIONS: intl bcmath zip pcntl exif curl gd pdo_pgsql pdo_mysql pdo_sqlite
-  DOCKER_PHP_EXTENSION_INSTALLER_VERSION: 2.2.2
-  COMPOSER_VERSION: 2.7.1
+  DOCKER_PHP_EXTENSION_INSTALLER_VERSION: 2.7.13
+  COMPOSER_VERSION: 2.8.4
 
 jobs:
   test:

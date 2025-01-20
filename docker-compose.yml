@@ -192,6 +192,11 @@ services:
     depends_on:
       - db
       - redis
+    healthcheck:
+      test: ps aux | egrep 'php artisan [s]chedule:work -vvv'
+      interval: 10s
+      timeout: 5s
+      retries: 2
 
   db:
     image: ${DOCKER_DB_IMAGE:?error}
@@ -221,8 +226,7 @@ services:
     ports:
       - "${DOCKER_DB_HOST_PORT:?error}:${DOCKER_DB_CONTAINER_PORT:?error}"
     healthcheck:
-      test:
-        [
+      test: [
           "CMD",
           "healthcheck.sh",
           "--su-mysql",
