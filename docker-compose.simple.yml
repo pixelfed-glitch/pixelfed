@@ -15,7 +15,7 @@
 # if the volumes are properly shared between cluster members.
 
 services:
-## App and Worker
+## App, Worker and Cron
   web:
     image: ghcr.io/pixelfed-glitch/pixelfed:latest
     restart: unless-stopped
@@ -27,17 +27,21 @@ services:
       - "./.env.docker:/var/www/.env"
     ports:
       - "8080:80"
+    environment:
+      # Used by Pixelfed Docker init script
+      DOCKER_SERVICE_NAME: "web"
+    depends_on:
+      - db
+      - redis
     healthcheck:
       test: 'curl --header "Host: ${APP_DOMAIN}" --fail http://localhost/api/service/health-check'
       interval: 10s
       retries: 2
       timeout: 5s
-    depends_on:
-      - db
-      - redis
 
   worker:
-    image: ghcr.io/pixelfed-glitch/pixelfed:latest
+    image: ghcr.io/pixelfed-glitch/pixelfed:fpm-latest
+    command: gosu www-data php artisan horizon
     restart: unless-stopped
     env_file:
       - .env.docker
@@ -45,7 +49,10 @@ services:
       - ./data:/var/www/storage
       - ./bootstrap:/var/www/bootstrap
       - "./.env.docker:/var/www/.env"
-    command: gosu www-data php artisan horizon
+    environment:
+      # Used by Pixelfed Docker init script
+      DOCKER_SERVICE_NAME: "worker"
+      ENTRYPOINT_SKIP_SCRIPTS: ${ENTRYPOINT_SKIP_SCRIPTS:-}
     depends_on:
       - db
       - redis
@@ -55,9 +62,29 @@ services:
       timeout: 5s
       retries: 2
 
+  cron:
+    image: ghcr.io/pixelfed-glitch/pixelfed:fpm-latest
+    command: gosu www-data php artisan schedule:work -vvv
+    restart: unless-stopped
+    stop_signal: SIGTERM
+    env_file:
+      - .env.docker
+    volumes:
+      - ./data:/var/www/storage
+      - ./bootstrap:/var/www/bootstrap
+      - "./.env.docker:/var/www/.env"
+    environment:
+      # Used by Pixelfed Docker init script
+      DOCKER_SERVICE_NAME: "cron"
+      ENTRYPOINT_SKIP_SCRIPTS: ${ENTRYPOINT_SKIP_SCRIPTS:-}
+    depends_on:
+      - db
+      - redis
+
 ## DB and Cache
   db:
     image: mariadb:lts
+    command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     healthcheck:
         test: ['CMD', '/usr/local/bin/healthcheck.sh', '--connect']
@@ -65,16 +92,15 @@ services:
         timeout: 5s
         interval: 5s
         retries: 5
-    command: --default-authentication-plugin=mysql_native_password
     env_file:
       - .env.docker
     volumes:
       - "./db:/var/lib/mysql"
 
   redis:
-    image: redis:7.2-alpine
-    restart: unless-stopped
+    image: redis:7.4-alpine
     command: " --requirepass '${REDIS_PASSWORD:-}'"
+    restart: unless-stopped
     environment:
       - REDISCLI_AUTH=${REDIS_PASSWORD:-}
     healthcheck:
