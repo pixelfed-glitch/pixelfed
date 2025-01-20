@@ -34,7 +34,7 @@ services:
       - db
       - redis
     healthcheck:
-      test: 'curl --header "Host: ${APP_DOMAIN}" --fail http://localhost/api/service/health-check'
+      test: 'curl --fail http://localhost/api/service/health-check'
       interval: 10s
       retries: 2
       timeout: 5s
