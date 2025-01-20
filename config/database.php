@@ -54,7 +54,6 @@ return [
             'prefix'            => '',
             'strict'            => false,
             'engine'            => null,
-            'sslmode'           => env('DB_SSL_MODE', 'prefer'),
             'options'           => array_filter([
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT  => env('DB_ATTR_SSL_VERIFY_SERVER_CERT'),
                 PDO::MYSQL_ATTR_SSL_KEY                 => env('DB_ATTR_SSL_KEY'),
@@ -82,7 +81,6 @@ return [
             'prefix_indexes'    => true,
             'strict'            => true,
             'engine'            => null,
-            'sslmode'           => env('DB_SSL_MODE', 'prefer'),
             'options'           => array_filter([
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT  => env('DB_ATTR_SSL_VERIFY_SERVER_CERT'),
                 PDO::MYSQL_ATTR_SSL_KEY                 => env('DB_ATTR_SSL_KEY'),
