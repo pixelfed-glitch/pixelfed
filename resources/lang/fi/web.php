@@ -99,7 +99,7 @@ return [
 
 		'dm' => 'yv',
 		'groupPost' => 'ryhmäviesti',
-		'modlog' => 'modlog',
+		'modlog' => 'modelogi',
 		'post' => 'viesti',
 		'story' => 'tarina',
 		'noneFound' => 'Ilmoituksia ei löytynyt',
@@ -142,11 +142,11 @@ return [
 		'addCW' => 'Lisää sisältövaroitus',
 		'removeCW' => 'Poista sisältövaroitus',
 		'markAsSpammer' => 'Merkitse roskapostittajaksi',
-		'markAsSpammerText' => 'Unlist + CW existing and future posts',
-		'spam' => 'Spam',
-		'sensitive' => 'Sensitive Content',
-		'abusive' => 'Abusive or Harmful',
-		'underageAccount' => 'Underage Account',
+		'markAsSpammerText' => 'Unlist + SV olevat ja tulevat julkaisut',
+		'spam' => 'Roskaposti',
+		'sensitive' => 'Arkaluonteista sisältöä',
+		'abusive' => 'Hyökkäävä tai haitallinen',
+		'underageAccount' => 'Alaikäisen tili',
 		'copyrightInfringement' => 'Tekijänoikeusloukkaus',
 		'impersonation' => 'Väärennetty henkilöllisyys',
 		'scamOrFraud' => 'Huijaus tai petos',
@@ -182,27 +182,27 @@ return [
 	],
 
 	'timeline' => [
-		'peopleYouMayKnow' => 'People you may know',
+		'peopleYouMayKnow' => 'Ihmisiä, jotka saatat tuntea',
 
 		'onboarding' => [
-			'welcome' => 'Welcome',
-			'thisIsYourHomeFeed' => 'This is your home feed, a chronological feed of posts from accounts you follow.',
-			'letUsHelpYouFind' => 'Let us help you find some interesting people to follow',
-			'refreshFeed' => 'Refresh my feed',
+			'welcome' => 'Tervetuloa',
+			'thisIsYourHomeFeed' => 'Tämä on kotisyötteesi. Aikajärjestyksessä oleva syöte seuraamiesi käyttäjien julkaisuista.',
+			'letUsHelpYouFind' => 'Anna meidän auttaa löytämään mielenkiintoisia ihmisiä seurattavaksi',
+			'refreshFeed' => 'Päivitä syötteeni',
 		],
 	],
 
 	'hashtags' => [
-		'emptyFeed' => 'We can\'t seem to find any posts for this hashtag'
+		'emptyFeed' => 'Emme näytä löytävän yhtään viestiä tälle aihetunnisteelle'
 	],
 
 	'report' => [
-		'report' => 'Report',
-		'selectReason' => 'Select a reason',
-		'reported' => 'Reported',
-		'sendingReport' => 'Sending report',
-		'thanksMsg' => 'Thanks for the report, people like you help keep our community safe!',
-		'contactAdminMsg' => 'If you\'d like to contact an administrator about this post or report',
+		'report' => 'Ilmoita',
+		'selectReason' => 'Valitse syy',
+		'reported' => 'Ilmoitettu',
+		'sendingReport' => 'Lähetetään ilmoitusta',
+		'thanksMsg' => 'Kiitos ilmoituksesta. Sinä ja kaltaisesi autatte pitämään yhteisön turvallisena!',
+		'contactAdminMsg' => 'Jos haluaisit ottaa yhteyttä ylläpitoom tästä julkaisusta tai ilmoittaa sen',
 	],
 
 ];
