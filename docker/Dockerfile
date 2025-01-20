@@ -268,7 +268,7 @@ ARG GOMPLATE_VERSION
 USER root
 
 COPY --link --from=forego-image /usr/local/bin/forego /usr/local/bin/forego
-COPY --link --from=dottie-image /usr/local/bin/dottie /usr/local/bin/Dottie
+COPY --link --from=dottie-image /usr/local/bin/dottie /usr/local/bin/dottie
 
 # Fetch gomplate
 RUN set -ex \

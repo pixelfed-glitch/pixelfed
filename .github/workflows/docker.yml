@@ -11,6 +11,7 @@ on:
       - main
       - staging
       - develop
+      - ci/*
     tags:
       - "*"
 
