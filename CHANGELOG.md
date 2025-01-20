@@ -2,7 +2,7 @@
 
 ## [v0.12.4+glitch.1.8.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.7.0...v0.12.4-glitch.1.8.0)
 
-## Breaking Changes
+### Breaking Changes
 - Switching to PHP 8.4
 
 ### Updates

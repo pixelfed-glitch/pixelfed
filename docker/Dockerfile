@@ -77,7 +77,7 @@ ARG NGINX_GPGKEY_PATH="/usr/share/keyrings/nginx-archive-keyring.gpg"
 # Used to copy some docker-entrypoint files for [nginx-runtime]
 #
 # NOTE: Docker will *not* pull this image unless it's referenced (via build target)
-FROM nginx:${NGINX_VERSION} AS nginx-image
+FROM public.ecr.aws/nginx/nginx:${NGINX_VERSION} AS nginx-image
 
 # Forego is a Procfile "runner" that makes it trival to run multiple
 # processes under a simple init / PID 1 process.
@@ -85,7 +85,7 @@ FROM nginx:${NGINX_VERSION} AS nginx-image
 # NOTE: Docker will *not* pull this image unless it's referenced (via build target)
 #
 # See: https://github.com/nginx-proxy/forego
-FROM nginxproxy/forego:${FOREGO_VERSION}-debian AS forego-image
+FROM ghcr.io/nginx-proxy/forego:${FOREGO_VERSION}-debian AS forego-image
 
 # Dottie makes working with .env files easier and safer
 #
