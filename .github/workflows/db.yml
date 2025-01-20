@@ -28,7 +28,7 @@ env:
 
 jobs:
   migrations:
-    name: MySQL / MariaDB / Postgres
+    name: DB Test
     runs-on: ubuntu-latest
 
     strategy:
@@ -69,7 +69,7 @@ jobs:
         ports:
           - ${{ matrix.db_type == 'postgres' && '5432:5432' || '3306:3306' }}
         options: >-
-          --health-cmd ${{ matrix.db_type == 'postgres' && 'pg_isready' || 'healthcheck.sh' }}
+          --health-cmd ${{ matrix.db_type == 'postgres' && 'pg_isready' || (matrix.db_type == 'mysql' && '"mysqladmin ping -h localhost"' || '"healthcheck.sh --connect"') }}
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
