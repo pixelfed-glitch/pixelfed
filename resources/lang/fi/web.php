@@ -3,7 +3,7 @@
 return [
 
 	'common' => [
-		'comment' => 'Kommentti',
+		'comment' => 'Kommentoi',
 		'commented' => 'Kommentoitu',
 		'comments' => 'Kommentit',
 		'like' => 'Tykkää',
