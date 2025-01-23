@@ -59,7 +59,7 @@ class SiteController extends Controller
     public function about()
     {
         return Cache::remember('site.about_v2', now()->addMinutes(15), function () {
-            $user_count = number_format(User::count());
+            $user_count = number_format(User::whereNull('status')->count()); # Only get null status - these are the "active" users);
             $post_count = number_format(StatusService::totalLocalStatuses());
             $rules = config_cache('app.rules') ? json_decode(config_cache('app.rules'), true) : null;
 

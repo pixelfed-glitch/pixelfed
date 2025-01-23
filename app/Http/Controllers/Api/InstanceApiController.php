@@ -40,7 +40,7 @@ class InstanceApiController extends Controller {
 			'version' => config('pixelfed.version'),
 			'urls' => [],
 			'stats' => [
-				'user_count' => User::count(),
+				'user_count' => User::whereNull('status')->count(), # Only get null status - these are the "active" users
 				'status_count' => StatusService::totalLocalStatuses(),
 				'domain_count' => Instance::count()
 			],

@@ -99,7 +99,7 @@ class AdminStatsService
                 'statuses' => PrettyNumber::convert(intval(StatusService::totalLocalStatuses())),
                 'statuses_monthly' => PrettyNumber::convert(Status::where('created_at', '>', now()->subMonth())->count()),
                 'profiles' => PrettyNumber::convert(Profile::count()),
-                'users' => PrettyNumber::convert(User::count()),
+                'users' => PrettyNumber::convert(User::whereNull('status')->count()),
                 'users_monthly' => PrettyNumber::convert(User::where('created_at', '>', now()->subMonth())->count()),
                 'instances' => PrettyNumber::convert(Instance::count()),
                 'media' => PrettyNumber::convert(Media::count()),
@@ -116,7 +116,7 @@ class AdminStatsService
             return [
                 'statuses' => PrettyNumber::convert(intval(StatusService::totalLocalStatuses())),
                 'profiles' => PrettyNumber::convert(Profile::count()),
-                'users' => PrettyNumber::convert(User::count()),
+                'users' => PrettyNumber::convert(User::whereNull('status')->count()),
                 'instances' => PrettyNumber::convert(Instance::count()),
             ];
         });
