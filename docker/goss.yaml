@@ -98,7 +98,7 @@ command:
       # Security: not expose PHP information to users
       - expose_php => Off => Off
       # Ensure memory limit is configured correctly
-      - memory_limit => 128M => 128M
+      - memory_limit => 256M => 256M
       # Ensure post_max_size is configured correctly
       - post_max_size => 61M => 61M
       # EXIF is enabled
@@ -145,7 +145,7 @@ command:
       # Security: not expose PHP information to users
       - expose_php => Off => Off
       # Ensure memory limit is configured correctly
-      - memory_limit => 128M => 128M
+      - memory_limit => 256M => 256M
       # Ensure post_max_size is configured correctly
       - post_max_size => 61M => 61M
       # EXIF is enabled
