@@ -23,7 +23,7 @@ services:
       - .env.docker
     volumes:
       - ./data:/var/www/storage
-      - ./bootstrap:/var/www/bootstrap
+      - ./cache:/var/www/bootstrap/cache
       - "./.env.docker:/var/www/.env"
     ports:
       - "8080:80"
@@ -47,7 +47,7 @@ services:
       - .env.docker
     volumes:
       - ./data:/var/www/storage
-      - ./bootstrap:/var/www/bootstrap
+      - ./cache:/var/www/bootstrap/cache
       - "./.env.docker:/var/www/.env"
     environment:
       # Used by Pixelfed Docker init script
@@ -71,7 +71,7 @@ services:
       - .env.docker
     volumes:
       - ./data:/var/www/storage
-      - ./bootstrap:/var/www/bootstrap
+      - ./cache:/var/www/bootstrap/cache
       - "./.env.docker:/var/www/.env"
     environment:
       # Used by Pixelfed Docker init script
