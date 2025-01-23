@@ -54,12 +54,9 @@ return [
             'prefix'            => '',
             'strict'            => false,
             'engine'            => null,
-            'options'           => array_filter([
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT  => env('DB_ATTR_SSL_VERIFY_SERVER_CERT'),
-                PDO::MYSQL_ATTR_SSL_KEY                 => env('DB_ATTR_SSL_KEY'),
-                PDO::MYSQL_ATTR_SSL_CERT                => env('DB_ATTR_SSL_CERT'),
-                PDO::MYSQL_ATTR_SSL_CA                  => env('DB_ATTR_SSL_CA'),
-            ]),
+            'options'           => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA      => env('DB_ATTR_SSL_CA'),
+            ]) : [],
             'dump'              => [
                 'use_single_transaction',
                 'skip_lock_tables',
@@ -81,12 +78,9 @@ return [
             'prefix_indexes'    => true,
             'strict'            => true,
             'engine'            => null,
-            'options'           => array_filter([
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT  => env('DB_ATTR_SSL_VERIFY_SERVER_CERT'),
-                PDO::MYSQL_ATTR_SSL_KEY                 => env('DB_ATTR_SSL_KEY'),
-                PDO::MYSQL_ATTR_SSL_CERT                => env('DB_ATTR_SSL_CERT'),
-                PDO::MYSQL_ATTR_SSL_CA                  => env('DB_ATTR_SSL_CA'),
-            ]),
+            'options'           => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA      => env('DB_ATTR_SSL_CA'),
+            ]) : [],
         ],
 
         'pgsql' => [
@@ -102,7 +96,7 @@ return [
             'sslmode'           => env('DB_SSL_MODE', 'prefer'),
             'sslkey'            => env('DB_ATTR_SSL_KEY'),
             'sslcert'           => env('DB_ATTR_SSL_CERT'),
-            'sslcertmode'       => env('DB_ATTR_SSL_CA'),
+            'sslrootcert'       => env('DB_ATTR_SSL_CA'),
         ],
 
         'sqlsrv' => [
