@@ -20,7 +20,7 @@ return [
 		'delete' => 'Eliminar',
 		'error' => 'Erro',
 		'errorMsg' => 'Algo correu mal. Por favor, tente novamente mais tarde.',
-		'oops' => 'Opa!',
+		'oops' => 'Oops!',
 		'other' => 'Outro',
 		'readMore' => 'Ler mais',
 		'success' => 'Sucesso',
@@ -31,33 +31,33 @@ return [
 
 		'sensitive' => 'Sensível',
 		'sensitiveContent' => 'Conteúdo sensível',
-		'sensitiveContentWarning' => 'Este post pode conter conteúdo sensível',
+		'sensitiveContentWarning' => 'Esta publicação pode conter conteúdo sensível',
 	],
 
 	'site' => [
-		'terms' => 'Termos de Uso',
+		'terms' => 'Termos de Utilização',
 		'privacy' => 'Política de Privacidade',
 	],
 
 	'navmenu' => [
-		'search' => 'Pesquisa',
-		'admin' => 'Painel de Administração',
+		'search' => 'Pesquisar',
+		'admin' => 'Painel de administração',
 
 		// Timelines
-		'homeFeed' => 'Inicio',
+		'homeFeed' => 'Início',
 		'localFeed' => 'Feed local',
 		'globalFeed' => 'Feed global',
 
 		// Core features
 		'discover' => 'Descobrir',
-		'directMessages' => 'Mensagens Diretas',
+		'directMessages' => 'Mensagens diretas',
 		'notifications' => 'Notificações',
 		'groups' => 'Grupos',
 		'stories' => 'Stories',
 
 		// Self links
 		'profile' => 'Perfil',
-		'drive' => 'Drive',
+		'drive' => 'Disco',
 		'settings' => 'Definições',
 		'compose' => 'Criar novo',
 		'logout' => 'Terminar Sessão',
@@ -70,7 +70,7 @@ return [
 		'terms' => 'Termos',
 
 		// Temporary links
-		'backToPreviousDesign' => 'Voltar ao design anterior'
+		'backToPreviousDesign' => 'Voltar ao design antigo'
 	],
 
 	'directMessages' => [
@@ -80,13 +80,13 @@ return [
 	],
 
 	'notifications' => [
-		'liked' => 'curtiu seu',
-		'commented' => 'comentou em seu',
+		'liked' => 'gostou do seu',
+		'commented' => 'comentou no seu',
 		'reacted' => 'reagiu ao seu',
-		'shared' => 'compartilhou seu',
-		'tagged' => 'marcou você em um',
+		'shared' => 'Partilhou o seu',
+		'tagged' => 'marcou você numa publicação',
 
-		'updatedA' => 'atualizou um(a)',
+		'updatedA' => 'atualizou',
 		'sentA' => 'enviou um',
 
 		'followed' => 'seguiu',
@@ -95,13 +95,13 @@ return [
 
 		'yourApplication' => 'A sua candidatura para se juntar',
 		'applicationApproved' => 'foi aprovado!',
-		'applicationRejected' => 'foi rejeitado. Você pode se inscrever novamente para participar em 6 meses.',
+		'applicationRejected' => 'foi rejeitado. Você pode inscrever-se novamente em 6 meses.',
 
-		'dm' => 'mensagem direta',
-		'groupPost' => 'postagem do grupo',
+		'dm' => 'dm',
+		'groupPost' => 'publicação de grupo',
 		'modlog' => 'histórico de moderação',
 		'post' => 'publicação',
-		'story' => 'história',
+		'story' => 'story',
 		'noneFound' => 'Nenhuma notificação encontrada',
 	],
 
@@ -116,7 +116,7 @@ return [
 		'posts' => 'Publicações',
 		'followers' => 'Seguidores',
 		'following' => 'A seguir',
-		'admin' => 'Administrador',
+		'admin' => 'Admin',
 		'collections' => 'Coleções',
 		'follow' => 'Seguir',
 		'unfollow' => 'Deixar de seguir',
@@ -141,14 +141,14 @@ return [
 		'unlistFromTimelines' => 'Remover das cronologias',
 		'addCW' => 'Adicionar aviso de conteúdo',
 		'removeCW' => 'Remover aviso de conteúdo',
-		'markAsSpammer' => 'Marcar como Spammer',
+		'markAsSpammer' => 'Marcar como spammer',
 		'markAsSpammerText' => 'Remover das cronologias e adicionar um aviso de conteúdo às publicações existentes e futuras',
-		'spam' => 'Lixo Eletrônico',
+		'spam' => 'Spam',
 		'sensitive' => 'Conteúdo Sensível',
 		'abusive' => 'Abusivo ou prejudicial',
 		'underageAccount' => 'Conta de menor de idade',
 		'copyrightInfringement' => 'Violação de direitos de autor',
-		'impersonation' => 'Roubo de identidade',
+		'impersonation' => 'Roubo de Identidade',
 		'scamOrFraud' => 'Esquema ou fraude',
 		'confirmReport' => 'Confirmar denúncia',
 		'confirmReportText' => 'Tem a certeza que deseja denunciar esta mensagem?',
@@ -162,15 +162,15 @@ return [
 		'modRemoveCWSuccess' => 'Removeu com sucesso o aviso de conteúdo',
 		'modUnlistConfirm' => 'Tem a certeza que pretende deslistar este post?',
 		'modUnlistSuccess' => 'Deslistou com sucesso este post',
-		'modMarkAsSpammerConfirm' => 'Você realmente quer denunciar este usuário por spam? Todas as suas publicações anteriores e futuras serão marcadas com um aviso de conteúdo e removidas das linhas do tempo.',
+		'modMarkAsSpammerConfirm' => 'Tem a certeza que deseja marcar este utilizador como spammer? Todos os posts existentes e futuros serão deslistados da timeline e o alerta de conteúdo será aplicado.',
 		'modMarkAsSpammerSuccess' => 'Marcou com sucesso esta conta como spammer',
 
-		'toFollowers' => 'para seguidores',
+		'toFollowers' => 'para Seguidores',
 
 		'showCaption' => 'Mostar legenda',
 		'showLikes' => 'Mostrar Gostos',
 		'compactMode' => 'Modo compacto',
-		'embedConfirmText' => 'Ao usar de forma “embed”, você concorda com nossas',
+		'embedConfirmText' => 'Ao utilizar este conteúdo, aceita os nossos',
 
 		'deletePostConfirm' => 'Tem a certeza que pretende apagar esta publicação?',
 		'archivePostConfirm' => 'Tem a certeza que pretende arquivar esta publicação?',
@@ -178,7 +178,7 @@ return [
 	],
 
 	'story' => [
-		'add' => 'Adicionar Story'
+		'add' => 'Adicionar Storie'
 	],
 
 	'timeline' => [
@@ -193,7 +193,7 @@ return [
 	],
 
 	'hashtags' => [
-		'emptyFeed' => 'Não encontramos nenhuma publicação com esta hashtag'
+		'emptyFeed' => 'Não conseguimos encontrar publicações com essa hashtag'
 	],
 
 	'report' => [
