@@ -14,7 +14,7 @@ class LandingService
         $activeMonth = Nodeinfo::activeUsersMonthly();
 
         $totalUsers = Cache::remember('api:nodeinfo:users', 43200, function () {
-            return User::count();
+            return User::whereNull('status')->count(); # Only get null status - these are the "active" users
         });
 
         $postCount = InstanceService::totalLocalStatuses();
