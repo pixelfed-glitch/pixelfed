@@ -53,7 +53,7 @@ class InstanceUpdateTotalLocalPosts extends Command
 
     protected function initCache()
     {
-        $count = DB::table('statuses')->whereNull(['url', 'deleted_at'])->count();
+        $count = DB::table('statuses')->whereNull(['url', 'in_reply_to', 'reblog_of_id', 'deleted_at'])->count();
         $res = [
             'count' => $count,
         ];
@@ -68,7 +68,7 @@ class InstanceUpdateTotalLocalPosts extends Command
 
     protected function updateAndCache()
     {
-        $count = DB::table('statuses')->whereNull(['url', 'deleted_at'])->count();
+        $count = DB::table('statuses')->whereNull(['url', 'in_reply_to', 'reblog_of_id', 'deleted_at'])->count();
         $res = [
             'count' => $count,
         ];

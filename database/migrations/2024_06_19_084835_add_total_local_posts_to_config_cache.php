@@ -15,7 +15,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $count = DB::table('statuses')->whereNull(['url', 'deleted_at'])->count();
+        $count = DB::table('statuses')->whereNull(['url', 'in_reply_to', 'reblog_of_id', 'deleted_at'])->count();
         $res = [
             'count' => $count
         ];
