@@ -18,8 +18,12 @@ class Nodeinfo
                 return User::whereNull('status')->count(); # Only get null status - these are the "active" users
             });
 
-            $statuses = InstanceService::totalLocalStatuses();
-
+            if (env('GLITCH_LANDING_REALSTATCOUNT', false)) {
+                $postCount = InstanceService::totalRealLocalStatuses();
+            } else {
+                $postCount = InstanceService::totalLocalStatuses();
+            }
+    
             $features = ['features' => \App\Util\Site\Config::get()['features']];
 
             return [
@@ -43,7 +47,7 @@ class Nodeinfo
                     'version' => config('pixelfed.version'),
                 ],
                 'usage' => [
-                    'localPosts' => (int) $statuses,
+                    'localPosts' => (int) $postCount,
                     'localComments' => 0,
                     'users' => [
                         'total' => (int) $users,
