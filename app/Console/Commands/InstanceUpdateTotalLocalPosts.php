@@ -53,12 +53,14 @@ class InstanceUpdateTotalLocalPosts extends Command
 
     protected function initCache()
     {
-        $count = DB::table('statuses')->whereNull(['url', 'in_reply_to_id', 'reblog_of_id', 'deleted_at'])->count();
+        $count = DB::table('statuses')->whereNull(['url', 'deleted_at'])->count();
         $res = [
             'count' => $count,
         ];
         Storage::put('total_local_posts.json', json_encode($res, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         ConfigCacheService::put('instance.stats.total_local_posts', $res['count']);
+        $realCount = DB::table('statuses')->whereNull(['url', 'in_reply_to_id', 'reblog_of_id', 'deleted_at'])->count();
+        ConfigCacheService::put('instance.stats.real_total_local_posts', $realCount);
     }
 
     protected function getCached()
@@ -68,12 +70,13 @@ class InstanceUpdateTotalLocalPosts extends Command
 
     protected function updateAndCache()
     {
-        $count = DB::table('statuses')->whereNull(['url', 'in_reply_to_id', 'reblog_of_id', 'deleted_at'])->count();
+        $count = DB::table('statuses')->whereNull(['url', 'deleted_at'])->count();
         $res = [
             'count' => $count,
         ];
         Storage::put('total_local_posts.json', json_encode($res, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         ConfigCacheService::put('instance.stats.total_local_posts', $res['count']);
-
+        $realCount = DB::table('statuses')->whereNull(['url', 'in_reply_to_id', 'reblog_of_id', 'deleted_at'])->count();
+        ConfigCacheService::put('instance.stats.real_total_local_posts', $realCount);
     }
 }

@@ -850,7 +850,8 @@ class AdminApiController extends Controller
             $res['users']['min'] = collect($res['users']['days'])->min('count');
             $res['users']['max'] = collect($res['users']['days'])->max('count');
             $res['users']['change'] = collect($res['users']['days'])->sum('count');
-            $res['posts']['total'] = DB::table('statuses')->whereNull(['url', 'in_reply_to_id', 'reblog_of_id', 'deleted_at'])->count();
+            $res['posts']['total'] = DB::table('statuses')->whereNull(['uri', 'deleted_at'])->count();
+            $res['posts']['real_total'] = DB::table('statuses')->whereNull(['url', 'in_reply_to_id', 'reblog_of_id', 'deleted_at'])->count();
             $res['posts']['min'] = collect($res['posts']['days'])->min('count');
             $res['posts']['max'] = collect($res['posts']['days'])->max('count');
             $res['posts']['change'] = collect($res['posts']['days'])->sum('count');
