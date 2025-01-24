@@ -17,7 +17,11 @@ class LandingService
             return User::whereNull('status')->count(); # Only get null status - these are the "active" users
         });
 
-        $postCount = InstanceService::totalLocalStatuses();
+        if (env('GLITCH_LANDING_REALSTATCOUNT', false)) {
+            $postCount = InstanceService::totalRealLocalStatuses();
+        } else {
+            $postCount = InstanceService::totalLocalStatuses();
+        }
 
         $contactAccount = Cache::remember('api:v1:instance-data:contact', 604800, function () {
             if (config_cache('instance.admin.pid')) {

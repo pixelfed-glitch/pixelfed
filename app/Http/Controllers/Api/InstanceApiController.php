@@ -33,6 +33,12 @@ class InstanceApiController extends Controller {
 			];
 		});
 
+        if (env('GLITCH_LANDING_REALSTATCOUNT', false)) {
+            $postCount = StatusService::totalRealLocalStatuses();
+        } else {
+            $postCount = StatusService::totalLocalStatuses();
+        }
+
 		$res = [
 			'uri' => config('pixelfed.domain.app'),
 			'title' => config_cache('app.name'),
@@ -41,7 +47,7 @@ class InstanceApiController extends Controller {
 			'urls' => [],
 			'stats' => [
 				'user_count' => User::whereNull('status')->count(), # Only get null status - these are the "active" users
-				'status_count' => StatusService::totalLocalStatuses(),
+				'status_count' => $postCount,
 				'domain_count' => Instance::count()
 			],
 			'thumbnail' => '',
