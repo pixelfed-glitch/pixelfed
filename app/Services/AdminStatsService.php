@@ -99,6 +99,7 @@ class AdminStatsService
                 'statuses' => PrettyNumber::convert(intval(StatusService::totalLocalStatuses())),
                 'real_statuses' => PrettyNumber::convert(intval(StatusService::totalRealLocalStatuses())),
                 'statuses_monthly' => PrettyNumber::convert(Status::where('created_at', '>', now()->subMonth())->count()),
+                'real_statuses_monthly' => PrettyNumber::convert(Status::where('url', '=', 'null')->where('created_at', '>', now()->subMonth())->where('reblog_of_id', '=', 'null')->where('in_reply_to_id', '=', 'null')->count()),
                 'profiles' => PrettyNumber::convert(Profile::count()),
                 'users' => PrettyNumber::convert(User::whereNull('status')->count()),
                 'users_monthly' => PrettyNumber::convert(User::where('created_at', '>', now()->subMonth())->count()),
