@@ -198,4 +198,9 @@ class StatusService
     {
         return InstanceService::totalLocalStatuses();
     }
+
+    public static function totalRealLocalStatuses()
+    {
+        return InstanceService::totalRealLocalStatuses();
+    }    
 }

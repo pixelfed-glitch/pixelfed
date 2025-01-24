@@ -97,6 +97,7 @@ class AdminStatsService
             return [
                 'failedjobs' => PrettyNumber::convert(FailedJob::where('failed_at', '>=', \Carbon\Carbon::now()->subDay())->count()),
                 'statuses' => PrettyNumber::convert(intval(StatusService::totalLocalStatuses())),
+                'real_statuses' => PrettyNumber::convert(intval(StatusService::totalRealLocalStatuses())),
                 'statuses_monthly' => PrettyNumber::convert(Status::where('created_at', '>', now()->subMonth())->count()),
                 'profiles' => PrettyNumber::convert(Profile::count()),
                 'users' => PrettyNumber::convert(User::whereNull('status')->count()),
@@ -115,6 +116,7 @@ class AdminStatsService
         return Cache::remember('admin:dashboard:home:data-summary:v0:24hr', $ttl, function () {
             return [
                 'statuses' => PrettyNumber::convert(intval(StatusService::totalLocalStatuses())),
+                'real_statuses' => PrettyNumber::convert(intval(StatusService::totalRealLocalStatuses())),
                 'profiles' => PrettyNumber::convert(Profile::count()),
                 'users' => PrettyNumber::convert(User::whereNull('status')->count()),
                 'instances' => PrettyNumber::convert(Instance::count()),

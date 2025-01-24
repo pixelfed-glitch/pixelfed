@@ -103,6 +103,11 @@ class InstanceService
         return config_cache('instance.stats.total_local_posts');
     }
 
+    public static function totalRealLocalStatuses()
+    {
+        return config_cache('instance.stats.real_total_local_posts');
+    }    
+
     public static function headerBlurhash()
     {
         return Cache::rememberForever(self::CACHE_KEY_BANNER_BLURHASH, function () {

@@ -137,6 +137,7 @@ class ConfigCacheService
                     'filesystems.disks.spaces.use_path_style_endpoint',
 
                     'instance.stats.total_local_posts',
+                    'instance.stats.real_total_local_posts',
                     // 'system.user_mode'
                 ];
 
