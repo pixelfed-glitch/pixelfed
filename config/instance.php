@@ -3,7 +3,7 @@
 return [
     'force_https_urls' => env('FORCE_HTTPS_URLS', true),
 
-    'description' => env('INSTANCE_DESCRIPTION', 'Pixelfed - Photo sharing for everyone'),
+    'description' => env('INSTANCE_DESCRIPTION', 'Pixelfed Glitch - Photo sharing for everyone'),
 
     'contact' => [
         'enabled' => env('INSTANCE_CONTACT_FORM', false),
