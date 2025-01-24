@@ -13,5 +13,5 @@ acquire-lock
 # Copy the [storage/] skeleton files over the "real" [storage/] directory so assets are updated between versions
 run-as-runtime-user cp --force --recursive storage.skel/. ./storage/
 
-# Ensure storage linkk are correctly configured
+# Ensure storage link are correctly configured
 run-as-runtime-user php artisan storage:link
