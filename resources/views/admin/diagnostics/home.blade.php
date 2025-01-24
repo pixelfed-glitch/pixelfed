@@ -79,8 +79,8 @@
 		<li>
 			<strong><span class="badge badge-primary">OAUTH</span> private key exists: </strong>
 			<span>{{ file_exists(storage_path('oauth-private.key')) || config_cache('passport.private_key') ? '✅ true' : '❌ false' }}</span>
-		</li>		
-		
+		</li>
+
 		<hr>
 		<p class="font-weight-bold text-muted">
 			Important Information
@@ -622,7 +622,7 @@
 
 	<tr>
 		<td><span class="badge badge-primary">MAIL</span></td>
-		<td><strong>MAIL_DRIVER</strong></td>
+		<td><strong>MAIL_MAILER</strong></td>
 		<td><span>"{{config_cache('mail.driver')}}"</span></td>
 	</tr>
 	<tr>

@@ -14,7 +14,7 @@ web_environment:
   - DB_USERNAME=db
   - DB_PASSWORD=db
   - REDIS_HOST=ddev-pixelfed-redis
-  - MAIL_DRIVER=smtp
+  - MAIL_MAILER=smtp
   - MAIL_HOST=localhost
   - MAIL_PORT=1025
   - MAIL_USERNAME=null
