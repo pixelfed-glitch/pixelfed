@@ -93,7 +93,7 @@ FROM ghcr.io/jippi/dottie:${DOTTIE_VERSION} AS dottie-image
 # Base image
 #######################################################
 
-FROM debian:${PHP_DEBIAN_RELEASE} as base
+FROM debian:${PHP_DEBIAN_RELEASE} AS base
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
@@ -336,7 +336,7 @@ FROM shared-runtime AS fpm-runtime
 
 ARG PHP_VERSION
 
-ENV PHP_VERSION $PHP_VERSION
+ENV PHP_VERSION=${PHP_VERSION}
 
 EXPOSE 9000
 
@@ -355,7 +355,7 @@ ARG PHP_DEBIAN_RELEASE
 ARG PHP_VERSION
 ARG TARGETPLATFORM
 
-ENV PHP_VERSION $PHP_VERSION
+ENV PHP_VERSION=${PHP_VERSION}
 
 # Install nginx dependencies
 RUN --mount=type=cache,id=pixelfed-apt-lists-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/lib/apt/lists \
