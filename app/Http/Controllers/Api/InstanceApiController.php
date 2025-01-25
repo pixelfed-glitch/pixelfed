@@ -33,7 +33,7 @@ class InstanceApiController extends Controller {
 			];
 		});
 
-        if ((bool) config('glitch.real_stat_count') == true) {
+        if ((bool) config('instance.glitch.real_stat_count') == true) {
             $postCount = StatusService::totalRealLocalStatuses();
         } else {
             $postCount = StatusService::totalLocalStatuses();

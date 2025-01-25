@@ -17,7 +17,7 @@ class LandingService
             return User::whereNull('status')->count(); # Only get null status - these are the "active" users
         });
 
-        if ((bool) config('glitch.real_stat_count') == true) {
+        if ((bool) config('instance.glitch.real_stat_count') == true) {
             $postCount = InstanceService::totalRealLocalStatuses();
         } else {
             $postCount = InstanceService::totalLocalStatuses();

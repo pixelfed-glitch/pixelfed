@@ -855,12 +855,16 @@
 		<td><strong>SESSION_DOMAIN</strong></td>
 		<td><span>"{{config_cache('session.domain')}}"</span></td>
 	</tr>
-
 	<tr>
 		<td><span class="badge badge-primary">TRUSTEDPROXY</span></td>
 		<td><strong>TRUST_PROXIES</strong></td>
 		<td><span>"{{config_cache('trustedproxy.proxies')}}"</span></td>
 	</tr>
+	<tr>
+		<td><span class="badge badge-primary">GLITCH</span></td>
+		<td><strong>GLITCH_LANDING_REALSTATCOUNT</strong></td>
+		<td><span>"{{config_cache('instance.glitch.real_stat_count')}}"</span></td>
+	</tr>	
       </tbody>
       </table>
   </div>
