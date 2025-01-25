@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'glitch' => [
+        'real_stat_count' => env('GLITCH_LANDING_REALSTATCOUNT', false),
+    ],
+
     'force_https_urls' => env('FORCE_HTTPS_URLS', true),
 
     'description' => env('INSTANCE_DESCRIPTION', 'Pixelfed Glitch - Photo sharing for everyone'),

@@ -18,7 +18,7 @@ class Nodeinfo
                 return User::whereNull('status')->count(); # Only get null status - these are the "active" users
             });
 
-            if (env('GLITCH_LANDING_REALSTATCOUNT', false)) {
+            if ((bool) config('glitch.real_stat_count') == true) {
                 $postCount = InstanceService::totalRealLocalStatuses();
             } else {
                 $postCount = InstanceService::totalLocalStatuses();

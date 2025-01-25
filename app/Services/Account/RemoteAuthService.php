@@ -166,6 +166,10 @@ class RemoteAuthService
 
     public static function submitToBeagle($ow, $ou, $dw, $du)
     {
+        if ((bool) config('instance.discover.beagle_api') == false) {
+            return;
+        }
+
         try {
             $url = 'https://beagle.pixelfed.net/api/v1/raa/submit';
             $res = Http::throw()->timeout(10)->get($url, [
