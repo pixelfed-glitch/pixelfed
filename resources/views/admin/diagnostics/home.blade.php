@@ -863,7 +863,7 @@
 	<tr>
 		<td><span class="badge badge-primary">GLITCH</span></td>
 		<td><strong>GLITCH_LANDING_REALSTATCOUNT</strong></td>
-		<td><span>"{{(bool) config_cache('instance.glitch.real_stat_count') ? '✅ true' : '❌ false' }}"</span></td>
+		<td><span>{{(bool) config_cache('instance.glitch.real_stat_count') ? '✅ true' : '❌ false' }}</span></td>
 	</tr>	
       </tbody>
       </table>
