@@ -11,7 +11,7 @@
 				</div>
 			</div>
 			<div v-if="loaded.stats" class="row">
-				<div class="col-xl-2 col-md-2">
+				<div class="col-xl-3 col-md-4">
 					<div class="card card-stats">
 						<div class="card-body">
 							<div class="row">
@@ -28,7 +28,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-xl-2 col-md-2">
+				<div class="col-xl-3 col-md-4">
 					<div class="card card-stats">
 						<div class="card-body">
 							<div class="row">
@@ -44,8 +44,8 @@
 							</div>
 						</div>
 					</div>
-				</div>				
-				<div class="col-xl-2 col-md-2">
+				</div>
+				<div class="col-xl-3 col-md-4">
 					<div class="card card-stats">
 						<div class="card-body">
 							<div class="row">
@@ -62,7 +62,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-xl-2 col-md-2">
+				<div class="col-xl-3 col-md-4">
 					<div class="card card-stats">
 						<div class="card-body">
 							<div class="row">
@@ -79,7 +79,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-xl-2 col-md-2">
+				<div class="col-xl-3 col-md-4">
 					<div class="card card-stats">
 						<div class="card-body">
 							<div class="row">

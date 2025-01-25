@@ -106,7 +106,7 @@ class InstanceService
     public static function totalRealLocalStatuses()
     {
         return config_cache('instance.stats.real_total_local_posts');
-    }    
+    }
 
     public static function headerBlurhash()
     {
