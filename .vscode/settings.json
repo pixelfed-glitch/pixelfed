@@ -17,5 +17,6 @@
     "files.associations": {
         ".env": "shellscript",
         ".env.*": "shellscript"
-    }
+    },
+    "intelephense.environment.phpVersion": "8.4"
 }
