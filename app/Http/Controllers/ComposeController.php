@@ -773,6 +773,7 @@ class ComposeController extends Controller
         $default = [
             'default_license' => 1,
             'media_descriptions' => false,
+            'max_media_attachments' => (int) config_cache('pixelfed.max_album_length'),
             'max_altext_length' => config_cache('pixelfed.max_altext_length'),
         ];
         $settings = AccountService::settings($uid);

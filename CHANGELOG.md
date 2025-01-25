@@ -1,5 +1,14 @@
 # Release Notes
 
+## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.8.0...develop)
+
+### Updates (from Upstream)
+- Update oauth/token, fix scope to be space separated string instead of array ([4ce6e610](https://github.com/pixelfed/pixelfed/commit/4ce6e610))
+- Update SearchApiV2Service, fix hashtag search ([83c1a7fd](https://github.com/pixelfed/pixelfed/commit/83c1a7fd))
+- Update AP Helpers, fix comment bug ([22eae69f](https://github.com/pixelfed/pixelfed/commit/22eae69f))
+- Update ComposeController, add max_media_attachments attribute ([17918cbe](https://github.com/pixelfed/pixelfed/commit/17918cbe))
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
+
 ## [v0.12.4+glitch.1.8.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.7.0...v0.12.4-glitch.1.8.0)
 
 ### Breaking Changes
