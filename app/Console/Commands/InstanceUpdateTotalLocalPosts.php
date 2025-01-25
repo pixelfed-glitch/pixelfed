@@ -37,13 +37,12 @@ class InstanceUpdateTotalLocalPosts extends Command
         }
         $cache = $this->getCached();
         if (! $cache || ! isset($cache['count']) || ! isset($cache['realCount'])) {
-            $this->error('Problem fetching cache');
-
-            return;
+            // If we get an error on the cache, regenerate it
+            $this->initCache();
+        } else {
+            $this->updateAndCache();
         }
-        $this->updateAndCache();
         Cache::forget('api:nodeinfo');
-
     }
 
     protected function checkForCache()
