@@ -657,23 +657,17 @@ class RemoteAuthController extends Controller
 
     public function finishUp(Request $request)
     {
-        abort_unless((
-            config_cache('pixelfed.open_registration') &&
-            config('remote-auth.mastodon.enabled')
-        ) || (
-            config('remote-auth.mastodon.ignore_closed_state') &&
-            config('remote-auth.mastodon.enabled')
-        ), 404);
-        abort_unless($request->user(), 404);
+        // abort_unless((
+        //     config_cache('pixelfed.open_registration') &&
+        //     config('remote-auth.mastodon.enabled')
+        // ) || (
+        //     config('remote-auth.mastodon.ignore_closed_state') &&
+        //     config('remote-auth.mastodon.enabled')
+        // ), 404);
+        // abort_unless($request->user(), 404);
 
-        $currentWebfinger = '@'.$request->user()->username.'@'.config('pixelfed.domain.app');
-        $ra = RemoteAuth::where('user_id', $request->user()->id)->firstOrFail();
-        RemoteAuthService::submitToBeagle(
-            $ra->webfinger,
-            $ra->verify_credentials['url'],
-            $currentWebfinger,
-            $request->user()->url()
-        );
+        // $currentWebfinger = '@'.$request->user()->username.'@'.config('pixelfed.domain.app');
+        // $ra = RemoteAuth::where('user_id', $request->user()->id)->firstOrFail();
 
         return [200];
     }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Services\Internal\BeagleService;
 use App\User;
 use Illuminate\Support\Str;
 
@@ -87,7 +86,7 @@ class AdminSettingsService
 
     public static function getSuggestedRules()
     {
-        return BeagleService::getDefaultRules();
+        return null;
     }
 
     public static function getUsers()

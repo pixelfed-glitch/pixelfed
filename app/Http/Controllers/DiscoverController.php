@@ -11,7 +11,6 @@ use App\Services\BookmarkService;
 use App\Services\ConfigCacheService;
 use App\Services\FollowerService;
 use App\Services\HashtagService;
-use App\Services\Internal\BeagleService;
 use App\Services\LikeService;
 use App\Services\ReblogService;
 use App\Services\SnowflakeService;
@@ -427,6 +426,6 @@ class DiscoverController extends Controller
     {
         abort_if(! $request->user(), 404);
 
-        return BeagleService::getDiscoverPosts();
+        return null;
     }
 }
