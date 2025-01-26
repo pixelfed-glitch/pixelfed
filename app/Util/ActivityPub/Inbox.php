@@ -645,6 +645,7 @@ class Inbox
             'profile_id' => $actor->id,
             'reblog_of_id' => $parent->id,
             'type' => 'share',
+            'local' => false,
         ]);
 
         Notification::firstOrCreate(
