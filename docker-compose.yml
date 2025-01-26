@@ -88,7 +88,7 @@ services:
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "web"
       DOCKER_APP_ENTRYPOINT_DEBUG: ${DOCKER_APP_ENTRYPOINT_DEBUG:-0}
-      ENTRYPOINT_SKIP_SCRIPTS: ${ENTRYPOINT_SKIP_SCRIPTS:-}
+      ENTRYPOINT_SKIP_SCRIPTS: any
       # Used by [proxy] service
       LETSENCRYPT_HOST: "${DOCKER_PROXY_LETSENCRYPT_HOST:?error}"
       LETSENCRYPT_EMAIL: "${DOCKER_PROXY_LETSENCRYPT_EMAIL:?error}"
@@ -182,7 +182,7 @@ services:
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "cron"
       DOCKER_APP_ENTRYPOINT_DEBUG: ${DOCKER_APP_ENTRYPOINT_DEBUG:-0}
-      ENTRYPOINT_SKIP_SCRIPTS: ${ENTRYPOINT_SKIP_SCRIPTS:-}
+      ENTRYPOINT_SKIP_SCRIPTS: any
     volumes:
       - "./.env:/var/www/.env"
       - "${DOCKER_ALL_HOST_CONFIG_ROOT_PATH}/proxy/conf.d:/shared/proxy/conf.d"
