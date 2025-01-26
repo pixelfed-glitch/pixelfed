@@ -1,6 +1,11 @@
 # Release Notes
 
-## [v0.12.4+glitch.1.9.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.8.0...v0.12.4+glitch.1.9.0)
+## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.0...develop)
+
+### Updates (from Upstream)
+- Fix GroupController, move groups enabled check to each method to fix route:list ([f260572e](https://github.com/pixelfed/pixelfed/commit/f260572e))
+
+## [v0.12.4+glitch.1.9.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.8.0...v0.12.4-glitch.1.9.0)
 
 ### Pull Requests
 - Fix glitch cache ([#38](https://github.com/pixelfed-glitch/pixelfed/pull/38))
