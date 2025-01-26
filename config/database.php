@@ -54,7 +54,9 @@ return [
             'prefix'            => '',
             'strict'            => false,
             'engine'            => null,
+            'sslMode'           => env('DB_SSL_MODE', 'PREFERRED'),
             'options'           => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT'),
                 PDO::MYSQL_ATTR_SSL_CA      => env('DB_ATTR_SSL_CA'),
             ]) : [],
             'dump'              => [
@@ -78,7 +80,9 @@ return [
             'prefix_indexes'    => true,
             'strict'            => true,
             'engine'            => null,
+            'sslmode'           => env('DB_SSL_MODE', 'trust'),
             'options'           => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT'),
                 PDO::MYSQL_ATTR_SSL_CA      => env('DB_ATTR_SSL_CA'),
             ]) : [],
         ],
