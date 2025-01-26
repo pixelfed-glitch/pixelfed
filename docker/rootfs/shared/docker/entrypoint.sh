@@ -50,8 +50,16 @@ fi
 log-info "looking for shell scripts in [${ENTRYPOINT_D_ROOT}]"
 
 find "${ENTRYPOINT_D_ROOT}" -follow -type f -print | sort -V | while read -r file; do
+    if in-array "$(get-entrypoint-script-name "any")" skip_scripts; then
+        log-warning "Skipping script [${file}] since the skip list (\$ENTRYPOINT_SKIP_SCRIPTS) contains any."
+
+        continue
+    elif in-array "$(get-entrypoint-script-name "true")" skip_scripts; then
+        log-warning "Skipping script [${file}] since the skip list (\$ENTRYPOINT_SKIP_SCRIPTS) contains true."
+
+        continue
     # Skip the script if it's in the skip-script list
-    if in-array "$(get-entrypoint-script-name "${file}")" skip_scripts; then
+    elif in-array "$(get-entrypoint-script-name "${file}")" skip_scripts; then
         log-warning "Skipping script [${file}] since it's in the skip list (\$ENTRYPOINT_SKIP_SCRIPTS)"
 
         continue
