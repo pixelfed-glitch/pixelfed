@@ -1,13 +1,42 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.8.0...develop)
+## [v0.12.4+glitch.1.9.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.8.0...v0.12.4+glitch.1.9.0)
+
+### Pull Requests
+- Fix glitch cache ([#38](https://github.com/pixelfed-glitch/pixelfed/pull/38))
+- Correct local post count ([#24](https://github.com/pixelfed-glitch/pixelfed/pull/24))
+- Correct user stats to ignore deleted ([#21](https://github.com/pixelfed-glitch/pixelfed/pull/21))
+- Handle SSL certificate parameters for database access ([#16](https://github.com/pixelfed-glitch/pixelfed/pull/16))
+
+### Updates
+- skipping entrypoints on web and cron ([8875d326](https://github.com/pixelfed-glitch/pixelfed/commit/8875d326))
+- Add env variables for SSL mode ([842e982a](https://github.com/pixelfed-glitch/pixelfed/commit/842e982a))
+- add any and true options to skip entrypoints ([8497c0ad](https://github.com/pixelfed-glitch/pixelfed/commit/8497c0ad))
+- fix linting on Dockerfile ([9b4c456d](https://github.com/pixelfed-glitch/pixelfed/commit/9b4c456d))
+- fixes on Dashboard status display ([390cceda](https://github.com/pixelfed-glitch/pixelfed/commit/390cceda))
+- changing default mail port for coherence ([d27c3c1c](https://github.com/pixelfed-glitch/pixelfed/commit/d27c3c1c))
+- fix mail diagnostics value ([4b8f039e](https://github.com/pixelfed-glitch/pixelfed/commit/4b8f039e))
+- Switching from MAIL_DRIVER to MAIL_MAILER for coherence with Laravel ([ebfd7e63](https://github.com/pixelfed-glitch/pixelfed/commit/ebfd7e63))
+- Fix allow deactivating permissions ownership check ([fd6f44fa](https://github.com/pixelfed-glitch/pixelfed/commit/fd6f44fa))
+- Doubling php memory limit (fix import:cities) ([bc742578](https://github.com/pixelfed-glitch/pixelfed/commit/bc742578))
+- no sslmode for mysql/mariadb + added db ssl variables to env file ([ff11826a](https://github.com/pixelfed-glitch/pixelfed/commit/ff11826a))
+- Added ssl cert parameters to database config ([51b2e070](https://github.com/pixelfed-glitch/pixelfed/commit/51b2e070))
+- fix cache paths in docker-compose.simple.yml ([fe7a38a8](https://github.com/pixelfed-glitch/pixelfed/commit/fe7a38a8))
+- fix docker typo + clarify branches to build ([97cdacd3](https://github.com/pixelfed-glitch/pixelfed/commit/97cdacd3))
+- finish upgrading to 8.4 in workflow ([695fcf75](https://github.com/pixelfed-glitch/pixelfed/commit/695fcf75))
+- fix mysql/mariadb healthcheck ([40d1ad40](https://github.com/pixelfed-glitch/pixelfed/commit/40d1ad40))
+- Added cron healthcheck + tweaks on docker compose + add gomplate without curl in docker ([3b837c94](https://github.com/pixelfed-glitch/pixelfed/commit/3b837c94))
+- Adding jippi/docker-pixelfed license + funding details ([8dabc084](https://github.com/pixelfed-glitch/pixelfed/commit/8dabc084))
+- fix healthcheck ([f1202155](https://github.com/pixelfed-glitch/pixelfed/commit/f1202155))
+- differentiating images of web, worker and cron ([cf495884](https://github.com/pixelfed-glitch/pixelfed/commit/cf495884))
+- adding cron to docker-compose.simple.yml ([65b7905c](https://github.com/pixelfed-glitch/pixelfed/commit/65b7905c))
+- Switching to alternative repos ([77dd7643](https://github.com/pixelfed-glitch/pixelfed/commit/77dd7643))
 
 ### Updates (from Upstream)
 - Update oauth/token, fix scope to be space separated string instead of array ([4ce6e610](https://github.com/pixelfed/pixelfed/commit/4ce6e610))
 - Update SearchApiV2Service, fix hashtag search ([83c1a7fd](https://github.com/pixelfed/pixelfed/commit/83c1a7fd))
 - Update AP Helpers, fix comment bug ([22eae69f](https://github.com/pixelfed/pixelfed/commit/22eae69f))
 - Update ComposeController, add max_media_attachments attribute ([17918cbe](https://github.com/pixelfed/pixelfed/commit/17918cbe))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4+glitch.1.8.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.7.0...v0.12.4-glitch.1.8.0)
 
@@ -15,8 +44,8 @@
 - Switching to PHP 8.4
 
 ### Updates
-- Merging docker updates from jippi/docker-pixelfed (https://github.com/pixelfed-glitch/pixelfed/pull/15)
-- Adjusting task retries and timeouts in order to reduce transient horizon errors (https://github.com/pixelfed-glitch/pixelfed/pull/14)
+- Merging docker updates from jippi/docker-pixelfed ([#15](https://github.com/pixelfed-glitch/pixelfed/pull/15))
+- Adjusting task retries and timeouts in order to reduce transient horizon errors ([#14](https://github.com/pixelfed-glitch/pixelfed/pull/14))
 
 ### Updates (from Upstream)
 - Update PublicApiController ([629fb5a4](https://github.com/pixelfed/pixelfed/commit/629fb5a4))

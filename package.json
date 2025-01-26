@@ -1,7 +1,7 @@
 {
 	"name": "pixelfed",
 	"private": true,
-    "version": "0.12.4+glitch.1.8.0",
+    "version": "0.12.4+glitch.1.9.0",
 	"scripts": {
 		"development": "mix",
 		"watch": "mix watch",
