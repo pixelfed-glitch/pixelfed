@@ -54,4 +54,16 @@ return [
             'limit' => env('PF_LOGIN_WITH_MASTODON_MAX_USES_LIMIT', 3)
         ]
     ],
+    'oidc' => [
+        'enabled' => env('PF_OIDC_ENABLED', false),
+        'clientId' => env('PF_OIDC_CLIENT_ID', false),
+        'clientSecret' => env('PF_OIDC_CLIENT_SECRET', false),
+        'scopes' =>  env('PF_OIDC_SCOPES', 'openid profile email'),
+        'authorizeURL' => env('PF_OIDC_AUTHORIZE_URL', ''),
+        'tokenURL' => env('PF_OIDC_TOKEN_URL', ''),
+        'profileURL' => env('PF_OIDC_PROFILE_URL', ''),
+        'logoutURL' => env('PF_OIDC_LOGOUT_URL', ''),
+        'field_username' => env('PF_OIDC_USERNAME_FIELD', "preferred_username"),
+        'field_id' => env('PF_OIDC_FIELD_ID', 'sub'),
+    ],
 ];
