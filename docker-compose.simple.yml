@@ -30,7 +30,7 @@ services:
     environment:
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "web"
-      ENTRYPOINT_SKIP_SCRIPTS: any
+      ENTRYPOINT_SKIP_SCRIPTS: ${ENTRYPOINT_SKIP_SCRIPTS:-}
     depends_on:
       - db
       - redis
@@ -53,7 +53,7 @@ services:
     environment:
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "worker"
-      ENTRYPOINT_SKIP_SCRIPTS: ${ENTRYPOINT_SKIP_SCRIPTS:-}
+      ENTRYPOINT_SKIP_SCRIPTS: any
     depends_on:
       - db
       - redis
