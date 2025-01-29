@@ -1,6 +1,6 @@
 # Pixelfed Glitch
 
-<p align="center"><img src="https://pixelfed.nyc3.cdn.digitaloceanspaces.com/logos/pixelfed-full-color.svg" width="300px"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/pixelfed-glitch/brand-assets/main/logo/icon_with_text_white.svg" width="300px"></p>
 
 <p align="center">
 <a href="https://github.com/pixelfed-glitch/pixelfed/actions/"><img src="https://github.com/pixelfed-glitch/pixelfed/actions/workflows/docker.yml/badge.svg" alt="Docker Build"></a>
