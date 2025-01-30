@@ -137,6 +137,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set version
+        id: pixelfed_version
+        run: echo "PIXELFED_VERSION=$(git describe --tags | sed -En "s/v(.*)-glitch/\1+glitch/p")" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -210,6 +217,7 @@ jobs:
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
             PHP_BASE_TYPE=${{ matrix.php_base }}
+            PIXELFED_VERSION=${{ steps.pixelfed_version.outputs.PIXELFED_VERSION }}
           cache-from: type=gha,scope=-${{ matrix.target_runtime }}-${{ matrix.php_base }}-${{ matrix.php_version }}-${{ matrix.debian_release }}
           cache-to: type=gha,mode=max,scope=-${{ matrix.target_runtime }}-${{ matrix.php_base }}-${{ matrix.php_version }}-${{ matrix.debian_release }}
 

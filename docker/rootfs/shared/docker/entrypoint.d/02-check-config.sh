@@ -6,6 +6,8 @@ source "${ENTRYPOINT_ROOT}/helpers.sh"
 
 entrypoint-set-script-name "$0"
 
+: "${ENTRYPOINT_DOTTIE_STRICT:="false"}"
+
 # Validating dot-env files for any issues
 for file in "${dot_env_files[@]}"; do
     if ! file-exists "${file}"; then
@@ -17,5 +19,5 @@ for file in "${dot_env_files[@]}"; do
     # which do not (and should not) exists inside the container
     #
     # We disable fixer since its not interactive anyway
-    run-as-current-user dottie validate --file "${file}" --ignore-rule dir,file --exclude-prefix APP_KEY --no-fix || [ "$ENTRYPOINT_DOTTIE_STRICT" = false ]
+    run-as-current-user dottie validate --file "${file}" --ignore-rule dir,file --exclude-prefix APP_KEY --no-fix || [ "$ENTRYPOINT_DOTTIE_STRICT" = "false" ]
 done
