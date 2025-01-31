@@ -150,7 +150,7 @@ class AppRegisterController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'auth_token' => $user->createToken('Pixelfed App')->plainTextToken,
+            'auth_token' => $user->createToken('Pixelfed App')->accessToken,
         ]);
     }
 
