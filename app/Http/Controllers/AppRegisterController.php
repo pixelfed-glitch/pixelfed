@@ -17,9 +17,8 @@ class AppRegisterController extends Controller
     public function index(Request $request)
     {
         abort_unless(config('auth.iar') == true, 404);
-        // $open = (bool) config_cache('pixelfed.open_registration');
-        // if(!$open || $request->user()) {
-        if ($request->user()) {
+        $open = (bool) config_cache('pixelfed.open_registration');
+        if (! $open || $request->user()) {
             return redirect('/');
         }
 
@@ -29,6 +28,10 @@ class AppRegisterController extends Controller
     public function store(Request $request)
     {
         abort_unless(config('auth.iar') == true, 404);
+        $open = (bool) config_cache('pixelfed.open_registration');
+        if (! $open || $request->user()) {
+            return redirect('/');
+        }
 
         $rules = [
             'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email|unique:app_registers,email',
@@ -88,6 +91,10 @@ class AppRegisterController extends Controller
     public function verifyCode(Request $request)
     {
         abort_unless(config('auth.iar') == true, 404);
+        $open = (bool) config_cache('pixelfed.open_registration');
+        if (! $open || $request->user()) {
+            return redirect('/');
+        }
 
         $this->validate($request, [
             'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email',
@@ -110,6 +117,10 @@ class AppRegisterController extends Controller
     public function onboarding(Request $request)
     {
         abort_unless(config('auth.iar') == true, 404);
+        $open = (bool) config_cache('pixelfed.open_registration');
+        if (! $open || $request->user()) {
+            return redirect('/');
+        }
 
         $this->validate($request, [
             'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email',
