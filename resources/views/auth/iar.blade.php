@@ -57,27 +57,14 @@
 @push('styles')
     <style>
         :root {
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #212529;
-            --text-muted: #6c757d;
-            --input-bg: #ffffff;
-            --input-border: #ced4da;
-            --input-focus: #80bdff;
-            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #111827;
-                --card-bg: #1f2937;
-                --text-color: #f3f4f6;
-                --text-muted: #9ca3af;
-                --input-bg: #374151;
-                --input-border: #4b5563;
-                --input-focus: #3b82f6;
-                --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
-            }
+            --bg-color: #111827;
+            --card-bg: #1f2937;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --input-bg: #374151;
+            --input-border: #4b5563;
+            --input-focus: #3b82f6;
+            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
         }
 
         body {

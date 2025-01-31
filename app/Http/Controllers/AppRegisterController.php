@@ -75,6 +75,6 @@ class AppRegisterController extends Controller
             'status' => 'success'
         ]);
 
-        return redirect("pixelfed://verifyEmail?{$errorParams}");
+        return redirect("pixelfed://verifyEmail?{$queryParams}");
     }
 }
