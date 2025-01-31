@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pulse\Facades\Pulse;
+use Illuminate\Http\Request;
 use URL;
 
 class AppServiceProvider extends ServiceProvider
