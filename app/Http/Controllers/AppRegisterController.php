@@ -45,7 +45,7 @@ class AppRegisterController extends Controller
                 'status' => 'error',
                 'message' => 'Too many attempts, please try again later.'
             ]);
-            return redirect("pixelfed://verifyEmail?{$errorParams}");
+            return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
         }
 
         DB::beginTransaction();
@@ -64,7 +64,7 @@ class AppRegisterController extends Controller
                 'status' => 'error',
                 'message' => 'Failed to send verification code'
             ]);
-            return redirect("pixelfed://verifyEmail?{$errorParams}");
+            return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
         }
 
         DB::commit();
@@ -75,6 +75,26 @@ class AppRegisterController extends Controller
             'status' => 'success'
         ]);
 
-        return redirect("pixelfed://verifyEmail?{$queryParams}");
+        return redirect()->away("pixelfed://verifyEmail?{$queryParams}");
+    }
+
+    public function verifyCode(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email',
+            'verify_code' => ['required', 'digits:6', 'numeric']
+        ]);
+
+        $email = $request->input('email');
+        $code = $request->input('verify_code');
+
+        $exists = AppRegister::whereEmail($email)
+            ->whereVerifyCode($code)
+            ->where('created_at', '>', now()->subMinutes(60))
+            ->exists();
+
+        return response()->json([
+            'status' => $exists ? 'success' : 'error',
+        ]);
     }
 }
