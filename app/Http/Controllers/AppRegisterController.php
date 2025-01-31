@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\AppRegister;
 use App\Mail\InAppRegisterEmailVerify;
+use App\Models\AppRegister;
+use App\User;
+use App\Util\Lexer\RestrictedNames;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Purify;
 
 class AppRegisterController extends Controller
 {
@@ -15,9 +19,10 @@ class AppRegisterController extends Controller
         abort_unless(config('auth.iar') == true, 404);
         // $open = (bool) config_cache('pixelfed.open_registration');
         // if(!$open || $request->user()) {
-        if($request->user()) {
+        if ($request->user()) {
             return redirect('/');
         }
+
         return view('auth.iar');
     }
 
@@ -40,11 +45,12 @@ class AppRegisterController extends Controller
 
         $exists = AppRegister::whereEmail($email)->where('created_at', '>', now()->subHours(24))->count();
 
-        if($exists && $exists > 3) {
+        if ($exists && $exists > 3) {
             $errorParams = http_build_query([
                 'status' => 'error',
-                'message' => 'Too many attempts, please try again later.'
+                'message' => 'Too many attempts, please try again later.',
             ]);
+
             return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
         }
 
@@ -53,7 +59,7 @@ class AppRegisterController extends Controller
         $registration = AppRegister::create([
             'email' => $email,
             'verify_code' => $code,
-            'email_delivered_at' => now()
+            'email_delivered_at' => now(),
         ]);
 
         try {
@@ -62,8 +68,9 @@ class AppRegisterController extends Controller
             DB::rollBack();
             $errorParams = http_build_query([
                 'status' => 'error',
-                'message' => 'Failed to send verification code'
+                'message' => 'Failed to send verification code',
             ]);
+
             return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
         }
 
@@ -72,7 +79,7 @@ class AppRegisterController extends Controller
         $queryParams = http_build_query([
             'email' => $request->email,
             'expires_in' => 3600,
-            'status' => 'success'
+            'status' => 'success',
         ]);
 
         return redirect()->away("pixelfed://verifyEmail?{$queryParams}");
@@ -80,9 +87,11 @@ class AppRegisterController extends Controller
 
     public function verifyCode(Request $request)
     {
+        abort_unless(config('auth.iar') == true, 404);
+
         $this->validate($request, [
             'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email',
-            'verify_code' => ['required', 'digits:6', 'numeric']
+            'verify_code' => ['required', 'digits:6', 'numeric'],
         ]);
 
         $email = $request->input('email');
@@ -96,5 +105,97 @@ class AppRegisterController extends Controller
         return response()->json([
             'status' => $exists ? 'success' : 'error',
         ]);
+    }
+
+    public function onboarding(Request $request)
+    {
+        abort_unless(config('auth.iar') == true, 404);
+
+        $this->validate($request, [
+            'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email',
+            'verify_code' => ['required', 'digits:6', 'numeric'],
+            'username' => $this->validateUsernameRule(),
+            'name' => 'nullable|string|max:'.config('pixelfed.max_name_length'),
+            'password' => 'required|string|min:'.config('pixelfed.min_password_length'),
+        ]);
+
+        $email = $request->input('email');
+        $code = $request->input('verify_code');
+        $username = $request->input('username');
+        $name = $request->input('name');
+        $password = $request->input('password');
+
+        $exists = AppRegister::whereEmail($email)
+            ->whereVerifyCode($code)
+            ->where('created_at', '>', now()->subMinutes(60))
+            ->exists();
+
+        if (! $exists) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid verification code, please try again later.',
+            ]);
+        }
+
+        $user = User::create([
+            'name' => Purify::clean($name),
+            'username' => $username,
+            'email' => $email,
+            'password' => Hash::make($password),
+            'app_register_ip' => request()->ip(),
+            'register_source' => 'app',
+        ]);
+
+        sleep(10);
+
+        return response()->json([
+            'status' => 'success',
+            'auth_token' => $user->createToken('Pixelfed App')->plainTextToken,
+        ]);
+    }
+
+    protected function validateUsernameRule()
+    {
+        return [
+            'required',
+            'min:2',
+            'max:30',
+            'unique:users',
+            function ($attribute, $value, $fail) {
+                $dash = substr_count($value, '-');
+                $underscore = substr_count($value, '_');
+                $period = substr_count($value, '.');
+
+                if (ends_with($value, ['.php', '.js', '.css'])) {
+                    return $fail('Username is invalid.');
+                }
+
+                if (($dash + $underscore + $period) > 1) {
+                    return $fail('Username is invalid. Can only contain one dash (-), period (.) or underscore (_).');
+                }
+
+                if (! ctype_alnum($value[0])) {
+                    return $fail('Username is invalid. Must start with a letter or number.');
+                }
+
+                if (! ctype_alnum($value[strlen($value) - 1])) {
+                    return $fail('Username is invalid. Must end with a letter or number.');
+                }
+
+                $val = str_replace(['_', '.', '-'], '', $value);
+                if (! ctype_alnum($val)) {
+                    return $fail('Username is invalid. Username must be alpha-numeric and may contain dashes (-), periods (.) and underscores (_).');
+                }
+
+                if (! preg_match('/[a-zA-Z]/', $value)) {
+                    return $fail('Username is invalid. Must contain at least one alphabetical character.');
+                }
+
+                $restricted = RestrictedNames::get();
+                if (in_array(strtolower($value), array_map('strtolower', $restricted))) {
+                    return $fail('Username cannot be used.');
+                }
+            },
+        ];
     }
 }
