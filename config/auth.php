@@ -112,4 +112,5 @@ return [
         ],
     ],
 
+    'iar' => env('APP_REGISTER', false),
 ];
