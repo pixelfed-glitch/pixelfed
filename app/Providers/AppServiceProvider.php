@@ -30,6 +30,8 @@ use Horizon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
@@ -83,6 +85,10 @@ class AppServiceProvider extends ServiceProvider
                 'extra' => 'DELETED',
                 'avatar' => '/storage/avatars/default.jpg',
             ];
+        });
+
+        RateLimiter::for('app-signup', function (Request $request) {
+            return Limit::perDay(10)->by($request->ip());
         });
 
         // Model::preventLazyLoading(true);
