@@ -92,6 +92,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perDay(10)->by($request->ip());
         });
 
+        RateLimiter::for('app-code-verify', function (Request $request) {
+            return Limit::perHour(10)->by($request->ip());
+        });
+
         // Model::preventLazyLoading(true);
     }
 
