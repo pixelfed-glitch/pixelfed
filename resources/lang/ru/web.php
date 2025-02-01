@@ -29,8 +29,8 @@ return [
 		'close' => 'Закрыть',
 		'clickHere' => 'нажмите здесь',
 
-		'sensitive' => 'Чувствительный',
-		'sensitiveContent' => 'Чувствительный контент',
+		'sensitive' => 'Вызывающий',
+		'sensitiveContent' => 'Вызывающее содержимое',
 		'sensitiveContentWarning' => 'Эта запись может содержать вызывающее содержимое',
 	],
 
