@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Mail\InAppRegisterEmailVerify;
 use App\Models\AppRegister;
+use App\Services\AccountService;
 use App\User;
 use App\Util\Lexer\RestrictedNames;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Laravel\Passport\RefreshTokenRepository;
 use Purify;
 
 class AppRegisterController extends Controller
@@ -159,9 +162,32 @@ class AppRegisterController extends Controller
 
         sleep(10);
 
+        $token = $user->createToken('Pixelfed App', ['read', 'write', 'follow', 'push']);
+        $tokenModel = $token->token;
+        $refreshTokenRepo = app(RefreshTokenRepository::class);
+        $refreshToken = $refreshTokenRepo->create([
+            'id' => Str::random(80),
+            'access_token_id' => $tokenModel->id,
+            'revoked' => false,
+            'expires_at' => now()->addDays(config('instance.oauth.refresh_expiration', 400)),
+        ]);
+
+        $expiresAt = $tokenModel->expires_at ?? now()->addDays(config('instance.oauth.token_expiration', 356));
+        $expiresIn = now()->diffInSeconds($expiresAt);
+
         return response()->json([
             'status' => 'success',
-            'auth_token' => $user->createToken('Pixelfed App')->accessToken,
+            'token_type' => 'Bearer',
+            'domain' => config('pixelfed.domain.app'),
+            'expires_in' => $expiresIn,
+            'access_token' => $token->accessToken,
+            'refresh_token' => $refreshToken->id,
+            'scope' => ['read', 'write', 'follow', 'push'],
+            'user' => [
+                'pid' => (string) $user->profile_id,
+                'username' => $user->username,
+            ],
+            'account' => AccountService::get($user->profile_id, true),
         ]);
     }
 
