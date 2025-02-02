@@ -160,8 +160,8 @@ class AppRegisterController extends Controller
             'register_source' => 'app',
         ]);
 
-        sleep(10);
-
+        sleep(random_int(5,10));
+        $user = User::findOrFail($user->id);
         $token = $user->createToken('Pixelfed App', ['read', 'write', 'follow', 'push']);
         $tokenModel = $token->token;
         $clientId = $tokenModel->client_id;
