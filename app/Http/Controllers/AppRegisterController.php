@@ -158,6 +158,7 @@ class AppRegisterController extends Controller
             'password' => Hash::make($password),
             'app_register_ip' => request()->ip(),
             'register_source' => 'app',
+            'email_verified_at' => now(),
         ]);
 
         sleep(random_int(5,10));
