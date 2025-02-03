@@ -112,5 +112,5 @@ return [
         ],
     ],
 
-    'iar' => env('APP_REGISTER', false),
+    'in_app_registration' => (bool) env('APP_REGISTER', false),
 ];

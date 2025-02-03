@@ -19,7 +19,7 @@ class AppRegisterController extends Controller
 {
     public function index(Request $request)
     {
-        abort_unless(config('auth.iar') == true, 404);
+        abort_unless(config('auth.in_app_registration'), 404);
         $open = (bool) config_cache('pixelfed.open_registration');
         if (! $open || $request->user()) {
             return redirect('/');
@@ -30,7 +30,7 @@ class AppRegisterController extends Controller
 
     public function store(Request $request)
     {
-        abort_unless(config('auth.iar') == true, 404);
+        abort_unless(config('auth.in_app_registration'), 404);
         $open = (bool) config_cache('pixelfed.open_registration');
         if (! $open || $request->user()) {
             return redirect('/');
@@ -46,8 +46,10 @@ class AppRegisterController extends Controller
 
         $this->validate($request, $rules);
 
-        $email = $request->input('email');
+        $email = strtolower($request->input('email'));
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        DB::beginTransaction();
 
         $exists = AppRegister::whereEmail($email)->where('created_at', '>', now()->subHours(24))->count();
 
@@ -56,11 +58,9 @@ class AppRegisterController extends Controller
                 'status' => 'error',
                 'message' => 'Too many attempts, please try again later.',
             ]);
-
+            DB::rollBack();
             return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
         }
-
-        DB::beginTransaction();
 
         $registration = AppRegister::create([
             'email' => $email,
@@ -93,7 +93,7 @@ class AppRegisterController extends Controller
 
     public function verifyCode(Request $request)
     {
-        abort_unless(config('auth.iar') == true, 404);
+        abort_unless(config('auth.in_app_registration'), 404);
         $open = (bool) config_cache('pixelfed.open_registration');
         if (! $open || $request->user()) {
             return redirect('/');
@@ -104,7 +104,7 @@ class AppRegisterController extends Controller
             'verify_code' => ['required', 'digits:6', 'numeric'],
         ]);
 
-        $email = $request->input('email');
+        $email = strtolower($request->input('email'));
         $code = $request->input('verify_code');
 
         $exists = AppRegister::whereEmail($email)
@@ -119,7 +119,7 @@ class AppRegisterController extends Controller
 
     public function onboarding(Request $request)
     {
-        abort_unless(config('auth.iar') == true, 404);
+        abort_unless(config('auth.in_app_registration'), 404);
         $open = (bool) config_cache('pixelfed.open_registration');
         if (! $open || $request->user()) {
             return redirect('/');
@@ -133,7 +133,7 @@ class AppRegisterController extends Controller
             'password' => 'required|string|min:'.config('pixelfed.min_password_length'),
         ]);
 
-        $email = $request->input('email');
+        $email = strtolower($request->input('email'));
         $code = $request->input('verify_code');
         $username = $request->input('username');
         $name = $request->input('name');
