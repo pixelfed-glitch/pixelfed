@@ -1720,7 +1720,7 @@ class ApiV1Controller extends Controller
                 'approval_required' => (bool) config_cache('instance.curated_registration.enabled'),
                 'contact_account' => $contact,
                 'rules' => $rules,
-                'mobile_registration' => config('auth.in_app_registration'),
+                'mobile_registration' => (bool) config_cache('pixelfed.open_registration') && config('auth.in_app_registration'),
                 'configuration' => [
                     'media_attachments' => [
                         'image_matrix_limit' => 16777216,
