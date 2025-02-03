@@ -1709,7 +1709,7 @@ class ApiV1Controller extends Controller
                 'short_description' => config_cache('app.short_description'),
                 'description' => config_cache('app.description'),
                 'email' => config('instance.email'),
-                'version' => '3.5.3 (compatible; Pixelfed '.config('pixelfed.version').')',
+                'version' => config('pixelfed.version'),
                 'urls' => [
                     'streaming_api' => null,
                 ],
@@ -1720,6 +1720,7 @@ class ApiV1Controller extends Controller
                 'approval_required' => (bool) config_cache('instance.curated_registration.enabled'),
                 'contact_account' => $contact,
                 'rules' => $rules,
+                'mobile_registration' => config('auth.in_app_registration'),
                 'configuration' => [
                     'media_attachments' => [
                         'image_matrix_limit' => 16777216,
