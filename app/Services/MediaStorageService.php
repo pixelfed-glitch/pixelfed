@@ -85,7 +85,9 @@ class MediaStorageService
     protected function localToCloud($media)
     {
         $path = storage_path('app/'.$media->media_path);
-        $thumb = storage_path('app/'.$media->thumbnail_path);
+        if ($media->thumbnail_path) {
+            $thumb = storage_path('app/'.$media->thumbnail_path);
+        }
 
         $p = explode('/', $media->media_path);
         $name = array_pop($p);
@@ -94,7 +96,7 @@ class MediaStorageService
         $storagePath = implode('/', $p);
 
         $url = ResilientMediaStorageService::store($storagePath, $path, $name);
-        if ($thumb) {
+        if ($media->thumbnail_path) {
             $thumbUrl = ResilientMediaStorageService::store($storagePath, $thumb, $thumbname);
             $media->thumbnail_url = $thumbUrl;
         }
