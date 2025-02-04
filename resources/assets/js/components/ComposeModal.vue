@@ -1015,19 +1015,29 @@ export default {
 	},
 
     created() {
-        this.editor = new MediaEditor({
-            effects: filterEffects,
-		    onEdit: (index, {effect, intensity, crop}) => {
-			    if (index >= this.files.length) return
-			    const file = this.files[index]
+        try {
+            this.editor = new MediaEditor({
+                effects: filterEffects,
+                onEdit: (sourceIndex, {effect, intensity, crop}) => {
+                    if (sourceIndex >= this.files.length) return
+                    const file = this.files[sourceIndex]
 
-			    this.$set(file, 'editState', { effect, intensity, crop })
-		    },
-		    onRenderPreview: (sourceIndex, previewUrl) => {
-				const media = this.media[sourceIndex]
-				if (media) media.preview_url = previewUrl
-		    },
-        })
+                    this.$set(file, 'editState', { effect, intensity, crop })
+                },
+                onRenderPreview: (sourceIndex, previewUrl) => {
+                    if (sourceIndex >= this.files.length) return
+                    const file = this.files[sourceIndex]
+                    const { editState } = file
+                    const media = this.media[sourceIndex]
+
+                    // If the image was edited, use the preview image from the editor.
+                    if (editState && (editState.crop || editState.effect !== -1)) media.preview_url = previewUrl
+                    // When no edits are applied, use the original media URL.
+                    // This limits broken previews with firefox's resistFingerprinting setting.
+                    else media.preview_url = media.url
+                },
+            })
+        } catch {}
     },
 
 	computed: {
@@ -1054,8 +1064,9 @@ export default {
 	},
 
 	destroyed() {
-		this.files.forEach(fileInfo => {
-            URL.revokeObjectURL(fileInfo.url);
+		this.media.forEach(media => {
+            URL.revokeObjectURL(media.url);
+            URL.revokeObjectURL(media.preview_url);
         })
 		this.files.length = this.media.length = 0
 		this.editor = undefined
@@ -1161,7 +1172,7 @@ export default {
 
                 const type = file.type.replace(/\/.*/, '')
 				const url = URL.createObjectURL(file)
-                const preview_url = type === 'image' ? url : '/storage/no-preview.png'
+                const preview_url = type === 'image' ? URL.createObjectURL(file) : '/storage/no-preview.png'
 
 				this.files.push({ file, editState: undefined })
 				this.media.push({ url, preview_url, type })
@@ -1182,7 +1193,16 @@ export default {
 				const media = this.media[i]
 
 				if (media.type === 'image' && fileInfo.editState) {
-					file = await this.editor.toBlob(i)
+                    const { editState, cropperBlob } = fileInfo
+
+                    // If the WebGL editor is supported by the browser, apply the edits and use the resulting blob
+                    if (this.editor && (editState.effect !== -1 || !!editState.crop)) {
+					    file = await this.editor.toBlob(i)
+                    }
+                    // Otherwise, only the cropped result from cropper.js may be used
+                    else if (cropperBlob) {
+                        file = cropperBlob
+                    }
 				}
 
 				let form = new FormData();
@@ -1555,12 +1575,29 @@ export default {
 				break;
 
 				case 'cropPhoto':
-                    const { editState } = this.files[this.carouselCursor]
+                    const file = this.files[this.carouselCursor]
+                    const { cropper } = this.$refs
+
+                    // update the file state in this vue component
                     const croppedState = {
-                        ...editState,
-                        crop: this.$refs.cropper.getData()
+                        ...file.editState,
+                        crop: cropper.getData()
                     }
-                    this.editor.setEditState(this.carouselCursor, croppedState)
+
+                    if (this.editor) {
+                        // also update the file state in the WebGL editor
+                        this.editor.setEditState(this.carouselCursor, croppedState)
+                    } else {
+                        // if the browser can't run the WebGL editor, get the cropped image from cropper.js
+                         cropper.getCroppedCanvas().toBlob((blob) => {
+                            const { media } = this.media[this.carouselCursor]
+
+                            file.croppedBlob = blob
+                            URL.revokeObjectURL(media.preview_url)
+                            media.preview_url = URL.createObjectURL(blob)
+                        })
+                    }
+
 					this.page = 2;
 				break;
 
