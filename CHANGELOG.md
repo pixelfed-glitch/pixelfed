@@ -5,6 +5,7 @@
 ### Updates (from Upstream)
 - Fix GroupController, move groups enabled check to each method to fix route:list ([f260572e](https://github.com/pixelfed/pixelfed/commit/f260572e))
 - Update MediaStorageService, handle local media deletes after successful S3 upload ([280f63dc](https://github.com/pixelfed/pixelfed/commit/280f63dc))
+- Update status twitter:card to summary_large_image for images/albums ([9a5a9f55](https://github.com/pixelfed/pixelfed/commit/9a5a9f55))
 
 ## [v0.12.4+glitch.1.9.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.8.0...v0.12.4-glitch.1.9.0)
 
