@@ -90,7 +90,6 @@ class AdminStatsService
 
     protected static function additionalData()
     {
-        $day = config('database.default') == 'pgsql' ? 'DATE_PART(\'day\',' : 'day(';
         $ttl = now()->addHours(24);
 
         return Cache::remember('admin:dashboard:home:data:v0:24hr', $ttl, function () {
@@ -102,7 +101,7 @@ class AdminStatsService
                 'real_statuses_monthly' => PrettyNumber::convert(Status::where('url', '=', 'null')->where('created_at', '>', now()->subMonth())->where('reblog_of_id', '=', 'null')->where('in_reply_to_id', '=', 'null')->count()),
                 'profiles' => PrettyNumber::convert(Profile::count()),
                 'users' => PrettyNumber::convert(User::whereNull('status')->count()),
-                'users_monthly' => PrettyNumber::convert(User::where('created_at', '>', now()->subMonth())->count()),
+                'users_monthly' => PrettyNumber::convert(User::where('created_at', '>', now()->subMonth())->whereNull('status')->count()),
                 'instances' => PrettyNumber::convert(Instance::count()),
                 'media' => PrettyNumber::convert(Media::count()),
                 'storage' => Media::sum('size'),

@@ -25,6 +25,7 @@ class Nodeinfo
             }
     
             $features = ['features' => \App\Util\Site\Config::get()['features']];
+            unset($features['features']['hls']);
 
             return [
                 'metadata' => [

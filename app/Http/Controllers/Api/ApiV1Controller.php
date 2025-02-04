@@ -1720,6 +1720,7 @@ class ApiV1Controller extends Controller
                 'approval_required' => (bool) config_cache('instance.curated_registration.enabled'),
                 'contact_account' => $contact,
                 'rules' => $rules,
+                'mobile_registration' => (bool) config_cache('pixelfed.open_registration') && config('auth.in_app_registration'),
                 'configuration' => [
                     'media_attachments' => [
                         'image_matrix_limit' => 16777216,
@@ -2962,6 +2963,8 @@ class ApiV1Controller extends Controller
             'limit' => 'min:1|max:40',
             'scope' => 'nullable|in:inbox,sent,requests',
         ]);
+
+        return [];
 
         $limit = $request->input('limit', 20);
         $scope = $request->input('scope', 'inbox');
