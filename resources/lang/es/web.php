@@ -59,6 +59,7 @@ return [
 		'profile' => 'Perfil',
 		'drive' => 'Multimedia',
 		'settings' => 'Ajustes',
+        'appearance' => 'Aspecto',
 		'compose' => 'Crear Nuevo',
 		'logout' => 'Cerrar sesión',
 
@@ -204,5 +205,21 @@ return [
 		'thanksMsg' => 'Gracias por el reporte, ¡personas como tú ayudan a mantener nuestra comunidad segura!',
 		'contactAdminMsg' => 'Si quieres contactar un administrador sobre esta publicación o reporte',
 	],
+
+    'appearance' => [
+        'theme' => 'Tema',
+        'profileLayout' => 'Arreglo de Perfil',
+        'compactPreviews' => 'Previstas Compactas de Medios',
+        'loadComments' => 'Cargar Comentarios',
+        'hideStats' => 'Ocultar Cuentas y Estadísticas',
+
+        'auto' => 'Automático',
+        'lightMode' => 'Modo claro',
+        'darkMode' => 'Modo oscuro',
+
+        'grid' => 'Cuadrícula',
+        'masonry' => 'Mampostería',
+        'feed' => 'Feed',
+    ],
 
 ];
