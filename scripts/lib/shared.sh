@@ -79,12 +79,6 @@ function __gum()
     return $?
 }
 
-function __feature()
-{
-    "${project_root:?missing}/scripts/feature" "$@"
-    return $?
-}
-
 function as-boolean()
 {
     local input="${1:-}"

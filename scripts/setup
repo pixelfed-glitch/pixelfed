@@ -52,25 +52,13 @@ ask_confirm_boolean "OPEN_REGISTRATION" "Enable new local account registrations"
 ask_confirm_boolean "ENFORCE_EMAIL_VERIFICATION" "Require email verification before a new user can do anything (you need to setup SMTP outside of this guide for it to work!)"
 ask_confirm_boolean "OAUTH_ENABLED" "Enable OAuth? (required for using mobile apps)"
 
-# Use the included Docker Proxy or not
-if ask_confirm_profile "DOCKER_PROXY_PROFILE" "Do you want to use the included HTTP(S) proxy?"; then
-    ask_confirm_profile "DOCKER_PROXY_ACME_PROFILE" "Do you want to use the included HTTP(S) LetsEncrypt side-car?" || :
-else
-    __feature enable-proxy-acme
-fi
-
 # Yay, everything is fine
 echo -e "🎉 ${GREEN}All configuration successfully written! You can now use [$(highlight "docker compose up -d")]${GREEN} to start your Pixelfed site${NO_COLOR}"
 echo ""
 
-if [[ -n $(__dottie value --with-disabled DOCKER_PROXY_PROFILE) ]]; then
-    action_warn "Since you have DISABLED the included Nginx Proxy, please make sure that:"
+    action_warn "If you have DISABLED the included Nginx Proxy, please make sure that:"
     action_warn "   * HTTP traffic is sent to port $(highlight "$(__dottie value --with-disabled DOCKER_WEB_PORT_EXTERNAL_HTTP)")${YELLOW} - can be changed via ($(highlight "DOCKER_WEB_PORT_EXTERNAL_HTTP")${YELLOW}) in your .env file"
     action_warn "   * HTTPS traffic is terminated at your own HTTPS proxy"
-    action_warn "To ENABLE the included Nginx proxy run this script again and answer 'yes' instead"
-else
-    action_warn "Since you have ENABLED the included Nginx Proxy, please make sure that:"
+    action_warn "If you have ENABLED the included Nginx Proxy, please make sure that:"
     action_warn "   * HTTP traffic is sent to port $(highlight "$(__dottie value --with-disabled DOCKER_PROXY_HOST_PORT_HTTP)")${YELLOW} - can be changed via ($(highlight "DOCKER_PROXY_HOST_PORT_HTTP")${YELLOW}) in your .env file"
     action_warn "   * HTTPS traffic is sent to port $(highlight "$(__dottie value --with-disabled DOCKER_PROXY_HOST_PORT_HTTPS)")${YELLOW} - can be changed via ($(highlight "DOCKER_PROXY_HOST_PORT_HTTPS")${YELLOW}) in your .env file"
-    action_warn "To DISABLE the included Nginx proxy run this script again and answer 'no' instead"
-fi

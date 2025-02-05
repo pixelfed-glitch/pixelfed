@@ -5,9 +5,21 @@
 
 services:
   web:
-    image: "${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
     container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-web"
     restart: unless-stopped
+    build:
+      dockerfile: docker/Dockerfile
+      target: ${DOCKER_APP_RUNTIME}-runtime
+      cache_from:
+        - "type=registry,ref=${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
+      args:
+        APT_PACKAGES_EXTRA: "${DOCKER_APP_APT_PACKAGES_EXTRA:-}"
+        BUILD_FRONTEND: "${DOCKER_APP_BUILD_FRONTEND:-0}"
+        PHP_BASE_TYPE: "${DOCKER_APP_BASE_TYPE}"
+        PHP_DEBIAN_RELEASE: "${DOCKER_APP_DEBIAN_RELEASE}"
+        PHP_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_EXTENSIONS_EXTRA:-}"
+        PHP_PECL_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_PECL_EXTENSIONS_EXTRA:-}"
+        PHP_VERSION: "${DOCKER_APP_PHP_VERSION:?error}"
     environment:
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "web"
@@ -41,11 +53,23 @@ services:
       timeout: 5s
 
   worker:
-    image: "${DOCKER_WORKER_IMAGE}:${DOCKER_WORKER_TAG}"
     container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-worker"
     command: gosu www-data php artisan horizon
     restart: unless-stopped
     stop_signal: SIGTERM
+    build:
+      dockerfile: docker/Dockerfile
+      target: ${DOCKER_APP_RUNTIME}-runtime
+      cache_from:
+        - "type=registry,ref=${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
+      args:
+        APT_PACKAGES_EXTRA: "${DOCKER_APP_APT_PACKAGES_EXTRA:-}"
+        BUILD_FRONTEND: "${DOCKER_APP_BUILD_FRONTEND:-0}"
+        PHP_BASE_TYPE: "${DOCKER_APP_BASE_TYPE}"
+        PHP_DEBIAN_RELEASE: "${DOCKER_APP_DEBIAN_RELEASE}"
+        PHP_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_EXTENSIONS_EXTRA:-}"
+        PHP_PECL_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_PECL_EXTENSIONS_EXTRA:-}"
+        PHP_VERSION: "${DOCKER_APP_PHP_VERSION:?error}"
     environment:
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "worker"
@@ -67,11 +91,23 @@ services:
       retries: 2
 
   cron:
-    image: "${DOCKER_CRON_IMAGE}:${DOCKER_CRON_TAG}"
     container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-cron"
     command: gosu www-data php artisan schedule:work -vvv
     restart: unless-stopped
     stop_signal: SIGTERM
+    build:
+      dockerfile: docker/Dockerfile
+      target: ${DOCKER_APP_RUNTIME}-runtime
+      cache_from:
+        - "type=registry,ref=${DOCKER_APP_IMAGE}:${DOCKER_APP_TAG}"
+      args:
+        APT_PACKAGES_EXTRA: "${DOCKER_APP_APT_PACKAGES_EXTRA:-}"
+        BUILD_FRONTEND: "${DOCKER_APP_BUILD_FRONTEND:-0}"
+        PHP_BASE_TYPE: "${DOCKER_APP_BASE_TYPE}"
+        PHP_DEBIAN_RELEASE: "${DOCKER_APP_DEBIAN_RELEASE}"
+        PHP_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_EXTENSIONS_EXTRA:-}"
+        PHP_PECL_EXTENSIONS_EXTRA: "${DOCKER_APP_PHP_PECL_EXTENSIONS_EXTRA:-}"
+        PHP_VERSION: "${DOCKER_APP_PHP_VERSION:?error}"
     environment:
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "cron"
