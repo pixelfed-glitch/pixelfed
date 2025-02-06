@@ -276,7 +276,7 @@
 
 										<li class="nav-item">
 											<router-link class="nav-link" to="/settings/home">
-												<span class="icon text-lighter"><i class="far fa-gear"></i></span>
+												<span class="icon text-lighter"><i class="fa-cog"></i></span>
 												{{ $t('navmenu.settings') }}
 											</router-link>
 										</li>
