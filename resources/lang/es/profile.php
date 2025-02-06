@@ -4,7 +4,7 @@ return [
   'emptyTimeline'  => '¡Este usuario todavía no ha publicado nada!',
   'emptyFollowers' => '¡Este usuario todavía no tiene seguidores!',
   'emptyFollowing' => '¡Este usuario todavía no está siguiendo a nadie!',
-  'emptySaved'	   => 'No has guardado ninguna foto aún!',  
+  'emptySaved'	   => '¡No has guardado ninguna foto aún!',  
   'savedWarning'   => 'Solamente tú puedes ver lo que has guardado',
   'privateProfileWarning' => 'Esta cuenta es Privada',
   'alreadyFollow'         => '¿Ya sigues a :username?',
