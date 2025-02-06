@@ -13,7 +13,7 @@ return [
 	'remoteFollow'		=> 'Seguidor Remoto',
 	'settings'			=> 'Configuraciones',
 	'admin'				=> 'Admin',
-	'logout'			=> 'Logout',
+	'logout'			=> 'Cerrar Sesión',
 	'directMessages'	=> 'Mensajes Directos',
 	'composePost'		=> 'Crear Post',
 ];
