@@ -1,11 +1,18 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.0...develop)
+## [v0.12.4+glitch.1.9.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.0...v0.12.4-glitch.1.9.1)
+
+### Updates
+- Clearer docker compose setup ([c0acc38c](https://github.com/pixelfed/pixelfed/commit/c0acc38c))
+- New branding to differentiate from upstream ([2fee37b2](https://github.com/pixelfed/pixelfed/commit/2fee37b2))
+- Don't error out by default on dottie validate ([84c57fd4](https://github.com/pixelfed/pixelfed/commit/84c57fd4))
+- Deduce version from git whenever possible ([5aedc533](https://github.com/pixelfed/pixelfed/commit/5aedc533))
 
 ### Updates (from Upstream)
 - Fix GroupController, move groups enabled check to each method to fix route:list ([f260572e](https://github.com/pixelfed/pixelfed/commit/f260572e))
 - Update MediaStorageService, handle local media deletes after successful S3 upload ([280f63dc](https://github.com/pixelfed/pixelfed/commit/280f63dc))
 - Update status twitter:card to summary_large_image for images/albums ([9a5a9f55](https://github.com/pixelfed/pixelfed/commit/9a5a9f55))
+- (A lot of small fixes)
 
 ## [v0.12.4+glitch.1.9.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.8.0...v0.12.4-glitch.1.9.0)
 
