@@ -9,6 +9,7 @@ services:
     container_name: "${DOCKER_ALL_CONTAINER_NAME_PREFIX}-web"
     restart: unless-stopped
     environment:
+      TZ: "${TZ:?error}"
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "web"
       DOCKER_APP_ENTRYPOINT_DEBUG: ${DOCKER_APP_ENTRYPOINT_DEBUG:-0}
@@ -47,6 +48,7 @@ services:
     restart: unless-stopped
     stop_signal: SIGTERM
     environment:
+      TZ: "${TZ:?error}"
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "worker"
       DOCKER_APP_ENTRYPOINT_DEBUG: ${DOCKER_APP_ENTRYPOINT_DEBUG:-0}
@@ -73,6 +75,7 @@ services:
     restart: unless-stopped
     stop_signal: SIGTERM
     environment:
+      TZ: "${TZ:?error}"
       # Used by Pixelfed Docker init script
       DOCKER_SERVICE_NAME: "cron"
       DOCKER_APP_ENTRYPOINT_DEBUG: ${DOCKER_APP_ENTRYPOINT_DEBUG:-0}

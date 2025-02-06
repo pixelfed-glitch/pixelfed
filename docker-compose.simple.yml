@@ -97,9 +97,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 2
-    env_file:
-      - .env
     environment:
+      TZ: "${TZ:?error}"
       MARIADB_ROOT_PASSWORD: "${DOCKER_DB_ROOT_PASSWORD:?error}"
       MARIADB_USER: "${DB_USERNAME:?error}"
       MARIADB_PASSWORD: "${DB_PASSWORD:?error}"
@@ -112,13 +111,12 @@ services:
     command: " --requirepass '${REDIS_PASSWORD:-}'"
     restart: unless-stopped
     environment:
-      - REDISCLI_AUTH=${REDIS_PASSWORD:-}
+      TZ: "${TZ:?error}"
+      REDISCLI_AUTH: ${REDIS_PASSWORD:-}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 2
-    env_file:
-      - .env
     volumes:
       - "./redis:/data"
