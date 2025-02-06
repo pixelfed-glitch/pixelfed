@@ -16,7 +16,7 @@ return [
 	'embed'	=> 'Embed',
 
 	'communityGuidelines' => 'Community Guidelines',
-	'whatIsTheFediverse' => 'Que es el fediverso?',
+	'whatIsTheFediverse' => '¿Qué es el fediverso?',
 	'controllingVisibility' => 'Controlando la Visibilidad',
 	'blockingAccounts' => 'Bloqueando Cuentas',
 	'safetyTips' => 'Tips de Seguridad',
