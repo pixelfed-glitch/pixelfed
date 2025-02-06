@@ -3,10 +3,10 @@
 return [
 
 	'helpcenter' => 'Centro de Ayuda',
-	'whatsnew' => 'What\'s New',
+	'whatsnew' => 'Novedades',
 
-	'gettingStarted' => 'Getting Started',
-	'sharingMedia' => 'Sharing Media',
+	'gettingStarted' => 'Primeros Pasos',
+	'sharingMedia' => 'Compartir Medios',
 	'profile' => 'Perfil',
 	'stories' => 'Historias',
 	'hashtags' => 'Hashtags',
