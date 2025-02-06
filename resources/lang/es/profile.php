@@ -11,7 +11,7 @@ return [
   'loginToSeeProfile'     => 'para ver sus fotos y videos.',
 
   'status.disabled.header' 	  => 'Perfil no disponible',
-  'status.disabled.body'	  => 'Disculpa, este perfil no esta disponible en este momento. Por favor intenta nuevamente luego.',
+  'status.disabled.body'	  => 'Disculpa, este perfil no está disponible en este momento. Por favor intenta nuevamente luego.',
 
   'block.domain.max'      => 'Alcanzaste el limite Maximo de dominios bloqueados! Tú solo puedes bloquear :max dominios por el momento. Preguntale a tu administrador para ajustar este limite.',
 
