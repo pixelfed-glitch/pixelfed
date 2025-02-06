@@ -13,7 +13,7 @@ return [
   'status.disabled.header' 	  => 'Perfil no disponible',
   'status.disabled.body'	  => 'Disculpa, este perfil no está disponible en este momento. Por favor intenta nuevamente luego.',
 
-  'block.domain.max'      => 'Alcanzaste el limite Maximo de dominios bloqueados! Tú solo puedes bloquear :max dominios por el momento. Preguntale a tu administrador para ajustar este limite.',
+  'block.domain.max'      => '¡Alcanzaste el limite máximo de dominios bloqueados! Tú solo puedes bloquear :max dominios por el momento. Pregúntale a tu administrador para ajustar este limite.',
 
   'mutedAccounts'           => 'Cuentas Silenciadas',
   'blockedAccounts'         => 'Cuentas Bloqueadas',
