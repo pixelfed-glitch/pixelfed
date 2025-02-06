@@ -7,7 +7,7 @@ return [
   'emptySaved'	   => 'No has guardado ninguna foto aún!',  
   'savedWarning'   => 'Solamente tú puedes ver lo que has guardado',
   'privateProfileWarning' => 'Esta cuenta es Privada',
-  'alreadyFollow'         => 'Ya sigues a :username?',
+  'alreadyFollow'         => '¿Ya sigues a :username?',
   'loginToSeeProfile'     => 'para ver sus fotos y videos.',
 
   'status.disabled.header' 	  => 'Perfil no disponible',
