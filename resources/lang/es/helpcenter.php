@@ -6,7 +6,7 @@ return [
 	'whatsnew' => 'Novedades',
 
 	'gettingStarted' => 'Primeros Pasos',
-	'sharingMedia' => 'Compartir Medios',
+	'sharingMedia' => 'Compartiendo Medios',
 	'profile' => 'Perfil',
 	'stories' => 'Historias',
 	'hashtags' => 'Hashtags',
