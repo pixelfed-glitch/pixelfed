@@ -472,7 +472,6 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     });
     Route::get('g/{hid}', 'GroupController@groupShortLinkRedirect');
 
-    Route::get('storage/m/_v2/{pid}/{mhash}/{uhash}/{f}', 'MediaController@fallbackRedirect');
     Route::get('stories/{username}', 'ProfileController@stories');
     Route::get('p/{id}', 'StatusController@shortcodeRedirect');
     Route::get('c/{collection}', 'CollectionController@show');
