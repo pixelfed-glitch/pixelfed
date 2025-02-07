@@ -9,7 +9,7 @@ return [
 	'viewMyProfile'		=> 'Ver mi perfil',
 	'myProfile'			=> 'Mi Perfil',
 	'myTimeline'		=> 'Mi Timeline',
-	'publicTimeline'	=> 'Timeline publico',
+	'publicTimeline'	=> 'Timeline público',
 	'remoteFollow'		=> 'Seguidor Remoto',
 	'settings'			=> 'Configuraciones',
 	'admin'				=> 'Admin',
