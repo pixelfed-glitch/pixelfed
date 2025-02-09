@@ -137,16 +137,16 @@ return [
 		'unarchive' => 'No Archivar',
 		'embed' => 'Incrustar',
 
-		'selectOneOption' => 'Escoge una de las siguientes opciones',
+		'selectOneOption' => 'Selecciona una de las siguientes opciones',
 		'unlistFromTimelines' => 'No listar en Líneas Temporales',
 		'addCW' => 'Añadir Spoiler',
 		'removeCW' => 'Quitar Spoiler',
 		'markAsSpammer' => 'Marcar como Spammer',
 		'markAsSpammerText' => 'No listar + Spoiler publicaciones actuales y futuras',
 		'spam' => 'Spam',
-		'sensitive' => 'Contenido Sensible',
+		'sensitive' => 'Contenido sensible',
 		'abusive' => 'Abusivo o Dañino',
-		'underageAccount' => 'Cuenta de Menor de Edad',
+		'underageAccount' => 'Cuenta de menor de edad',
 		'copyrightInfringement' => 'Infracción de derechos de autor',
 		'impersonation' => 'Suplantación de identidad',
 		'scamOrFraud' => 'Scam o Fraude',
@@ -169,7 +169,7 @@ return [
 
 		'showCaption' => 'Mostrar subtítulos',
 		'showLikes' => 'Mostrar "me gusta"',
-		'compactMode' => 'Modo Compacto',
+		'compactMode' => 'Modo compacto',
 		'embedConfirmText' => 'Al utilizar esta incrustación, usted acepta nuestros',
 
 		'deletePostConfirm' => '¿Seguro que deseas eliminar esta publicación?',
@@ -178,7 +178,7 @@ return [
 	],
 
 	'story' => [
-		'add' => 'Añadir Historia'
+		'add' => 'Añadir historia'
 	],
 
 	'timeline' => [
