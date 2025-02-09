@@ -74,19 +74,21 @@ class AppServiceProvider extends ServiceProvider
             return $user->is_admin === 1;
         });
 
-        Pulse::user(function ($user) {
-            $acct = AccountService::get($user->profile_id, true);
+        if (config('pulse.enabled', false)) {
+            Pulse::user(function ($user) {
+                $acct = AccountService::get($user->profile_id, true);
 
-            return $acct ? [
-                'name' => $acct['username'],
-                'extra' => $user->email,
-                'avatar' => $acct['avatar'],
-            ] : [
-                'name' => $user->username,
-                'extra' => 'DELETED',
-                'avatar' => '/storage/avatars/default.jpg',
-            ];
-        });
+                return $acct ? [
+                    'name' => $acct['username'],
+                    'extra' => $user->email,
+                    'avatar' => $acct['avatar'],
+                ] : [
+                    'name' => $user->username,
+                    'extra' => 'DELETED',
+                    'avatar' => '/storage/avatars/default.jpg',
+                ];
+            });
+        }
 
         RateLimiter::for('app-signup', function (Request $request) {
             return Limit::perDay(10)->by($request->ip());
