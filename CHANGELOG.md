@@ -41,6 +41,7 @@
 - Fix GroupController, move groups enabled check to each method to fix route:list ([f260572e](https://github.com/pixelfed/pixelfed/commit/f260572e))
 - Update MediaStorageService, handle local media deletes after successful S3 upload ([280f63dc](https://github.com/pixelfed/pixelfed/commit/280f63dc))
 - Update status twitter:card to summary_large_image for images/albums ([9a5a9f55](https://github.com/pixelfed/pixelfed/commit/9a5a9f55))
+- Update CuratedOnboarding, add new app:curated-onboarding command, extend email verification window to 7 days and fix resend verification mails ([49604210](https://github.com/pixelfed/pixelfed/commit/49604210))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)
