@@ -119,6 +119,11 @@ jobs:
           rm -f *.deb
           dottie -v
 
+      - name: Install database client
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ${{ matrix.db_type == 'postgres' && 'postgresql' || 'default-mysql' }}-client
+
       - name: Install PHP extensions
         run: |
           chmod +x install-php-extensions
