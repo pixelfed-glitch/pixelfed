@@ -1,5 +1,18 @@
 # Release Notes
 
+## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.1...develop)
+
+### Updates (from Upstream)
+- Update oauth/token, fix scope to be space separated string instead of array ([4ce6e610](https://github.com/pixelfed/pixelfed/commit/4ce6e610))
+- Update SearchApiV2Service, fix hashtag search ([83c1a7fd](https://github.com/pixelfed/pixelfed/commit/83c1a7fd))
+- Update AP Helpers, fix comment bug ([22eae69f](https://github.com/pixelfed/pixelfed/commit/22eae69f))
+- Update ComposeController, add max_media_attachments attribute ([17918cbe](https://github.com/pixelfed/pixelfed/commit/17918cbe))
+- Fix GroupController, move groups enabled check to each method to fix route:list ([f260572e](https://github.com/pixelfed/pixelfed/commit/f260572e))
+- Update MediaStorageService, handle local media deletes after successful S3 upload ([280f63dc](https://github.com/pixelfed/pixelfed/commit/280f63dc))
+- Update status twitter:card to summary_large_image for images/albums ([9a5a9f55](https://github.com/pixelfed/pixelfed/commit/9a5a9f55))
+- Update CuratedOnboarding, add new app:curated-onboarding command, extend email verification window to 7 days and fix resend verification mails ([49604210](https://github.com/pixelfed/pixelfed/commit/49604210))
+- Update DirectMessageController, fix performance issue ([4ec9f99](https://github.com/pixelfed/pixelfed/commit/4ec9f99))
+
 ## [v0.12.4+glitch.1.9.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.0...v0.12.4-glitch.1.9.1)
 
 ### Updates
