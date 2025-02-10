@@ -1,0 +1,10 @@
+database:
+  type: mariadb
+  version: "10.11"
+web_environment:
+  - DB_CONNECTION=mysql
+  - DB_HOST=ddev-pixelfed-db
+  - DB_PORT=3306
+  - DB_DATABASE=db
+  - DB_USERNAME=db
+  - DB_PASSWORD=db

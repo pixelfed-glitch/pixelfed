@@ -3,16 +3,8 @@ type: laravel
 docroot: public
 php_version: "8.4"
 webserver_type: nginx-fpm
-database:
-  type: mariadb
-  version: "10.11"
 disable_settings_management: true
 web_environment:
-  - DB_CONNECTION=mysql
-  - DB_HOST=ddev-pixelfed-db
-  - DB_DATABASE=db
-  - DB_USERNAME=db
-  - DB_PASSWORD=db
   - REDIS_HOST=ddev-pixelfed-redis
   - MAIL_MAILER=smtp
   - MAIL_HOST=localhost

@@ -1,0 +1,28 @@
+database:
+  type: postgres
+  version: "17"
+web_environment:
+  - DB_CONNECTION=pgsql
+  - DB_HOST=ddev-pixelfed-db
+  - DB_PORT=5432
+  - DB_DATABASE=db
+  - DB_USERNAME=db
+  - DB_PASSWORD=db
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
