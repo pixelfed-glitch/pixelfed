@@ -46,7 +46,7 @@ class RemoteOidcController extends Controller
         abort_unless($request->input("state"), 400);
         abort_unless($request->input("code"), 400);
 
-        abort_unless($request->input("state") == $request->session()->pull('oauth2state'), 400, "invalid state");
+        abort_unless(hash_equals($request->session()->pull('oauth2state'), $request->input("state")), 400, "invalid state");
 
         $accessToken = $provider->getAccessToken('authorization_code', [
             'code' => $request->get('code')
@@ -66,7 +66,7 @@ class RemoteOidcController extends Controller
 
         $user = $this->createUser([
             'username' => $userInfoData[config('remote-auth.oidc.field_username')],
-            'name' => $userInfoData["name"] ?? $userInfoData["display_name"] ?? $userInfoData[config('remote-auth.oidc.field_username')],
+            'name' => $userInfoData["name"] ?? $userInfoData["display_name"] ?? $userInfoData[config('remote-auth.oidc.field_username')] ?? null,
             'email' => $userInfoData["email"],
         ]);
 

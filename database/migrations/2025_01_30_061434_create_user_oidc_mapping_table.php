@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_oidc_mappings', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedInteger('user_id')->index();
+            $table->bigIncrements('id');
+            $table->bigInteger('user_id')->unsigned()->index();
             $table->string('oidc_id')->unique()->index();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
