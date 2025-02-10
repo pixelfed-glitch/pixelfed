@@ -271,32 +271,36 @@ class DirectMessageController extends Controller
             'meta',
             'created_at',
             'read_at'
-        )->with(['status' => function ($q) {
-            $q->select('id', 'caption', 'profile_id');
-        }])->where(function ($q) use ($pid, $uid) {
-            $q->where(function ($query) use ($pid, $uid) {
-                $query->where('from_id', $pid)
-                    ->where('to_id', $uid)
-                    ->where('is_hidden', false);
-            })->orWhere(function ($query) use ($pid, $uid) {
-                $query->where('from_id', $uid)
-                    ->where('to_id', $pid);
-            });
-        });
+        )->with(['status']);
 
         if ($min_id) {
             $res = $query->where('id', '>', $min_id)
+                ->where(function ($query) use ($pid, $uid) {
+                    $query->where('from_id', $pid)->where('to_id', $uid);
+                })->orWhere(function ($query) use ($pid, $uid) {
+                    $query->where('from_id', $uid)->where('to_id', $pid);
+                })
                 ->orderBy('id', 'asc')
                 ->take(8)
                 ->get()
                 ->reverse();
         } elseif ($max_id) {
             $res = $query->where('id', '<', $max_id)
+                ->where(function ($query) use ($pid, $uid) {
+                    $query->where('from_id', $pid)->where('to_id', $uid);
+                })->orWhere(function ($query) use ($pid, $uid) {
+                    $query->where('from_id', $uid)->where('to_id', $pid);
+                })
                 ->orderBy('id', 'desc')
                 ->take(8)
                 ->get();
         } else {
-            $res = $query->orderBy('id', 'desc')
+            $res = $query->where(function ($query) use ($pid, $uid) {
+                $query->where('from_id', $pid)->where('to_id', $uid);
+            })->orWhere(function ($query) use ($pid, $uid) {
+                $query->where('from_id', $uid)->where('to_id', $pid);
+            })
+                ->orderBy('id', 'desc')
                 ->take(8)
                 ->get();
         }
