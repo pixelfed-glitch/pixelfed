@@ -1,6 +1,6 @@
 database:
-  type: mysql
-  version: "8.0"
+  type: mariadb
+  version: "11.4"
 web_environment:
   - DB_CONNECTION=mysql
   - DB_HOST=ddev-pixelfed-db
