@@ -122,7 +122,7 @@ jobs:
       - name: Install database client
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends ${{ matrix.db_type == 'postgres' && 'postgresql' || 'default-mysql' }}-client
+          apt-get install -y --no-install-recommends ${{ matrix.db_type == 'postgres' && 'postgresql' || (matrix.db_type == 'mysql' && 'default-mysql' || 'mariadb') }}-client
 
       - name: Install PHP extensions
         run: |
@@ -142,7 +142,7 @@ jobs:
         run: |
           cp .env.testing .env
 
-          dottie set DB_CONNECTION=${{ matrix.db_type == 'postgres' && 'pgsql' || 'mysql' }}
+          dottie set DB_CONNECTION=${{ matrix.db_type == 'postgres' && 'pgsql' || (matrix.db_type == 'mysql' && 'mysql' || 'mariadb') }}
           dottie set DB_HOST=db
           dottie set DB_PORT=${{ matrix.db_type == 'postgres' && '5432' || '3306' }}
           dottie set DB_DATABASE=pixelfed
