@@ -1,37 +1,38 @@
+/*M!999999\- enable the sandbox mode */ 
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 DROP TABLE IF EXISTS `account_interstitials`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account_interstitials` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `view` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `item_id` bigint unsigned DEFAULT NULL,
-  `item_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `view` varchar(191) DEFAULT NULL,
+  `item_id` bigint(20) unsigned DEFAULT NULL,
+  `item_type` varchar(191) DEFAULT NULL,
   `is_spam` tinyint(1) DEFAULT NULL,
   `in_violation` tinyint(1) DEFAULT NULL,
-  `violation_id` int unsigned DEFAULT NULL,
+  `violation_id` int(10) unsigned DEFAULT NULL,
   `email_notify` tinyint(1) DEFAULT NULL,
-  `has_media` tinyint(1) DEFAULT '0',
-  `blurhash` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `message` text COLLATE utf8mb4_unicode_ci,
-  `violation_header` text COLLATE utf8mb4_unicode_ci,
-  `violation_body` text COLLATE utf8mb4_unicode_ci,
-  `meta` json DEFAULT NULL,
-  `appeal_message` text COLLATE utf8mb4_unicode_ci,
+  `has_media` tinyint(1) DEFAULT 0,
+  `blurhash` varchar(191) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `violation_header` text DEFAULT NULL,
+  `violation_body` text DEFAULT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
+  `appeal_message` text DEFAULT NULL,
   `appeal_requested_at` timestamp NULL DEFAULT NULL,
   `appeal_handled_at` timestamp NULL DEFAULT NULL,
   `read_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `severity_index` tinyint unsigned DEFAULT NULL,
-  `thread_id` bigint unsigned DEFAULT NULL,
+  `severity_index` tinyint(3) unsigned DEFAULT NULL,
+  `thread_id` bigint(20) unsigned DEFAULT NULL,
   `emailed_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_interstitials_thread_id_unique` (`thread_id`),
@@ -48,18 +49,18 @@ CREATE TABLE `account_interstitials` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `account_logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account_logs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `item_id` bigint unsigned DEFAULT NULL,
-  `item_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `message` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `link` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ip_address` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `item_id` bigint(20) unsigned DEFAULT NULL,
+  `item_type` varchar(191) DEFAULT NULL,
+  `action` varchar(191) DEFAULT NULL,
+  `message` varchar(191) DEFAULT NULL,
+  `link` varchar(191) DEFAULT NULL,
+  `ip_address` varchar(191) DEFAULT NULL,
+  `user_agent` varchar(191) DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -68,13 +69,13 @@ CREATE TABLE `account_logs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `activities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `activities` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `to_id` bigint unsigned DEFAULT NULL,
-  `from_id` bigint unsigned DEFAULT NULL,
-  `object_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `data` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `to_id` bigint(20) unsigned DEFAULT NULL,
+  `from_id` bigint(20) unsigned DEFAULT NULL,
+  `object_type` varchar(191) DEFAULT NULL,
+  `data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`data`)),
   `processed_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -83,19 +84,19 @@ CREATE TABLE `activities` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `admin_invites`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `admin_invites` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `invite_code` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `message` text COLLATE utf8mb4_unicode_ci,
-  `max_uses` int unsigned DEFAULT NULL,
-  `uses` int unsigned NOT NULL DEFAULT '0',
-  `skip_email_verification` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) DEFAULT NULL,
+  `invite_code` varchar(191) NOT NULL,
+  `description` text DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `max_uses` int(10) unsigned DEFAULT NULL,
+  `uses` int(10) unsigned NOT NULL DEFAULT 0,
+  `skip_email_verification` tinyint(1) NOT NULL DEFAULT 0,
   `expires_at` timestamp NULL DEFAULT NULL,
-  `used_by` json DEFAULT NULL,
-  `admin_user_id` int unsigned DEFAULT NULL,
+  `used_by` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`used_by`)),
+  `admin_user_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -104,30 +105,30 @@ CREATE TABLE `admin_invites` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `admin_shadow_filters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `admin_shadow_filters` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `admin_id` bigint unsigned DEFAULT NULL,
-  `item_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_id` bigint unsigned NOT NULL,
-  `is_local` tinyint(1) NOT NULL DEFAULT '1',
-  `note` text COLLATE utf8mb4_unicode_ci,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  `history` json DEFAULT NULL,
-  `ruleset` json DEFAULT NULL,
-  `prevent_ap_fanout` tinyint(1) NOT NULL DEFAULT '0',
-  `prevent_new_dms` tinyint(1) NOT NULL DEFAULT '0',
-  `ignore_reports` tinyint(1) NOT NULL DEFAULT '0',
-  `ignore_mentions` tinyint(1) NOT NULL DEFAULT '0',
-  `ignore_links` tinyint(1) NOT NULL DEFAULT '0',
-  `ignore_hashtags` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_from_public_feeds` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_from_tag_feeds` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_embeds` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_from_story_carousel` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_from_search_autocomplete` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_from_search` tinyint(1) NOT NULL DEFAULT '0',
-  `requires_login` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `admin_id` bigint(20) unsigned DEFAULT NULL,
+  `item_type` varchar(191) NOT NULL,
+  `item_id` bigint(20) unsigned NOT NULL,
+  `is_local` tinyint(1) NOT NULL DEFAULT 1,
+  `note` text DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 0,
+  `history` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`history`)),
+  `ruleset` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`ruleset`)),
+  `prevent_ap_fanout` tinyint(1) NOT NULL DEFAULT 0,
+  `prevent_new_dms` tinyint(1) NOT NULL DEFAULT 0,
+  `ignore_reports` tinyint(1) NOT NULL DEFAULT 0,
+  `ignore_mentions` tinyint(1) NOT NULL DEFAULT 0,
+  `ignore_links` tinyint(1) NOT NULL DEFAULT 0,
+  `ignore_hashtags` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_from_public_feeds` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_from_tag_feeds` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_embeds` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_from_story_carousel` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_from_search_autocomplete` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_from_search` tinyint(1) NOT NULL DEFAULT 0,
+  `requires_login` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -151,11 +152,11 @@ CREATE TABLE `admin_shadow_filters` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `app_registers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `app_registers` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `verify_code` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(191) NOT NULL,
+  `verify_code` varchar(191) NOT NULL,
   `email_delivered_at` timestamp NULL DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -166,15 +167,15 @@ CREATE TABLE `app_registers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `autospam_custom_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `autospam_custom_tokens` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `weight` int NOT NULL DEFAULT '1',
-  `is_spam` tinyint(1) NOT NULL DEFAULT '1',
-  `note` text COLLATE utf8mb4_unicode_ci,
-  `category` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `token` varchar(191) NOT NULL,
+  `weight` int(11) NOT NULL DEFAULT 1,
+  `is_spam` tinyint(1) NOT NULL DEFAULT 1,
+  `note` text DEFAULT NULL,
+  `category` varchar(191) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -188,16 +189,16 @@ CREATE TABLE `autospam_custom_tokens` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `avatars`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `avatars` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `media_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cdn_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `media_path` varchar(191) DEFAULT NULL,
+  `remote_url` varchar(191) DEFAULT NULL,
+  `cdn_url` varchar(191) DEFAULT NULL,
   `is_remote` tinyint(1) DEFAULT NULL,
-  `size` int unsigned DEFAULT NULL,
-  `change_count` int unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned DEFAULT NULL,
+  `change_count` int(10) unsigned NOT NULL DEFAULT 0,
   `last_fetched_at` timestamp NULL DEFAULT NULL,
   `last_processed_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -212,11 +213,11 @@ CREATE TABLE `avatars` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `bookmarks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bookmarks` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -227,32 +228,32 @@ CREATE TABLE `bookmarks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `cache`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cache` (
-  `key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` int NOT NULL,
+  `key` varchar(191) NOT NULL,
+  `value` mediumtext NOT NULL,
+  `expiration` int(11) NOT NULL,
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `cache_locks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cache_locks` (
-  `key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `owner` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` int NOT NULL,
+  `key` varchar(191) NOT NULL,
+  `owner` varchar(191) NOT NULL,
+  `expiration` int(11) NOT NULL,
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `circle_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `circle_profiles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `owner_id` bigint unsigned DEFAULT NULL,
-  `circle_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `owner_id` bigint(20) unsigned DEFAULT NULL,
+  `circle_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -264,15 +265,15 @@ CREATE TABLE `circle_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `circles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `circles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `scope` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'public',
-  `bcc` tinyint(1) NOT NULL DEFAULT '0',
-  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `scope` varchar(191) NOT NULL DEFAULT 'public',
+  `bcc` tinyint(1) NOT NULL DEFAULT 0,
+  `active` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -282,13 +283,13 @@ CREATE TABLE `circles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `collection_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `collection_items` (
-  `id` bigint unsigned NOT NULL,
-  `collection_id` bigint unsigned NOT NULL,
-  `order` int unsigned DEFAULT NULL,
-  `object_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'post',
-  `object_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL,
+  `collection_id` bigint(20) unsigned NOT NULL,
+  `order` int(10) unsigned DEFAULT NULL,
+  `object_type` varchar(191) NOT NULL DEFAULT 'post',
+  `object_id` bigint(20) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -299,14 +300,14 @@ CREATE TABLE `collection_items` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `collections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `collections` (
-  `id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `visibility` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'public',
+  `id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `title` varchar(191) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `visibility` varchar(191) NOT NULL DEFAULT 'public',
   `published_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -316,16 +317,16 @@ CREATE TABLE `collections` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comments` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `status_id` bigint unsigned NOT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci,
-  `rendered` text COLLATE utf8mb4_unicode_ci,
-  `entities` json DEFAULT NULL,
-  `is_remote` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `status_id` bigint(20) unsigned NOT NULL,
+  `comment` text DEFAULT NULL,
+  `rendered` text DEFAULT NULL,
+  `entities` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`entities`)),
+  `is_remote` tinyint(1) NOT NULL DEFAULT 0,
   `rendered_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -334,12 +335,12 @@ CREATE TABLE `comments` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `config_cache`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `config_cache` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `k` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `v` text COLLATE utf8mb4_unicode_ci,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `k` varchar(191) NOT NULL,
+  `v` text DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -348,13 +349,13 @@ CREATE TABLE `config_cache` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `contacts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contacts` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `response_requested` tinyint(1) NOT NULL DEFAULT '0',
-  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `response` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `response_requested` tinyint(1) NOT NULL DEFAULT 0,
+  `message` text NOT NULL,
+  `response` text NOT NULL,
   `read_at` timestamp NULL DEFAULT NULL,
   `responded_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -365,17 +366,17 @@ CREATE TABLE `contacts` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `conversations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `conversations` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `to_id` bigint unsigned NOT NULL,
-  `from_id` bigint unsigned NOT NULL,
-  `dm_id` bigint unsigned DEFAULT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
-  `has_seen` tinyint(1) NOT NULL DEFAULT '0',
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `to_id` bigint(20) unsigned NOT NULL,
+  `from_id` bigint(20) unsigned NOT NULL,
+  `dm_id` bigint(20) unsigned DEFAULT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `is_hidden` tinyint(1) NOT NULL DEFAULT 0,
+  `has_seen` tinyint(1) NOT NULL DEFAULT 0,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -388,22 +389,22 @@ CREATE TABLE `conversations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `curated_register_activities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `curated_register_activities` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `register_id` int unsigned DEFAULT NULL,
-  `admin_id` int unsigned DEFAULT NULL,
-  `reply_to_id` int unsigned DEFAULT NULL,
-  `secret_code` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `link` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `message` text COLLATE utf8mb4_unicode_ci,
-  `metadata` json DEFAULT NULL,
-  `from_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `from_user` tinyint(1) NOT NULL DEFAULT '0',
-  `admin_only_view` tinyint(1) NOT NULL DEFAULT '1',
-  `action_required` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `register_id` int(10) unsigned DEFAULT NULL,
+  `admin_id` int(10) unsigned DEFAULT NULL,
+  `reply_to_id` int(10) unsigned DEFAULT NULL,
+  `secret_code` varchar(191) DEFAULT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `title` varchar(191) DEFAULT NULL,
+  `link` varchar(191) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `from_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `from_user` tinyint(1) NOT NULL DEFAULT 0,
+  `admin_only_view` tinyint(1) NOT NULL DEFAULT 1,
+  `action_required` tinyint(1) NOT NULL DEFAULT 0,
   `admin_notified_at` timestamp NULL DEFAULT NULL,
   `action_taken_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -418,14 +419,14 @@ CREATE TABLE `curated_register_activities` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `curated_register_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `curated_register_templates` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `content` text COLLATE utf8mb4_unicode_ci,
-  `is_active` tinyint(1) NOT NULL DEFAULT '0',
-  `order` tinyint unsigned NOT NULL DEFAULT '10',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 0,
+  `order` tinyint(3) unsigned NOT NULL DEFAULT 10,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -435,24 +436,24 @@ CREATE TABLE `curated_register_templates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `curated_registers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `curated_registers` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `username` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `password` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ip_address` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `verify_code` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reason_to_join` text COLLATE utf8mb4_unicode_ci,
-  `invited_by` bigint unsigned DEFAULT NULL,
-  `is_approved` tinyint(1) NOT NULL DEFAULT '0',
-  `is_rejected` tinyint(1) NOT NULL DEFAULT '0',
-  `is_awaiting_more_info` tinyint(1) NOT NULL DEFAULT '0',
-  `user_has_responded` tinyint(1) NOT NULL DEFAULT '0',
-  `is_closed` tinyint(1) NOT NULL DEFAULT '0',
-  `autofollow_account_ids` json DEFAULT NULL,
-  `admin_notes` json DEFAULT NULL,
-  `approved_by_admin_id` int unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(191) DEFAULT NULL,
+  `username` varchar(191) DEFAULT NULL,
+  `password` varchar(191) DEFAULT NULL,
+  `ip_address` varchar(191) DEFAULT NULL,
+  `verify_code` varchar(191) DEFAULT NULL,
+  `reason_to_join` text DEFAULT NULL,
+  `invited_by` bigint(20) unsigned DEFAULT NULL,
+  `is_approved` tinyint(1) NOT NULL DEFAULT 0,
+  `is_rejected` tinyint(1) NOT NULL DEFAULT 0,
+  `is_awaiting_more_info` tinyint(1) NOT NULL DEFAULT 0,
+  `user_has_responded` tinyint(1) NOT NULL DEFAULT 0,
+  `is_closed` tinyint(1) NOT NULL DEFAULT 0,
+  `autofollow_account_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`autofollow_account_ids`)),
+  `admin_notes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`admin_notes`)),
+  `approved_by_admin_id` int(10) unsigned DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `admin_notified_at` timestamp NULL DEFAULT NULL,
   `action_taken_at` timestamp NULL DEFAULT NULL,
@@ -471,16 +472,16 @@ CREATE TABLE `curated_registers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `custom_emoji`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `custom_emoji` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `shortcode` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `media_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `disabled` tinyint(1) NOT NULL DEFAULT '0',
-  `uri` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `image_remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `category_id` int unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `shortcode` varchar(191) NOT NULL,
+  `media_path` varchar(191) DEFAULT NULL,
+  `domain` varchar(191) DEFAULT NULL,
+  `disabled` tinyint(1) NOT NULL DEFAULT 0,
+  `uri` varchar(191) DEFAULT NULL,
+  `image_remote_url` varchar(191) DEFAULT NULL,
+  `category_id` int(10) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -492,11 +493,11 @@ CREATE TABLE `custom_emoji` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `custom_emoji_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `custom_emoji_categories` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `disabled` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  `disabled` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -506,11 +507,11 @@ CREATE TABLE `custom_emoji_categories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `default_domain_blocks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `default_domain_blocks` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `note` text COLLATE utf8mb4_unicode_ci,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `domain` varchar(191) NOT NULL,
+  `note` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -519,17 +520,17 @@ CREATE TABLE `default_domain_blocks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `direct_messages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `direct_messages` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `to_id` bigint unsigned NOT NULL,
-  `from_id` bigint unsigned NOT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'text',
-  `from_profile_ids` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `group_message` tinyint(1) NOT NULL DEFAULT '0',
-  `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
-  `meta` json DEFAULT NULL,
-  `status_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `to_id` bigint(20) unsigned NOT NULL,
+  `from_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(191) DEFAULT 'text',
+  `from_profile_ids` varchar(191) DEFAULT NULL,
+  `group_message` tinyint(1) NOT NULL DEFAULT 0,
+  `is_hidden` tinyint(1) NOT NULL DEFAULT 0,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
+  `status_id` bigint(20) unsigned NOT NULL,
   `read_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -545,18 +546,18 @@ CREATE TABLE `direct_messages` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `discover_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `discover_categories` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `slug` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  `order` tinyint unsigned NOT NULL DEFAULT '5',
-  `media_id` bigint unsigned DEFAULT NULL,
-  `no_nsfw` tinyint(1) NOT NULL DEFAULT '1',
-  `local_only` tinyint(1) NOT NULL DEFAULT '1',
-  `public_only` tinyint(1) NOT NULL DEFAULT '1',
-  `photos_only` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) DEFAULT NULL,
+  `slug` varchar(191) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 0,
+  `order` tinyint(3) unsigned NOT NULL DEFAULT 5,
+  `media_id` bigint(20) unsigned DEFAULT NULL,
+  `no_nsfw` tinyint(1) NOT NULL DEFAULT 1,
+  `local_only` tinyint(1) NOT NULL DEFAULT 1,
+  `public_only` tinyint(1) NOT NULL DEFAULT 1,
+  `photos_only` tinyint(1) NOT NULL DEFAULT 1,
   `active_until` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -568,11 +569,11 @@ CREATE TABLE `discover_categories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `discover_category_hashtags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `discover_category_hashtags` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `discover_category_id` bigint unsigned NOT NULL,
-  `hashtag_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `discover_category_id` bigint(20) unsigned NOT NULL,
+  `hashtag_id` bigint(20) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -583,13 +584,13 @@ CREATE TABLE `discover_category_hashtags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `email_verifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `email_verifications` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `random_token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `email` varchar(191) DEFAULT NULL,
+  `user_token` varchar(191) NOT NULL,
+  `random_token` varchar(191) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -599,29 +600,29 @@ CREATE TABLE `email_verifications` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `failed_jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `failed_jobs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(191) DEFAULT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `follow_requests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `follow_requests` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `follower_id` bigint unsigned NOT NULL,
-  `following_id` bigint unsigned NOT NULL,
-  `activity` json DEFAULT NULL,
-  `is_rejected` tinyint(1) NOT NULL DEFAULT '0',
-  `is_local` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `follower_id` bigint(20) unsigned NOT NULL,
+  `following_id` bigint(20) unsigned NOT NULL,
+  `activity` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`activity`)),
+  `is_rejected` tinyint(1) NOT NULL DEFAULT 0,
+  `is_local` tinyint(1) NOT NULL DEFAULT 0,
   `handled_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -632,15 +633,15 @@ CREATE TABLE `follow_requests` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `followers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `followers` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `following_id` bigint unsigned NOT NULL,
-  `local_profile` tinyint(1) NOT NULL DEFAULT '1',
-  `local_following` tinyint(1) NOT NULL DEFAULT '1',
-  `show_reblogs` tinyint(1) NOT NULL DEFAULT '1',
-  `notify` tinyint(1) NOT NULL DEFAULT '0',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `following_id` bigint(20) unsigned NOT NULL,
+  `local_profile` tinyint(1) NOT NULL DEFAULT 1,
+  `local_following` tinyint(1) NOT NULL DEFAULT 1,
+  `show_reblogs` tinyint(1) NOT NULL DEFAULT 1,
+  `notify` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -656,14 +657,14 @@ CREATE TABLE `followers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_activity_graphs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_activity_graphs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `instance_id` bigint DEFAULT NULL,
-  `actor_id` bigint DEFAULT NULL,
-  `verb` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `id_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `payload` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `instance_id` bigint(20) DEFAULT NULL,
+  `actor_id` bigint(20) DEFAULT NULL,
+  `verb` varchar(191) DEFAULT NULL,
+  `id_url` varchar(191) DEFAULT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`payload`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -675,17 +676,17 @@ CREATE TABLE `group_activity_graphs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_blocks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_blocks` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `admin_id` bigint unsigned DEFAULT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `instance_id` bigint unsigned DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reason` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `admin_id` bigint(20) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `instance_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `reason` varchar(191) DEFAULT NULL,
   `is_user` tinyint(1) NOT NULL,
-  `moderated` tinyint(1) NOT NULL DEFAULT '0',
+  `moderated` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -700,14 +701,14 @@ CREATE TABLE `group_blocks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_categories` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `order` tinyint unsigned DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  `slug` varchar(191) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `order` tinyint(3) unsigned DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -718,25 +719,25 @@ CREATE TABLE `group_categories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_comments` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `in_reply_to_id` bigint unsigned DEFAULT NULL,
-  `remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `caption` text COLLATE utf8mb4_unicode_ci,
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `visibility` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `likes_count` int unsigned NOT NULL DEFAULT '0',
-  `replies_count` int unsigned NOT NULL DEFAULT '0',
-  `cw_summary` text COLLATE utf8mb4_unicode_ci,
-  `media_ids` json DEFAULT NULL,
-  `status` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'text',
-  `local` tinyint(1) NOT NULL DEFAULT '0',
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `in_reply_to_id` bigint(20) unsigned DEFAULT NULL,
+  `remote_url` varchar(191) DEFAULT NULL,
+  `caption` text DEFAULT NULL,
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `visibility` varchar(191) DEFAULT NULL,
+  `likes_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `replies_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `cw_summary` text DEFAULT NULL,
+  `media_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`media_ids`)),
+  `status` varchar(191) DEFAULT NULL,
+  `type` varchar(191) DEFAULT 'text',
+  `local` tinyint(1) NOT NULL DEFAULT 0,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -748,20 +749,20 @@ CREATE TABLE `group_comments` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_events` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned DEFAULT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tags` json DEFAULT NULL,
-  `location` json DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `metadata` json DEFAULT NULL,
-  `open` tinyint(1) NOT NULL DEFAULT '0',
-  `comments_open` tinyint(1) NOT NULL DEFAULT '0',
-  `show_guest_list` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `type` varchar(191) NOT NULL,
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`)),
+  `location` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`location`)),
+  `description` text DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `open` tinyint(1) NOT NULL DEFAULT 0,
+  `comments_open` tinyint(1) NOT NULL DEFAULT 0,
+  `show_guest_list` tinyint(1) NOT NULL DEFAULT 0,
   `start_at` timestamp NULL DEFAULT NULL,
   `end_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -775,14 +776,14 @@ CREATE TABLE `group_events` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_hashtags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_hashtags` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `formatted` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `recommended` tinyint(1) NOT NULL DEFAULT '0',
-  `sensitive` tinyint(1) NOT NULL DEFAULT '0',
-  `banned` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  `formatted` varchar(191) DEFAULT NULL,
+  `recommended` tinyint(1) NOT NULL DEFAULT 0,
+  `sensitive` tinyint(1) NOT NULL DEFAULT 0,
+  `banned` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -791,15 +792,15 @@ CREATE TABLE `group_hashtags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_interactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_interactions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `item_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `item_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `item_type` varchar(191) DEFAULT NULL,
+  `item_id` varchar(191) DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -812,15 +813,15 @@ CREATE TABLE `group_interactions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_invitations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_invitations` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `from_profile_id` bigint unsigned NOT NULL,
-  `to_profile_id` bigint unsigned NOT NULL,
-  `role` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `to_local` tinyint(1) NOT NULL DEFAULT '1',
-  `from_local` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `from_profile_id` bigint(20) unsigned NOT NULL,
+  `to_profile_id` bigint(20) unsigned NOT NULL,
+  `role` varchar(191) DEFAULT NULL,
+  `to_local` tinyint(1) NOT NULL DEFAULT 1,
+  `from_local` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -834,14 +835,14 @@ CREATE TABLE `group_invitations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_likes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_likes` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `comment_id` bigint unsigned DEFAULT NULL,
-  `local` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `comment_id` bigint(20) unsigned DEFAULT NULL,
+  `local` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -851,13 +852,13 @@ CREATE TABLE `group_likes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_limits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_limits` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `limits` json DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `limits` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`limits`)),
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -868,30 +869,30 @@ CREATE TABLE `group_limits` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_media`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_media` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `media_path` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `thumbnail_url` text COLLATE utf8mb4_unicode_ci,
-  `cdn_url` text COLLATE utf8mb4_unicode_ci,
-  `url` text COLLATE utf8mb4_unicode_ci,
-  `mime` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `size` int unsigned DEFAULT NULL,
-  `cw_summary` text COLLATE utf8mb4_unicode_ci,
-  `license` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `blurhash` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `order` tinyint unsigned NOT NULL DEFAULT '1',
-  `width` int unsigned DEFAULT NULL,
-  `height` int unsigned DEFAULT NULL,
-  `local_user` tinyint(1) NOT NULL DEFAULT '1',
-  `is_cached` tinyint(1) NOT NULL DEFAULT '0',
-  `is_comment` tinyint(1) NOT NULL DEFAULT '0',
-  `metadata` json DEFAULT NULL,
-  `version` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
-  `skip_optimize` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `media_path` varchar(191) NOT NULL,
+  `thumbnail_url` text DEFAULT NULL,
+  `cdn_url` text DEFAULT NULL,
+  `url` text DEFAULT NULL,
+  `mime` varchar(191) DEFAULT NULL,
+  `size` int(10) unsigned DEFAULT NULL,
+  `cw_summary` text DEFAULT NULL,
+  `license` varchar(191) DEFAULT NULL,
+  `blurhash` varchar(191) DEFAULT NULL,
+  `order` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `width` int(10) unsigned DEFAULT NULL,
+  `height` int(10) unsigned DEFAULT NULL,
+  `local_user` tinyint(1) NOT NULL DEFAULT 1,
+  `is_cached` tinyint(1) NOT NULL DEFAULT 0,
+  `is_comment` tinyint(1) NOT NULL DEFAULT 0,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `version` varchar(191) NOT NULL DEFAULT '1',
+  `skip_optimize` tinyint(1) NOT NULL DEFAULT 0,
   `processed_at` timestamp NULL DEFAULT NULL,
   `thumbnail_generated` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -904,15 +905,15 @@ CREATE TABLE `group_media` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_members`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_members` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `role` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'member',
-  `local_group` tinyint(1) NOT NULL DEFAULT '0',
-  `local_profile` tinyint(1) NOT NULL DEFAULT '0',
-  `join_request` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `role` varchar(191) NOT NULL DEFAULT 'member',
+  `local_group` tinyint(1) NOT NULL DEFAULT 0,
+  `local_profile` tinyint(1) NOT NULL DEFAULT 0,
+  `join_request` tinyint(1) NOT NULL DEFAULT 0,
   `approved_at` timestamp NULL DEFAULT NULL,
   `rejected_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -929,15 +930,15 @@ CREATE TABLE `group_members` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_post_hashtags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_post_hashtags` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `hashtag_id` bigint unsigned NOT NULL,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `status_visibility` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `nsfw` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `hashtag_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `status_visibility` varchar(191) DEFAULT NULL,
+  `nsfw` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `group_post_hashtags_gda_unique` (`hashtag_id`,`group_id`,`profile_id`,`status_id`),
   KEY `group_post_hashtags_profile_id_foreign` (`profile_id`),
@@ -952,25 +953,25 @@ CREATE TABLE `group_post_hashtags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_posts` (
-  `id` bigint unsigned NOT NULL,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reply_count` int unsigned DEFAULT NULL,
-  `status` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `remote_url` varchar(191) DEFAULT NULL,
+  `reply_count` int(10) unsigned DEFAULT NULL,
+  `status` varchar(191) DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `caption` text COLLATE utf8mb4_unicode_ci,
-  `visibility` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `likes_count` int unsigned NOT NULL DEFAULT '0',
-  `cw_summary` text COLLATE utf8mb4_unicode_ci,
-  `media_ids` json DEFAULT NULL,
-  `comments_disabled` tinyint(1) NOT NULL DEFAULT '0',
+  `caption` text DEFAULT NULL,
+  `visibility` varchar(191) DEFAULT NULL,
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `likes_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `cw_summary` text DEFAULT NULL,
+  `media_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`media_ids`)),
+  `comments_disabled` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `group_posts_remote_url_unique` (`remote_url`),
   KEY `group_posts_group_id_index` (`group_id`),
@@ -981,16 +982,16 @@ CREATE TABLE `group_posts` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_reports` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `item_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `item_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
-  `open` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `item_type` varchar(191) DEFAULT NULL,
+  `item_id` varchar(191) DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `open` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1005,13 +1006,13 @@ CREATE TABLE `group_reports` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_roles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned NOT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(191) NOT NULL,
+  `slug` varchar(191) DEFAULT NULL,
+  `abilities` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1021,13 +1022,13 @@ CREATE TABLE `group_roles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `group_stores`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `group_stores` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` bigint unsigned DEFAULT NULL,
-  `store_key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `store_value` json DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` bigint(20) unsigned DEFAULT NULL,
+  `store_key` varchar(191) NOT NULL,
+  `store_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`store_value`)),
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1039,31 +1040,31 @@ CREATE TABLE `group_stores` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `groups` (
-  `id` bigint unsigned NOT NULL,
-  `category_id` int unsigned NOT NULL DEFAULT '1',
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `status` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `rules` text COLLATE utf8mb4_unicode_ci,
-  `local` tinyint(1) NOT NULL DEFAULT '1',
-  `remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `inbox_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_private` tinyint(1) NOT NULL DEFAULT '0',
-  `local_only` tinyint(1) NOT NULL DEFAULT '0',
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL,
+  `category_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `status` varchar(191) DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `rules` text DEFAULT NULL,
+  `local` tinyint(1) NOT NULL DEFAULT 1,
+  `remote_url` varchar(191) DEFAULT NULL,
+  `inbox_url` varchar(191) DEFAULT NULL,
+  `is_private` tinyint(1) NOT NULL DEFAULT 0,
+  `local_only` tinyint(1) NOT NULL DEFAULT 0,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `member_count` int unsigned DEFAULT NULL,
-  `recommended` tinyint(1) NOT NULL DEFAULT '0',
-  `discoverable` tinyint(1) NOT NULL DEFAULT '0',
-  `activitypub` tinyint(1) NOT NULL DEFAULT '0',
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `dms` tinyint(1) NOT NULL DEFAULT '0',
-  `autospam` tinyint(1) NOT NULL DEFAULT '0',
-  `verified` tinyint(1) NOT NULL DEFAULT '0',
+  `member_count` int(10) unsigned DEFAULT NULL,
+  `recommended` tinyint(1) NOT NULL DEFAULT 0,
+  `discoverable` tinyint(1) NOT NULL DEFAULT 0,
+  `activitypub` tinyint(1) NOT NULL DEFAULT 0,
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `dms` tinyint(1) NOT NULL DEFAULT 0,
+  `autospam` tinyint(1) NOT NULL DEFAULT 0,
+  `verified` tinyint(1) NOT NULL DEFAULT 0,
   `last_active_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1077,12 +1078,12 @@ CREATE TABLE `groups` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `hashtag_follows`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hashtag_follows` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `hashtag_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `hashtag_id` bigint(20) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1094,15 +1095,15 @@ CREATE TABLE `hashtag_follows` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `hashtag_related`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hashtag_related` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `hashtag_id` bigint unsigned NOT NULL,
-  `related_tags` json DEFAULT NULL,
-  `agg_score` bigint unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `hashtag_id` bigint(20) unsigned NOT NULL,
+  `related_tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`related_tags`)),
+  `agg_score` bigint(20) unsigned DEFAULT NULL,
   `last_calculated_at` timestamp NULL DEFAULT NULL,
   `last_moderated_at` timestamp NULL DEFAULT NULL,
-  `skip_refresh` tinyint(1) NOT NULL DEFAULT '0',
+  `skip_refresh` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1115,18 +1116,18 @@ CREATE TABLE `hashtag_related` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `hashtags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hashtags` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  `slug` varchar(191) NOT NULL,
   `can_trend` tinyint(1) DEFAULT NULL,
   `can_search` tinyint(1) DEFAULT NULL,
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `is_banned` tinyint(1) NOT NULL DEFAULT '0',
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `is_banned` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `cached_count` int unsigned DEFAULT NULL,
+  `cached_count` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hashtags_name_unique` (`name`),
   UNIQUE KEY `hashtags_slug_unique` (`slug`),
@@ -1138,16 +1139,16 @@ CREATE TABLE `hashtags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `import_datas`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `import_datas` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `job_id` bigint unsigned DEFAULT NULL,
-  `service` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'instagram',
-  `path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `stage` tinyint unsigned NOT NULL DEFAULT '1',
-  `original_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `import_accepted` tinyint(1) DEFAULT '0',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `job_id` bigint(20) unsigned DEFAULT NULL,
+  `service` varchar(191) NOT NULL DEFAULT 'instagram',
+  `path` varchar(191) DEFAULT NULL,
+  `stage` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `original_name` varchar(191) DEFAULT NULL,
+  `import_accepted` tinyint(1) DEFAULT 0,
   `completed_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1157,15 +1158,15 @@ CREATE TABLE `import_datas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `import_jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `import_jobs` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `service` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'instagram',
-  `uuid` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `storage_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `stage` tinyint unsigned NOT NULL DEFAULT '0',
-  `media_json` text COLLATE utf8mb4_unicode_ci,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `service` varchar(191) NOT NULL DEFAULT 'instagram',
+  `uuid` varchar(191) DEFAULT NULL,
+  `storage_path` varchar(191) DEFAULT NULL,
+  `stage` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `media_json` text DEFAULT NULL,
   `completed_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1174,27 +1175,27 @@ CREATE TABLE `import_jobs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `import_posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `import_posts` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `user_id` int unsigned NOT NULL,
-  `service` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `post_hash` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `filename` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `media_count` tinyint unsigned NOT NULL,
-  `post_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `caption` text COLLATE utf8mb4_unicode_ci,
-  `media` json DEFAULT NULL,
-  `creation_year` tinyint unsigned DEFAULT NULL,
-  `creation_month` tinyint unsigned DEFAULT NULL,
-  `creation_day` tinyint unsigned DEFAULT NULL,
-  `creation_id` tinyint unsigned DEFAULT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `service` varchar(191) NOT NULL,
+  `post_hash` varchar(191) DEFAULT NULL,
+  `filename` varchar(191) NOT NULL,
+  `media_count` tinyint(3) unsigned NOT NULL,
+  `post_type` varchar(191) DEFAULT NULL,
+  `caption` text DEFAULT NULL,
+  `media` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`media`)),
+  `creation_year` tinyint(3) unsigned DEFAULT NULL,
+  `creation_month` tinyint(3) unsigned DEFAULT NULL,
+  `creation_day` tinyint(3) unsigned DEFAULT NULL,
+  `creation_id` tinyint(3) unsigned DEFAULT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
   `creation_date` timestamp NULL DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
-  `skip_missing_media` tinyint(1) NOT NULL DEFAULT '0',
-  `uploaded_to_s3` tinyint(1) NOT NULL DEFAULT '0',
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `skip_missing_media` tinyint(1) NOT NULL DEFAULT 0,
+  `uploaded_to_s3` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1212,11 +1213,11 @@ CREATE TABLE `import_posts` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `instance_actors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `instance_actors` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `private_key` text COLLATE utf8mb4_unicode_ci,
-  `public_key` text COLLATE utf8mb4_unicode_ci,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `private_key` text DEFAULT NULL,
+  `public_key` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -1224,36 +1225,36 @@ CREATE TABLE `instance_actors` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `instances`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `instances` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `domain` varchar(191) NOT NULL,
   `active_deliver` tinyint(1) DEFAULT NULL,
-  `url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `admin_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `limit_reason` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `unlisted` tinyint(1) NOT NULL DEFAULT '0',
-  `auto_cw` tinyint(1) NOT NULL DEFAULT '0',
-  `banned` tinyint(1) NOT NULL DEFAULT '0',
+  `url` varchar(191) DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `admin_url` varchar(191) DEFAULT NULL,
+  `limit_reason` varchar(191) DEFAULT NULL,
+  `unlisted` tinyint(1) NOT NULL DEFAULT 0,
+  `auto_cw` tinyint(1) NOT NULL DEFAULT 0,
+  `banned` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `software` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_count` int unsigned DEFAULT NULL,
-  `status_count` int unsigned DEFAULT NULL,
+  `software` varchar(191) DEFAULT NULL,
+  `user_count` int(10) unsigned DEFAULT NULL,
+  `status_count` int(10) unsigned DEFAULT NULL,
   `last_crawled_at` timestamp NULL DEFAULT NULL,
   `actors_last_synced_at` timestamp NULL DEFAULT NULL,
-  `notes` text COLLATE utf8mb4_unicode_ci,
-  `manually_added` tinyint(1) NOT NULL DEFAULT '0',
-  `base_domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `manually_added` tinyint(1) NOT NULL DEFAULT 0,
+  `base_domain` varchar(191) DEFAULT NULL,
   `ban_subdomains` tinyint(1) DEFAULT NULL,
-  `ip_address` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `list_limitation` tinyint(1) NOT NULL DEFAULT '0',
+  `ip_address` varchar(191) DEFAULT NULL,
+  `list_limitation` tinyint(1) NOT NULL DEFAULT 0,
   `valid_nodeinfo` tinyint(1) DEFAULT NULL,
   `nodeinfo_last_fetched` timestamp NULL DEFAULT NULL,
-  `delivery_timeout` tinyint(1) NOT NULL DEFAULT '0',
+  `delivery_timeout` tinyint(1) NOT NULL DEFAULT 0,
   `delivery_next_after` timestamp NULL DEFAULT NULL,
-  `shared_inbox` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `shared_inbox` varchar(191) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `instances_domain_unique` (`domain`),
   KEY `instances_software_index` (`software`),
@@ -1269,44 +1270,44 @@ CREATE TABLE `instances` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `job_batches`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `job_batches` (
-  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total_jobs` int NOT NULL,
-  `pending_jobs` int NOT NULL,
-  `failed_jobs` int NOT NULL,
-  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `options` mediumtext COLLATE utf8mb4_unicode_ci,
-  `cancelled_at` int DEFAULT NULL,
-  `created_at` int NOT NULL,
-  `finished_at` int DEFAULT NULL,
+  `id` varchar(191) NOT NULL,
+  `name` varchar(191) NOT NULL,
+  `total_jobs` int(11) NOT NULL,
+  `pending_jobs` int(11) NOT NULL,
+  `failed_jobs` int(11) NOT NULL,
+  `failed_job_ids` longtext NOT NULL,
+  `options` mediumtext DEFAULT NULL,
+  `cancelled_at` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `finished_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `jobs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `queue` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attempts` tinyint unsigned NOT NULL,
-  `reserved_at` int unsigned DEFAULT NULL,
-  `available_at` int unsigned NOT NULL,
-  `created_at` int unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(191) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserved_at` int(10) unsigned DEFAULT NULL,
+  `available_at` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `jobs_queue_index` (`queue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `likes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `likes` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `status_id` bigint unsigned NOT NULL,
-  `status_profile_id` bigint unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `status_id` bigint(20) unsigned NOT NULL,
+  `status_profile_id` bigint(20) unsigned DEFAULT NULL,
   `is_comment` tinyint(1) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1323,19 +1324,19 @@ CREATE TABLE `likes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `live_streams`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `live_streams` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `stream_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `stream_key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `visibility` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `thumbnail_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `settings` json DEFAULT NULL,
-  `live_chat` tinyint(1) NOT NULL DEFAULT '1',
-  `mod_ids` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `stream_id` varchar(191) DEFAULT NULL,
+  `stream_key` varchar(191) DEFAULT NULL,
+  `visibility` varchar(191) DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `thumbnail_path` varchar(191) DEFAULT NULL,
+  `settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`settings`)),
+  `live_chat` tinyint(1) NOT NULL DEFAULT 1,
+  `mod_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`mod_ids`)),
   `discoverable` tinyint(1) DEFAULT NULL,
   `live_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1347,15 +1348,15 @@ CREATE TABLE `live_streams` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `login_links`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `login_links` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `secret` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` int unsigned NOT NULL,
-  `ip` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `meta` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(191) NOT NULL,
+  `secret` varchar(191) NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `ip` varchar(191) DEFAULT NULL,
+  `user_agent` varchar(191) DEFAULT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
   `revoked_at` timestamp NULL DEFAULT NULL,
   `resent_at` timestamp NULL DEFAULT NULL,
   `used_at` timestamp NULL DEFAULT NULL,
@@ -1372,43 +1373,43 @@ CREATE TABLE `login_links` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `media`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `media` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `remote_media` tinyint(1) NOT NULL DEFAULT '0',
-  `original_sha256` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `optimized_sha256` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `media_path` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `thumbnail_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cdn_url` text COLLATE utf8mb4_unicode_ci,
-  `optimized_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `thumbnail_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `caption` text COLLATE utf8mb4_unicode_ci,
-  `hls_path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `order` tinyint unsigned NOT NULL DEFAULT '1',
-  `mime` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `size` int unsigned DEFAULT NULL,
-  `orientation` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `filter_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `filter_class` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `license` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `remote_media` tinyint(1) NOT NULL DEFAULT 0,
+  `original_sha256` varchar(191) DEFAULT NULL,
+  `optimized_sha256` varchar(191) DEFAULT NULL,
+  `media_path` varchar(191) NOT NULL,
+  `thumbnail_path` varchar(191) DEFAULT NULL,
+  `cdn_url` text DEFAULT NULL,
+  `optimized_url` varchar(191) DEFAULT NULL,
+  `thumbnail_url` varchar(191) DEFAULT NULL,
+  `remote_url` varchar(191) DEFAULT NULL,
+  `caption` text DEFAULT NULL,
+  `hls_path` varchar(191) DEFAULT NULL,
+  `order` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `mime` varchar(191) DEFAULT NULL,
+  `size` int(10) unsigned DEFAULT NULL,
+  `orientation` varchar(191) DEFAULT NULL,
+  `filter_name` varchar(191) DEFAULT NULL,
+  `filter_class` varchar(191) DEFAULT NULL,
+  `license` varchar(191) DEFAULT NULL,
   `processed_at` timestamp NULL DEFAULT NULL,
   `hls_transcoded_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
-  `version` tinyint NOT NULL DEFAULT '1',
-  `blurhash` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `srcset` json DEFAULT NULL,
-  `width` int unsigned DEFAULT NULL,
-  `height` int unsigned DEFAULT NULL,
+  `key` varchar(191) DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `version` tinyint(4) NOT NULL DEFAULT 1,
+  `blurhash` varchar(191) DEFAULT NULL,
+  `srcset` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`srcset`)),
+  `width` int(10) unsigned DEFAULT NULL,
+  `height` int(10) unsigned DEFAULT NULL,
   `skip_optimize` tinyint(1) DEFAULT NULL,
   `replicated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1429,15 +1430,15 @@ CREATE TABLE `media` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `media_blocklists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `media_blocklists` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `sha256` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sha512` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `sha256` varchar(191) DEFAULT NULL,
+  `sha512` varchar(191) DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1448,15 +1449,15 @@ CREATE TABLE `media_blocklists` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `media_tags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `media_tags` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `media_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `tagged_username` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_public` tinyint(1) NOT NULL DEFAULT '1',
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `media_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `tagged_username` varchar(191) DEFAULT NULL,
+  `is_public` tinyint(1) NOT NULL DEFAULT 1,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1469,12 +1470,12 @@ CREATE TABLE `media_tags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `mentions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mentions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `local` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `local` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -1486,28 +1487,28 @@ CREATE TABLE `mentions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `migrations` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(191) NOT NULL,
+  `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `mod_logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mod_logs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `user_username` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `object_uid` bigint unsigned DEFAULT NULL,
-  `object_id` bigint unsigned DEFAULT NULL,
-  `object_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `message` text COLLATE utf8mb4_unicode_ci,
-  `metadata` json DEFAULT NULL,
-  `access_level` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'admin',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `user_username` varchar(191) DEFAULT NULL,
+  `object_uid` bigint(20) unsigned DEFAULT NULL,
+  `object_id` bigint(20) unsigned DEFAULT NULL,
+  `object_type` varchar(191) DEFAULT NULL,
+  `action` varchar(191) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `access_level` varchar(191) DEFAULT 'admin',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1519,19 +1520,19 @@ CREATE TABLE `mod_logs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `moderated_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `moderated_profiles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `note` text COLLATE utf8mb4_unicode_ci,
-  `is_banned` tinyint(1) NOT NULL DEFAULT '0',
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `is_unlisted` tinyint(1) NOT NULL DEFAULT '0',
-  `is_noautolink` tinyint(1) NOT NULL DEFAULT '0',
-  `is_nodms` tinyint(1) NOT NULL DEFAULT '0',
-  `is_notrending` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_url` varchar(191) DEFAULT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `domain` varchar(191) DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  `is_banned` tinyint(1) NOT NULL DEFAULT 0,
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `is_unlisted` tinyint(1) NOT NULL DEFAULT 0,
+  `is_noautolink` tinyint(1) NOT NULL DEFAULT 0,
+  `is_nodms` tinyint(1) NOT NULL DEFAULT 0,
+  `is_notrending` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1541,22 +1542,22 @@ CREATE TABLE `moderated_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `newsroom`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `newsroom` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `header_photo_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `slug` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `category` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'update',
-  `summary` text COLLATE utf8mb4_unicode_ci,
-  `body` text COLLATE utf8mb4_unicode_ci,
-  `body_rendered` text COLLATE utf8mb4_unicode_ci,
-  `link` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `force_modal` tinyint(1) NOT NULL DEFAULT '0',
-  `show_timeline` tinyint(1) NOT NULL DEFAULT '0',
-  `show_link` tinyint(1) NOT NULL DEFAULT '0',
-  `auth_only` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `header_photo_url` varchar(191) DEFAULT NULL,
+  `title` varchar(191) DEFAULT NULL,
+  `slug` varchar(191) DEFAULT NULL,
+  `category` varchar(191) NOT NULL DEFAULT 'update',
+  `summary` text DEFAULT NULL,
+  `body` text DEFAULT NULL,
+  `body_rendered` text DEFAULT NULL,
+  `link` varchar(191) DEFAULT NULL,
+  `force_modal` tinyint(1) NOT NULL DEFAULT 0,
+  `show_timeline` tinyint(1) NOT NULL DEFAULT 0,
+  `show_link` tinyint(1) NOT NULL DEFAULT 0,
+  `auth_only` tinyint(1) NOT NULL DEFAULT 1,
   `published_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1566,14 +1567,14 @@ CREATE TABLE `newsroom` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notifications` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `actor_id` bigint unsigned DEFAULT NULL,
-  `item_id` bigint unsigned DEFAULT NULL,
-  `item_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `actor_id` bigint(20) unsigned DEFAULT NULL,
+  `item_id` bigint(20) unsigned DEFAULT NULL,
+  `item_type` varchar(191) DEFAULT NULL,
+  `action` varchar(191) DEFAULT NULL,
   `read_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1590,13 +1591,13 @@ CREATE TABLE `notifications` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `oauth_access_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_access_tokens` (
-  `id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `client_id` bigint unsigned NOT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `scopes` text COLLATE utf8mb4_unicode_ci,
+  `id` varchar(100) NOT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `client_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `scopes` text DEFAULT NULL,
   `revoked` tinyint(1) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1607,12 +1608,12 @@ CREATE TABLE `oauth_access_tokens` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `oauth_auth_codes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_auth_codes` (
-  `id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint unsigned NOT NULL,
-  `client_id` bigint unsigned NOT NULL,
-  `scopes` text COLLATE utf8mb4_unicode_ci,
+  `id` varchar(100) NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `client_id` bigint(20) unsigned NOT NULL,
+  `scopes` text DEFAULT NULL,
   `revoked` tinyint(1) NOT NULL,
   `expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1621,14 +1622,14 @@ CREATE TABLE `oauth_auth_codes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `oauth_clients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_clients` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `secret` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `provider` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `redirect` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(191) NOT NULL,
+  `secret` varchar(100) DEFAULT NULL,
+  `provider` varchar(191) DEFAULT NULL,
+  `redirect` text NOT NULL,
   `personal_access_client` tinyint(1) NOT NULL,
   `password_client` tinyint(1) NOT NULL,
   `revoked` tinyint(1) NOT NULL,
@@ -1640,10 +1641,10 @@ CREATE TABLE `oauth_clients` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `oauth_personal_access_clients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_personal_access_clients` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `client_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `client_id` bigint(20) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -1651,10 +1652,10 @@ CREATE TABLE `oauth_personal_access_clients` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `oauth_refresh_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_refresh_tokens` (
-  `id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `access_token_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(100) NOT NULL,
+  `access_token_id` varchar(100) NOT NULL,
   `revoked` tinyint(1) NOT NULL,
   `expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1663,17 +1664,17 @@ CREATE TABLE `oauth_refresh_tokens` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `pages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pages` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `root` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `slug` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `category_id` int unsigned DEFAULT NULL,
-  `content` longtext COLLATE utf8mb4_unicode_ci,
-  `template` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'layouts.app',
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  `cached` tinyint(1) NOT NULL DEFAULT '1',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `root` varchar(191) DEFAULT NULL,
+  `slug` varchar(191) DEFAULT NULL,
+  `title` varchar(191) DEFAULT NULL,
+  `category_id` int(10) unsigned DEFAULT NULL,
+  `content` longtext DEFAULT NULL,
+  `template` varchar(191) NOT NULL DEFAULT 'layouts.app',
+  `active` tinyint(1) NOT NULL DEFAULT 0,
+  `cached` tinyint(1) NOT NULL DEFAULT 1,
   `active_until` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1688,16 +1689,16 @@ CREATE TABLE `pages` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `parental_controls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `parental_controls` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `parent_id` int unsigned NOT NULL,
-  `child_id` int unsigned DEFAULT NULL,
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `verify_code` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_id` int(10) unsigned NOT NULL,
+  `child_id` int(10) unsigned DEFAULT NULL,
+  `email` varchar(191) DEFAULT NULL,
+  `verify_code` varchar(191) DEFAULT NULL,
   `email_sent_at` timestamp NULL DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `permissions` json DEFAULT NULL,
+  `permissions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`permissions`)),
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1709,30 +1710,30 @@ CREATE TABLE `parental_controls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `password_resets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `password_resets` (
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(191) NOT NULL,
+  `token` varchar(191) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   KEY `password_resets_email_index` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `places`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `places` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `slug` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `state` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `country` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `aliases` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `slug` varchar(191) NOT NULL,
+  `name` varchar(191) NOT NULL,
+  `state` varchar(191) DEFAULT NULL,
+  `country` varchar(191) NOT NULL,
+  `aliases` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`aliases`)),
   `lat` decimal(9,6) DEFAULT NULL,
   `long` decimal(9,6) DEFAULT NULL,
-  `score` tinyint NOT NULL DEFAULT '0',
+  `score` tinyint(4) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `cached_post_count` bigint unsigned DEFAULT NULL,
+  `cached_post_count` bigint(20) unsigned DEFAULT NULL,
   `last_checked_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `places_slug_country_lat_long_unique` (`slug`,`country`,`lat`,`long`),
@@ -1746,15 +1747,15 @@ CREATE TABLE `places` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `poll_votes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `poll_votes` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `story_id` bigint unsigned DEFAULT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `poll_id` bigint unsigned NOT NULL,
-  `choice` int unsigned NOT NULL DEFAULT '0',
-  `uri` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `story_id` bigint(20) unsigned DEFAULT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `poll_id` bigint(20) unsigned NOT NULL,
+  `choice` int(10) unsigned NOT NULL DEFAULT 0,
+  `uri` varchar(191) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1767,18 +1768,18 @@ CREATE TABLE `poll_votes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `polls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `polls` (
-  `id` bigint unsigned NOT NULL,
-  `story_id` bigint unsigned DEFAULT NULL,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `group_id` bigint unsigned DEFAULT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `poll_options` json DEFAULT NULL,
-  `cached_tallies` json DEFAULT NULL,
-  `multiple` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_totals` tinyint(1) NOT NULL DEFAULT '0',
-  `votes_count` int unsigned NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL,
+  `story_id` bigint(20) unsigned DEFAULT NULL,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `group_id` bigint(20) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `poll_options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`poll_options`)),
+  `cached_tallies` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`cached_tallies`)),
+  `multiple` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_totals` tinyint(1) NOT NULL DEFAULT 0,
+  `votes_count` int(10) unsigned NOT NULL DEFAULT 0,
   `last_fetched_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1792,23 +1793,23 @@ CREATE TABLE `polls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `portfolios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `portfolios` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned DEFAULT NULL,
-  `profile_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
   `active` tinyint(1) DEFAULT NULL,
-  `show_captions` tinyint(1) DEFAULT '1',
-  `show_license` tinyint(1) DEFAULT '1',
-  `show_location` tinyint(1) DEFAULT '1',
-  `show_timestamp` tinyint(1) DEFAULT '1',
-  `show_link` tinyint(1) DEFAULT '1',
-  `profile_source` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'recent',
-  `show_avatar` tinyint(1) DEFAULT '1',
-  `show_bio` tinyint(1) DEFAULT '1',
-  `profile_layout` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'grid',
-  `profile_container` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'fixed',
-  `metadata` json DEFAULT NULL,
+  `show_captions` tinyint(1) DEFAULT 1,
+  `show_license` tinyint(1) DEFAULT 1,
+  `show_location` tinyint(1) DEFAULT 1,
+  `show_timestamp` tinyint(1) DEFAULT 1,
+  `show_link` tinyint(1) DEFAULT 1,
+  `profile_source` varchar(191) DEFAULT 'recent',
+  `show_avatar` tinyint(1) DEFAULT 1,
+  `show_bio` tinyint(1) DEFAULT 1,
+  `profile_layout` varchar(191) DEFAULT 'grid',
+  `profile_container` varchar(191) DEFAULT 'fixed',
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1819,12 +1820,12 @@ CREATE TABLE `portfolios` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `profile_aliases`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `profile_aliases` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `acct` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `uri` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `acct` varchar(191) DEFAULT NULL,
+  `uri` varchar(191) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1835,13 +1836,13 @@ CREATE TABLE `profile_aliases` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `profile_migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `profile_migrations` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `acct` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `followers_count` bigint unsigned NOT NULL DEFAULT '0',
-  `target_profile_id` bigint unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `acct` varchar(191) DEFAULT NULL,
+  `followers_count` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `target_profile_id` bigint(20) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -1849,11 +1850,11 @@ CREATE TABLE `profile_migrations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `profile_sponsors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `profile_sponsors` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `sponsors` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `sponsors` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`sponsors`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1862,47 +1863,47 @@ CREATE TABLE `profile_sponsors` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `profiles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned DEFAULT NULL,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `username` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bio` text COLLATE utf8mb4_unicode_ci,
-  `unlisted` tinyint(1) NOT NULL DEFAULT '0',
-  `cw` tinyint(1) NOT NULL DEFAULT '0',
-  `no_autolink` tinyint(1) NOT NULL DEFAULT '0',
-  `location` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `website` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `profile_layout` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `header_bg` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `post_layout` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_private` tinyint(1) NOT NULL DEFAULT '0',
-  `sharedInbox` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `inbox_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `outbox_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `key_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `follower_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `following_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `private_key` text COLLATE utf8mb4_unicode_ci,
-  `public_key` text COLLATE utf8mb4_unicode_ci,
-  `remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `domain` varchar(191) DEFAULT NULL,
+  `username` varchar(191) DEFAULT NULL,
+  `status` varchar(191) DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
+  `unlisted` tinyint(1) NOT NULL DEFAULT 0,
+  `cw` tinyint(1) NOT NULL DEFAULT 0,
+  `no_autolink` tinyint(1) NOT NULL DEFAULT 0,
+  `location` varchar(191) DEFAULT NULL,
+  `website` varchar(191) DEFAULT NULL,
+  `profile_layout` varchar(191) DEFAULT NULL,
+  `header_bg` varchar(191) DEFAULT NULL,
+  `post_layout` varchar(191) DEFAULT NULL,
+  `is_private` tinyint(1) NOT NULL DEFAULT 0,
+  `sharedInbox` varchar(191) DEFAULT NULL,
+  `inbox_url` varchar(191) DEFAULT NULL,
+  `outbox_url` varchar(191) DEFAULT NULL,
+  `key_id` varchar(191) DEFAULT NULL,
+  `follower_url` varchar(191) DEFAULT NULL,
+  `following_url` varchar(191) DEFAULT NULL,
+  `private_key` text DEFAULT NULL,
+  `public_key` text DEFAULT NULL,
+  `remote_url` varchar(191) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `delete_after` timestamp NULL DEFAULT NULL,
-  `is_suggestable` tinyint(1) NOT NULL DEFAULT '0',
+  `is_suggestable` tinyint(1) NOT NULL DEFAULT 0,
   `last_fetched_at` timestamp NULL DEFAULT NULL,
-  `status_count` int unsigned DEFAULT '0',
-  `followers_count` int unsigned DEFAULT '0',
-  `following_count` int unsigned DEFAULT '0',
-  `webfinger` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `avatar_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status_count` int(10) unsigned DEFAULT 0,
+  `followers_count` int(10) unsigned DEFAULT 0,
+  `following_count` int(10) unsigned DEFAULT 0,
+  `webfinger` varchar(191) DEFAULT NULL,
+  `avatar_url` varchar(191) DEFAULT NULL,
   `last_status_at` timestamp NULL DEFAULT NULL,
-  `moved_to_profile_id` bigint unsigned DEFAULT NULL,
-  `indexable` tinyint(1) NOT NULL DEFAULT '0',
+  `moved_to_profile_id` bigint(20) unsigned DEFAULT NULL,
+  `indexable` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `profiles_domain_username_unique` (`domain`,`username`),
   UNIQUE KEY `profiles_key_id_unique` (`key_id`),
@@ -1929,17 +1930,17 @@ CREATE TABLE `profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `pulse_aggregates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pulse_aggregates` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `bucket` int unsigned NOT NULL,
-  `period` mediumint unsigned NOT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `key` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `bucket` int(10) unsigned NOT NULL,
+  `period` mediumint(8) unsigned NOT NULL,
+  `type` varchar(191) NOT NULL,
+  `key` mediumtext NOT NULL,
   `key_hash` binary(16) GENERATED ALWAYS AS (unhex(md5(`key`))) VIRTUAL,
-  `aggregate` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `aggregate` varchar(191) NOT NULL,
   `value` decimal(20,2) NOT NULL,
-  `count` int unsigned DEFAULT NULL,
+  `count` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `pulse_aggregates_bucket_period_type_aggregate_key_hash_unique` (`bucket`,`period`,`type`,`aggregate`,`key_hash`),
   KEY `pulse_aggregates_period_bucket_index` (`period`,`bucket`),
@@ -1949,14 +1950,14 @@ CREATE TABLE `pulse_aggregates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `pulse_entries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pulse_entries` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `timestamp` int unsigned NOT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `key` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` int(10) unsigned NOT NULL,
+  `type` varchar(191) NOT NULL,
+  `key` mediumtext NOT NULL,
   `key_hash` binary(16) GENERATED ALWAYS AS (unhex(md5(`key`))) VIRTUAL,
-  `value` bigint DEFAULT NULL,
+  `value` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `pulse_entries_timestamp_index` (`timestamp`),
   KEY `pulse_entries_type_index` (`type`),
@@ -1966,14 +1967,14 @@ CREATE TABLE `pulse_entries` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `pulse_values`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pulse_values` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `timestamp` int unsigned NOT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `key` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` int(10) unsigned NOT NULL,
+  `type` varchar(191) NOT NULL,
+  `key` mediumtext NOT NULL,
   `key_hash` binary(16) GENERATED ALWAYS AS (unhex(md5(`key`))) VIRTUAL,
-  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `pulse_values_type_key_hash_unique` (`type`,`key_hash`),
   KEY `pulse_values_timestamp_index` (`timestamp`),
@@ -1982,15 +1983,15 @@ CREATE TABLE `pulse_values` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `push_subscriptions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `push_subscriptions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `subscribable_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `subscribable_id` bigint unsigned NOT NULL,
-  `endpoint` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `public_key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `auth_token` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `content_encoding` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `subscribable_type` varchar(191) NOT NULL,
+  `subscribable_id` bigint(20) unsigned NOT NULL,
+  `endpoint` varchar(500) NOT NULL,
+  `public_key` varchar(191) DEFAULT NULL,
+  `auth_token` varchar(191) DEFAULT NULL,
+  `content_encoding` varchar(191) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2000,18 +2001,18 @@ CREATE TABLE `push_subscriptions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `remote_auth_instances`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `remote_auth_instances` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `instance_id` int unsigned DEFAULT NULL,
-  `client_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `client_secret` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `redirect_uri` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `root_domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `domain` varchar(191) DEFAULT NULL,
+  `instance_id` int(10) unsigned DEFAULT NULL,
+  `client_id` varchar(191) DEFAULT NULL,
+  `client_secret` varchar(191) DEFAULT NULL,
+  `redirect_uri` varchar(191) DEFAULT NULL,
+  `root_domain` varchar(191) DEFAULT NULL,
   `allowed` tinyint(1) DEFAULT NULL,
-  `banned` tinyint(1) NOT NULL DEFAULT '0',
-  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `banned` tinyint(1) NOT NULL DEFAULT 0,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
   `last_refreshed_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -2026,18 +2027,18 @@ CREATE TABLE `remote_auth_instances` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `remote_auths`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `remote_auths` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `software` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `webfinger` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `instance_id` int unsigned DEFAULT NULL,
-  `user_id` int unsigned DEFAULT NULL,
-  `client_id` int unsigned DEFAULT NULL,
-  `ip_address` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bearer_token` text COLLATE utf8mb4_unicode_ci,
-  `verify_credentials` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `software` varchar(191) DEFAULT NULL,
+  `domain` varchar(191) DEFAULT NULL,
+  `webfinger` varchar(191) DEFAULT NULL,
+  `instance_id` int(10) unsigned DEFAULT NULL,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `client_id` int(10) unsigned DEFAULT NULL,
+  `ip_address` varchar(191) DEFAULT NULL,
+  `bearer_token` text DEFAULT NULL,
+  `verify_credentials` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`verify_credentials`)),
   `last_successful_login_at` timestamp NULL DEFAULT NULL,
   `last_verify_credentials_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -2052,18 +2053,18 @@ CREATE TABLE `remote_auths` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `remote_reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `remote_reports` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `status_ids` json DEFAULT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci,
-  `account_id` bigint unsigned DEFAULT NULL,
-  `uri` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `instance_id` int unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`status_ids`)),
+  `comment` text DEFAULT NULL,
+  `account_id` bigint(20) unsigned DEFAULT NULL,
+  `uri` varchar(191) DEFAULT NULL,
+  `instance_id` int(10) unsigned DEFAULT NULL,
   `action_taken_at` timestamp NULL DEFAULT NULL,
-  `report_meta` json DEFAULT NULL,
-  `action_taken_meta` json DEFAULT NULL,
-  `action_taken_by_account_id` bigint unsigned DEFAULT NULL,
+  `report_meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`report_meta`)),
+  `action_taken_meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`action_taken_meta`)),
+  `action_taken_by_account_id` bigint(20) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2072,13 +2073,13 @@ CREATE TABLE `remote_reports` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `report_comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `report_comments` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `report_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `user_id` bigint unsigned NOT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `report_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `comment` text NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2087,15 +2088,15 @@ CREATE TABLE `report_comments` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `report_logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `report_logs` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `item_id` bigint unsigned DEFAULT NULL,
-  `item_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `system_message` tinyint(1) NOT NULL DEFAULT '0',
-  `metadata` json DEFAULT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `item_id` bigint(20) unsigned DEFAULT NULL,
+  `item_type` varchar(191) DEFAULT NULL,
+  `action` varchar(191) DEFAULT NULL,
+  `system_message` tinyint(1) NOT NULL DEFAULT 0,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -2103,22 +2104,22 @@ CREATE TABLE `report_logs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reports` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `object_id` bigint unsigned NOT NULL,
-  `object_type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reported_profile_id` bigint unsigned DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `message` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `object_id` bigint(20) unsigned NOT NULL,
+  `object_type` varchar(191) DEFAULT NULL,
+  `reported_profile_id` bigint(20) unsigned DEFAULT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `message` varchar(191) DEFAULT NULL,
   `admin_seen` timestamp NULL DEFAULT NULL,
-  `not_interested` tinyint(1) NOT NULL DEFAULT '0',
-  `spam` tinyint(1) NOT NULL DEFAULT '0',
-  `nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `abusive` tinyint(1) NOT NULL DEFAULT '0',
-  `meta` json DEFAULT NULL,
+  `not_interested` tinyint(1) NOT NULL DEFAULT 0,
+  `spam` tinyint(1) NOT NULL DEFAULT 0,
+  `nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `abusive` tinyint(1) NOT NULL DEFAULT 0,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2131,26 +2132,26 @@ CREATE TABLE `reports` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sessions` (
-  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text COLLATE utf8mb4_unicode_ci,
-  `payload` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_activity` int NOT NULL,
+  `id` varchar(191) NOT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` text NOT NULL,
+  `last_activity` int(11) NOT NULL,
   UNIQUE KEY `sessions_id_unique` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `status_archiveds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `status_archiveds` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `original_scope` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `metadata` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `original_scope` varchar(191) DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2160,16 +2161,16 @@ CREATE TABLE `status_archiveds` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `status_edits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `status_edits` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `caption` text COLLATE utf8mb4_unicode_ci,
-  `spoiler_text` text COLLATE utf8mb4_unicode_ci,
-  `ordered_media_attachment_ids` json DEFAULT NULL,
-  `media_descriptions` json DEFAULT NULL,
-  `poll_options` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `caption` text DEFAULT NULL,
+  `spoiler_text` text DEFAULT NULL,
+  `ordered_media_attachment_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`ordered_media_attachment_ids`)),
+  `media_descriptions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`media_descriptions`)),
+  `poll_options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`poll_options`)),
   `is_nsfw` tinyint(1) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -2180,13 +2181,13 @@ CREATE TABLE `status_edits` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `status_hashtags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `status_hashtags` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned NOT NULL,
-  `hashtag_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `status_visibility` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned NOT NULL,
+  `hashtag_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `status_visibility` varchar(191) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2199,12 +2200,12 @@ CREATE TABLE `status_hashtags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `status_views`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `status_views` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `status_id` bigint unsigned DEFAULT NULL,
-  `status_profile_id` bigint unsigned DEFAULT NULL,
-  `profile_id` bigint unsigned DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` bigint(20) unsigned DEFAULT NULL,
+  `status_profile_id` bigint(20) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2216,40 +2217,40 @@ CREATE TABLE `status_views` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `statuses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `statuses` (
-  `id` bigint unsigned NOT NULL,
-  `uri` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `caption` text COLLATE utf8mb4_unicode_ci,
-  `rendered` text COLLATE utf8mb4_unicode_ci,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `in_reply_to_id` bigint unsigned DEFAULT NULL,
-  `reblog_of_id` bigint unsigned DEFAULT NULL,
-  `url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_nsfw` tinyint(1) NOT NULL DEFAULT '0',
-  `scope` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'public',
-  `visibility` enum('public','unlisted','private','direct','draft') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'public',
-  `reply` tinyint(1) NOT NULL DEFAULT '0',
-  `likes_count` bigint unsigned NOT NULL DEFAULT '0',
-  `reblogs_count` bigint unsigned NOT NULL DEFAULT '0',
-  `language` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `conversation_id` bigint unsigned DEFAULT NULL,
-  `local` tinyint(1) NOT NULL DEFAULT '1',
-  `application_id` bigint unsigned DEFAULT NULL,
-  `in_reply_to_profile_id` bigint unsigned DEFAULT NULL,
-  `entities` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL,
+  `uri` varchar(191) DEFAULT NULL,
+  `caption` text DEFAULT NULL,
+  `rendered` text DEFAULT NULL,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `in_reply_to_id` bigint(20) unsigned DEFAULT NULL,
+  `reblog_of_id` bigint(20) unsigned DEFAULT NULL,
+  `url` varchar(191) DEFAULT NULL,
+  `is_nsfw` tinyint(1) NOT NULL DEFAULT 0,
+  `scope` varchar(191) NOT NULL DEFAULT 'public',
+  `visibility` enum('public','unlisted','private','direct','draft') NOT NULL DEFAULT 'public',
+  `reply` tinyint(1) NOT NULL DEFAULT 0,
+  `likes_count` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `reblogs_count` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `language` varchar(191) DEFAULT NULL,
+  `conversation_id` bigint(20) unsigned DEFAULT NULL,
+  `local` tinyint(1) NOT NULL DEFAULT 1,
+  `application_id` bigint(20) unsigned DEFAULT NULL,
+  `in_reply_to_profile_id` bigint(20) unsigned DEFAULT NULL,
+  `entities` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`entities`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `cw_summary` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reply_count` int unsigned DEFAULT NULL,
-  `comments_disabled` tinyint(1) NOT NULL DEFAULT '0',
-  `place_id` bigint unsigned DEFAULT NULL,
-  `object_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cw_summary` varchar(191) DEFAULT NULL,
+  `reply_count` int(10) unsigned DEFAULT NULL,
+  `comments_disabled` tinyint(1) NOT NULL DEFAULT 0,
+  `place_id` bigint(20) unsigned DEFAULT NULL,
+  `object_url` varchar(191) DEFAULT NULL,
   `edited_at` timestamp NULL DEFAULT NULL,
   `trendable` tinyint(1) DEFAULT NULL,
-  `media_ids` json DEFAULT NULL,
+  `media_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`media_ids`)),
   PRIMARY KEY (`id`),
   UNIQUE KEY `statuses_uri_unique` (`uri`),
   UNIQUE KEY `statuses_object_url_unique` (`object_url`),
@@ -2271,34 +2272,34 @@ CREATE TABLE `statuses` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `stories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `stories` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `type` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `size` int unsigned DEFAULT NULL,
-  `mime` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `duration` smallint unsigned NOT NULL,
-  `path` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `remote_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `media_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cdn_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `public` tinyint(1) NOT NULL DEFAULT '0',
-  `local` tinyint(1) NOT NULL DEFAULT '0',
-  `view_count` int unsigned DEFAULT NULL,
-  `comment_count` int unsigned DEFAULT NULL,
-  `story` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(191) DEFAULT NULL,
+  `size` int(10) unsigned DEFAULT NULL,
+  `mime` varchar(191) DEFAULT NULL,
+  `duration` smallint(5) unsigned NOT NULL,
+  `path` varchar(191) DEFAULT NULL,
+  `remote_url` varchar(191) DEFAULT NULL,
+  `media_url` varchar(191) DEFAULT NULL,
+  `cdn_url` varchar(191) DEFAULT NULL,
+  `public` tinyint(1) NOT NULL DEFAULT 0,
+  `local` tinyint(1) NOT NULL DEFAULT 0,
+  `view_count` int(10) unsigned DEFAULT NULL,
+  `comment_count` int(10) unsigned DEFAULT NULL,
+  `story` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`story`)),
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `is_archived` tinyint(1) DEFAULT '0',
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_archived` tinyint(1) DEFAULT 0,
+  `name` varchar(191) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
-  `can_reply` tinyint(1) NOT NULL DEFAULT '1',
-  `can_react` tinyint(1) NOT NULL DEFAULT '1',
-  `object_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `object_uri` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bearcap_token` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `can_reply` tinyint(1) NOT NULL DEFAULT 1,
+  `can_react` tinyint(1) NOT NULL DEFAULT 1,
+  `object_id` varchar(191) DEFAULT NULL,
+  `object_uri` varchar(191) DEFAULT NULL,
+  `bearcap_token` varchar(191) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `stories_profile_id_path_unique` (`profile_id`,`path`),
   UNIQUE KEY `stories_remote_url_unique` (`remote_url`),
@@ -2315,11 +2316,11 @@ CREATE TABLE `stories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `story_views`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `story_views` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `story_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `story_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2330,15 +2331,15 @@ CREATE TABLE `story_views` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `telescope_entries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `telescope_entries` (
-  `sequence` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `family_hash` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `should_display_on_index` tinyint(1) NOT NULL DEFAULT '1',
-  `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sequence` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) NOT NULL,
+  `batch_id` char(36) NOT NULL,
+  `family_hash` varchar(191) DEFAULT NULL,
+  `should_display_on_index` tinyint(1) NOT NULL DEFAULT 1,
+  `type` varchar(20) NOT NULL,
+  `content` longtext NOT NULL,
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`sequence`),
   UNIQUE KEY `telescope_entries_uuid_unique` (`uuid`),
@@ -2350,10 +2351,10 @@ CREATE TABLE `telescope_entries` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `telescope_entries_tags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `telescope_entries_tags` (
-  `entry_uuid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tag` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entry_uuid` char(36) NOT NULL,
+  `tag` varchar(191) NOT NULL,
   PRIMARY KEY (`entry_uuid`,`tag`),
   KEY `telescope_entries_tags_tag_index` (`tag`),
   CONSTRAINT `telescope_entries_tags_entry_uuid_foreign` FOREIGN KEY (`entry_uuid`) REFERENCES `telescope_entries` (`uuid`) ON DELETE CASCADE
@@ -2361,23 +2362,23 @@ CREATE TABLE `telescope_entries_tags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `telescope_monitoring`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `telescope_monitoring` (
-  `tag` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tag` varchar(191) NOT NULL,
   PRIMARY KEY (`tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `uikit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `uikit` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `k` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `v` text COLLATE utf8mb4_unicode_ci,
-  `meta` json DEFAULT NULL,
-  `defv` text COLLATE utf8mb4_unicode_ci,
-  `dhis` text COLLATE utf8mb4_unicode_ci,
-  `edit_count` int unsigned DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `k` varchar(191) NOT NULL,
+  `v` text DEFAULT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
+  `defv` text DEFAULT NULL,
+  `dhis` text DEFAULT NULL,
+  `edit_count` int(10) unsigned DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2386,13 +2387,13 @@ CREATE TABLE `uikit` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_app_settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_app_settings` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `common` json DEFAULT NULL,
-  `custom` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `common` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`common`)),
+  `custom` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`custom`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2402,14 +2403,14 @@ CREATE TABLE `user_app_settings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_devices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_devices` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `ip` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_agent` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fingerprint` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `ip` varchar(191) NOT NULL,
+  `user_agent` varchar(191) NOT NULL,
+  `fingerprint` varchar(191) DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
   `trusted` tinyint(1) DEFAULT NULL,
   `last_active_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -2423,11 +2424,11 @@ CREATE TABLE `user_devices` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_domain_blocks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_domain_blocks` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned NOT NULL,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `domain` varchar(191) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_domain_blocks_by_id` (`profile_id`,`domain`),
   KEY `user_domain_blocks_profile_id_index` (`profile_id`),
@@ -2436,13 +2437,13 @@ CREATE TABLE `user_domain_blocks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_email_forgots`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_email_forgots` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
-  `ip_address` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `referrer` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `ip_address` varchar(191) DEFAULT NULL,
+  `user_agent` varchar(191) DEFAULT NULL,
+  `referrer` varchar(191) DEFAULT NULL,
   `email_sent_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -2453,13 +2454,13 @@ CREATE TABLE `user_email_forgots` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_filters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_filters` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `filterable_id` bigint unsigned NOT NULL,
-  `filterable_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `filter_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'block',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `filterable_id` bigint(20) unsigned NOT NULL,
+  `filterable_type` varchar(191) NOT NULL,
+  `filter_type` varchar(191) NOT NULL DEFAULT 'block',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2470,15 +2471,15 @@ CREATE TABLE `user_filters` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_invites`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_invites` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `profile_id` bigint unsigned NOT NULL,
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message` text COLLATE utf8mb4_unicode_ci,
-  `key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `profile_id` bigint(20) unsigned NOT NULL,
+  `email` varchar(191) NOT NULL,
+  `message` text DEFAULT NULL,
+  `key` varchar(191) NOT NULL,
+  `token` varchar(191) NOT NULL,
   `valid_until` timestamp NULL DEFAULT NULL,
   `used_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -2492,12 +2493,12 @@ CREATE TABLE `user_invites` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_pronouns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_pronouns` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned DEFAULT NULL,
-  `profile_id` bigint NOT NULL,
-  `pronouns` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `profile_id` bigint(20) NOT NULL,
+  `pronouns` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`pronouns`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2507,13 +2508,13 @@ CREATE TABLE `user_pronouns` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_roles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `user_id` int unsigned NOT NULL,
-  `roles` json DEFAULT NULL,
-  `meta` json DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`roles`)),
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2523,82 +2524,82 @@ CREATE TABLE `user_roles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_settings` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `role` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
-  `crawlable` tinyint(1) NOT NULL DEFAULT '1',
-  `show_guests` tinyint(1) NOT NULL DEFAULT '1',
-  `show_discover` tinyint(1) NOT NULL DEFAULT '1',
-  `public_dm` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_cw_search` tinyint(1) NOT NULL DEFAULT '1',
-  `hide_blocked_search` tinyint(1) NOT NULL DEFAULT '1',
-  `always_show_cw` tinyint(1) NOT NULL DEFAULT '0',
-  `compose_media_descriptions` tinyint(1) NOT NULL DEFAULT '0',
-  `reduce_motion` tinyint(1) NOT NULL DEFAULT '0',
-  `optimize_screen_reader` tinyint(1) NOT NULL DEFAULT '0',
-  `high_contrast_mode` tinyint(1) NOT NULL DEFAULT '0',
-  `video_autoplay` tinyint(1) NOT NULL DEFAULT '0',
-  `send_email_new_follower` tinyint(1) NOT NULL DEFAULT '0',
-  `send_email_new_follower_request` tinyint(1) NOT NULL DEFAULT '1',
-  `send_email_on_share` tinyint(1) NOT NULL DEFAULT '0',
-  `send_email_on_like` tinyint(1) NOT NULL DEFAULT '0',
-  `send_email_on_mention` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `role` varchar(191) NOT NULL DEFAULT 'user',
+  `crawlable` tinyint(1) NOT NULL DEFAULT 1,
+  `show_guests` tinyint(1) NOT NULL DEFAULT 1,
+  `show_discover` tinyint(1) NOT NULL DEFAULT 1,
+  `public_dm` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_cw_search` tinyint(1) NOT NULL DEFAULT 1,
+  `hide_blocked_search` tinyint(1) NOT NULL DEFAULT 1,
+  `always_show_cw` tinyint(1) NOT NULL DEFAULT 0,
+  `compose_media_descriptions` tinyint(1) NOT NULL DEFAULT 0,
+  `reduce_motion` tinyint(1) NOT NULL DEFAULT 0,
+  `optimize_screen_reader` tinyint(1) NOT NULL DEFAULT 0,
+  `high_contrast_mode` tinyint(1) NOT NULL DEFAULT 0,
+  `video_autoplay` tinyint(1) NOT NULL DEFAULT 0,
+  `send_email_new_follower` tinyint(1) NOT NULL DEFAULT 0,
+  `send_email_new_follower_request` tinyint(1) NOT NULL DEFAULT 1,
+  `send_email_on_share` tinyint(1) NOT NULL DEFAULT 0,
+  `send_email_on_like` tinyint(1) NOT NULL DEFAULT 0,
+  `send_email_on_mention` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `show_profile_followers` tinyint(1) NOT NULL DEFAULT '1',
-  `show_profile_follower_count` tinyint(1) NOT NULL DEFAULT '1',
-  `show_profile_following` tinyint(1) NOT NULL DEFAULT '1',
-  `show_profile_following_count` tinyint(1) NOT NULL DEFAULT '1',
-  `compose_settings` json DEFAULT NULL,
-  `other` json DEFAULT NULL,
-  `show_atom` tinyint(1) NOT NULL DEFAULT '1',
+  `show_profile_followers` tinyint(1) NOT NULL DEFAULT 1,
+  `show_profile_follower_count` tinyint(1) NOT NULL DEFAULT 1,
+  `show_profile_following` tinyint(1) NOT NULL DEFAULT 1,
+  `show_profile_following_count` tinyint(1) NOT NULL DEFAULT 1,
+  `compose_settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`compose_settings`)),
+  `other` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`other`)),
+  `show_atom` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_settings_user_id_unique` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `profile_id` bigint unsigned DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `username` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `language` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(191) DEFAULT NULL,
+  `username` varchar(191) DEFAULT NULL,
+  `email` varchar(191) NOT NULL,
+  `status` varchar(191) DEFAULT NULL,
+  `language` varchar(191) DEFAULT NULL,
+  `password` varchar(191) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `last_active_at` timestamp NULL DEFAULT NULL,
-  `2fa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `2fa_secret` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `2fa_backup_codes` json DEFAULT NULL,
+  `2fa_enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `2fa_secret` varchar(191) DEFAULT NULL,
+  `2fa_backup_codes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`2fa_backup_codes`)),
   `2fa_setup_at` timestamp NULL DEFAULT NULL,
   `delete_after` timestamp NULL DEFAULT NULL,
-  `has_interstitial` tinyint(1) NOT NULL DEFAULT '0',
-  `guid` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `domain` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `register_source` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'web',
-  `app_register_token` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `app_register_ip` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `has_roles` tinyint(1) NOT NULL DEFAULT '0',
-  `parent_id` int unsigned DEFAULT NULL,
-  `role_id` tinyint unsigned DEFAULT NULL,
-  `expo_token` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `notify_like` tinyint(1) NOT NULL DEFAULT '1',
-  `notify_follow` tinyint(1) NOT NULL DEFAULT '1',
-  `notify_mention` tinyint(1) NOT NULL DEFAULT '1',
-  `notify_comment` tinyint(1) NOT NULL DEFAULT '1',
-  `storage_used` bigint unsigned NOT NULL DEFAULT '0',
+  `has_interstitial` tinyint(1) NOT NULL DEFAULT 0,
+  `guid` varchar(191) DEFAULT NULL,
+  `domain` varchar(191) DEFAULT NULL,
+  `register_source` varchar(191) DEFAULT 'web',
+  `app_register_token` varchar(191) DEFAULT NULL,
+  `app_register_ip` varchar(191) DEFAULT NULL,
+  `has_roles` tinyint(1) NOT NULL DEFAULT 0,
+  `parent_id` int(10) unsigned DEFAULT NULL,
+  `role_id` tinyint(3) unsigned DEFAULT NULL,
+  `expo_token` varchar(191) DEFAULT NULL,
+  `notify_like` tinyint(1) NOT NULL DEFAULT 1,
+  `notify_follow` tinyint(1) NOT NULL DEFAULT 1,
+  `notify_mention` tinyint(1) NOT NULL DEFAULT 1,
+  `notify_comment` tinyint(1) NOT NULL DEFAULT 1,
+  `storage_used` bigint(20) unsigned NOT NULL DEFAULT 0,
   `storage_used_updated_at` timestamp NULL DEFAULT NULL,
-  `notify_enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `notify_enabled` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`),
   UNIQUE KEY `users_username_unique` (`username`),
@@ -2615,13 +2616,13 @@ CREATE TABLE `users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `websockets_statistics_entries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `websockets_statistics_entries` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `app_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `peak_connection_count` int NOT NULL,
-  `websocket_message_count` int NOT NULL,
-  `api_message_count` int NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(191) NOT NULL,
+  `peak_connection_count` int(11) NOT NULL,
+  `websocket_message_count` int(11) NOT NULL,
+  `api_message_count` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -2632,8 +2633,9 @@ CREATE TABLE `websockets_statistics_entries` (
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
+/*M!999999\- enable the sandbox mode */ 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (1,'2014_10_12_000000_create_users_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (2,'2014_10_12_100000_create_password_resets_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (3,'2016_06_01_000001_create_oauth_auth_codes_table',1);
