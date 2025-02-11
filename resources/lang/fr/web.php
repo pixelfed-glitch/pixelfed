@@ -8,7 +8,7 @@ return [
 		'comments' => 'Commentaires',
 		'like' => 'J\'aime',
 		'liked' => 'Aimé',
-		'likes' => 'J\'aime',
+		'likes' => 'J\'aimes',
 		'share' => 'Partager',
 		'shared' => 'Partagé',
 		'shares' => 'Partages',
@@ -46,7 +46,7 @@ return [
 		// Timelines
 		'homeFeed' => 'Flux principal',
 		'localFeed' => 'Flux local',
-		'globalFeed' => 'Flux global',
+		'globalFeed' => 'Fil global',
 
 		// Core features
 		'discover' => 'Découvrir',
@@ -109,7 +109,7 @@ return [
 		'shareToFollowers' => 'Partager avec ses abonné·e·s',
 		'shareToOther' => 'Partager avec d\'autres',
 		'noLikes' => 'Aucun J\'aime pour le moment',
-		'uploading' => 'Envoi en cours',
+		'uploading' => 'Téléversement',
 	],
 
 	'profile' => [
@@ -161,7 +161,7 @@ return [
 		'modRemoveCWConfirm' => 'Êtes-vous sûr·e de vouloir supprimer l\'avertissement de contenu sur cette publication ?',
 		'modRemoveCWSuccess' => 'Avertissement de contenu supprimé avec succès',
 		'modUnlistConfirm' => 'Êtes-vous sûr·e de vouloir retirer cette publication des flux ?',
-		'modUnlistSuccess' => 'Publication retirée des flux avec succès',
+		'modUnlistSuccess' => 'Publication retirée des fils avec succès',
 		'modMarkAsSpammerConfirm' => 'Êtes-vous sûr·e de vouloir marquer cet utilisateur·rice comme spammeur·euse ? Toutes les publications existantes et futures seront retirées des flux et un avertissement de contenu sera appliqué.',
 		'modMarkAsSpammerSuccess' => 'Compte marqué avec succès comme spammeur',
 
@@ -182,7 +182,7 @@ return [
 	],
 
 	'timeline' => [
-		'peopleYouMayKnow' => 'Connaissances possibles',
+		'peopleYouMayKnow' => 'Personnes que vous connaissez peut-être',
 
 		'onboarding' => [
 			'welcome' => 'Bienvenue',

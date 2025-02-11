@@ -186,9 +186,9 @@ return [
 
 		'onboarding' => [
 			'welcome' => 'Vitajte',
-			'thisIsYourHomeFeed' => 'This is your home feed, a chronological feed of posts from accounts you follow.',
+			'thisIsYourHomeFeed' => 'Toto je tvoj domáci kanál príspevkov z účtov, ktoré nasleduješ.',
 			'letUsHelpYouFind' => 'Nechajte nás pomôcť vám nájsť zaujímavých ľudí ktorých môžete sledovať',
-			'refreshFeed' => 'Refresh my feed',
+			'refreshFeed' => 'Obnoviť môj kanál',
 		],
 	],
 
