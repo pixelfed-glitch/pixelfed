@@ -13,9 +13,9 @@ return [
 	'discover' => 'Descubre',
 	'directMessages' => 'Mensajes Directos',
 	'timelines' => 'Timelines',
-	'embed'	=> 'Embed',
+	'embed'	=> 'Incrustar',
 
-	'communityGuidelines' => 'Community Guidelines',
+	'communityGuidelines' => 'Normas de la comunidad',
 	'whatIsTheFediverse' => '¿Qué es el fediverso?',
 	'controllingVisibility' => 'Controlando la Visibilidad',
 	'blockingAccounts' => 'Bloqueando Cuentas',
