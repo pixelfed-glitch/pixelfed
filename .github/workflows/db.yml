@@ -164,3 +164,4 @@ jobs:
       - run: php artisan key:generate
 
       - run: php artisan migrate --force
+      - run: php artisan backup:run --only-db
