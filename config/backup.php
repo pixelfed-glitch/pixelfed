@@ -59,14 +59,42 @@ return [
              */
 
             'mysql' => [
-                  'dump' => [
-                       'useSingleTransaction' => true,
-                       'useQuick' => true
-                   ],
-             ],
+                'dump' => [
+                    'useSingleTransaction' => true,
+                    'useQuick' => true
+                ],
+            ],
+
+            'mariadb' => [
+                'dump' => [
+                    'useSingleTransaction' => true,
+                    'useQuick' => true
+                ],
+            ],
+
+            'pgsql' => [
+                'dump' => [
+                    'useSingleTransaction' => true,
+                    'useQuick' => true
+                ],
+            ],
+
+            'sqlite' => [
+                'dump' => [
+                    'useSingleTransaction' => true,
+                    'useQuick' => true
+                ],
+            ],
+
+            'sqlsrv' => [
+                'dump' => [
+                    'useSingleTransaction' => true,
+                    'useQuick' => true
+                ],
+            ],
 
             'databases' => [
-                'mysql',
+                env('DB_CONNECTION', 'mysql')
             ],
         ],
 
