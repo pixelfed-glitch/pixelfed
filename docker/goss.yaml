@@ -12,7 +12,7 @@ package:
   nano: { installed: true }
   optipng: { installed: true }
   pngquant: { installed: true }
-  postgresql-client: { installed: true }
+  postgresql-client-17: { installed: true }
   unzip: { installed: true }
   wget: { installed: true }
   zip: { installed: true }
