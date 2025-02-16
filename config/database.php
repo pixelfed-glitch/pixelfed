@@ -78,7 +78,7 @@ return [
             'collation'         => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix'            => '',
             'prefix_indexes'    => true,
-            'strict'            => true,
+            'strict'            => false,
             'engine'            => null,
             'sslmode'           => env('DB_SSL_MODE', 'trust'),
             'options'           => extension_loaded('pdo_mysql') ? array_filter([

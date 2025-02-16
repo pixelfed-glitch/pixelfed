@@ -71,7 +71,7 @@ class HttpSignature
     public static function instanceActorSign($url, $body = false, $addlHeaders = [], $method = 'post')
     {
         $keyId = config('app.url').'/i/actor#main-key';
-        if(config_cache('database.default') === 'mysql') {
+        if(config_cache('database.default') == 'mysql' || config_cache('database.default') == 'mariadb') {
             $privateKey = Cache::rememberForever(InstanceActor::PKI_PRIVATE, function () {
                 return InstanceActor::first()->private_key;
             });

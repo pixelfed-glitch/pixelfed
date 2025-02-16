@@ -236,9 +236,9 @@ class Installer extends Command
     {
         $this->line('');
         $this->info('Database Settings:');
-        $database = $this->choice('Select database driver', ['mysql', 'pgsql'], 0);
+        $database = $this->choice('Select database driver', ['mysql', 'mariadb', 'pgsql'], 0);
         $database_host = $this->ask('Select database host', '127.0.0.1');
-        $database_port_default = $database === 'mysql' ? 3306 : 5432;
+        $database_port_default = $database === 'pgsql' ? 5432 : 3306;
         $database_port = $this->ask('Select database port', $database_port_default);
 
         $database_db = $this->ask('Select database', 'pixelfed');

@@ -17,6 +17,7 @@ class UpdateStatusVisibilityDefaults extends Migration
         switch($type)
         {
             case 'mysql':
+            case 'mariadb':
                 DB::statement("ALTER TABLE statuses CHANGE COLUMN visibility visibility ENUM('public','unlisted','private','direct', 'draft') NOT NULL DEFAULT 'public'");
                 break;
 

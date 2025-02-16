@@ -34,7 +34,7 @@ class CommentPipeline implements ShouldQueue
 
     public $timeout = 5;
     public $tries = 1;
-    
+
     /**
      * Create a new job instance.
      *
@@ -59,7 +59,7 @@ class CommentPipeline implements ShouldQueue
         $target = $status->profile;
         $actor = $comment->profile;
 
-        if(config('database.default') === 'mysql') {
+        if(config('database.default') == 'mysql' || config('database.default') == 'mariadb') {
         	// todo: refactor
             // $exp = DB::raw("select id, in_reply_to_id from statuses, (select @pv := :kid) initialisation where id > @pv and find_in_set(in_reply_to_id, @pv) > 0 and @pv := concat(@pv, ',', id)");
             // $expQuery = $exp->getValue(DB::connection()->getQueryGrammar());
@@ -80,7 +80,7 @@ class CommentPipeline implements ShouldQueue
         if ($actor->id === $target->id || $status->comments_disabled == true) {
             return true;
         }
-        
+
         $filtered = UserFilter::whereUserId($target->id)
             ->whereFilterableType('App\Profile')
             ->whereIn('filter_type', ['mute', 'block'])

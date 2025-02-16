@@ -676,7 +676,7 @@ class ComposeController extends Controller
         $place = $request->input('place');
         $cw = $request->input('cw');
         $tagged = $request->input('tagged');
-        $defaultCaption = config_cache('database.default') === 'mysql' ? null : "";
+        $defaultCaption = "";
 
         if ($place && is_array($place)) {
             $status->place_id = $place['id'];

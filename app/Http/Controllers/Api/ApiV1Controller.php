@@ -3660,7 +3660,7 @@ class ApiV1Controller extends Controller
             }
         }
 
-        $defaultCaption = config_cache('database.default') === 'mysql' ? null : '';
+        $defaultCaption = '';
         $share = Status::firstOrCreate([
             'caption' => $defaultCaption,
             'rendered' => $defaultCaption,
