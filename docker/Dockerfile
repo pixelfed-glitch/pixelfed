@@ -30,6 +30,16 @@ ARG DOTTIE_VERSION="v0.14.3"
 # renovate: datasource=github-releases depName=composer/composer
 ARG COMPOSER_VERSION="2.8.4"
 
+# See: https://github.com/jippi/dottie
+#
+# renovate: datasource=docker depName=ghcr.io/jippi/dottie
+ARG MARIADB_CLIENT_VERSION="10.11"
+
+# See: https://github.com/jippi/dottie
+#
+# renovate: datasource=docker depName=ghcr.io/jippi/dottie
+ARG POSTGRESQL_CLIENT_VERSION="17"
+
 ARG RUNTIME_UID=33 # often called 'www-data'
 ARG RUNTIME_GID=33 # often called 'www-data'
 
@@ -121,6 +131,9 @@ ARG PHP_VERSION
 ARG PHP_DEBIAN_RELEASE
 ARG APT_PACKAGES_EXTRA
 ENV APT_PACKAGES_EXTRA=${APT_PACKAGES_EXTRA}
+
+ARG MARIADB_CLIENT_VERSION
+ARG POSTGRESQL_CLIENT_VERSION
 
 # Copy the base layer installer into the image
 COPY docker/rootfs/shared/docker/install/base.sh /docker/install/base.sh

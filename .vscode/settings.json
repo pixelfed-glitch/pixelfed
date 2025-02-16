@@ -18,5 +18,6 @@
         ".env": "shellscript",
         ".env.*": "shellscript"
     },
-    "intelephense.environment.phpVersion": "8.4"
+    "intelephense.environment.phpVersion": "8.4",
+    "censitive.enable": false
 }

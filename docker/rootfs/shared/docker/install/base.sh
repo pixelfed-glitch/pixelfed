@@ -51,15 +51,25 @@ packages+=(
 # Database
 packages+=(
     mariadb-client
-    postgresql-client
+    "postgresql-client-${POSTGRESQL_CLIENT_VERSION}"
 )
 
 readarray -d ' ' -t -O "${#packages[@]}" packages < <(echo -n "${APT_PACKAGES_EXTRA:-}")
 
-# Install MariaDB version that doesn't break on MariaDB dumps AND that still alias to mysql
 apt-get update
 apt-get install -y --no-install-recommends curl ca-certificates apt-transport-https
-curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version mariadb-10.11
+
+# Install MariaDB version that doesn't break on MariaDB dumps AND that still alias to mysql
+# shellcheck disable=SC2154
+curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version "mariadb-${MARIADB_CLIENT_VERSION}"
+
+# following https://www.postgresql.org/download/linux/debian/
+# Import the repository signing key:
+install -d /usr/share/postgresql-common/pgdg
+curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+# Create the repository configuration file:
+sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt ${PHP_DEBIAN_RELEASE}-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
 apt-get update
 apt-get upgrade -y
