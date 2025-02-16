@@ -1,6 +1,26 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.1...develop)
+## [v0.12.4+glitch.1.10.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.1...v0.12.4+glitch.1.10.0)
+
+### Updates
+- hopefully better handling of stories reaction and comments ([ca60df12](https://github.com/pixelfed-glitch/pixelfed/commit/ca60df12))
+- fix dm with media not showing text #52 ([5be1f8ad](https://github.com/pixelfed-glitch/pixelfed/commit/5be1f8ad))
+- better handling of mariadb driver ([809395b57](https://github.com/pixelfed-glitch/pixelfed/commit/809395b57))
+- use latest postgresql client to avoid version not supported ([3d4eb2840](https://github.com/pixelfed-glitch/pixelfed/commit/3d4eb2840))
+- Testing backups on db CI ([c014791f8](https://github.com/pixelfed-glitch/pixelfed/commit/c014791f8))
+- Allowing backups for any database ([44fd1ef84](https://github.com/pixelfed-glitch/pixelfed/commit/44fd1ef84))
+- Fix docker mariadb-client version ([1af448115](https://github.com/pixelfed-glitch/pixelfed/commit/1af448115))
+- Update mariadb-client ([f64e78013](https://github.com/pixelfed-glitch/pixelfed/commit/f64e78013))
+- stricter checks in db ([1fbab29fd](https://github.com/pixelfed-glitch/pixelfed/commit/1fbab29fd))
+- fix mysql schema + mariadb specific schema ([503afcbb5](https://github.com/pixelfed-glitch/pixelfed/commit/503afcbb5))
+- fix mariadb differenciation in config and entrypoints ([0066ab93f](https://github.com/pixelfed-glitch/pixelfed/commit/0066ab93f))
+- Updating ddev config with mysql and newer mariadb ([148ff9d55](https://github.com/pixelfed-glitch/pixelfed/commit/148ff9d55))
+- Added schema dump ([83cbe8e40](https://github.com/pixelfed-glitch/pixelfed/commit/83cbe8e40))
+- Fix statuses fields not nullable ([b6f0c3fde](https://github.com/pixelfed-glitch/pixelfed/commit/b6f0c3fde))
+- Update DDEV setup for postgres ([63047ea6e](https://github.com/pixelfed-glitch/pixelfed/commit/63047ea6e))
+- Add bzip2 to packages for instagram import and backup ([0c25d1a4d](https://github.com/pixelfed-glitch/pixelfed/commit/0c25d1a4d))
+- Prevent pulse crash when it is not configured ([972b29902](https://github.com/pixelfed-glitch/pixelfed/commit/972b29902))
+- Ensure the cloud url is used when publishing a status to activitypub ([47a63d057](https://github.com/pixelfed-glitch/pixelfed/commit/47a63d057))
 
 ### Updates (from Upstream)
 - Update oauth/token, fix scope to be space separated string instead of array ([4ce6e610](https://github.com/pixelfed/pixelfed/commit/4ce6e610))

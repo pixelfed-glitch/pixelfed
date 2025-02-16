@@ -12,7 +12,6 @@ web_environment:
   - MAIL_USERNAME=null
   - MAIL_PASSWORD=null
   - MAIL_ENCRYPTION=null
-  - APP_KEY=placeholder
   - APP_NAME=PixelfedTest
   - APP_ENV=local
   - APP_KEY=base64:lwX95GbNWX3XsucdMe0XwtOKECta3h/B+p9NbH2jd0E=
