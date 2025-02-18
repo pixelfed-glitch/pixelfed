@@ -78,7 +78,7 @@
 <p>
     <a class="text-dark font-weight-bold" data-toggle="collapse" href="#collapse2" role="button" aria-expanded="false" aria-controls="collapse2">
         <i class="fas fa-chevron-down mr-2"></i>
-        I haven't recieved the email confirmation
+        I haven't received the email confirmation
     </a>
     <div class="collapse mb-5" id="collapse2">
         <div>
