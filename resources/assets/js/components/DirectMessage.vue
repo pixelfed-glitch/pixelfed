@@ -21,7 +21,7 @@
 									<a v-else :href="'/'+thread.username" class="text-decoration-none text-muted">&commat;{{thread.username}}</a>
 								</p>
 							</div>
-						</div>   
+						</div>
 					</span>
 					<span><a href="#" class="text-muted" @click.prevent="showOptions()"><i class="fas fa-cog fa-lg"></i></a></span>
 				</div>
@@ -37,14 +37,14 @@
 							<button v-if="!loadingMessages" class="btn btn-primary font-weight-bold rounded-pill btn-sm px-3" @click="loadOlderMessages()">Load Older Messages</button>
 							<button v-else class="btn btn-primary font-weight-bold rounded-pill btn-sm px-3" disabled>Loading...</button>
 						</p>
-					</li> 
+					</li>
 					<li v-for="(convo, index) in thread.messages" class="list-group-item border-0 chat-msg cursor-pointer" @click="openCtxMenu(convo, index)">
 						<div v-if="!convo.isAuthor" class="media d-inline-flex mb-0">
 							<img v-if="!hideAvatars" class="mr-3 mt-2 rounded-circle img-thumbnail" :src="thread.avatar" alt="avatar" width="32" onerror="this.onerror=null;this.src='/storage/avatars/default.jpg';">
 							<div class="media-body">
-								<p v-if="convo.type == 'photo'" class="pill-to p-0 shadow">
-									<img :src="convo.media" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
-								</p>
+								<div v-if="convo.type == 'photo'" class="p-0">
+									<img :src="convo.media" class="shadow" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
+								</div>
 								<div v-else-if="convo.type == 'link'" class="media d-inline-flex mb-0 cursor-pointer">
 									<div class="media-body">
 										<div class="card mb-2 rounded border shadow" style="width:240px;" :title="convo.text">
@@ -64,9 +64,9 @@
 										</div>
 									</div>
 								</div>
-								<p v-else-if="convo.type == 'video'" class="pill-to p-0 shadow">
+								<div v-else-if="convo.type == 'video'" class="p-0">
 									<!-- <video :src="convo.media" width="140px" style="border-radius:20px;"></video> -->
-									<span class="d-block bg-primary d-flex align-items-center justify-content-center" style="width:200px;height: 110px;border-radius: 20px;">
+									<span class="d-block bg-primary d-flex align-items-center justify-content-center shadow" style="width:200px;height: 110px;border-radius: 20px;">
 										<div class="text-center">
 											<p class="mb-1">
 												<i class="fas fa-play fa-2x text-white"></i>
@@ -76,40 +76,42 @@
 											</p>
 										</div>
 									</span>
-								</p>
-								<p v-else-if="convo.type == 'emoji'" class="p-0 emoji-msg">
+								</div>
+								<div v-else-if="convo.type == 'emoji'" class="p-0 emoji-msg">
 									{{convo.text}}
-								</p>
-								<p v-else-if="convo.type == 'story:react'" class="pill-to p-0 shadow" style="width: 140px;margin-bottom: 10px;position:relative;">
+								</div>
+								<div v-else-if="convo.type == 'story:react'" class="pill-to p-0 shadow" style="width: 140px;margin-bottom: 10px;position:relative;">
 									<img :src="convo.meta.story_media_url" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
 									<span class="badge badge-light rounded-pill border" style="font-size: 20px;position: absolute;bottom:-10px;left:-10px;">
 										{{convo.meta.reaction}}
 									</span>
-								</p>
+								</div>
 								<span v-else-if="convo.type == 'story:comment'" class="p-0" style="display: flex;justify-content: flex-start;margin-bottom: 10px;position:relative;">
 									<span class="">
 										<img class="d-block pill-to p-0 mr-0 pr-0 mb-n1" :src="convo.meta.story_media_url" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
 										<span class="pill-to shadow text-break" style="width:fit-content;">{{convo.meta.caption}}</span>
 									</span>
 								</span>
-								<p v-else :class="[largerText ? 'pill-to shadow larger-text text-break':'pill-to shadow text-break']">
+								<div v-if="convo.text && (convo.type != 'emoji' && convo.type != 'link')" :class="[largerText ? 'pill-to shadow larger-text text-break':'pill-to shadow text-break']">
 									{{convo.text}}
-								</p>
-								<p v-if="convo.type == 'story:react'" class="small text-muted mb-0 ml-0">
-									<span class="font-weight-bold">{{ convo.meta.story_actor_username }}</span> reacted your story
-								</p>
-								<p v-if="convo.type == 'story:comment'" class="small text-muted mb-0 ml-0">
-									<span class="font-weight-bold">{{ convo.meta.story_actor_username }}</span> replied to your story
-								</p>
-								<p v-if="!hideTimestamps" class="small text-muted font-weight-bold d-flex align-items-center justify-content-start" data-timestamp="timestamp"> <span v-if="convo.hidden" class="mr-2 small" title="Filtered Message" data-toggle="tooltip" data-placement="bottom"><i class="fas fa-lock"></i></span> {{convo.timeAgo}}</p>
-								<p v-else>&nbsp;</p>
+								</div>
+                                <div>
+                                    <p v-if="convo.type == 'story:react'" class="small text-muted mb-0 ml-0">
+                                        <span class="font-weight-bold">{{ convo.meta.story_actor_username }}</span> reacted your story
+                                    </p>
+                                    <p v-if="convo.type == 'story:comment'" class="small text-muted mb-0 ml-0">
+                                        <span class="font-weight-bold">{{ convo.meta.story_actor_username }}</span> replied to your story
+                                    </p>
+                                    <p v-if="!hideTimestamps" class="small text-muted font-weight-bold d-flex align-items-center justify-content-start" data-timestamp="timestamp"> <span v-if="convo.hidden" class="mr-2 small" title="Filtered Message" data-toggle="tooltip" data-placement="bottom"><i class="fas fa-lock"></i></span> {{convo.timeAgo}}</p>
+                                    <p v-else>&nbsp;</p>
+                                </div>
 							</div>
 						</div>
 						<div v-else class="media d-inline-flex float-right mb-0 mr-2">
 							<div class="media-body">
-								<p v-if="convo.type == 'photo'" class="pill-from p-0 shadow">
+								<div v-if="convo.type == 'photo'" class="p-0 shadow">
 									<img :src="convo.media" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
-								</p>
+								</div>
 								<div v-else-if="convo.type == 'link'" class="media d-inline-flex float-right mb-0 cursor-pointer">
 									<div class="media-body">
 										<div class="card mb-2 rounded border shadow" style="width:240px;" :title="convo.text">
@@ -129,7 +131,7 @@
 										</div>
 									</div>
 								</div>
-								<p v-else-if="convo.type == 'video'" class="pill-from p-0 shadow">
+								<div v-else-if="convo.type == 'video'" class="p-0 shadow">
 									<!-- <video :src="convo.media" width="140px" style="border-radius:20px;"></video> -->
 									<span class="rounded-pill bg-primary d-flex align-items-center justify-content-center" style="width:200px;height: 110px">
 										<div class="text-center">
@@ -141,34 +143,36 @@
 											</p>
 										</div>
 									</span>
-								</p>
-								<p v-else-if="convo.type == 'emoji'" class="p-0 emoji-msg">
+								</div>
+								<div v-else-if="convo.type == 'emoji'" class="p-0 emoji-msg">
 									{{convo.text}}
-								</p>
-								<p v-else-if="convo.type == 'story:react'" class="pill-from p-0 shadow" style="margin-bottom: 10px;position:relative;width:fit-content;">
+								</div>
+								<div v-else-if="convo.type == 'story:react'" class="pill-from p-0 shadow" style="margin-bottom: 10px;position:relative;width:fit-content;">
 									<img :src="convo.meta.story_media_url" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
 									<span class="badge badge-light rounded-pill border" style="font-size: 20px;position: absolute;bottom:-10px;right:-10px;">
 										{{convo.meta.reaction}}
 									</span>
-								</p>
+								</div>
 								<span v-else-if="convo.type == 'story:comment'" class="p-0" style="display: flex;justify-content: flex-end;margin-bottom: 10px;position:relative;">
 									<span class="d-flex align-items-end flex-column">
 										<img class="d-block pill-from p-0 mr-0 pr-0 mb-n1" :src="convo.meta.story_media_url" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
 										<span class="pill-from shadow text-break" style="width:fit-content;">{{convo.meta.caption}}</span>
 									</span>
 								</span>
-								<p v-else :class="[largerText ? 'pill-from shadow larger-text text-break':'pill-from shadow text-break']">
+								<div v-if="convo.text && (convo.type != 'emoji' && convo.type != 'link')" :class="[largerText ? 'pill-from shadow larger-text text-break':'pill-from shadow text-break']">
 									{{convo.text}}
-								</p>
-								<p v-if="convo.type == 'story:react'" class="small text-muted text-right mb-0 mr-0">
-									You reacted to <span class="font-weight-bold">{{ convo.meta.story_username }}</span>'s story
-								</p>
-								<p v-if="convo.type == 'story:comment'" class="small text-muted text-right mb-0 mr-0">
-									You replied to <span class="font-weight-bold">{{ convo.meta.story_username }}</span>'s story
-								</p>
-								<p v-if="!hideTimestamps" class="small text-muted font-weight-bold text-right"> <span v-if="convo.hidden" class="mr-2 small" title="Filtered Message" data-toggle="tooltip" data-placement="bottom"><i class="fas fa-lock"></i></span> {{convo.timeAgo}}
-								</p>
-								<p v-else>&nbsp;</p>
+								</div>
+                                <div>
+                                    <p v-if="convo.type == 'story:react'" class="small text-muted text-right mb-0 mr-0">
+                                        You reacted to <span class="font-weight-bold">{{ convo.meta.story_username }}</span>'s story
+                                    </p>
+                                    <p v-if="convo.type == 'story:comment'" class="small text-muted text-right mb-0 mr-0">
+                                        You replied to <span class="font-weight-bold">{{ convo.meta.story_username }}</span>'s story
+                                    </p>
+                                    <p v-if="!hideTimestamps" class="small text-muted font-weight-bold text-right"> <span v-if="convo.hidden" class="mr-2 small" title="Filtered Message" data-toggle="tooltip" data-placement="bottom"><i class="fas fa-lock"></i></span> {{convo.timeAgo}}
+                                    </p>
+                                    <p v-else>&nbsp;</p>
+                                </div>
 							</div>
 							<img v-if="!hideAvatars" class="ml-3 mt-2 rounded-circle img-thumbnail" :src="profile.avatar" alt="avatar" width="32" onerror="this.onerror=null;this.src='/storage/avatars/default.jpg';">
 						</div>
@@ -261,7 +265,7 @@
 							<label class="custom-control-label" for="customSwitch4"></label>
 						</div>
 						<div class="d-inline-block ml-3 font-weight-bold">
-							Mute Notifications 
+							Mute Notifications
 							<p class="small mb-0">You will not receive any direct message notifications from <strong>{{thread.username}}</strong>.</p>
 						</div>
 					</div>
@@ -282,7 +286,7 @@
 		<div v-if="ctxContext && ctxContext.type == 'video'" class="list-group-item rounded cursor-pointer font-weight-bold text-dark" @click="viewOriginal()">Play</div>
 		<div v-if="ctxContext && ctxContext.type == 'link'" class="list-group-item rounded cursor-pointer" @click="clickLink()">
 			<p class="mb-0" style="font-size:12px;">
-				Navigate to 
+				Navigate to
 			</p>
 			<p class="mb-0 font-weight-bold text-dark">
 				{{this.ctxContext.meta.domain}}
@@ -312,7 +316,7 @@
 	.pill-to {
 		background:#EDF2F7;
 		font-weight: 500;
-		border-radius: 20px !important;
+		border-radius: 20px;
 		padding-left: 1rem;
 		padding-right: 1rem;
 		padding-top: 0.5rem;
@@ -326,7 +330,7 @@
 		/*background: #53d769;*/
 		background: linear-gradient(135deg, #2EA2F4 0%, #0B93F6 100%) !important;
 		font-weight: 500;
-		border-radius: 20px !important;
+		border-radius: 20px;
 		padding-left: 1rem;
 		padding-right: 1rem;
 		padding-top: 0.5rem;
@@ -334,6 +338,38 @@
 		margin-left: 3rem;
 		margin-bottom: 0.25rem;
 	}
+    .dm-chat-message > .isAuthor .media-body > * {
+        justify-content: flex-end;
+        display: flex;
+    }
+    .dm-chat-message > .isAuthor .media-body > *:not(:nth-last-child(2)) {
+        border-bottom-right-radius: 0px !important;
+        margin-bottom: 0;
+    }
+    .dm-chat-message > .isAuthor .media-body > *:not(:first-child) {
+        border-top-right-radius: 0px !important;
+        margin-top: 0;
+    }
+    .dm-chat-message > :not(.isAuthor) .media-body > *:not(:nth-last-child(2)) {
+        border-bottom-left-radius: 0px !important;
+        margin-bottom: 0;
+    }
+    .dm-chat-message > :not(.isAuthor) .media-body > *:not(:first-child) {
+        border-top-left-radius: 0px !important;
+        margin-top: 0;
+    }
+    .dm-chat-message > .isAuthor .media-body > *:not(:nth-last-child(2)) .media-embed {
+        border-bottom-right-radius: 0px !important;
+    }
+    .dm-chat-message > .isAuthor .media-body > *:not(:first-child) .media-embed {
+        border-top-right-radius: 0px !important;
+    }
+    .dm-chat-message > :not(.isAuthor) .media-body > *:not(:nth-last-child(2)) .media-embed {
+        border-bottom-left-radius: 0px !important;
+    }
+    .dm-chat-message > :not(.isAuthor) .media-body > *:not(:first-child) .media-embed {
+        border-top-left-radius: 0px !important;
+    }
 	.chat-msg:hover {
 		background: #f7fbfd;
 	}
