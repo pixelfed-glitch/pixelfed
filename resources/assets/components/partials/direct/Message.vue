@@ -7,13 +7,36 @@
             <img v-if="!convo.isAuthor && !hideAvatars" class="mr-3 shadow msg-avatar" :src="thread.avatar" alt="avatar" width="50" onerror="this.onerror=null;this.src='/storage/avatars/default.jpg';">
 
             <div class="media-body">
-                <div v-if="convo.type == 'photo'" class="p-0 shadow">
+                <div v-if="convo.type == 'photo'" class="p-0">
                     <img
                         :src="convo.media"
-                        class="media-embed"
+                        class="media-embed shadow"
                         style="cursor: pointer;"
                         onerror="this.onerror=null;this.src='/storage/no-preview.png';"
                         @click.prevent="expandMedia">
+                </div>
+                <div v-else-if="convo.type == 'video'" class="p-0 mb-0" style="line-height: 0;">
+                    <video :src="convo.media" class="media-embed shadow" style="border-radius:20px;" controls>
+                    </video>
+                    <!-- <span class="d-block bg-primary d-flex align-items-center justify-content-center" style="width:200px;height: 110px;border-radius: 20px;">
+                        <div class="text-center">
+                            <p class="mb-1">
+                                <i class="fas fa-play fa-2x text-white"></i>
+                            </p>
+                            <p class="mb-0 small font-weight-bold text-white">
+                                Play
+                            </p>
+                        </div>
+                    </span> -->
+                </div>
+                <div v-else-if="convo.type == 'story:react' || convo.type == 'story:comment'" class="p-0">
+                    <img :src="convo.meta.story_media_url" class="media-embed shadow" width="140" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
+                </div>
+                <div v-if="convo.type == 'story:react' && convo.meta.reaction" :class="[largerText ? 'pill-to shadow larger-text text-break':'pill-to shadow text-break']">
+                    {{convo.meta.reaction}}
+                </div>
+                <div v-else-if="convo.type == 'story:comment' && convo.meta.caption" :class="[largerText ? 'pill-to shadow larger-text text-break':'pill-to shadow text-break']">
+                    {{convo.meta.caption}}
                 </div>
                 <div v-else-if="convo.type == 'link'" class="d-inline-flex mb-0 cursor-pointer">
                     <div class="card shadow border" style="width:240px;border-radius: 18px;">
@@ -32,36 +55,10 @@
                         </div>
                     </div>
                 </div>
-                <div v-else-if="convo.type == 'video'" class="p-0 shadow mb-0" style="line-height: 0;">
-                    <video :src="convo.media" class="media-embed" style="border-radius:20px;" controls>
-                    </video>
-                    <!-- <span class="d-block bg-primary d-flex align-items-center justify-content-center" style="width:200px;height: 110px;border-radius: 20px;">
-                        <div class="text-center">
-                            <p class="mb-1">
-                                <i class="fas fa-play fa-2x text-white"></i>
-                            </p>
-                            <p class="mb-0 small font-weight-bold text-white">
-                                Play
-                            </p>
-                        </div>
-                    </span> -->
-                </div>
                 <div v-else-if="convo.type == 'emoji'" class="p-0 emoji-msg">
                     {{convo.text}}
                 </div>
-                <div v-else-if="convo.type == 'story:react'" class="pill-to p-0 shadow" style="width: 140px;margin-bottom: 10px;position:relative;">
-                    <img :src="convo.meta.story_media_url" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
-                    <span class="badge badge-light rounded-pill border" style="font-size: 20px;position: absolute;bottom:-10px;left:-10px;">
-                        {{convo.meta.reaction}}
-                    </span>
-                </div>
-                <span v-else-if="convo.type == 'story:comment'" class="p-0" style="display: flex;justify-content: flex-start;margin-bottom: 10px;position:relative;">
-                    <span class="">
-                        <img class="d-block pill-to p-0 mr-0 pr-0 mb-n1" :src="convo.meta.story_media_url" width="140" style="border-radius:20px;" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
-                        <span class="pill-to shadow text-break" style="width:fit-content;">{{convo.meta.caption}}</span>
-                    </span>
-                </span>
-                <div v-if="convo.text && (convo.type != 'emoji' && convo.type != 'link')" :class="[largerText ? 'pill-to shadow larger-text text-break':'pill-to shadow text-break']">
+                <div v-else-if="convo.text" :class="[largerText ? 'pill-to shadow larger-text text-break':'pill-to shadow text-break']">
                     {{convo.text}}
                 </div>
                 <div>
