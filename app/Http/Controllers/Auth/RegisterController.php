@@ -111,7 +111,7 @@ class RegisterController extends Controller
         $emailRules = [
             'required',
             'string',
-            'email',
+            'email:rfc,dns,spoof',
             'max:255',
             'unique:users',
             function ($attribute, $value, $fail) {

@@ -30,10 +30,13 @@ use Horizon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Pulse\Facades\Pulse;
+use Illuminate\Http\Request;
 use URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -71,18 +74,28 @@ class AppServiceProvider extends ServiceProvider
             return $user->is_admin === 1;
         });
 
-        Pulse::user(function ($user) {
-            $acct = AccountService::get($user->profile_id, true);
+        if (config('pulse.enabled', false)) {
+            Pulse::user(function ($user) {
+                $acct = AccountService::get($user->profile_id, true);
 
-            return $acct ? [
-                'name' => $acct['username'],
-                'extra' => $user->email,
-                'avatar' => $acct['avatar'],
-            ] : [
-                'name' => $user->username,
-                'extra' => 'DELETED',
-                'avatar' => '/storage/avatars/default.jpg',
-            ];
+                return $acct ? [
+                    'name' => $acct['username'],
+                    'extra' => $user->email,
+                    'avatar' => $acct['avatar'],
+                ] : [
+                    'name' => $user->username,
+                    'extra' => 'DELETED',
+                    'avatar' => '/storage/avatars/default.jpg',
+                ];
+            });
+        }
+
+        RateLimiter::for('app-signup', function (Request $request) {
+            return Limit::perDay(10)->by($request->ip());
+        });
+
+        RateLimiter::for('app-code-verify', function (Request $request) {
+            return Limit::perHour(10)->by($request->ip());
         });
 
         // Model::preventLazyLoading(true);

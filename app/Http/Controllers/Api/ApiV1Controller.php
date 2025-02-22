@@ -1720,6 +1720,7 @@ class ApiV1Controller extends Controller
                 'approval_required' => (bool) config_cache('instance.curated_registration.enabled'),
                 'contact_account' => $contact,
                 'rules' => $rules,
+                'mobile_registration' => (bool) config_cache('pixelfed.open_registration') && config('auth.in_app_registration'),
                 'configuration' => [
                     'media_attachments' => [
                         'image_matrix_limit' => 16777216,
@@ -3006,39 +3007,49 @@ class ApiV1Controller extends Controller
             'scope' => 'nullable|in:inbox,sent,requests',
         ]);
 
-        return [];
-
         $limit = $request->input('limit', 20);
         $scope = $request->input('scope', 'inbox');
         $user = $request->user();
+
         if ($user->has_roles && ! UserRoleService::can('can-direct-message', $user->id)) {
             return [];
         }
+
         $pid = $user->profile_id;
 
         if (config('database.default') == 'pgsql') {
-            $dms = DirectMessage::when($scope === 'inbox', function ($q, $scope) use ($pid) {
-                return $q->whereIsHidden(false)->where('to_id', $pid)->orWhere('from_id', $pid);
+            $dms = DirectMessage::when($scope === 'inbox', function ($q) use ($pid) {
+                return $q->whereIsHidden(false)
+                    ->where(function ($query) use ($pid) {
+                        $query->where('to_id', $pid)
+                            ->orWhere('from_id', $pid);
+                    });
             })
-                ->when($scope === 'sent', function ($q, $scope) use ($pid) {
-                    return $q->whereFromId($pid)->groupBy(['to_id', 'id']);
+                ->when($scope === 'sent', function ($q) use ($pid) {
+                    return $q->whereFromId($pid)
+                        ->groupBy(['to_id', 'id']);
                 })
-                ->when($scope === 'requests', function ($q, $scope) use ($pid) {
-                    return $q->whereToId($pid)->whereIsHidden(true);
+                ->when($scope === 'requests', function ($q) use ($pid) {
+                    return $q->whereToId($pid)
+                        ->whereIsHidden(true);
                 });
         } else {
-            $dms = Conversation::when($scope === 'inbox', function ($q, $scope) use ($pid) {
+            $dms = Conversation::when($scope === 'inbox', function ($q) use ($pid) {
                 return $q->whereIsHidden(false)
-                    ->where('to_id', $pid)
-                    ->orWhere('from_id', $pid)
+                    ->where(function ($query) use ($pid) {
+                        $query->where('to_id', $pid)
+                            ->orWhere('from_id', $pid);
+                    })
                     ->orderByDesc('status_id')
                     ->groupBy(['to_id', 'from_id']);
             })
-                ->when($scope === 'sent', function ($q, $scope) use ($pid) {
-                    return $q->whereFromId($pid)->groupBy('to_id');
+                ->when($scope === 'sent', function ($q) use ($pid) {
+                    return $q->whereFromId($pid)
+                        ->groupBy('to_id');
                 })
-                ->when($scope === 'requests', function ($q, $scope) use ($pid) {
-                    return $q->whereToId($pid)->whereIsHidden(true);
+                ->when($scope === 'requests', function ($q) use ($pid) {
+                    return $q->whereToId($pid)
+                        ->whereIsHidden(true);
                 });
         }
 
@@ -3046,7 +3057,8 @@ class ApiV1Controller extends Controller
             ->simplePaginate($limit)
             ->map(function ($dm) use ($pid) {
                 $from = $pid == $dm->to_id ? $dm->from_id : $dm->to_id;
-                $res = [
+
+                return [
                     'id' => $dm->id,
                     'unread' => false,
                     'accounts' => [
@@ -3054,17 +3066,16 @@ class ApiV1Controller extends Controller
                     ],
                     'last_status' => StatusService::getDirectMessage($dm->status_id),
                 ];
-
-                return $res;
             })
             ->filter(function ($dm) {
-                if (! $dm || empty($dm['last_status']) || ! isset($dm['accounts']) || ! count($dm['accounts']) || ! isset($dm['accounts'][0]) || ! isset($dm['accounts'][0]['id'])) {
-                    return false;
-                }
-
-                return true;
+                return $dm
+                    && ! empty($dm['last_status'])
+                    && isset($dm['accounts'])
+                    && count($dm['accounts'])
+                    && isset($dm['accounts'][0])
+                    && isset($dm['accounts'][0]['id']);
             })
-            ->unique(function ($item, $key) {
+            ->unique(function ($item) {
                 return $item['accounts'][0]['id'];
             })
             ->values();
@@ -3499,7 +3510,7 @@ class ApiV1Controller extends Controller
             return [];
         }
 
-        $defaultCaption = "";
+        $defaultCaption = '';
         $content = $request->filled('status') ? strip_tags($request->input('status')) : $defaultCaption;
         $cw = $user->profile->cw == true ? true : $request->boolean('sensitive', false);
         $spoilerText = $cw && $request->filled('spoiler_text') ? $request->input('spoiler_text') : null;

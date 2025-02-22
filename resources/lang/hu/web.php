@@ -44,7 +44,7 @@ return [
 		'admin' => 'Admin irányítópult',
 
 		// Timelines
-		'homeFeed' => 'Kezdőlap',
+		'homeFeed' => 'Saját idővonal',
 		'localFeed' => 'Helyi idővonal',
 		'globalFeed' => 'Globális idővonal',
 
@@ -63,7 +63,7 @@ return [
 		'logout' => 'Kijelentkezés',
 
 		// Nav footer
-		'about' => 'Rólunk',
+		'about' => 'Névjegy',
 		'help' => 'Súgó',
 		'language' => 'Nyelv',
 		'privacy' => 'Adatvédelem',
@@ -186,9 +186,9 @@ return [
 
 		'onboarding' => [
 			'welcome' => 'Üdvözöljük',
-			'thisIsYourHomeFeed' => 'Ez a kezdőlap, az Ön által követett fiókok bejegyzései időrendi sorrendben.',
+			'thisIsYourHomeFeed' => 'Ez a saját idővonala, az Ön által követett fiókok bejegyzései időrendi sorrendben.',
 			'letUsHelpYouFind' => 'Keressünk érdekes, követhető embereket',
-			'refreshFeed' => 'Kezdőlap frissítése',
+			'refreshFeed' => 'Idővonal frissítése',
 		],
 	],
 
