@@ -120,7 +120,7 @@ return [
 		'collections' => 'Colecciones',
 		'follow' => 'Seguir',
 		'unfollow' => 'Dejar de seguir',
-		'editProfile' => 'Editar Perfil',
+		'editProfile' => 'Editar perfil',
 		'followRequested' => 'Seguimiento Solicitado',
 		'joined' => 'Se unió',
 
@@ -129,12 +129,12 @@ return [
 	],
 
 	'menu' => [
-		'viewPost' => 'Ver Publicación',
-		'viewProfile' => 'Ver Perfil',
-		'moderationTools' => 'Herramientas de Moderación',
+		'viewPost' => 'Ver publicación',
+		'viewProfile' => 'Ver perfil',
+		'moderationTools' => 'Herramientas de moderación',
 		'report' => 'Reportar',
 		'archive' => 'Archivar',
-		'unarchive' => 'No Archivar',
+		'unarchive' => 'Desarchivar',
 		'embed' => 'Incrustar',
 
 		'selectOneOption' => 'Selecciona una de las siguientes opciones',
@@ -160,7 +160,7 @@ return [
 		'modCWSuccess' => 'Spoiler añadido correctamente',
 		'modRemoveCWConfirm' => '¿Seguro que desea eliminar el spoiler de esta publicación?',
 		'modRemoveCWSuccess' => 'Spoiler eliminado correctamente',
-		'modUnlistConfirm' => '¿Seguro que desea no listar esta publicación?',
+		'modUnlistConfirm' => '¿Estás seguro de que deseas no listar esta publicación?',
 		'modUnlistSuccess' => 'Publicación no listada correctamente',
 		'modMarkAsSpammerConfirm' => '¿Seguro que quiere marcar este usuario como spammer? Todas las publicaciones existentes y futuras no serán listadas en las líneas temporales y se les agregará un Spoiler o alerta de contenido.',
 		'modMarkAsSpammerSuccess' => 'Cuenta marcada como spam correctamente',
