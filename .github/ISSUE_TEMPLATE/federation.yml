@@ -1,4 +1,4 @@
-name: 🐞 Bug report
+name: 🐞 Federation (ActivityPub)
 title: "[Federation]: "
 labels: ["activitypub", "triage"]
 description: Report an issue with Pixelfed and the Fediverse/ActivityPub here
