@@ -255,6 +255,7 @@ class AppRegisterController extends Controller
 
         $expiresAt = $tokenModel->expires_at ?? now()->addDays(config('instance.oauth.token_expiration', 356));
         $expiresIn = now()->diffInSeconds($expiresAt);
+        AppRegister::whereEmail($email)->delete();
 
         return response()->json([
             'status' => 'success',
