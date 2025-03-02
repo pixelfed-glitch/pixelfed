@@ -111,7 +111,7 @@ class AppRegisterController extends Controller
 
         $exists = AppRegister::whereEmail($email)
             ->whereVerifyCode($code)
-            ->where('created_at', '>', now()->subMinutes(60))
+            ->where('created_at', '>', now()->subHours(4))
             ->exists();
 
         return response()->json([
@@ -219,7 +219,7 @@ class AppRegisterController extends Controller
 
         $exists = AppRegister::whereEmail($email)
             ->whereVerifyCode($code)
-            ->where('created_at', '>', now()->subMinutes(60))
+            ->where('created_at', '>', now()->subHours(4))
             ->exists();
 
         if (! $exists) {
