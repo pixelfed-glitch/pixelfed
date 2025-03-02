@@ -10,10 +10,10 @@
 
                 <div class="card shadow-sm">
                     <div class="card-body p-4">
-                        <h2 class="text-center">Join Pixelfed</h2>
-                        <p class="lead text-center mb-4">Enter Your Email</p>
+                        <h3 class="text-center">Resend Verification</h3>
+                        <p class="lead text-center mb-4">Enter your email so we can send another verification code via email</p>
 
-                        <form method="POST">
+                        <form method="POST" action="/i/app-email-resend">
                             @csrf
 
                             <div class="form-group">
@@ -22,9 +22,12 @@
                                        class="form-control @error('email') is-invalid @enderror"
                                        id="email"
                                        name="email"
-                                       placeholder="Enter your email address here"
                                        required
-                                       autocomplete="email">
+                                       autocomplete="email"
+                                       @if(request()->filled('email'))
+                                       value="{{rawurldecode(request()->input('email'))}}"
+                                       @endif
+                                       >
                                 @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -43,7 +46,7 @@
 
                         @if ($errors->any())
                         <div class="mt-4">
-                            <p class="text-center">If you need to resend the email verification, click <a href="/i/app-email-resend">here</a>.</p>
+                            <p class="text-center">Click <a href="/i/app-email-verify">here</a> to send a new request.</p>
                         </div>
                         @endif
                     </div>

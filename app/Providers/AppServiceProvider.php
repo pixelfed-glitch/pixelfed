@@ -98,6 +98,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perHour(10)->by($request->ip());
         });
 
+        RateLimiter::for('app-code-resend', function (Request $request) {
+            return Limit::perHour(5)->by($request->ip());
+        });
+
         // Model::preventLazyLoading(true);
     }
 

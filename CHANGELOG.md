@@ -2,6 +2,9 @@
 
 ## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.3...dev)
 
+### Added
+- Add app register email verify resends ([dbd1e17](https://github.com/pixelfed/pixelfed/commit/dbd1e17))
+
 ### Features
 - WebGL photo filters ([#5374](https://github.com/pixelfed/pixelfed/pull/5374))
 

@@ -38,7 +38,7 @@ class TransformImports extends Command
             return;
         }
 
-        $ips = ImportPost::whereNull('status_id')->where('skip_missing_media', '!=', true)->take(500)->get();
+        $ips = ImportPost::whereNull('status_id')->where('skip_missing_media', '!=', true)->take(1500)->get();
 
         if (! $ips->count()) {
             return;
