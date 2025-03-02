@@ -23,6 +23,7 @@
                                        id="email"
                                        name="email"
                                        required
+                                       placeholder="Enter your email address here"
                                        autocomplete="email"
                                        @if(request()->filled('email'))
                                        value="{{rawurldecode(request()->input('email'))}}"

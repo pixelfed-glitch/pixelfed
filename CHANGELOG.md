@@ -46,6 +46,7 @@
 - Update status twitter:card to summary_large_image for images/albums ([9a5a9f55](https://github.com/pixelfed/pixelfed/commit/9a5a9f55))
 - Update CuratedOnboarding, add new app:curated-onboarding command, extend email verification window to 7 days and fix resend verification mails ([49604210](https://github.com/pixelfed/pixelfed/commit/49604210))
 - Update DirectMessageController, fix performance issue ([4ec9f99](https://github.com/pixelfed/pixelfed/commit/4ec9f99))
+- Update App Register to expire codes after 4 hours instead of 60 minutes ([0844094b](https://github.com/pixelfed/pixelfed/commit/0844094b))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)
