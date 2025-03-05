@@ -1,6 +1,14 @@
 # Release Notes
 
-## [v0.12.4+glitch.1.10.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.1...v0.12.4+glitch.1.10.0)
+## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.4-glitch.1.10.0...develop)
+
+### Added (from Upstream)
+- Add app register email verify resends ([dbd1e17](https://github.com/pixelfed/pixelfed/commit/dbd1e17))
+
+### Updates (from Upstream)
+- Update App Register to expire codes after 4 hours instead of 60 minutes ([0844094b](https://github.com/pixelfed/pixelfed/commit/0844094b))
+  
+## [v0.12.4+glitch.1.10.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.1...v0.12.4-glitch.1.10.0)
 
 ### Updates
 - hopefully better handling of stories reaction and comments ([ca60df12](https://github.com/pixelfed-glitch/pixelfed/commit/ca60df12))

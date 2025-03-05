@@ -91,10 +91,14 @@ class AppServiceProvider extends ServiceProvider
         }
 
         RateLimiter::for('app-signup', function (Request $request) {
-            return Limit::perDay(10)->by($request->ip());
+            return Limit::perDay(100)->by($request->ip());
         });
 
         RateLimiter::for('app-code-verify', function (Request $request) {
+            return Limit::perHour(20)->by($request->ip());
+        });
+
+        RateLimiter::for('app-code-resend', function (Request $request) {
             return Limit::perHour(10)->by($request->ip());
         });
 

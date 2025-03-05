@@ -59,12 +59,14 @@ class AppRegisterController extends Controller
                 'message' => 'Too many attempts, please try again later.',
             ]);
             DB::rollBack();
+
             return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
         }
 
         $registration = AppRegister::create([
             'email' => $email,
             'verify_code' => $code,
+            'uses' => 1,
             'email_delivered_at' => now(),
         ]);
 
@@ -109,12 +111,88 @@ class AppRegisterController extends Controller
 
         $exists = AppRegister::whereEmail($email)
             ->whereVerifyCode($code)
-            ->where('created_at', '>', now()->subMinutes(60))
+            ->where('created_at', '>', now()->subHours(4))
             ->exists();
 
         return response()->json([
             'status' => $exists ? 'success' : 'error',
         ]);
+    }
+
+    public function resendVerification(Request $request)
+    {
+        abort_unless(config('auth.in_app_registration'), 404);
+        $open = (bool) config_cache('pixelfed.open_registration');
+        if (! $open || $request->user()) {
+            return redirect('/');
+        }
+
+        return view('auth.iar-resend');
+    }
+
+    public function resendVerificationStore(Request $request)
+    {
+        abort_unless(config('auth.in_app_registration'), 404);
+        $open = (bool) config_cache('pixelfed.open_registration');
+        if (! $open || $request->user()) {
+            return redirect('/');
+        }
+
+        $rules = [
+            'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email|exists:app_registers,email',
+        ];
+
+        if ((bool) config_cache('captcha.enabled') && (bool) config_cache('captcha.active.register')) {
+            $rules['h-captcha-response'] = 'required|captcha';
+        }
+
+        $this->validate($request, $rules);
+
+        $email = strtolower($request->input('email'));
+        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        DB::beginTransaction();
+
+        $exists = AppRegister::whereEmail($email)->first();
+
+        if (! $exists || $exists->uses > 5) {
+            $errorMessage = $exists->uses > 5 ? 'Too many attempts have been made, please contact the admins.' : 'Email not found';
+            $errorParams = http_build_query([
+                'status' => 'error',
+                'message' => $errorMessage,
+            ]);
+            DB::rollBack();
+
+            return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
+        }
+
+        $registration = $exists->update([
+            'verify_code' => $code,
+            'uses' => ($exists->uses + 1),
+            'email_delivered_at' => now(),
+        ]);
+
+        try {
+            Mail::to($email)->send(new InAppRegisterEmailVerify($code));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $errorParams = http_build_query([
+                'status' => 'error',
+                'message' => 'Failed to send verification code',
+            ]);
+
+            return redirect()->away("pixelfed://verifyEmail?{$errorParams}");
+        }
+
+        DB::commit();
+
+        $queryParams = http_build_query([
+            'email' => $request->email,
+            'expires_in' => 3600,
+            'status' => 'success',
+        ]);
+
+        return redirect()->away("pixelfed://verifyEmail?{$queryParams}");
     }
 
     public function onboarding(Request $request)
@@ -141,7 +219,7 @@ class AppRegisterController extends Controller
 
         $exists = AppRegister::whereEmail($email)
             ->whereVerifyCode($code)
-            ->where('created_at', '>', now()->subMinutes(60))
+            ->where('created_at', '>', now()->subHours(4))
             ->exists();
 
         if (! $exists) {
@@ -161,7 +239,7 @@ class AppRegisterController extends Controller
             'email_verified_at' => now(),
         ]);
 
-        sleep(random_int(5,10));
+        sleep(random_int(8, 10));
         $user = User::findOrFail($user->id);
         $token = $user->createToken('Pixelfed App', ['read', 'write', 'follow', 'push']);
         $tokenModel = $token->token;
@@ -177,6 +255,7 @@ class AppRegisterController extends Controller
 
         $expiresAt = $tokenModel->expires_at ?? now()->addDays(config('instance.oauth.token_expiration', 356));
         $expiresIn = now()->diffInSeconds($expiresAt);
+        AppRegister::whereEmail($email)->delete();
 
         return response()->json([
             'status' => 'success',
