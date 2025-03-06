@@ -92,6 +92,7 @@
 							aria-label="Search usernames"
 							:get-result-value="getTagResultValue"
 							@submit="onTagSubmitLocation"
+							:debounce-time="500"
 							ref="autocomplete"
 						>
 						</autocomplete>
