@@ -270,7 +270,7 @@
 										<li class="nav-item">
 											<a class="nav-link" href="/i/web" @click.prevent="openUserInterfaceSettings">
 												<span class="icon text-lighter"><i class="far fa-brush"></i></span>
-												UI Settings
+												{{ $t('navmenu.appearance') }}
 											</a>
 										</li>
 
@@ -344,12 +344,12 @@
 			hide-footer
 			centered
 			body-class="p-0 ui-menu"
-			title="UI Settings">
+			title="$t('navmenu.appearance')">
 			<div class="list-group list-group-flush">
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-1">Theme</p>
+							<p class="font-weight-bold mb-1">{{ $t('appearance.theme') }}</p>
 							<p class="small text-muted mb-0"></p>
 						</div>
 
@@ -358,19 +358,19 @@
 								class="btn"
 								:class="[ uiColorScheme == 'system' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleUi('system')">
-								Auto
+								{{ $t('appearance.auto') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ uiColorScheme == 'light' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleUi('light')">
-								Light mode
+								{{ $t('appearance.lightMode') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ uiColorScheme == 'dark' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleUi('dark')">
-								Dark mode
+								{{ $t('appearance.darkMode') }}
 							</button>
 						</div>
 					</div>
@@ -379,7 +379,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-1">Profile Layout</p>
+							<p class="font-weight-bold mb-1">{{ $t('appearance.profileLayout') }}</p>
 							<p class="small text-muted mb-0"></p>
 						</div>
 
@@ -388,19 +388,19 @@
 								class="btn"
 								:class="[ profileLayout == 'grid' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleProfileLayout('grid')">
-								Grid
+								{{ $t('appearance.grid') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ profileLayout == 'masonry' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleProfileLayout('masonry')">
-								Masonry
+								{{ $t('appearance.masonry') }}
 							</button>
 							<button
 								class="btn"
 								:class="[ profileLayout == 'feed' ? 'btn-primary' : 'btn-outline-primary']"
 								@click="toggleProfileLayout('feed')">
-								Feed
+								{{ $t('appearance.feed') }}
 							</button>
 						</div>
 					</div>
@@ -409,7 +409,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-0">Compact Media Previews</p>
+							<p class="font-weight-bold mb-0">{{ $t('appearance.compactPreviews') }}</p>
 						</div>
 						<b-form-checkbox v-model="fixedHeight" switch size="lg" />
 					</div>
@@ -418,7 +418,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-0">Load Comments</p>
+							<p class="font-weight-bold mb-0">{{ $t('appearance.loadComments') }}</p>
 						</div>
 						<b-form-checkbox v-model="autoloadComments" switch size="lg" />
 					</div>
@@ -427,7 +427,7 @@
 				<div class="list-group-item px-3">
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
-							<p class="font-weight-bold mb-0">Hide Counts & Stats</p>
+							<p class="font-weight-bold mb-0">{{ $t('appearance.hideStats') }}</p>
 						</div>
 						<b-form-checkbox v-model="hideCounts" switch size="lg" />
 					</div>
