@@ -24,10 +24,10 @@ return [
 		'other' => 'Altro',
 		'readMore' => 'Leggi di più',
 		'success' => 'Riuscito',
-		'proceed' => 'Continua',
+		'proceed' => 'Procedi',
 		'next' => 'Avanti',
 		'close' => 'Chiudi',
-		'clickHere' => 'clicca qui',
+		'clickHere' => 'cclicca qui',
 
 		'sensitive' => 'Sensibile',
 		'sensitiveContent' => 'Contenuto Sensibile',

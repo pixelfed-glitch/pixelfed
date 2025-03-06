@@ -133,8 +133,8 @@ return [
 		'viewProfile' => 'प्रोफाइल देखें',
 		'moderationTools' => 'मॉडरेशन टूल्स',
 		'report' => 'रिपोर्ट',
-		'archive' => 'Archive',
-		'unarchive' => 'Unarchive',
+		'archive' => 'पुरालेख',
+		'unarchive' => 'अपुरालेख',
 		'embed' => 'एम्बेड',
 
 		'selectOneOption' => 'किसी एक विकल्प को चुने',
@@ -149,60 +149,60 @@ return [
 		'underageAccount' => 'नाबालिग अकाउंट',
 		'copyrightInfringement' => 'कॉपीराईट का उल्लंघन',
 		'impersonation' => 'प्रतिरूपण',
-		'scamOrFraud' => 'Scam or Fraud',
-		'confirmReport' => 'Confirm Report',
-		'confirmReportText' => 'Are you sure you want to report this post?',
-		'reportSent' => 'Report Sent!',
-		'reportSentText' => 'We have successfully received your report.',
-		'reportSentError' => 'There was an issue reporting this post.',
+		'scamOrFraud' => 'घोटाला या धोखाधड़ी',
+		'confirmReport' => 'रिपोर्ट की पुष्टि करें',
+		'confirmReportText' => 'क्या आप निश्चित रूप से इस पोस्ट की रिपोर्ट करना चाहते हैं?',
+		'reportSent' => 'रिपोर्ट भेजी गई!',
+		'reportSentText' => 'हमें आपकी रिपोर्ट सफलतापूर्वक प्राप्त हो गई है।',
+		'reportSentError' => 'इस पोस्ट की रिपोर्ट करने में समस्या हुई।',
 
 		'modAddCWConfirm' => 'क्या यह निश्चित है कि आप प्रकाशित सामग्री के साथ विषय-वस्तु सम्बंधित चेतावनी जोड़ना चाहते हैं?',
 		'modCWSuccess' => 'विषय-वस्तु सम्बंधित चेतावनी सफलता से जोड़ी गयी',
 		'modRemoveCWConfirm' => 'क्या यह निश्चित है कि आप प्रकाशित सामग्री से विषय-वस्तु सम्बंधित चेतावनी हटाना चाहते हैं?',
 		'modRemoveCWSuccess' => 'विषय-वस्तु सम्बंधित चेतावनी सफलता से हटाई गयी',
-		'modUnlistConfirm' => 'Are you sure you want to unlist this post?',
-		'modUnlistSuccess' => 'Successfully unlisted post',
-		'modMarkAsSpammerConfirm' => 'Are you sure you want to mark this user as a spammer? All existing and future posts will be unlisted on timelines and a content warning will be applied.',
-		'modMarkAsSpammerSuccess' => 'Successfully marked account as spammer',
+		'modUnlistConfirm' => 'क्या आप निश्चित रूप से इस पोस्ट को करना चाहते हैं?',
+		'modUnlistSuccess' => 'पोस्ट को सफलतापूर्वक असूचीबद्ध किया गया',
+		'modMarkAsSpammerConfirm' => 'क्या आप वाकई इस उपयोगकर्ता को स्पैमर के रूप में चिह्नित करना चाहते हैं? सभी मौजूदा और भविष्य की पोस्ट टाइमलाइन पर असूचीबद्ध कर दी जाएंगी और एक सामग्री चेतावनी लागू की जाएगी।',
+		'modMarkAsSpammerSuccess' => 'खाते को स्पैमर के रूप में सफलतापूर्वक चिह्नित किया गया',
 
-		'toFollowers' => 'to Followers',
+		'toFollowers' => 'अनुयायियों के लिए',
 
-		'showCaption' => 'Show Caption',
-		'showLikes' => 'Show Likes',
-		'compactMode' => 'Compact Mode',
+		'showCaption' => 'शीर्षक दिखाएं',
+		'showLikes' => 'लाइक दिखाएं',
+		'compactMode' => 'संक्षिप्त मोड',
 		'embedConfirmText' => 'By using this embed, you agree to our',
 
-		'deletePostConfirm' => 'Are you sure you want to delete this post?',
-		'archivePostConfirm' => 'Are you sure you want to archive this post?',
-		'unarchivePostConfirm' => 'Are you sure you want to unarchive this post?',
+		'deletePostConfirm' => 'क्या आप वाकई में इस पोस्ट को हटाना चाहते हैं?',
+		'archivePostConfirm' => 'क्या आप वाकई इस आइटम को आर्काइव करना चाहते हैं?',
+		'unarchivePostConfirm' => 'क्या आप वाकई इस पोस्ट को अनआर्काइव करना चाहते हैं?',
 	],
 
 	'story' => [
-		'add' => 'Add Story'
+		'add' => 'कहानी जोड़ें'
 	],
 
 	'timeline' => [
-		'peopleYouMayKnow' => 'People you may know',
+		'peopleYouMayKnow' => 'जिन लोगों को आप जानते हों',
 
 		'onboarding' => [
-			'welcome' => 'Welcome',
-			'thisIsYourHomeFeed' => 'This is your home feed, a chronological feed of posts from accounts you follow.',
-			'letUsHelpYouFind' => 'Let us help you find some interesting people to follow',
-			'refreshFeed' => 'Refresh my feed',
+			'welcome' => 'स्वागत',
+			'thisIsYourHomeFeed' => 'यह आपका होम फीड है, जो आपके द्वारा अनुसरण किये जाने वाले खातों के पोस्टों का कालानुक्रमिक फीड है।',
+			'letUsHelpYouFind' => 'आइए हम आपको अनुसरण करने के लिए कुछ दिलचस्प लोगों को खोजने में मदद करें',
+			'refreshFeed' => 'मेरा फ़ीड ताज़ा करें',
 		],
 	],
 
 	'hashtags' => [
-		'emptyFeed' => 'We can\'t seem to find any posts for this hashtag'
+		'emptyFeed' => 'हमें इस हैशटैग के लिए कोई पोस्ट नहीं मिल रहा है'
 	],
 
 	'report' => [
-		'report' => 'Report',
-		'selectReason' => 'Select a reason',
-		'reported' => 'Reported',
-		'sendingReport' => 'Sending report',
-		'thanksMsg' => 'Thanks for the report, people like you help keep our community safe!',
-		'contactAdminMsg' => 'If you\'d like to contact an administrator about this post or report',
+		'report' => 'रिपोर्ट',
+		'selectReason' => 'कारण चुनें',
+		'reported' => 'रिपोर्ट किया गया',
+		'sendingReport' => 'रिपोर्ट भेज रहे हैं',
+		'thanksMsg' => 'रिपोर्ट के लिए धन्यवाद, आप जैसे लोग हमारे समुदाय को सुरक्षित रखने में मदद करते हैं!',
+		'contactAdminMsg' => 'यदि आप इस पोस्ट या रिपोर्ट के बारे में किसी व्यवस्थापक से संपर्क करना चाहते हैं',
 	],
 
 ];
