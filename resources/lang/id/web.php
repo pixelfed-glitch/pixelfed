@@ -3,8 +3,8 @@
 return [
 
 	'common' => [
-		'comment' => 'Komentari',
-		'commented' => 'Dikomentari',
+		'comment' => 'Komentar',
+		'commented' => 'Mengomentari',
 		'comments' => 'Komentar',
 		'like' => 'Sukai',
 		'liked' => 'Disukai',
