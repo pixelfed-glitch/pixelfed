@@ -59,6 +59,7 @@ return [
 		'profile' => 'Perfil',
 		'drive' => 'Disco',
 		'settings' => 'Definições',
+        'appearance' => 'Aparência',
 		'compose' => 'Criar novo',
 		'logout' => 'Terminar sessão',
 
@@ -204,5 +205,18 @@ return [
 		'thanksMsg' => 'Obrigado pela denúncia, as pessoas como tu ajudam a manter a nossa comunidade segura!',
 		'contactAdminMsg' => 'Se quiseres entrar em contacto com um administrador sobre esta publicação ou denúncia',
 	],
+    'appearance' => [
+        'theme' => 'Tema',
+        'profileLayout' => 'Layout do Perfil',
+        'compactPreviews' => 'Pré-visualizações Compactas',
+        'loadComments' => 'Carregar Comentários',
+        'hideStats' => 'Ocultar Contagens e Estatísticas',
+        'auto' => 'Automático',
+        'lightMode' => 'Modo Claro',
+        'darkMode' => 'Modo Escuro',
+        'grid' => 'Grade',
+        'masonry' => 'Mansory',
+        'feed' => 'Feed'
+    ]
 
 ];
