@@ -2554,7 +2554,7 @@ class ApiV1Controller extends Controller
                 $minId = null;
             }
 
-            if ($maxId) {
+            if ($maxId && $res->count() >= $limit) {
                 $link = '<'.$baseUrl.'max_id='.$minId.'>; rel="next"';
             }
 
@@ -2977,7 +2977,7 @@ class ApiV1Controller extends Controller
             $minId = null;
         }
 
-        if ($maxId) {
+        if ($maxId && $res->count() >= $limit) {
             $link = '<'.$baseUrl.'max_id='.$minId.'>; rel="next"';
         }
 
