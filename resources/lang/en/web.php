@@ -104,6 +104,23 @@ return [
 		'post' => 'post',
 		'story' => 'story',
 		'noneFound' => 'No notifications found',
+        'youRecent' => 'You recent',
+        'hasUnlisted' => 'has been unlisted',
+        'cannotDisplay' => 'We cannot display this notification at this time.',
+        'followRequest' => 'Follow Requests',
+        'filteringResults' => 'Filtering results may not include older notifications',
+        'mentions' => 'Mentions',
+        'mentionsDescription' => 'Replies to your posts and posts you were mentioned in',
+        'likes' => 'Likes',
+        'likesDescription' => 'Accounts that liked your posts',
+        'followers' => 'Followers',
+        'followersDescription' => 'Accounts that followed you',
+        'reblogs' => 'Reblogs',
+        'reblogsDescription' => 'Accounts that shared or reblogged your posts',
+        'dms' => 'DMs',
+        'dmsDescription' => 'Direct messages you have with other accounts',
+        'accept' => 'Accept',
+        'reject' => 'Reject'
 	],
 
 	'post' => [
