@@ -48,6 +48,9 @@
 - Update CuratedOnboarding, add new app:curated-onboarding command, extend email verification window to 7 days and fix resend verification mails ([49604210](https://github.com/pixelfed/pixelfed/commit/49604210))
 - Update DirectMessageController, fix performance issue ([4ec9f99](https://github.com/pixelfed/pixelfed/commit/4ec9f99))
 - Update App Register to expire codes after 4 hours instead of 60 minutes ([0844094b](https://github.com/pixelfed/pixelfed/commit/0844094b))
+- Update ApiV1Controller, fix max_id pagination on home and public timeline feeds ([38e17a06e](https://github.com/pixelfed/pixelfed/commit/38e17a06e))
+- Update Post component, rewrite local post urls ([d2f2a1b1c](https://github.com/pixelfed/pixelfed/commit/d2f2a1b1c))
+- Update Profile component, rewrite local profile urls ([dfbccaa19](https://github.com/pixelfed/pixelfed/commit/dfbccaa19))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)
