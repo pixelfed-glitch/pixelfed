@@ -203,6 +203,9 @@
                     this.post = res.data;
                     this.media = this.post.media_attachments;
                     this.profile = this.post.account;
+                    if(res.data.account && res.data.account.local) {
+                        window.history.pushState({}, '', `/p/${res.data.account.acct}/${res.data.id}`);
+                    }
                     if(this.post.in_reply_to_id) {
                         this.fetchReply();
                     } else {
