@@ -1022,11 +1022,15 @@
                     }
 
                     if(this.mediaTypes.mp4) {
-                        res += 'video/mp4'
+                        res += 'video/mp4,'
+                    }
+
+                    if(this.mediaTypes.heic) {
+                        res += 'image/heic,'
                     }
 
                     if(this.mediaTypes.avif) {
-                        res += 'image/avif'
+                        res += 'image/avif,'
                     }
 
                     if(res.endsWith(',')) {
