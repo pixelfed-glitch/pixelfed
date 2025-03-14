@@ -51,6 +51,8 @@
 - Update ApiV1Controller, fix max_id pagination on home and public timeline feeds ([38e17a06e](https://github.com/pixelfed/pixelfed/commit/38e17a06e))
 - Update Post component, rewrite local post urls ([d2f2a1b1c](https://github.com/pixelfed/pixelfed/commit/d2f2a1b1c))
 - Update Profile component, rewrite local profile urls ([dfbccaa19](https://github.com/pixelfed/pixelfed/commit/dfbccaa19))
+- Update AccountPostCountStatUpdate, fix memory leak ([134eb6324](https://github.com/pixelfed/pixelfed/commit/134eb6324))
+- Update snowflake config, allow custom datacenter/worker ids ([806e210f1](https://github.com/pixelfed/pixelfed/commit/806e210f1))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)
