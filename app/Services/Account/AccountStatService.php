@@ -28,4 +28,14 @@ class AccountStatService
     {
         return Redis::zrange(self::REFRESH_CACHE_KEY, 0, $limit);
     }
+
+    public static function getPostCountChunk($lastId, $count)
+    {
+        return Redis::zrangebyscore(
+            self::REFRESH_CACHE_KEY,
+            '(' . $lastId,
+            '+inf',
+            ['limit' => [0, $count]]
+        );
+    }
 }
