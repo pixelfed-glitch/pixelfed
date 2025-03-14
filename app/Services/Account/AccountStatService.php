@@ -2,7 +2,6 @@
 
 namespace App\Services\Account;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 class AccountStatService
@@ -33,7 +32,7 @@ class AccountStatService
     {
         return Redis::zrangebyscore(
             self::REFRESH_CACHE_KEY,
-            '(' . $lastId,
+            '('.$lastId,
             '+inf',
             ['limit' => [0, $count]]
         );
