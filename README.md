@@ -52,6 +52,12 @@ Internet](https://ngi.eu) initiative.
 
 <p>This project is supported by:</p>
 <p>
+  <a href="https://www.fastly.com/fast-forward">
+    <img src="https://github.com/user-attachments/assets/f1499b1f-c05f-480a-a5d5-dbebcb0e20fd">
+  </a>
+</p>
+
+<p>
   <a href="https://www.digitalocean.com/?utm_medium=opensource&utm_source=pixelfed">
     <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/SVG/DO_Logo_horizontal_blue.svg" width="201px">
   </a>

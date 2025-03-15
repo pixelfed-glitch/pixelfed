@@ -4,6 +4,7 @@
 
 ### Added
 - Add app register email verify resends ([dbd1e17](https://github.com/pixelfed/pixelfed/commit/dbd1e17))
+- Add AVIF support ([7ddbe0c47](https://github.com/pixelfed/pixelfed/commit/7ddbe0c47))
 
 ### Features
 - WebGL photo filters ([#5374](https://github.com/pixelfed/pixelfed/pull/5374))
@@ -47,6 +48,15 @@
 - Update CuratedOnboarding, add new app:curated-onboarding command, extend email verification window to 7 days and fix resend verification mails ([49604210](https://github.com/pixelfed/pixelfed/commit/49604210))
 - Update DirectMessageController, fix performance issue ([4ec9f99](https://github.com/pixelfed/pixelfed/commit/4ec9f99))
 - Update App Register to expire codes after 4 hours instead of 60 minutes ([0844094b](https://github.com/pixelfed/pixelfed/commit/0844094b))
+- Update ApiV1Controller, fix max_id pagination on home and public timeline feeds ([38e17a06e](https://github.com/pixelfed/pixelfed/commit/38e17a06e))
+- Update Post component, rewrite local post urls ([d2f2a1b1c](https://github.com/pixelfed/pixelfed/commit/d2f2a1b1c))
+- Update Profile component, rewrite local profile urls ([dfbccaa19](https://github.com/pixelfed/pixelfed/commit/dfbccaa19))
+- Update AccountPostCountStatUpdate, fix memory leak ([134eb6324](https://github.com/pixelfed/pixelfed/commit/134eb6324))
+- Update snowflake config, allow custom datacenter/worker ids ([806e210f1](https://github.com/pixelfed/pixelfed/commit/806e210f1))
+- Update ApiV1Controller, return empty statuses feed for private accounts instead of 403 response ([cce657d9c](https://github.com/pixelfed/pixelfed/commit/cce657d9c))
+- Update DM config, allow new users to send DMs by default, with a new env variable to enforce a 72h limit ([717f17cde](https://github.com/pixelfed/pixelfed/commit/717f17cde))
+- Update ApiV1Controller, add pagination to conversations endpoint with min/max/since id pagination and link header support ([244e86bad](https://github.com/pixelfed/pixelfed/commit/244e86bad))
+- Update Direct message component, fix pagination ([e6ef64857](https://github.com/pixelfed/pixelfed/commit/e6ef64857))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)
