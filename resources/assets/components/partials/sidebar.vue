@@ -39,7 +39,7 @@
 			</button>
 			<div class="dropdown-menu dropdown-menu-right">
 				<a class="dropdown-item font-weight-bold" href="/i/collections/create">Create Collection</a>
-				<a v-if="hasStories" class="dropdown-item font-weight-bold" href="/i/stories/new">Create Story</a>
+				<a v-if="hasStories" class="dropdown-item font-weight-bold" href="/i/stories/new">{{ $t("navmenu.createStory")}}</a>
 				<div class="dropdown-divider"></div>
 				<a class="dropdown-item font-weight-bold" href="/settings/home">Account Settings</a>
 			</div>

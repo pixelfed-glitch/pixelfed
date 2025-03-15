@@ -178,8 +178,33 @@ return [
 		'unarchivePostConfirm' => 'Are you sure you want to unarchive this post?',
 	],
 
-	'story' => [
-		'add' => 'Add Story'
+    'story' => [
+        'add' => 'Add Story',
+        'myStory' => 'My Story',
+        'viewMyStory' => 'View My Story',
+        'goBack' => 'Go Back',
+        'delete' => 'Delete',
+        'crop' => 'Crop',
+        'error' => 'An error occurred, please try again later.',
+        'cropping' => 'Cropping',
+        'storyDuration' => 'Story Duration',
+        'seconds' => 'seconds',
+        'processing' => 'Processing',
+        'shareWithFollowers' => 'Share moments with followers that last 24 hours',
+        'cancel' => 'Cancel',
+        'viewedBy' => 'Viewed by',
+        'next' => 'Next',
+        'zoom' => 'Pan around and pinch to zoom',
+        'options' => 'Options',
+        'allowReplies' => 'Allow Replies',
+        'allowReactions' => 'Allow reactions',
+        'limit' => 'You have reached the limit for new stories',
+        'reactionSent' => 'Reaction sent',
+        'replySent' => 'Reply sent',
+        'expiresIn' => 'Expires in',
+        'viewers' => 'Viewers',
+        'report' => 'Report',
+        'close' => 'Close'
 	],
 
 	'timeline' => [
@@ -221,5 +246,6 @@ return [
         'masonry' => 'Masonry',
         'feed' => 'Feed',
     ],
+
 
 ];
