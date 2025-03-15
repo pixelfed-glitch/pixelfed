@@ -3007,13 +3007,22 @@ class ApiV1Controller extends Controller
         abort_unless($request->user()->tokenCan('read'), 403);
 
         $this->validate($request, [
-            'limit' => 'min:1|max:40',
+            'limit' => 'sometimes|integer|min:1|max:40',
             'scope' => 'nullable|in:inbox,sent,requests',
+            'min_id' => 'nullable|integer',
+            'max_id' => 'nullable|integer',
+            'since_id' => 'nullable|integer',
         ]);
 
-        $limit = $request->input('limit', 20);
+        $limit = $request->input('limit', 10);
+        if ($limit > 20) {
+            $limit = 20;
+        }
         $scope = $request->input('scope', 'inbox');
         $user = $request->user();
+        $min_id = $request->input('min_id');
+        $max_id = $request->input('max_id');
+        $since_id = $request->input('since_id');
 
         if ($user->has_roles && ! UserRoleService::can('can-direct-message', $user->id)) {
             return [];
@@ -3021,7 +3030,9 @@ class ApiV1Controller extends Controller
 
         $pid = $user->profile_id;
 
-        if (config('database.default') == 'pgsql') {
+        $isPgsql = config('database.default') == 'pgsql';
+
+        if ($isPgsql) {
             $dms = DirectMessage::when($scope === 'inbox', function ($q) use ($pid) {
                 return $q->whereIsHidden(false)
                     ->where(function ($query) use ($pid) {
@@ -3057,20 +3068,38 @@ class ApiV1Controller extends Controller
                 });
         }
 
-        $dms = $dms->orderByDesc('status_id')
-            ->simplePaginate($limit)
-            ->map(function ($dm) use ($pid) {
-                $from = $pid == $dm->to_id ? $dm->from_id : $dm->to_id;
+        if ($min_id) {
+            $dms = $dms->where('id', '>', $min_id);
+        }
+        if ($max_id) {
+            $dms = $dms->where('id', '<', $max_id);
+        }
+        if ($since_id) {
+            $dms = $dms->where('id', '>', $since_id);
+        }
 
-                return [
-                    'id' => $dm->id,
-                    'unread' => false,
-                    'accounts' => [
-                        AccountService::getMastodon($from, true),
-                    ],
-                    'last_status' => StatusService::getDirectMessage($dm->status_id),
-                ];
-            })
+        $dms = $dms->orderByDesc('status_id')->orderBy('id');
+
+        $dmResults = $dms->limit($limit + 1)->get();
+
+        $hasNextPage = $dmResults->count() > $limit;
+
+        if ($hasNextPage) {
+            $dmResults = $dmResults->take($limit);
+        }
+
+        $transformedDms = $dmResults->map(function ($dm) use ($pid) {
+            $from = $pid == $dm->to_id ? $dm->from_id : $dm->to_id;
+
+            return [
+                'id' => $dm->id,
+                'unread' => false,
+                'accounts' => [
+                    AccountService::getMastodon($from, true),
+                ],
+                'last_status' => StatusService::getDirectMessage($dm->status_id),
+            ];
+        })
             ->filter(function ($dm) {
                 return $dm
                     && ! empty($dm['last_status'])
@@ -3084,7 +3113,37 @@ class ApiV1Controller extends Controller
             })
             ->values();
 
-        return $this->json($dms);
+        $links = [];
+
+        if (! $transformedDms->isEmpty()) {
+            $baseUrl = url()->current().'?'.http_build_query(array_merge(
+                $request->except(['min_id', 'max_id', 'since_id']),
+                ['limit' => $limit]
+            ));
+
+            $firstId = $transformedDms->first()['id'];
+            $lastId = $transformedDms->last()['id'];
+
+            $firstLink = $baseUrl;
+            $links[] = '<'.$firstLink.'>; rel="first"';
+
+            if ($hasNextPage) {
+                $nextLink = $baseUrl.'&max_id='.$lastId;
+                $links[] = '<'.$nextLink.'>; rel="next"';
+            }
+
+            if ($max_id || $since_id) {
+                $prevLink = $baseUrl.'&min_id='.$firstId;
+                $links[] = '<'.$prevLink.'>; rel="prev"';
+            }
+        }
+
+        if (! empty($links)) {
+            return response()->json($transformedDms->toArray())
+                ->header('Link', implode(', ', $links));
+        }
+
+        return $this->json($transformedDms);
     }
 
     /**
