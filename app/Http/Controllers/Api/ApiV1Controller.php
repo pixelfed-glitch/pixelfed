@@ -3014,7 +3014,7 @@ class ApiV1Controller extends Controller
             'since_id' => 'nullable|integer',
         ]);
 
-        $limit = $request->input('limit', 10);
+        $limit = $request->input('limit', 20);
         if ($limit > 20) {
             $limit = 20;
         }
