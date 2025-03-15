@@ -53,6 +53,7 @@
 - Update Profile component, rewrite local profile urls ([dfbccaa19](https://github.com/pixelfed/pixelfed/commit/dfbccaa19))
 - Update AccountPostCountStatUpdate, fix memory leak ([134eb6324](https://github.com/pixelfed/pixelfed/commit/134eb6324))
 - Update snowflake config, allow custom datacenter/worker ids ([806e210f1](https://github.com/pixelfed/pixelfed/commit/806e210f1))
+- Update ApiV1Controller, return empty statuses feed for private accounts instead of 403 response ([cce657d9c](https://github.com/pixelfed/pixelfed/commit/cce657d9c))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)

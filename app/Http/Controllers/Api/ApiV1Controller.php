@@ -747,7 +747,7 @@ class ApiV1Controller extends Controller
         } elseif ($profile['locked']) {
             $following = FollowerService::follows($pid, $profile['id']);
             if (! $following) {
-                return response('', 403);
+                return response()->json([]);
             }
             $visibility = ['public', 'unlisted', 'private'];
         } else {
