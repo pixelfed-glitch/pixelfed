@@ -56,6 +56,7 @@
 - Update ApiV1Controller, return empty statuses feed for private accounts instead of 403 response ([cce657d9c](https://github.com/pixelfed/pixelfed/commit/cce657d9c))
 - Update DM config, allow new users to send DMs by default, with a new env variable to enforce a 72h limit ([717f17cde](https://github.com/pixelfed/pixelfed/commit/717f17cde))
 - Update ApiV1Controller, add pagination to conversations endpoint with min/max/since id pagination and link header support ([244e86bad](https://github.com/pixelfed/pixelfed/commit/244e86bad))
+- Update Direct message component, fix pagination ([e6ef64857](https://github.com/pixelfed/pixelfed/commit/e6ef64857))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)
