@@ -127,6 +127,24 @@ return [
 
 		'emptyCollections' => 'We can\'t seem to find any collections',
 		'emptyPosts' => 'We can\'t seem to find any posts',
+
+        'blocking' => 'You are blocking this account',
+        'sponsor' => 'Donate',
+        'followYou' => 'Follows You',
+        'archives' => 'Archives',
+        'bookmarks' => 'Bookmarks',
+        'likes' => 'Likes',
+        'muted' => 'Muted',
+        'blocked' => 'Blocked',
+        'myPortifolio' => 'My Portfolio',
+        'private' => 'This profile is private',
+        'public' => 'Public',
+        'draft' => 'Draft',
+        'emptyLikes' => 'We can\'t seem to find any posts you have liked',
+        'emptyBookmarks' => 'We can\'t seem to find any posts you have bookmarked',
+        'emptyArchives' => 'We can\'t seem to find any archived posts',
+        'untitled' => 'Untitled',
+        'noDescription' => 'No description available'
 	],
 
 	'menu' => [

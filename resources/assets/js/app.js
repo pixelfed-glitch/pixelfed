@@ -1,3 +1,5 @@
+import VueI18n from 'vue-i18n';
+
 require('./polyfill');
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
@@ -19,7 +21,7 @@ if (token) {
 window.App = window.App || {};
 
 window.App.redirect = function() {
-	document.querySelectorAll('a').forEach(function(i,k) { 
+	document.querySelectorAll('a').forEach(function(i,k) {
 		let a = i.getAttribute('href');
 		if(a && a.length > 5 && a.startsWith('https://')) {
 			let url = new URL(a);
@@ -31,7 +33,23 @@ window.App.redirect = function() {
 }
 
 window.App.boot = function() {
-	new Vue({ el: '#content'});
+    Vue.use(VueI18n);
+
+    let i18nMessages = {
+        en: require('./i18n/en.json'),
+        pt: require('./i18n/pt.json'),
+    };
+    let locale = document.querySelector('html').getAttribute('lang');
+
+    const i18n = new VueI18n({
+    locale: locale, // set locale
+    fallbackLocale: 'en',
+    messages: i18nMessages
+});
+    new Vue({
+        el: '#content',
+        i18n,
+    });
 }
 
 window.addEventListener("load", () => {
@@ -67,8 +85,8 @@ window.App.util = {
 			console.log('Unsupported method.');
 		}),
 	},
-	time: (function() { 
-		return new Date; 
+	time: (function() {
+		return new Date;
 	}),
 	version: 1,
 	format: {
@@ -79,29 +97,34 @@ window.App.util = {
 			return new Intl.NumberFormat(locale, { notation: notation , compactDisplay: "short" }).format(count);
 		}),
 		timeAgo: (function(ts) {
-			let date = Date.parse(ts);
-			let seconds = Math.floor((new Date() - date) / 1000);
-			let interval = Math.floor(seconds / 63072000);
-			if (interval >= 1) {
-				return interval + "y";
-			}
-			interval = Math.floor(seconds / 604800);
-			if (interval >= 1) {
-				return interval + "w";
-			}
-			interval = Math.floor(seconds / 86400);
-			if (interval >= 1) {
-				return interval + "d";
-			}
-			interval = Math.floor(seconds / 3600);
-			if (interval >= 1) {
-				return interval + "h";
-			}
-			interval = Math.floor(seconds / 60);
-			if (interval >= 1) {
-				return interval + "m";
-			}
-			return Math.floor(seconds) + "s";
+            let date = new Date(ts);
+            let now = new Date();
+            let seconds = Math.floor((now - date) / 1000);
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) {
+                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'year');
+            }
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) {
+                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'month');
+            }
+            interval = Math.floor(seconds / 604800);
+            if (interval >= 1) {
+                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'week');
+            }
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) {
+                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'day');
+            }
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) {
+                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'hour');
+            }
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) {
+                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'minute');
+            }
+            return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-seconds, 'second');
 		}),
 		timeAhead: (function(ts, short = true) {
 			let date = Date.parse(ts);
@@ -145,9 +168,9 @@ window.App.util = {
 				tag = '/i/redirect?url=' + encodeURIComponent(tag);
 			}
 
-			return tag; 
+			return tag;
 		})
-	}, 
+	},
 	filters: [
 			['1984','filter-1977'],
 			['Azen','filter-aden'],

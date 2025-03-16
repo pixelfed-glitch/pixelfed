@@ -16,7 +16,7 @@
 	</div>
 	<div v-if="relationship && relationship.blocking && warning" class="bg-white pt-3 border-bottom">
 		<div class="container">
-			<p class="text-center font-weight-bold">You are blocking this account</p>
+			<p class="text-center font-weight-bold">{{ $t("profile.blocking")}}</p>
 			<p class="text-center font-weight-bold">Click <a href="#" class="cursor-pointer" @click.prevent="warning = false;">here</a> to view profile</p>
 		</div>
 	</div>
@@ -49,7 +49,7 @@
 														<div class="font-weight-light">
 															<span class="text-dark text-center">
 																<p class="font-weight-bold mb-0">{{formatCount(profile.statuses_count)}}</p>
-																<p class="text-muted mb-0 small">Posts</p>
+																<p class="text-muted mb-0 small">{{ $t("profile.posts")}}</p>
 															</span>
 														</div>
 													</li>
@@ -57,7 +57,7 @@
 														<div v-if="profileSettings.followers.count" class="font-weight-light">
 															<a class="text-dark cursor-pointer text-center" v-on:click="followersModal()">
 																<p class="font-weight-bold mb-0">{{formatCount(profile.followers_count)}}</p>
-																<p class="text-muted mb-0 small">Followers</p>
+																<p class="text-muted mb-0 small">{{ $t("profile.followers")}}</p>
 															</a>
 														</div>
 													</li>
@@ -65,7 +65,7 @@
 														<div v-if="profileSettings.following.count" class="font-weight-light">
 															<a class="text-dark cursor-pointer text-center" v-on:click="followingModal()">
 																<p class="font-weight-bold mb-0">{{formatCount(profile.following_count)}}</p>
-																<p class="text-muted mb-0 small">Following</p>
+																<p class="text-muted mb-0 small">{{ $t("profile.following")}}</p>
 															</a>
 														</div>
 													</li>
@@ -86,7 +86,7 @@
 									<p v-if="sponsorList.patreon || sponsorList.liberapay || sponsorList.opencollective" class="text-center mt-3">
 										<button type="button" @click="showSponsorModal" class="btn btn-outline-secondary font-weight-bold py-0">
 											<i class="fas fa-heart text-danger"></i>
-											Donate
+											{{ $t("profile.sponsor")}}
 										</button>
 									</p>
 								</div>
@@ -106,7 +106,7 @@
 										</span>
 									</span>
 									<span class="pl-4" v-if="owner && user.hasOwnProperty('id')">
-										<a class="btn btn-outline-secondary btn-sm" href="/settings/home" style="font-weight: 600;">Edit Profile</a>
+										<a class="btn btn-outline-secondary btn-sm" href="/settings/home" style="font-weight: 600;">{{ $t("profile.editProfile") }}</a>
 									</span>
 									<span class="pl-4">
 										<a class="fas fa-ellipsis-h fa-lg text-dark text-decoration-none" href="#" @click.prevent="visitorMenu"></a>
@@ -117,19 +117,19 @@
 										<div class="font-weight-light pr-5">
 											<span class="text-dark">
 												<span class="font-weight-bold">{{formatCount(profile.statuses_count)}}</span>
-												Posts
+												{{ $t("profile.posts")}}
 											</span>
 										</div>
 										<div v-if="profileSettings.followers.count" class="font-weight-light pr-5">
 											<a class="text-dark cursor-pointer" v-on:click="followersModal()">
 												<span class="font-weight-bold">{{formatCount(profile.followers_count)}}</span>
-												Followers
+												{{ $t("profile.followers")}}
 											</a>
 										</div>
 										<div v-if="profileSettings.following.count" class="font-weight-light">
 											<a class="text-dark cursor-pointer" v-on:click="followingModal()">
 												<span class="font-weight-bold">{{formatCount(profile.following_count)}}</span>
-												Following
+												{{ $t("profile.following")}}
 											</a>
 										</div>
 									</div>
@@ -141,11 +141,11 @@
 									<p v-if="profile.website"><a :href="profile.website" class="profile-website small" rel="me external nofollow noopener" target="_blank">{{formatWebsite(profile.website)}}</a></p>
 									<p class="d-flex small text-muted align-items-center">
 										<span v-if="profile.is_admin" class="btn btn-outline-danger btn-sm py-0 mr-3" title="Admin Account" data-toggle="tooltip">
-											Admin
+											{{ $t("profile.admin") }}
 										</span>
-										<span v-if="relationship && relationship.followed_by" class="btn btn-outline-muted btn-sm py-0 mr-3">Follows You</span>
+										<span v-if="relationship && relationship.followed_by" class="btn btn-outline-muted btn-sm py-0 mr-3">{{ $t("profile.followYou") }}</span>
 										<span>
-											Joined {{joinedAtFormat(profile.created_at)}}
+											{{$t("profile.joined")}} {{joinedAtFormat(profile.created_at)}}
 										</span>
 									</p>
 								</div>
@@ -156,7 +156,7 @@
 			</div>
 			<div v-if="user && user.hasOwnProperty('id')" class="d-block d-md-none my-0 pt-3 border-bottom">
 				<p class="pt-3">
-					<button v-if="owner" class="btn btn-outline-secondary bg-white btn-sm py-1 btn-block text-center font-weight-bold text-dark border border-lighter" @click.prevent="redirect('/settings/home')">Edit Profile</button>
+					<button v-if="owner" class="btn btn-outline-secondary bg-white btn-sm py-1 btn-block text-center font-weight-bold text-dark border border-lighter" @click.prevent="redirect('/settings/home')">{{ $t("profile.editProfile")}}</button>
 					<button v-if="!owner && relationship.following" class="btn btn-outline-secondary bg-white btn-sm py-1 px-5 font-weight-bold text-dark border border-lighter" @click="followProfile">&nbsp;&nbsp; Unfollow &nbsp;&nbsp;</button>
 					<button v-if="!owner && !relationship.following" class="btn btn-primary btn-sm py-1 px-5 font-weight-bold" @click="followProfile">{{relationship.followed_by ? 'Follow Back' : '&nbsp;&nbsp;&nbsp;&nbsp; Follow &nbsp;&nbsp;&nbsp;&nbsp;'}}</button>
 					<!-- <button v-if="!owner" class="btn btn-outline-secondary bg-white btn-sm py-1 px-5 font-weight-bold text-dark border border-lighter mx-2">Message</button>
@@ -1340,9 +1340,11 @@
 				return this.truncate(site, 60);
 			},
 
-			joinedAtFormat(created) {
-				let d = new Date(created);
-				return d.toDateString();
+            joinedAtFormat(created) {
+                return new Date(created).toLocaleDateString(this.$i18n.locale, {
+                    year: 'numeric',
+                    month: 'long',
+                });
 			},
 
 			archivesInfiniteLoader($state) {

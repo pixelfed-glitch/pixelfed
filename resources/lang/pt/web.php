@@ -126,6 +126,24 @@ return [
 
 		'emptyCollections' => 'Não conseguimos encontrar nenhuma coleção',
 		'emptyPosts' => 'Não conseguimos encontrar nenhuma publicação',
+
+        'blocking' => 'Você está bloqueando esta conta',
+        'sponsor' => 'Doar',
+        'followYou' => 'Segue você',
+        'archives' => 'Arquivados',
+        'bookmarks' => 'Favoritos',
+        'likes' => 'Curtidas',
+        'muted' => 'Silenciado',
+        'blocked' => 'Bloqueado',
+        'myPortifolio' => 'Meu Portfólio',
+        'private' => 'Este perfil é privado',
+        'public' => 'Público',
+        'draft' => 'Rascunho',
+        'emptyLikes' => 'Não conseguimos encontrar nenhuma publicação que você tenha curtido',
+        'emptyBookmarks' => 'Não conseguimos encontrar nenhuma publicação nos seus favoritos',
+        'emptyArchives' => 'Não conseguimos encontrar nenhuma publicação arquivada',
+        'untitled' => 'Sem título',
+        'noDescription' => 'Nenhuma descrição disponível'
 	],
 
 	'menu' => [
