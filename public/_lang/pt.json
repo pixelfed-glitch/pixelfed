@@ -6,8 +6,8 @@
         "like": "Gosto",
         "liked": "Gostei",
         "likes": "Gostos",
-        "share": "Partilhar",
-        "shared": "Partilhado",
+        "share": "Compartilhar",
+        "shared": "Compartilhado",
         "shares": "Partilhas",
         "unshare": "Despartilhar",
         "bookmark": "Favorito",
@@ -16,7 +16,7 @@
         "delete": "Eliminar",
         "error": "Erro",
         "errorMsg": "Algo correu mal. Por favor, tente novamente mais tarde.",
-        "oops": "Oops!",
+        "oops": "Opa!",
         "other": "Outro",
         "readMore": "Ler mais",
         "success": "Sucesso",
@@ -44,7 +44,7 @@
         "groups": "Grupos",
         "stories": "Stories",
         "profile": "Perfil",
-        "drive": "Disco",
+        "drive": "Drive",
         "settings": "Defini\u00e7\u00f5es",
         "compose": "Criar novo",
         "logout": "Terminar Sess\u00e3o",
@@ -53,7 +53,7 @@
         "language": "Idioma",
         "privacy": "Privacidade",
         "terms": "Termos",
-        "backToPreviousDesign": "Voltar ao design antigo"
+        "backToPreviousDesign": "Voltar ao design anterior"
     },
     "directMessages": {
         "inbox": "Caixa de Entrada",
@@ -61,24 +61,24 @@
         "requests": "Pedidos"
     },
     "notifications": {
-        "liked": "gostou do seu",
-        "commented": "comentou no seu",
+        "liked": "curtiu seu",
+        "commented": "comentou em seu",
         "reacted": "reagiu ao seu",
-        "shared": "Partilhou o seu",
-        "tagged": "marcou voc\u00ea numa publica\u00e7\u00e3o",
-        "updatedA": "atualizou",
+        "shared": "compartilhou seu",
+        "tagged": "marcou voc\u00ea em um",
+        "updatedA": "atualizou um(a)",
         "sentA": "enviou um",
         "followed": "seguiu",
         "mentioned": "mencionou",
         "you": "voc\u00ea",
         "yourApplication": "A sua candidatura para se juntar",
         "applicationApproved": "foi aprovado!",
-        "applicationRejected": "foi rejeitado. Voc\u00ea pode inscrever-se novamente em 6 meses.",
-        "dm": "dm",
-        "groupPost": "publica\u00e7\u00e3o de grupo",
+        "applicationRejected": "foi rejeitado. Voc\u00ea pode se inscrever novamente para participar em 6 meses.",
+        "dm": "mensagem direta",
+        "groupPost": "postagem do grupo",
         "modlog": "hist\u00f3rico de modera\u00e7\u00e3o",
         "post": "publica\u00e7\u00e3o",
-        "story": "story",
+        "story": "hist\u00f3ria",
         "noneFound": "Nenhuma notifica\u00e7\u00e3o encontrada"
     },
     "post": {
@@ -91,7 +91,7 @@
         "posts": "Publica\u00e7\u00f5es",
         "followers": "Seguidores",
         "following": "A seguir",
-        "admin": "Admin",
+        "admin": "Administrador",
         "collections": "Cole\u00e7\u00f5es",
         "follow": "Seguir",
         "unfollow": "Deixar de seguir",
@@ -113,14 +113,14 @@
         "unlistFromTimelines": "Remover das cronologias",
         "addCW": "Adicionar aviso de conte\u00fado",
         "removeCW": "Remover aviso de conte\u00fado",
-        "markAsSpammer": "Marcar como spammer",
+        "markAsSpammer": "Marcar como Spammer",
         "markAsSpammerText": "Remover das cronologias e adicionar um aviso de conte\u00fado \u00e0s publica\u00e7\u00f5es existentes e futuras",
-        "spam": "Spam",
+        "spam": "Lixo Eletr\u00f4nico",
         "sensitive": "Conte\u00fado Sens\u00edvel",
         "abusive": "Abusivo ou prejudicial",
         "underageAccount": "Conta de menor de idade",
         "copyrightInfringement": "Viola\u00e7\u00e3o de direitos de autor",
-        "impersonation": "Roubo de Identidade",
+        "impersonation": "Roubo de identidade",
         "scamOrFraud": "Esquema ou fraude",
         "confirmReport": "Confirmar den\u00fancia",
         "confirmReportText": "Tem a certeza que deseja denunciar esta mensagem?",
@@ -133,19 +133,19 @@
         "modRemoveCWSuccess": "Removeu com sucesso o aviso de conte\u00fado",
         "modUnlistConfirm": "Tem a certeza que pretende deslistar este post?",
         "modUnlistSuccess": "Deslistou com sucesso este post",
-        "modMarkAsSpammerConfirm": "Tem a certeza que deseja marcar este utilizador como spammer? Todos os posts existentes e futuros ser\u00e3o deslistados da timeline e o alerta de conte\u00fado ser\u00e1 aplicado.",
+        "modMarkAsSpammerConfirm": "Voc\u00ea realmente quer denunciar este usu\u00e1rio por spam? Todas as suas publica\u00e7\u00f5es anteriores e futuras ser\u00e3o marcadas com um aviso de conte\u00fado e removidas das linhas do tempo.",
         "modMarkAsSpammerSuccess": "Marcou com sucesso esta conta como spammer",
-        "toFollowers": "para Seguidores",
-        "showCaption": "Mostar legenda",
+        "toFollowers": "para seguidores",
+        "showCaption": "Exibir legendas",
         "showLikes": "Mostrar Gostos",
         "compactMode": "Modo compacto",
-        "embedConfirmText": "Ao utilizar este conte\u00fado, aceita os nossos",
+        "embedConfirmText": "Ao usar de forma \u201cembed\u201d, voc\u00ea concorda com nossas",
         "deletePostConfirm": "Tem a certeza que pretende apagar esta publica\u00e7\u00e3o?",
         "archivePostConfirm": "Tem a certeza que pretende arquivar esta publica\u00e7\u00e3o?",
         "unarchivePostConfirm": "Tem a certeza que pretende desarquivar este post?"
     },
     "story": {
-        "add": "Adicionar Storie"
+        "add": "Adicionar Story"
     },
     "timeline": {
         "peopleYouMayKnow": "Pessoas que talvez conhe\u00e7a",
@@ -157,7 +157,7 @@
         }
     },
     "hashtags": {
-        "emptyFeed": "N\u00e3o conseguimos encontrar publica\u00e7\u00f5es com essa hashtag"
+        "emptyFeed": "N\u00e3o encontramos nenhuma publica\u00e7\u00e3o com esta hashtag"
     },
     "report": {
         "report": "Denunciar",

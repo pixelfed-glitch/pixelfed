@@ -102,29 +102,29 @@ window.App.util = {
             let seconds = Math.floor((now - date) / 1000);
             let interval = Math.floor(seconds / 31536000);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'year');
+                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'year');
             }
             interval = Math.floor(seconds / 2592000);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'month');
+                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'month');
             }
             interval = Math.floor(seconds / 604800);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'week');
+                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'week');
             }
             interval = Math.floor(seconds / 86400);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'day');
+                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'day');
             }
             interval = Math.floor(seconds / 3600);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'hour');
+                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'hour');
             }
             interval = Math.floor(seconds / 60);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-interval, 'minute');
+                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'minute');
             }
-            return new Intl.RelativeTimeFormat('pt', { numeric: 'auto', style: 'short' }).format(-seconds, 'second');
+            return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-seconds, 'second');
 		}),
 		timeAhead: (function(ts, short = true) {
 			let date = Date.parse(ts);

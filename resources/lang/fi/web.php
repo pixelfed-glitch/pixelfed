@@ -94,8 +94,8 @@ return [
 		'you' => 'sinä',
 
 		'yourApplication' => 'Liittymistä koskeva hakemuksesi',
-		'applicationApproved' => 'oli hyväksytty!',
-		'applicationRejected' => 'oli hylätty. Voit hakea uudelleen 6 kuukauden kuluttua.',
+		'applicationApproved' => 'hyväksyttiin!',
+		'applicationRejected' => 'hylättiin. Voit hakea uudelleen 6 kuukauden kuluttua.',
 
 		'dm' => 'yv',
 		'groupPost' => 'ryhmäviesti',
@@ -142,7 +142,7 @@ return [
 		'addCW' => 'Lisää sisältövaroitus',
 		'removeCW' => 'Poista sisältövaroitus',
 		'markAsSpammer' => 'Merkitse roskapostittajaksi',
-		'markAsSpammerText' => 'Unlist + SV olevat ja tulevat julkaisut',
+		'markAsSpammerText' => 'Poista listalta + SV olevat ja tulevat julkaisut',
 		'spam' => 'Roskaposti',
 		'sensitive' => 'Arkaluonteista sisältöä',
 		'abusive' => 'Hyökkäävä tai haitallinen',
@@ -161,8 +161,8 @@ return [
 		'modRemoveCWConfirm' => 'Haluatko varmasti poistaa julkaisun sisältövaroituksen?',
 		'modRemoveCWSuccess' => 'Sisältövaroitus poistettu',
 		'modUnlistConfirm' => 'Haluatko varmasti piilottaa julkaisun?',
-		'modUnlistSuccess' => 'Julkaisu piilotettu onnistuneesti',
-		'modMarkAsSpammerConfirm' => 'Haluatko varmasti merkitä käyttäjän roskapostittajaksi? Kaikki nykyiset ja tulevat julkaisut saavat sisältövaroituksen ja julkaisut piilotetaan julkisilta aikajanoilta.',
+		'modUnlistSuccess' => 'Julkaisun piilotus onnistui',
+		'modMarkAsSpammerConfirm' => 'Haluatko varmasti merkitä käyttäjän roskapostittajaksi? Kaikki nykyiset ja tulevat julkaisut saavat sisältövaroituksen ja julkaisut piilotetaan aikajanoilta.',
 		'modMarkAsSpammerSuccess' => 'Tili merkitty roskapostittajaksi',
 
 		'toFollowers' => 'seuraajille',
@@ -186,7 +186,7 @@ return [
 
 		'onboarding' => [
 			'welcome' => 'Tervetuloa',
-			'thisIsYourHomeFeed' => 'Tämä on kotisyötteesi. Aikajärjestyksessä oleva syöte seuraamiesi käyttäjien julkaisuista.',
+			'thisIsYourHomeFeed' => 'Tämä on kotisyötteesi, aikajärjestyksessä oleva syöte seuraamiesi käyttäjien julkaisuista.',
 			'letUsHelpYouFind' => 'Anna meidän auttaa löytämään mielenkiintoisia ihmisiä seurattavaksi',
 			'refreshFeed' => 'Päivitä syötteeni',
 		],
@@ -201,8 +201,8 @@ return [
 		'selectReason' => 'Valitse syy',
 		'reported' => 'Ilmoitettu',
 		'sendingReport' => 'Lähetetään ilmoitusta',
-		'thanksMsg' => 'Kiitos ilmoituksesta. Sinä ja kaltaisesi autatte pitämään yhteisön turvallisena!',
-		'contactAdminMsg' => 'Jos haluaisit ottaa yhteyttä ylläpitoom tästä julkaisusta tai ilmoittaa sen',
+		'thanksMsg' => 'Kiitos ilmoituksesta, sinä ja kaltaisesi autatte pitämään yhteisön turvallisena!',
+		'contactAdminMsg' => 'Jos haluaisit ottaa yhteyttä ylläpitoon tähän julkaisuun liittyen tai ilmoittaa sen',
 	],
 
 ];
