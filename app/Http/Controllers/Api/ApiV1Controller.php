@@ -864,15 +864,20 @@ class ApiV1Controller extends Controller
             if ($remote == true && config('federation.activitypub.remoteFollow') == true) {
                 (new FollowerController)->sendFollow($user->profile, $target);
             }
+        } elseif ($remote == true) {
+            $follow = FollowRequest::firstOrCreate([
+                'follower_id' => $user->profile_id,
+                'following_id' => $target->id,
+            ]);
+
+            if (config('federation.activitypub.remoteFollow') == true) {
+                (new FollowerController)->sendFollow($user->profile, $target);
+            }
         } else {
             $follower = Follower::firstOrCreate([
                 'profile_id' => $user->profile_id,
                 'following_id' => $target->id,
             ]);
-
-            if ($remote == true && config('federation.activitypub.remoteFollow') == true) {
-                (new FollowerController)->sendFollow($user->profile, $target);
-            }
             FollowPipeline::dispatch($follower)->onQueue('high');
         }
 
