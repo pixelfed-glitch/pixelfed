@@ -43,6 +43,7 @@ use App\Util\ActivityPub\Validator\Announce as AnnounceValidator;
 use App\Util\ActivityPub\Validator\Follow as FollowValidator;
 use App\Util\ActivityPub\Validator\Like as LikeValidator;
 use App\Util\ActivityPub\Validator\MoveValidator;
+use App\Util\ActivityPub\Validator\RejectValidator;
 use App\Util\ActivityPub\Validator\UpdatePersonValidator;
 use Cache;
 use Illuminate\Support\Facades\Bus;
@@ -121,6 +122,9 @@ class Inbox
                 break;
 
             case 'Reject':
+                if (RejectValidator::validate($this->payload) == false) {
+                    return;
+                }
                 $this->handleRejectActivity();
                 break;
 
@@ -854,7 +858,21 @@ class Inbox
 
     }
 
-    public function handleRejectActivity() {}
+    public function handleRejectActivity()
+    {
+        $actorUrl = $this->payload['actor'];
+        $obj = $this->payload['object'];
+        $profileUrl = $obj['actor'];
+        if (! Helpers::validateUrl($actorUrl) || ! Helpers::validateLocalUrl($profileUrl)) {
+            return;
+        }
+        $actor = Helpers::profileFetch($actorUrl);
+        $profile = Helpers::profileFetch($profileUrl);
+
+        FollowRequest::whereFollowerId($profile->id)->whereFollowingId($actor->id)->forceDelete();
+        RelationshipService::refresh($actor->id, $profile->id);
+
+    }
 
     public function handleUndoActivity()
     {
