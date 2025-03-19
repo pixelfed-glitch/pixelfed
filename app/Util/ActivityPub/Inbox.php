@@ -619,7 +619,10 @@ class Inbox
             Cache::forget('profile:following_count:'.$target->id);
             Cache::forget('profile:following_count:'.$actor->id);
         }
-
+        RelationshipService::refresh($actor->id, $target->id);
+        AccountService::del($actor->id);
+        AccountService::del($target->id);
+        return;
     }
 
     public function handleAnnounceActivity()
@@ -871,7 +874,7 @@ class Inbox
 
         FollowRequest::whereFollowerId($profile->id)->whereFollowingId($actor->id)->forceDelete();
         RelationshipService::refresh($actor->id, $profile->id);
-
+        return;
     }
 
     public function handleUndoActivity()
@@ -938,6 +941,9 @@ class Inbox
                 Follower::whereProfileId($profile->id)
                     ->whereFollowingId($following->id)
                     ->delete();
+                FollowRequest::whereFollowingId($following->id)
+                    ->whereFollowerId($profile->id)
+                    ->forceDelete();
                 Notification::whereProfileId($following->id)
                     ->whereActorId($profile->id)
                     ->whereAction('follow')
@@ -945,6 +951,9 @@ class Inbox
                     ->whereItemType('App\Profile')
                     ->forceDelete();
                 FollowerService::remove($profile->id, $following->id);
+                RelationshipService::refresh($following->id, $profile->id);
+                AccountService::del($profile->id);
+                AccountService::del($following->id);
                 break;
 
             case 'Like':
