@@ -32,6 +32,7 @@ use App\Services\NotificationAppGatewayService;
 use App\Services\PollService;
 use App\Services\PushNotificationService;
 use App\Services\ReblogService;
+use App\Services\RelationshipService;
 use App\Services\UserFilterService;
 use App\Status;
 use App\Story;
@@ -245,7 +246,7 @@ class Inbox
         $cc = isset($activity['cc']) ? $activity['cc'] : [];
 
         if ($activity['type'] == 'Question') {
-            //$this->handlePollCreate();
+            // $this->handlePollCreate();
 
             return;
         }
@@ -706,10 +707,20 @@ class Inbox
             'profile_id' => $actor->id,
             'following_id' => $target->id,
         ]);
-        FollowPipeline::dispatch($follower);
-
+        FollowPipeline::dispatch($follower)->onQueue('high');
+        RelationshipService::refresh($actor->id, $target->id);
+        Cache::forget('profile:following:'.$target->id);
+        Cache::forget('profile:followers:'.$target->id);
+        Cache::forget('profile:following:'.$actor->id);
+        Cache::forget('profile:followers:'.$actor->id);
+        Cache::forget('profile:follower_count:'.$target->id);
+        Cache::forget('profile:follower_count:'.$actor->id);
+        Cache::forget('profile:following_count:'.$target->id);
+        Cache::forget('profile:following_count:'.$actor->id);
+        AccountService::del($actor->id);
+        AccountService::del($target->id);
+        RelationshipService::get($actor->id, $target->id);
         $request->delete();
-
     }
 
     public function handleDeleteActivity()
