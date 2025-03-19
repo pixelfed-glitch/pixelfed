@@ -81,6 +81,7 @@ return [
 	],
 
 	'notifications' => [
+        'title' => 'Notifications',
 		'liked' => 'liked your',
 		'commented' => 'commented on your',
 		'reacted' => 'reacted to your',
