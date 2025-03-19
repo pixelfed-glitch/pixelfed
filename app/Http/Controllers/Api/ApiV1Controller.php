@@ -813,13 +813,13 @@ class ApiV1Controller extends Controller
         abort_unless($request->user()->tokenCan('follow'), 403);
 
         $user = $request->user();
+        abort_if($user->profile_id == $id, 400, 'Invalid profile');
+
         abort_if($user->has_roles && ! UserRoleService::can('can-follow', $user->id), 403, 'Invalid permissions for this action');
 
         AccountService::setLastActive($user->id);
 
-        $target = Profile::where('id', '!=', $user->profile_id)
-            ->whereNull('status')
-            ->findOrFail($id);
+        $target = Profile::whereNull('status')->findOrFail($id);
 
         abort_if($target && $target->moved_to_profile_id, 400, 'Cannot follow an account that has moved!');
 
@@ -914,10 +914,11 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
+        abort_if($user->profile_id == $id, 400, 'Invalid profile');
+
         AccountService::setLastActive($user->id);
 
-        $target = Profile::where('id', '!=', $user->profile_id)
-            ->whereNull('status')
+        $target = Profile::whereNull('status')
             ->findOrFail($id);
 
         $private = (bool) $target->is_private;
@@ -934,6 +935,9 @@ class ApiV1Controller extends Controller
             if ($followRequest) {
                 $followRequest->delete();
                 RelationshipService::refresh($target->id, $user->profile_id);
+                if ($target->domain) {
+                    UnfollowPipeline::dispatch($user->profile_id, $target->id)->onQueue('high');
+                }
             }
             $resource = new Fractal\Resource\Item($target, new RelationshipTransformer);
             $res = $this->fractal->createData($resource)->toArray();
