@@ -599,7 +599,7 @@ class Helpers
         $reply_to = self::getReplyTo($activity);
         $ts = self::pluckval($activity['published']);
         $scope = self::getScope($activity, $url);
-        $commentsDisabled = isset($activity['commentsEnabled']) ? (bool)$activity['commentsEnabled'] == false : false;
+        $commentsDisabled = isset($activity['commentsEnabled']) ? (bool) $activity['commentsEnabled'] == false : false;
         $cw = self::getSensitive($activity, $url);
 
         if ($profile->unlisted) {
@@ -1278,8 +1278,9 @@ class Helpers
             'inbox_url' => $res['inbox'],
             'outbox_url' => $res['outbox'] ?? null,
             'public_key' => $res['publicKey']['publicKeyPem'],
-            'indexable' => $res['indexable'] ?? false,
+            'indexable' => isset($res['indexable']) ? (bool) $res['indexable'] : false,
             'moved_to_profile_id' => $movedToPid,
+            'is_private' => isset($res['manuallyApprovesFollowers']) ? (bool) $res['manuallyApprovesFollowers'] : true,
         ];
     }
 
