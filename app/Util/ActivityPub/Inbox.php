@@ -622,7 +622,7 @@ class Inbox
         RelationshipService::refresh($actor->id, $target->id);
         AccountService::del($actor->id);
         AccountService::del($target->id);
-        return;
+
     }
 
     public function handleAnnounceActivity()
@@ -874,7 +874,7 @@ class Inbox
 
         FollowRequest::whereFollowerId($profile->id)->whereFollowingId($actor->id)->forceDelete();
         RelationshipService::refresh($actor->id, $profile->id);
-        return;
+
     }
 
     public function handleUndoActivity()
