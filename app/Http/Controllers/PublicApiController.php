@@ -725,6 +725,7 @@ class PublicApiController extends Controller
             ->where('id', $dir, $id)
             ->whereIn('scope', $visibility)
             ->limit($limit)
+            ->orderBy('pinned_order')
             ->orderByDesc('id')
             ->get()
             ->map(function ($s) use ($user) {

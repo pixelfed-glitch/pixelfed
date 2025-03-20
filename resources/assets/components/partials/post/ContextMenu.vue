@@ -112,6 +112,21 @@
                     @click.prevent="unarchivePost(status)">
                     {{ $t('menu.unarchive') }}
                 </a>
+                <a
+                    v-if="status && profile.id == status.account.id && !status.pinned"
+                    class="list-group-item menu-option text-danger"
+                    href="#"
+                    @click.prevent="pinPost(status)">
+                    {{ $t('menu.pin') }}
+                </a>
+
+                <a
+                    v-if="status && profile.id == status.account.id && status.pinned"
+                    class="list-group-item menu-option text-danger"
+                    href="#"
+                    @click.prevent="unpinPost(status)">
+                    {{ $t('menu.unpin') }}
+                </a>
 
                 <a
                     v-if="config.ab.pue && status && profile.id == status.account.id && status.visibility !== 'archived'"
@@ -975,6 +990,40 @@
                         })
                     }
                 })
+            },
+
+            pinPost(status) {
+                if(window.confirm(this.$t('menu.pinPostConfirm')) == false) {
+                    return;
+                }
+
+                axios.post('/api/v2/statuses/' + status.id + '/pin')
+                .then(res => {
+                    const data = res.data;
+                    if(data.status){
+                        swal('Success', "Post was pinned successfully!" , 'success');
+                    }else {
+                        swal('Error', data.message, 'error');
+                    }
+                    this.closeModals();
+                });
+            },
+
+            unpinPost(status) {
+                if(window.confirm(this.$t('menu.unpinPostConfirm')) == false) {
+                    return;
+                }
+
+                axios.post('/api/v2/statuses/' + status.id + '/unpin')
+                .then(res => {
+                    const data = res.data;
+                    if(data.status){
+                        swal('Success', "Post was unpinned successfully!" , 'success');
+                    }else {
+                        swal('Error', data.message, 'error');
+                    }
+                    this.closeModals();
+                });
             },
         }
     }

@@ -181,6 +181,9 @@
 						<span class="badge badge-light timestamp-overlay-badge">
 							{{ timeago(s.created_at) }}
 						</span>
+                        <span v-if="s.pinned" class="badge badge-light pinned-overlay-badge">
+						    <i class="fa fa-tag" aria-hidden="true"></i>
+						</span>
 					</a>
 				</div>
 
@@ -219,6 +222,10 @@
 							<span class="badge badge-light timestamp-overlay-badge">
 								{{ timeago(s.created_at) }}
 							</span>
+
+                            <span v-if="s.pinned" class="badge badge-light pinned-overlay-badge">
+						        <i class="fa fa-tag" aria-hidden="true"></i>
+						    </span>
 						</a>
 
 						<a v-else-if="s.sensitive" class="card info-overlay card-md-border-0" :href="statusUrl(s)">
@@ -246,6 +253,9 @@
 							<span class="badge badge-light timestamp-overlay-badge">
 								{{ timeago(s.created_at) }}
 							</span>
+                            <span v-if="s.pinned" class="badge badge-light pinned-overlay-badge">
+						        <i class="fa fa-tag" aria-hidden="true"></i>
+						    </span>
 						</a>
 					</div>
 
@@ -1071,6 +1081,7 @@
 					});
 				});
 			},
+
 		}
 	}
 </script>
@@ -1124,6 +1135,14 @@
 			bottom: 10px;
 			right: 10px;
 			opacity: 0.6;
+		}
+
+        .pinned-overlay-badge {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+            color: var(--dark);
+            font-size: 120%;
 		}
 
 		.profile-nav-btns {
