@@ -17,6 +17,12 @@
 - Update DM config, allow new users to send DMs by default, with a new env variable to enforce a 72h limit ([717f17cde](https://github.com/pixelfed/pixelfed/commit/717f17cde))
 - Update ApiV1Controller, add pagination to conversations endpoint with min/max/since id pagination and link header support ([244e86bad](https://github.com/pixelfed/pixelfed/commit/244e86bad))
 - Update Direct message component, fix pagination ([e6ef64857](https://github.com/pixelfed/pixelfed/commit/e6ef64857))
+- Update ActivityPub helpers, improve private account handling ([75e7a678c](https://github.com/pixelfed/pixelfed/commit/75e7a678c))
+- Update ApiV1Controller, improve follower handling ([976a1873e](https://github.com/pixelfed/pixelfed/commit/976a1873e))
+- Update Inbox, improve Accept Follower handling ([3725c689e](https://github.com/pixelfed/pixelfed/commit/3725c689e))
+- Update Inbox handler, add Reject Follow support ([fbe76e37f](https://github.com/pixelfed/pixelfed/commit/fbe76e37f))
+- Update Inbox handler, improve Undo Follow logic ([5525369fe](https://github.com/pixelfed/pixelfed/commit/5525369fe))
+- Update ApiV1Controller, send UndoFollow when cancelling a follow request on remote accounts ([2cf301181](https://github.com/pixelfed/pixelfed/commit/2cf301181))
   
 ## [v0.12.4+glitch.1.10.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.9.1...v0.12.4-glitch.1.10.0)
 
@@ -158,6 +164,7 @@
 - Update AP Status Transformer, fix inReplyTo. Fixes #5409 ([83cc932f](https://github.com/pixelfed/pixelfed/commit/83cc932f))
 - Update Data Export, refactor following/follower and statuses exports to allow accounts of any size with api entity instead of ap ([0d25917c](https://github.com/pixelfed/pixelfed/commit/0d25917c))
 - Fix oauth oob (urn:ietf:wg:oauth:2.0:oob) support. ([8afbdb03](https://github.com/pixelfed/pixelfed/commit/8afbdb03))
+
 
 ## [v0.12.4+glitch.1.6.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.3-glitch.1.5.0...v0.12.4-glitch.1.6.0)
 
