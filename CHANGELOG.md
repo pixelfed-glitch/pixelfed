@@ -1,9 +1,9 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.4-glitch.1.10.0...develop)
+## [v0.12.4+glitch.1.10.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.10.0...v0.12.4-glitch.1.10.1)
 
 ### Updates
-- Using a more agressive approach to cache update ([71e38db6](https://github.com/pixelfed/pixelfed/commit/71e38db6))
+- Using a more agressive approach to cache update ([71e38db6](https://github.com/pixelfed-glitch/pixelfed/commit/71e38db6))
 
 ### Pull Requests
 - add RemoteIPTrustedProxy entry for private ipv6 cidr by @lilithmooncohen ([#55](https://github.com/pixelfed-glitch/pixelfed/pull/55))
