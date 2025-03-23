@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2119
+
 : "${ENTRYPOINT_ROOT:="/docker"}"
 
 # shellcheck source=SCRIPTDIR/../helpers.sh
