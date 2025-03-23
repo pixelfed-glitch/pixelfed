@@ -2,13 +2,19 @@
 
 ## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.4-glitch.1.10.0...develop)
 
+### Updates
+- Using a more agressive approach to cache update ([71e38db6](https://github.com/pixelfed/pixelfed/commit/71e38db6))
+
+### Pull Requests
+- add RemoteIPTrustedProxy entry for private ipv6 cidr by @lilithmooncohen ([#55](https://github.com/pixelfed-glitch/pixelfed/pull/55))
+
 ### Added (from Upstream)
 - Add app register email verify resends ([dbd1e17](https://github.com/pixelfed/pixelfed/commit/dbd1e17))
-- Add AVIF support ([7ddbe0c47](https://github.com/pixelfed/pixelfed/commit/7ddbe0c47))
+- Add AVIF support ([7ddbe0c4](https://github.com/pixelfed/pixelfed/commit/7ddbe0c4))
 
 ### Updates (from Upstream)
 - Update App Register to expire codes after 4 hours instead of 60 minutes ([0844094b](https://github.com/pixelfed/pixelfed/commit/0844094b))
-- Update ApiV1Controller, fix max_id pagination on home and public timeline feeds ([38e17a06e](https://github.com/pixelfed/pixelfed/commit/38e17a06e))
+- Update ApiV1Controller, fix max_id pagination on home and public timeline feeds ([38e17a06](https://github.com/pixelfed/pixelfed/commit/38e17a06))
 - Update Post component, rewrite local post urls ([d2f2a1b1c](https://github.com/pixelfed/pixelfed/commit/d2f2a1b1c))
 - Update Profile component, rewrite local profile urls ([dfbccaa19](https://github.com/pixelfed/pixelfed/commit/dfbccaa19))
 - Update AccountPostCountStatUpdate, fix memory leak ([134eb6324](https://github.com/pixelfed/pixelfed/commit/134eb6324))
