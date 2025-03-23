@@ -6,6 +6,12 @@ source "${ENTRYPOINT_ROOT}/helpers.sh"
 
 entrypoint-set-script-name "$0"
 
-run-as-runtime-user php artisan config:cache
-run-as-runtime-user php artisan route:cache
-run-as-runtime-user php artisan view:cache
+# force delete cache files as they sometimes break php artisan (great work Laravel)
+run-as-runtime-user rm ./bootstrap/cache/config.php
+run-as-runtime-user rm ./bootstrap/cache/events.php
+run-as-runtime-user rm ./bootstrap/cache/packages.php
+run-as-runtime-user rm ./bootstrap/cache/routes*.php
+run-as-runtime-user rm ./bootstrap/cache/services.php
+
+run-as-runtime-user php artisan optimize:clear
+run-as-runtime-user php artisan optimize
