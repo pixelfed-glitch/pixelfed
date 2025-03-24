@@ -1,6 +1,9 @@
 # Release Notes
 
 ## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.3...dev)
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
+
+## [v0.12.5 (2024-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
 
 ### Added
 - Add app register email verify resends ([dbd1e17](https://github.com/pixelfed/pixelfed/commit/dbd1e17))
@@ -63,7 +66,6 @@
 - Update Inbox handler, add Reject Follow support ([fbe76e37f](https://github.com/pixelfed/pixelfed/commit/fbe76e37f))
 - Update Inbox handler, improve Undo Follow logic ([5525369fe](https://github.com/pixelfed/pixelfed/commit/5525369fe))
 - Update ApiV1Controller, send UndoFollow when cancelling a follow request on remote accounts ([2cf301181](https://github.com/pixelfed/pixelfed/commit/2cf301181))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.4 (2024-11-08)](https://github.com/pixelfed/pixelfed/compare/v0.12.4...dev)
 
