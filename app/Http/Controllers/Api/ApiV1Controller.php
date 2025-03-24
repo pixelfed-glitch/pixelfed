@@ -1537,7 +1537,7 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
-        $res = FollowRequest::whereFollowingId($user->profile->id)
+        $res = FollowRequest::whereFollowingId($user->profile_id)
             ->limit($request->input('limit', 40))
             ->pluck('follower_id')
             ->map(function ($id) {
