@@ -1,5 +1,9 @@
 # Release Notes
 
+## [v0.12.5+glitch.1.10.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.10.0...v0.12.5-glitch.1.10.1)
+
+- I heard you like bumping versions (just following upstream but no changes happened, so I won't bump glitch version itself)
+
 ## [v0.12.4+glitch.1.10.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.4-glitch.1.10.0...v0.12.4-glitch.1.10.1)
 
 ### Updates
