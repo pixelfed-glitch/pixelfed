@@ -4443,12 +4443,12 @@ class ApiV1Controller extends Controller
         $pid =  $request->user()->profile_id;
 
         if (intval($pid) === intval($target_id)) {
-            return $this->json(['error' => 'Request invalid! Targed is same user id.'], 500);
+            return $this->json(['error' => 'Request invalid! target_id is same user id.'], 500);
         }
 
         Follower::whereProfileId($target_id)
-        ->whereFollowingId($pid)
-        ->delete();
+            ->whereFollowingId($pid)
+            ->delete();
 
         RelationshipService::refresh($pid, $target_id);
 
