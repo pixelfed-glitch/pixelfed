@@ -19,7 +19,7 @@
 								<i class="far fa-chevron-circle-left fa-2x mr-3" title="Go back to notifications"></i>
 							</a>
 							<h1 class="font-weight-bold">
-							{{	$t("notifications.followRequests") }}
+							{{	$t("notifications.followRequest") }}
 							</h1>
 						</div>
 					</template>
