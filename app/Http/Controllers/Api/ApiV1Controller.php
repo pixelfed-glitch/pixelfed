@@ -744,7 +744,7 @@ class ApiV1Controller extends Controller
         } elseif ($profile['locked']) {
             $following = FollowerService::follows($pid, $profile['id']);
             if (! $following) {
-                return response('', 403);
+                return response()->json([]);
             }
             $visibility = ['public', 'unlisted', 'private'];
         } else {
@@ -810,13 +810,13 @@ class ApiV1Controller extends Controller
         abort_unless($request->user()->tokenCan('follow'), 403);
 
         $user = $request->user();
+        abort_if($user->profile_id == $id, 400, 'Invalid profile');
+
         abort_if($user->has_roles && ! UserRoleService::can('can-follow', $user->id), 403, 'Invalid permissions for this action');
 
         AccountService::setLastActive($user->id);
 
-        $target = Profile::where('id', '!=', $user->profile_id)
-            ->whereNull('status')
-            ->findOrFail($id);
+        $target = Profile::whereNull('status')->findOrFail($id);
 
         abort_if($target && $target->moved_to_profile_id, 400, 'Cannot follow an account that has moved!');
 
@@ -861,15 +861,20 @@ class ApiV1Controller extends Controller
             if ($remote == true && config('federation.activitypub.remoteFollow') == true) {
                 (new FollowerController)->sendFollow($user->profile, $target);
             }
+        } elseif ($remote == true) {
+            $follow = FollowRequest::firstOrCreate([
+                'follower_id' => $user->profile_id,
+                'following_id' => $target->id,
+            ]);
+
+            if (config('federation.activitypub.remoteFollow') == true) {
+                (new FollowerController)->sendFollow($user->profile, $target);
+            }
         } else {
             $follower = Follower::firstOrCreate([
                 'profile_id' => $user->profile_id,
                 'following_id' => $target->id,
             ]);
-
-            if ($remote == true && config('federation.activitypub.remoteFollow') == true) {
-                (new FollowerController)->sendFollow($user->profile, $target);
-            }
             FollowPipeline::dispatch($follower)->onQueue('high');
         }
 
@@ -906,10 +911,11 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
+        abort_if($user->profile_id == $id, 400, 'Invalid profile');
+
         AccountService::setLastActive($user->id);
 
-        $target = Profile::where('id', '!=', $user->profile_id)
-            ->whereNull('status')
+        $target = Profile::whereNull('status')
             ->findOrFail($id);
 
         $private = (bool) $target->is_private;
@@ -926,6 +932,9 @@ class ApiV1Controller extends Controller
             if ($followRequest) {
                 $followRequest->delete();
                 RelationshipService::refresh($target->id, $user->profile_id);
+                if ($target->domain) {
+                    UnfollowPipeline::dispatch($user->profile_id, $target->id)->onQueue('high');
+                }
             }
             $resource = new Fractal\Resource\Item($target, new RelationshipTransformer);
             $res = $this->fractal->createData($resource)->toArray();

@@ -873,6 +873,7 @@ class Helpers
                 'public_key' => $res['publicKey']['publicKeyPem'],
                 'indexable' => isset($res['indexable']) && is_bool($res['indexable']) ? $res['indexable'] : false,
                 'moved_to_profile_id' => $movedToPid,
+                'is_private' => isset($res['manuallyApprovesFollowers']) ? (bool) $res['manuallyApprovesFollowers'] : true,
             ]
         );
 
