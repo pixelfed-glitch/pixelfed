@@ -9,7 +9,7 @@
 ARG DOCKER_PHP_EXTENSION_INSTALLER_VERSION="2.1.80"
 
 # See: https://github.com/composer/composer
-ARG COMPOSER_VERSION="2.6"
+ARG COMPOSER_VERSION="2.6.4"
 
 # See: https://nginx.org/
 ARG NGINX_VERSION="1.25.3"

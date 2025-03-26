@@ -37,15 +37,12 @@ jobs:
       # See: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
       matrix:
         php_version:
+          - 8.2
           - 8.3
         db_version:
           - mariadb:latest
-          - mariadb:11
-          - mariadb:10
 
           - mysql:latest
-          - mysql:8.3
-          - mysql:8.0
 
     container:
       image: php:${{ matrix.php_version }}-cli
@@ -154,11 +151,10 @@ jobs:
       # See: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
       matrix:
         php_version:
+          - 8.2
           - 8.3
         db_version:
           - postgres:16
-          - postgres:15
-          - postgres:14
 
     container:
       image: php:${{ matrix.php_version }}-cli
