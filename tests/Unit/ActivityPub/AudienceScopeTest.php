@@ -30,25 +30,25 @@ class AudienceScopeTest extends TestCase
     }
 
     #[Test]
-    public function testBasicValidation()
+    public function basicValidation()
     {
         $this->assertFalse(Helpers::validateObject($this->invalid));
     }
 
     #[Test]
-    public function testMastodonValidation()
+    public function mastodonValidation()
     {
         $this->assertTrue(Helpers::validateObject($this->mastodon));
     }
 
     #[Test]
-    public function testPleromaValidation()
+    public function pleromaValidation()
     {
         $this->assertTrue(Helpers::validateObject($this->pleroma));
     }
 
     #[Test]
-    public function testMastodonAudienceScope()
+    public function mastodonAudienceScope()
     {
         $scope = Helpers::normalizeAudience($this->mastodon, false);
         $actual = [
@@ -64,7 +64,7 @@ class AudienceScopeTest extends TestCase
     }
 
     #[Test]
-    public function testPleromaAudienceScope()
+    public function pleromaAudienceScope()
     {
         $scope = Helpers::normalizeAudience($this->pleroma, false);
         $actual = [
@@ -80,7 +80,7 @@ class AudienceScopeTest extends TestCase
     }
 
     #[Test]
-    public function testInvalidAudienceScope()
+    public function invalidAudienceScope()
     {
         $scope = Helpers::normalizeAudience($this->invalid, false);
         $actual = [

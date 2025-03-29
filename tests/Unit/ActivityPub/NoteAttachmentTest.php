@@ -30,28 +30,28 @@ class NoteAttachmentTest extends TestCase
     }
 
     #[Test]
-    public function testPixelfed()
+    public function pixelfed()
     {
         $valid = Helpers::verifyAttachments($this->pixelfed);
         $this->assertTrue($valid);
     }
 
     #[Test]
-    public function testMastodon()
+    public function mastodon()
     {
         $valid = Helpers::verifyAttachments($this->mastodon);
         $this->assertTrue($valid);
     }
 
     #[Test]
-    public function testInvalidAttachmentType()
+    public function invalidAttachmentType()
     {
         $valid = Helpers::verifyAttachments($this->invalidType);
         $this->assertFalse($valid);
     }
 
     #[Test]
-    public function testInvalidMimeType()
+    public function invalidMimeType()
     {
         $valid = Helpers::verifyAttachments($this->invalidMime);
         $this->assertFalse($valid);
