@@ -165,10 +165,10 @@ return [
         'noDescription' => 'No description available'
 	],
 
-	'menu' => [
-		'viewPost' => 'View Post',
-		'viewProfile' => 'View Profile',
-		'moderationTools' => 'Moderation Tools',
+    'menu' => [
+        'viewPost' => 'View Post',
+        'viewProfile' => 'View Profile',
+        'moderationTools' => 'Moderation Tools',
 		'report' => 'Report',
 		'archive' => 'Archive',
 		'unarchive' => 'Unarchive',
@@ -212,6 +212,10 @@ return [
 		'deletePostConfirm' => 'Are you sure you want to delete this post?',
 		'archivePostConfirm' => 'Are you sure you want to archive this post?',
 		'unarchivePostConfirm' => 'Are you sure you want to unarchive this post?',
+        'pin' => "Pin",
+        'unpin' => "Unpin",
+        'pinPostConfirm' => 'Are you sure you want to pin this post?',
+        'unpinPostConfirm' => 'Are you sure you want to unpin this post?'
 	],
 
 	'story' => [

@@ -11,6 +11,8 @@ use League\Fractal\Serializer\ArraySerializer;
 class StatusService
 {
     const CACHE_KEY = 'pf:services:status:v1.1:';
+    const MAX_PINNED = 3;
+
 
     public static function key($id, $publicOnly = true)
     {
@@ -197,5 +199,47 @@ class StatusService
     public static function totalLocalStatuses()
     {
         return InstanceService::totalLocalStatuses();
+    }
+
+    public static function isPinned($id)
+    {
+        $status = Status::find($id);
+        return $status && $status->whereNotNull("pinned_order")->count() > 0;
+    }
+
+    public static  function totalPins($pid)
+    {
+        return Status::whereProfileId($pid)->whereNotNull("pinned_order")->count();
+    }
+
+    public static function markPin($id)
+    {
+        $status = Status::find($id);
+
+        if (self::isPinned($id)) {
+            return true;
+        }
+        $totalPins = self::totalPins($status->profile_id);
+
+        if ($totalPins >= self::MAX_PINNED) {
+            return false;
+        }
+
+        $status->pinned_order = $totalPins + 1;
+        $status->save();
+
+        self::refresh($id);
+        return true;
+    }
+
+    public static function unmarkPin($id)
+    {
+        $status = Status::find($id);
+
+        $status->pinned_order = null;
+        $status->save();
+
+        self::refresh($id);
+        return true;
     }
 }

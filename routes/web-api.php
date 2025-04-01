@@ -58,6 +58,8 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             Route::get('discover/tag', 'DiscoverController@getHashtags');
             Route::get('statuses/{id}/replies', 'Api\ApiV1Controller@statusReplies');
             Route::get('statuses/{id}/state', 'Api\ApiV1Controller@statusState');
+            Route::post('statuses/{id}/pin', 'Api\ApiV1Controller@statusPin');
+            Route::post('statuses/{id}/unpin', 'Api\ApiV1Controller@statusUnpin');
         });
 
         Route::group(['prefix' => 'pixelfed'], function() {

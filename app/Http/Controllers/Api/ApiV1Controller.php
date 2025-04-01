@@ -4435,4 +4435,53 @@ class ApiV1Controller extends Controller
             })
         );
     }
+
+    /**
+     *  GET /api/v2/statuses/{id}/pin
+     */
+    public function statusPin(Request $request, $id) {
+        abort_if(! $request->user(), 403);
+        $status = Status::findOrFail($id);
+        $user = $request->user();
+
+        $res = [
+            'status' => false,
+            'message' => ''
+        ];
+
+        if($status->profile_id == $user->profile_id){
+            if(StatusService::markPin($status->id)){
+                $res['status'] = true;
+            } else {
+                $res['message'] = 'Limit pin reached';
+            }
+            return $this->json($res)->setStatusCode(200);
+        }
+
+
+        return $this->json("")->setStatusCode(400);
+    }
+
+
+    /**
+     *  GET /api/v2/statuses/{id}/unpin
+     */
+    public function statusUnpin(Request $request, $id) {
+
+        abort_if(! $request->user(), 403);
+        $status = Status::findOrFail($id);
+        $user = $request->user();
+
+        if($status->profile_id == $user->profile_id){
+            StatusService::unmarkPin($status->id);
+            $res = [
+                'status' => true,
+                'message' => ''
+            ];
+            return $this->json($res)->setStatusCode(200);
+        }
+
+        return $this->json("")->setStatusCode(200);
+    }
+
 }

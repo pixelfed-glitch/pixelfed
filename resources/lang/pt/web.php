@@ -208,6 +208,10 @@ return [
 		'deletePostConfirm' => 'Tem a certeza que pretende apagar esta publicação?',
 		'archivePostConfirm' => 'Tem a certeza que pretende arquivar esta publicação?',
 		'unarchivePostConfirm' => 'Tem a certeza que pretende desarquivar este post?',
+        'pin' => "Fixar",
+        'unpin' => "Desfixar",
+        "pinPostConfirm" => "Tem certeza de que deseja fixar esta publicação?",
+        "unpinPostConfirm" => "Tem certeza de que deseja desafixar esta publicação?"
 	],
 
 	'story' => [
