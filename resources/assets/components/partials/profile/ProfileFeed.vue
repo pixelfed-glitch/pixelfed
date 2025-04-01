@@ -8,7 +8,7 @@
 						:class="[ tabIndex === 1 ? 'active' : '' ]"
 						@click="toggleTab(1)"
 						>
-						Posts
+						{{ $t("profile.posts")}}
 					</button>
 					<!-- <button
 						class="btn btn-link"
@@ -22,7 +22,7 @@
 						class="btn btn-link"
 						:class="[ tabIndex === 'archives' ? 'active' : '' ]"
 						@click="toggleTab('archives')">
-						Archives
+						{{ $t("profile.archives")}}
 					</button>
 
 					<button
@@ -30,7 +30,7 @@
 						class="btn btn-link"
 						:class="[ tabIndex === 'bookmarks' ? 'active' : '' ]"
 						@click="toggleTab('bookmarks')">
-						Bookmarks
+						{{ $t("profile.bookmarks")}}
 					</button>
 
 					<button
@@ -38,7 +38,7 @@
 						class="btn btn-link"
 						:class="[ tabIndex === 2 ? 'active' : '' ]"
 						@click="toggleTab(2)">
-						Collections
+						{{ $t("profile.collections")}}
 					</button>
 
 					<button
@@ -46,7 +46,7 @@
 						class="btn btn-link"
 						:class="[ tabIndex === 3 ? 'active' : '' ]"
 						@click="toggleTab(3)">
-						Likes
+						{{ $t("profile.likes")}}
 					</button>
 				</div>
 			</div>
@@ -299,7 +299,7 @@
 		<div v-else-if="tabIndex === 'private'" class="row justify-content-center">
 			<div class="col-12 col-md-8 text-center">
 				<img src="/img/illustrations/dk-secure-feed.svg" class="img-fluid" style="opacity: 0.6;">
-				<p class="h3 text-dark font-weight-bold mt-3 py-3">This profile is private</p>
+				<p class="h3 text-dark font-weight-bold mt-3 py-3">{{ $t("profile.private")}}</p>
 				<div class="lead text-muted px-3">
 					Only approved followers can see <span class="font-weight-bold text-dark text-break">&commat;{{ profile.acct }}</span>'s <br />
 					posts. To request access, click <span class="font-weight-bold">Follow</span>.
@@ -317,14 +317,14 @@
 						<div class="media">
 							<img :src="collection.thumb" width="65" height="65" style="object-fit: cover;" class="rounded-lg border mr-3" onerror="this.onerror=null;this.src='/storage/no-preview.png';">
 							<div class="media-body text-left">
-								<p class="lead mb-0">{{ collection.title ? collection.title : 'Untitled' }}</p>
-								<p class="small text-muted mb-1">{{ collection.description || 'No description available' }}</p>
+								<p class="lead mb-0">{{ collection.title ? collection.title : $t("profile.untitled") }}</p>
+								<p class="small text-muted mb-1">{{ collection.description || $t("profile.noDescription") }}</p>
 								<p class="small text-lighter mb-0 font-weight-bold">
-									<span>{{ collection.post_count }} posts</span>
+									<span>{{ collection.post_count }} {{ $t("profile.posts")}}</span>
 									<span>&middot;</span>
-									<span v-if="collection.visibility === 'public'" class="text-dark">Public</span>
+									<span v-if="collection.visibility === 'public'" class="text-dark">{{ $t("profile.public")}}</span>
 									<span v-else-if="collection.visibility === 'private'" class="text-dark"><i class="far fa-lock fa-sm"></i> Followers Only</span>
-									<span v-else-if="collection.visibility === 'draft'" class="primary"><i class="far fa-lock fa-sm"></i> Draft</span>
+									<span v-else-if="collection.visibility === 'draft'" class="primary"><i class="far fa-lock fa-sm"></i> {{ $t("profile.draft")}}</span>
 									<span>&middot;</span>
 									<span v-if="collection.published_at">Created {{ timeago(collection.published_at) }} ago</span>
 									<span v-else class="text-warning">UNPUBLISHED</span>
@@ -377,7 +377,7 @@
 			<div v-if="!favourites || !favourites.length" class="row justify-content-center">
 				<div class="col-12 col-md-8 text-center">
 					<img src="/img/illustrations/dk-nature-man-monochrome.svg" class="img-fluid" style="opacity: 0.6;">
-					<p class="lead text-muted font-weight-bold">We can't seem to find any posts you have liked</p>
+					<p class="lead text-muted font-weight-bold">{{ $t("profile.emptyLikes")}}</p>
 				</div>
 			</div>
 		</div>
@@ -409,7 +409,7 @@
 			<div v-if="!bookmarks || !bookmarks.length" class="row justify-content-center">
 				<div class="col-12 col-md-8 text-center">
 					<img src="/img/illustrations/dk-nature-man-monochrome.svg" class="img-fluid" style="opacity: 0.6;">
-					<p class="lead text-muted font-weight-bold">We can't seem to find any posts you have bookmarked</p>
+					<p class="lead text-muted font-weight-bold">{{ $t("profile.emptyBookmarks")}}</p>
 				</div>
 			</div>
 		</div>
@@ -438,7 +438,7 @@
 			<div v-if="!archives || !archives.length" class="row justify-content-center">
 				<div class="col-12 col-md-8 text-center">
 					<img src="/img/illustrations/dk-nature-man-monochrome.svg" class="img-fluid" style="opacity: 0.6;">
-					<p class="lead text-muted font-weight-bold">We can't seem to find any posts you have archived</p>
+					<p class="lead text-muted font-weight-bold">{{ $t("profile.emptyArchives") }}</p>
 				</div>
 			</div>
 		</div>
