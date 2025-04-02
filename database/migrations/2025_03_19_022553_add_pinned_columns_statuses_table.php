@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('statuses', function (Blueprint $table) {
-            $table->integer('pinned_order')->nullable()->default(null);
+            $table->tinyInteger('pinned_order')->nullable()->default(null)->index();
 
         });
     }
