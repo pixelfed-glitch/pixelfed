@@ -105,9 +105,9 @@
 				</p>
 
 				<p v-if="user.id != profile.id && (relationship.followed_by || relationship.muting || relationship.blocking)" class="mt-n3 text-center">
-					<span v-if="relationship.followed_by" class="badge badge-primary p-1">Follows you</span>
-					<span v-if="relationship.muting" class="badge badge-dark p-1 ml-1">Muted</span>
-					<span v-if="relationship.blocking" class="badge badge-danger p-1 ml-1">Blocked</span>
+					<span v-if="relationship.followed_by" class="badge badge-primary p-1">{{ $t("profile.followYou")}}</span>
+					<span v-if="relationship.muting" class="badge badge-dark p-1 ml-1">{{ $t("profile.muted")}}</span>
+					<span v-if="relationship.blocking" class="badge badge-danger p-1 ml-1">{{ $t("profile.blocked") }}</span>
 				</p>
 			</div>
 
@@ -145,7 +145,7 @@
 					</router-link> -->
                     <a class="btn btn-light font-weight-bold btn-block follow-btn" href="/settings/home">{{ $t('profile.editProfile') }}</a>
 					<a v-if="!profile.locked" class="btn btn-light font-weight-bold btn-block follow-btn mt-md-n4" href="/i/web/my-portfolio">
-                        My Portfolio
+                       {{ $t("profile.myPortifolio") }}
                         <span class="badge badge-success ml-1">NEW</span>
                     </a>
 				</div>
@@ -421,10 +421,10 @@
 			},
 
 			getJoinedDate() {
-				let d = new Date(this.profile.created_at);
-				let month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(d);
-				let year = d.getFullYear();
-				return `${month} ${year}`;
+				return new Date(this.profile.created_at).toLocaleDateString(this.$i18n.locale, {
+                    year: 'numeric',
+                    month: 'long',
+                });
 			},
 
 			follow() {

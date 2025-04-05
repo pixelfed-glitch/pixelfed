@@ -80,30 +80,44 @@ return [
 		'requests' => 'Pedidos'
 	],
 
-	'notifications' => [
-		'liked' => 'curtiu seu',
-		'commented' => 'comentou em seu',
-		'reacted' => 'reagiu ao seu',
-		'shared' => 'compartilhou seu',
-		'tagged' => 'marcou você em um',
-
-		'updatedA' => 'atualizou um(a)',
-		'sentA' => 'enviou um',
-
-		'followed' => 'seguiu',
-		'mentioned' => 'mencionou',
-		'you' => 'você',
-
-		'yourApplication' => 'A sua candidatura para se juntar',
-		'applicationApproved' => 'foi aprovado!',
-		'applicationRejected' => 'foi rejeitado. Você pode se inscrever novamente para participar em 6 meses.',
-
-		'dm' => 'mensagem direta',
-		'groupPost' => 'postagem do grupo',
-		'modlog' => 'histórico de moderação',
-		'post' => 'publicação',
-		'story' => 'história',
-		'noneFound' => 'Nenhuma notificação encontrada',
+  'notifications' => [
+        'title' => 'Notificações',
+        'liked' => 'curtiu sua',
+        'commented' => 'comentou na sua',
+        'reacted' => 'reagiu à sua',
+        'shared' => 'compartilhou a sua',
+        'tagged' => 'marcou você numa publicação',
+        'updatedA' => 'atualizou',
+        'sentA' => 'enviou um',
+        'followed' => 'seguiu',
+        'mentioned' => 'mencionou',
+        'you' => 'você',
+        'yourApplication' => 'A sua candidatura para se juntar',
+        'applicationApproved' => 'foi aprovada!',
+        'applicationRejected' => 'foi rejeitada. Você pode inscrever-se novamente em 6 meses.',
+        'dm' => 'mensagem direta',
+        'groupPost' => 'publicação de grupo',
+        'modlog' => 'histórico de moderação',
+        'post' => 'publicação',
+        'story' => 'estória',
+        'noneFound' => 'Nenhuma notificação encontrada',
+        'youRecent' => 'Você recente',
+        'hasUnlisted' => 'foi removida da lista',
+        'cannotDisplay' => 'Não podemos exibir esta notificação no momento.',
+        'followRequest' => 'Pedidos de Seguimento',
+        'filteringResults' => 'Os resultados do filtro podem não incluir notificações mais antigas',
+        'mentions' => 'Menções',
+        'mentionsDescription' => 'Respostas às suas publicações e publicações em que você foi mencionado',
+        'likes' => 'Curtidas',
+        'likesDescription' => 'Contas que curtiram das suas publicações',
+        'followers' => 'Seguidores',
+        'followersDescription' => 'Contas que seguiram você',
+        'reblogs' => 'Reblogs',
+        'reblogsDescription' => 'Contas que compartilharam ou reblogaram suas publicações',
+        'dms' => 'DMs',
+        'dmsDescription' => 'Mensagens diretas que você tem com outras contas',
+        'accept' => 'Aceitar',
+        'reject' => 'Rejeitar'
 	],
 
 	'post' => [
@@ -127,6 +141,24 @@ return [
 
 		'emptyCollections' => 'Não conseguimos encontrar nenhuma coleção',
 		'emptyPosts' => 'Não conseguimos encontrar nenhuma publicação',
+
+        'blocking' => 'Você está bloqueando esta conta',
+        'sponsor' => 'Doar',
+        'followYou' => 'Segue você',
+        'archives' => 'Arquivados',
+        'bookmarks' => 'Favoritos',
+        'likes' => 'Curtidas',
+        'muted' => 'Silenciado',
+        'blocked' => 'Bloqueado',
+        'myPortifolio' => 'Meu Portfólio',
+        'private' => 'Este perfil é privado',
+        'public' => 'Público',
+        'draft' => 'Rascunho',
+        'emptyLikes' => 'Não conseguimos encontrar nenhuma publicação que você tenha curtido',
+        'emptyBookmarks' => 'Não conseguimos encontrar nenhuma publicação nos seus favoritos',
+        'emptyArchives' => 'Não conseguimos encontrar nenhuma publicação arquivada',
+        'untitled' => 'Sem título',
+        'noDescription' => 'Nenhuma descrição disponível'
 	],
 
 	'menu' => [
@@ -176,6 +208,10 @@ return [
 		'deletePostConfirm' => 'Tem a certeza que pretende apagar esta publicação?',
 		'archivePostConfirm' => 'Tem a certeza que pretende arquivar esta publicação?',
 		'unarchivePostConfirm' => 'Tem a certeza que pretende desarquivar este post?',
+        'pin' => "Fixar",
+        'unpin' => "Desfixar",
+        "pinPostConfirm" => "Tem certeza de que deseja fixar esta publicação?",
+        "unpinPostConfirm" => "Tem certeza de que deseja desafixar esta publicação?"
 	],
 
 	'story' => [

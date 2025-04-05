@@ -26,6 +26,7 @@ use App\Jobs\ImageOptimizePipeline\ImageOptimize;
 use App\Jobs\LikePipeline\LikePipeline;
 use App\Jobs\MediaPipeline\MediaDeletePipeline;
 use App\Jobs\MediaPipeline\MediaSyncLicensePipeline;
+use App\Jobs\NotificationPipeline\NotificationWarmUserCache;
 use App\Jobs\SharePipeline\SharePipeline;
 use App\Jobs\SharePipeline\UndoSharePipeline;
 use App\Jobs\StatusPipeline\NewStatusPipeline;
@@ -763,7 +764,8 @@ class ApiV1Controller extends Controller
             'reblog_of_id',
             'type',
             'id',
-            'scope'
+            'scope',
+            'pinned_order'
         )
             ->whereProfileId($profile['id'])
             ->whereNull('in_reply_to_id')
@@ -2387,7 +2389,7 @@ class ApiV1Controller extends Controller
         if (empty($res)) {
             if (! Cache::has('pf:services:notifications:hasSynced:'.$pid)) {
                 Cache::put('pf:services:notifications:hasSynced:'.$pid, 1, 1209600);
-                NotificationService::warmCache($pid, 400, true);
+                NotificationWarmUserCache::dispatch($pid);
             }
         }
 
@@ -4434,5 +4436,62 @@ class ApiV1Controller extends Controller
                     ->pluck('domain');
             })
         );
+    }
+
+    /**
+     *  GET /api/v1/statuses/{id}/pin
+     */
+    public function statusPin(Request $request, $id)
+    {
+        abort_if(! $request->user(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
+        $user = $request->user();
+        $status = Status::whereScope('public')->find($id);
+
+        if (! $status) {
+            return $this->json(['error' => 'Record not found'], 404);
+        }
+
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => "Validation failed: Someone else's post cannot be pinned"], 422);
+        }
+
+        $res = StatusService::markPin($status->id);
+
+        if (! $res['success']) {
+            return $this->json([
+                'error' => $res['error'],
+            ], 422);
+        }
+
+        $statusRes = StatusService::get($status->id, true, true);
+        $status['pinned'] = true;
+
+        return $this->json($statusRes);
+    }
+
+    /**
+     *  GET /api/v1/statuses/{id}/unpin
+     */
+    public function statusUnpin(Request $request, $id)
+    {
+        abort_if(! $request->user(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
+        $status = Status::whereScope('public')->findOrFail($id);
+        $user = $request->user();
+
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => 'Record not found'], 404);
+        }
+
+        $res = StatusService::unmarkPin($status->id);
+        if (! $res) {
+            return $this->json($res, 422);
+        }
+
+        $status = StatusService::get($status->id, true, true);
+        $status['pinned'] = false;
+
+        return $this->json($status);
     }
 }
