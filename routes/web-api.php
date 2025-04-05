@@ -58,8 +58,6 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             Route::get('discover/tag', 'DiscoverController@getHashtags');
             Route::get('statuses/{id}/replies', 'Api\ApiV1Controller@statusReplies');
             Route::get('statuses/{id}/state', 'Api\ApiV1Controller@statusState');
-            Route::post('statuses/{id}/pin', 'Api\ApiV1Controller@statusPin');
-            Route::post('statuses/{id}/unpin', 'Api\ApiV1Controller@statusUnpin');
         });
 
         Route::group(['prefix' => 'pixelfed'], function() {
@@ -71,6 +69,8 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
                 Route::post('accounts/{id}/block', 'Api\ApiV1Controller@accountBlockById');
                 Route::post('accounts/{id}/unblock', 'Api\ApiV1Controller@accountUnblockById');
                 Route::get('statuses/{id}', 'PublicApiController@getStatus');
+                Route::post('statuses/{id}/pin', 'PublicApiController@statusPin');
+                Route::post('statuses/{id}/unpin', 'PublicApiController@statusUnpin');
                 Route::get('accounts/{id}', 'PublicApiController@account');
                 Route::post('avatar/update', 'ApiController@avatarUpdate');
                 Route::get('custom_emojis', 'Api\ApiV1Controller@customEmojis');

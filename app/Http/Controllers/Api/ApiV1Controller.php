@@ -26,6 +26,7 @@ use App\Jobs\ImageOptimizePipeline\ImageOptimize;
 use App\Jobs\LikePipeline\LikePipeline;
 use App\Jobs\MediaPipeline\MediaDeletePipeline;
 use App\Jobs\MediaPipeline\MediaSyncLicensePipeline;
+use App\Jobs\NotificationPipeline\NotificationWarmUserCache;
 use App\Jobs\SharePipeline\SharePipeline;
 use App\Jobs\SharePipeline\UndoSharePipeline;
 use App\Jobs\StatusPipeline\NewStatusPipeline;
@@ -2388,7 +2389,7 @@ class ApiV1Controller extends Controller
         if (empty($res)) {
             if (! Cache::has('pf:services:notifications:hasSynced:'.$pid)) {
                 Cache::put('pf:services:notifications:hasSynced:'.$pid, 1, 1209600);
-                NotificationService::warmCache($pid, 400, true);
+                NotificationWarmUserCache::dispatch($pid);
             }
         }
 
@@ -4438,11 +4439,12 @@ class ApiV1Controller extends Controller
     }
 
     /**
-     *  GET /api/v2/statuses/{id}/pin
+     *  GET /api/v1/statuses/{id}/pin
      */
     public function statusPin(Request $request, $id)
     {
         abort_if(! $request->user(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
         $user = $request->user();
         $status = Status::whereScope('public')->find($id);
 
@@ -4469,12 +4471,12 @@ class ApiV1Controller extends Controller
     }
 
     /**
-     *  GET /api/v2/statuses/{id}/unpin
+     *  GET /api/v1/statuses/{id}/unpin
      */
     public function statusUnpin(Request $request, $id)
     {
-
         abort_if(! $request->user(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
         $status = Status::whereScope('public')->findOrFail($id);
         $user = $request->user();
 

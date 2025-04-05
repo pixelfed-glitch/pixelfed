@@ -999,7 +999,7 @@
 
                 this.closeModals();
 
-                axios.post('/api/v2/statuses/' + status.id.toString() + '/pin')
+                axios.post('/api/pixelfed/v1/statuses/' + status.id.toString() + '/pin')
                 .then(res => {
                     const data = res.data;
                     if(data.id && data.pinned) {
@@ -1023,7 +1023,7 @@
                 }
                 this.closeModals();
 
-                axios.post('/api/v2/statuses/' + status.id.toString() + '/unpin')
+                axios.post('/api/pixelfed/v1/statuses/' + status.id.toString() + '/unpin')
                 .then(res => {
                     const data = res.data;
                     if(data.id) {

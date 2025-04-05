@@ -1,9 +1,14 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.3...dev)
+## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
+
+### Added
+- Pinned Posts ([2f655d000](https://github.com/pixelfed/pixelfed/commit/2f655d000))
+
+### Updates
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
-## [v0.12.5 (2024-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
+## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
 
 ### Added
 - Add app register email verify resends ([dbd1e17](https://github.com/pixelfed/pixelfed/commit/dbd1e17))

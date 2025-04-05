@@ -35,6 +35,11 @@ class PublicApiController extends Controller
         $this->fractal->setSerializer(new ArraySerializer);
     }
 
+    public function json($res, $code = 200, $headers = [])
+    {
+        return response()->json($res, $code, $headers, JSON_UNESCAPED_SLASHES);
+    }
+
     protected function getUserData($user)
     {
         if (! $user) {
@@ -726,6 +731,61 @@ class PublicApiController extends Controller
         return response()->json($result, 200, $headers);
     }
 
+    /**
+     *  GET /api/pixelfed/v1/statuses/{id}/pin
+     */
+    public function statusPin(Request $request, $id)
+    {
+        abort_if(! $request->user(), 403);
+        $user = $request->user();
+        $status = Status::whereScope('public')->find($id);
+
+        if (! $status) {
+            return $this->json(['error' => 'Record not found'], 404);
+        }
+
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => "Validation failed: Someone else's post cannot be pinned"], 422);
+        }
+
+        $res = StatusService::markPin($status->id);
+
+        if (! $res['success']) {
+            return $this->json([
+                'error' => $res['error'],
+            ], 422);
+        }
+
+        $statusRes = StatusService::get($status->id, true, true);
+        $status['pinned'] = true;
+
+        return $this->json($statusRes);
+    }
+
+    /**
+     *  GET /api/pixelfed/v1/statuses/{id}/unpin
+     */
+    public function statusUnpin(Request $request, $id)
+    {
+        abort_if(! $request->user(), 403);
+        $status = Status::whereScope('public')->findOrFail($id);
+        $user = $request->user();
+
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => 'Record not found'], 404);
+        }
+
+        $res = StatusService::unmarkPin($status->id);
+        if (! $res) {
+            return $this->json($res, 422);
+        }
+
+        $status = StatusService::get($status->id, true, true);
+        $status['pinned'] = false;
+
+        return $this->json($status);
+    }
+
     private function determineVisibility($profile, $user)
     {
         if ($profile['id'] == $user->profile_id) {
@@ -768,6 +828,7 @@ class PublicApiController extends Controller
 
                 if ($user) {
                     $mastodonStatus['favourited'] = (bool) LikeService::liked($user->profile_id, $status->id);
+                    $mastodonStatus['reblogged'] = (bool) StatusService::isShared($status->id, $user->profile_id);
                 }
 
                 return $mastodonStatus;
