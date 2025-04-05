@@ -997,15 +997,23 @@
                     return;
                 }
 
-                axios.post('/api/v2/statuses/' + status.id + '/pin')
+                this.closeModals();
+
+                axios.post('/api/v2/statuses/' + status.id.toString() + '/pin')
                 .then(res => {
                     const data = res.data;
-                    if(data.status){
-                        swal('Success', "Post was pinned successfully!" , 'success');
-                    }else {
-                        swal('Error', data.message, 'error');
+                    if(data.id && data.pinned) {
+                        this.$emit('pinned');
+                        swal('Pinned', 'Successfully pinned post to your profile', 'success');
+                    } else {
+                        swal('Error', 'An error occured when attempting to pin', 'error');
                     }
+                })
+                .catch(err => {
                     this.closeModals();
+                    if(err.response?.data?.error) {
+                        swal('Error', err.response?.data?.error, 'error');
+                    }
                 });
             },
 
@@ -1013,16 +1021,25 @@
                 if(window.confirm(this.$t('menu.unpinPostConfirm')) == false) {
                     return;
                 }
+                this.closeModals();
 
-                axios.post('/api/v2/statuses/' + status.id + '/unpin')
+                axios.post('/api/v2/statuses/' + status.id.toString() + '/unpin')
                 .then(res => {
                     const data = res.data;
-                    if(data.status){
-                        swal('Success', "Post was unpinned successfully!" , 'success');
-                    }else {
-                        swal('Error', data.message, 'error');
+                    if(data.id) {
+                        this.$emit('unpinned');
+                        swal('Unpinned', 'Successfully unpinned post from your profile', 'success');
+                    } else {
+                        swal('Error', data.error, 'error');
                     }
+                })
+                .catch(err => {
                     this.closeModals();
+                    if(err.response?.data?.error) {
+                        swal('Error', err.response?.data?.error, 'error');
+                    } else {
+                        window.location.reload()
+                    }
                 });
             },
         }

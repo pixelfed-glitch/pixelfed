@@ -763,7 +763,8 @@ class ApiV1Controller extends Controller
             'reblog_of_id',
             'type',
             'id',
-            'scope'
+            'scope',
+            'pinned_order'
         )
             ->whereProfileId($profile['id'])
             ->whereNull('in_reply_to_id')
@@ -4439,49 +4440,56 @@ class ApiV1Controller extends Controller
     /**
      *  GET /api/v2/statuses/{id}/pin
      */
-    public function statusPin(Request $request, $id) {
+    public function statusPin(Request $request, $id)
+    {
         abort_if(! $request->user(), 403);
-        $status = Status::findOrFail($id);
         $user = $request->user();
+        $status = Status::whereScope('public')->find($id);
 
-        $res = [
-            'status' => false,
-            'message' => ''
-        ];
-
-        if($status->profile_id == $user->profile_id){
-            if(StatusService::markPin($status->id)){
-                $res['status'] = true;
-            } else {
-                $res['message'] = 'Limit pin reached';
-            }
-            return $this->json($res)->setStatusCode(200);
+        if (! $status) {
+            return $this->json(['error' => 'Record not found'], 404);
         }
 
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => "Validation failed: Someone else's post cannot be pinned"], 422);
+        }
 
-        return $this->json("")->setStatusCode(400);
+        $res = StatusService::markPin($status->id);
+
+        if (! $res['success']) {
+            return $this->json([
+                'error' => $res['error'],
+            ], 422);
+        }
+
+        $statusRes = StatusService::get($status->id, true, true);
+        $status['pinned'] = true;
+
+        return $this->json($statusRes);
     }
-
 
     /**
      *  GET /api/v2/statuses/{id}/unpin
      */
-    public function statusUnpin(Request $request, $id) {
+    public function statusUnpin(Request $request, $id)
+    {
 
         abort_if(! $request->user(), 403);
-        $status = Status::findOrFail($id);
+        $status = Status::whereScope('public')->findOrFail($id);
         $user = $request->user();
 
-        if($status->profile_id == $user->profile_id){
-            StatusService::unmarkPin($status->id);
-            $res = [
-                'status' => true,
-                'message' => ''
-            ];
-            return $this->json($res)->setStatusCode(200);
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => 'Record not found'], 404);
         }
 
-        return $this->json("")->setStatusCode(200);
-    }
+        $res = StatusService::unmarkPin($status->id);
+        if (! $res) {
+            return $this->json($res, 422);
+        }
 
+        $status = StatusService::get($status->id, true, true);
+        $status['pinned'] = false;
+
+        return $this->json($status);
+    }
 }
