@@ -825,13 +825,14 @@ class PublicApiController extends Controller
     {
         return collect($statuses)->map(function ($status) use ($user) {
             try {
-                $mastodonStatus = StatusService::getMastodon($status->id, false);
+                $mastodonStatus = StatusService::get($status->id, false);
                 if (! $mastodonStatus) {
                     return null;
                 }
 
                 if ($user) {
                     $mastodonStatus['favourited'] = (bool) LikeService::liked($user->profile_id, $status->id);
+                    $mastodonStatus['bookmarked'] = (bool) BookmarkService::get($user->profile_id, $status->id);
                     $mastodonStatus['reblogged'] = (bool) StatusService::isShared($status->id, $user->profile_id);
                 }
 
