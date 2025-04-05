@@ -45,7 +45,7 @@
 					<p class="text-uppercase mb-0">
 						<a href="/" class="text-lighter font-weight-bold">Home</a>
 						<span class="px-2 text-lighter">|</span>
-						<a href="/site/help" class="text-lighter font-weight-bold">Help</a>
+						<a href="/site/help" class="text-lighter font-weight-bold">{{ $t("navmenu.help")}}</a>
 					</p>
 					<p class="small text-muted mb-0">v 1.0.0</p>
 				</div>
@@ -97,8 +97,8 @@
 					<p class="lead text-lighter font-weight-light mb-0">Stories</p>
 				</div>
 				<div class="flex-fill text-center">
-					<p class="h3 mb-0 text-light">Oops!</p>
-					<p class="text-muted lead">An error occurred, please try again later.</p>
+					<p class="h3 mb-0 text-light">{{ $t("common.oops") }}</p>
+					<p class="text-muted lead">{{ $t("common.errorMsg")}}</p>
 					<p class="text-muted mb-0">
 						<a class="btn btn-outline-muted py-0 px-5 rounded-pill font-weight-bold" href="/">{{ $t("story.goBack")  }}</a>
 					</p>
@@ -107,13 +107,13 @@
 
 			<div v-else-if="page == 'uploading'" class="card card-body bg-transparent border-0 shadow-none d-flex justify-content-center align-items-center" style="height: 90vh;">
 				<div class="spinner-border text-lighter" role="status">
-					<span class="sr-only">Loading...</span>
+					<span class="sr-only">{{ $t('common.loading') }}</span>
 				</div>
 			</div>
 
 			<div v-else-if="page == 'cropping'" class="card card-body bg-transparent border-0 shadow-none d-flex justify-content-center align-items-center" style="height: 90vh;">
 				<div class="spinner-border text-lighter" role="status">
-					<span class="sr-only">Loading...</span>
+					<span class="sr-only">{{ $t('common.loading') }}</span>
 				</div>
 			</div>
 
@@ -166,7 +166,7 @@
 					<p class="text-muted font-weight-bold mb-0">STORIES</p>
 				</div>
 				<div class="flex-fill py-4">
-					<p class="lead font-weight-bold text-lighter">My Stories</p>
+					<p class="lead font-weight-bold text-lighter">{{ $t('story.myStories') }}</p>
 					<div class="card w-100 shadow-none bg-transparent" style="max-height: 50vh; overflow-y: scroll">
 						<div class="list-group">
 							<div v-for="(story, index) in stories" class="list-group-item bg-transparent text-center border-muted text-lighter" href="#">
@@ -237,8 +237,8 @@
 					</div>
 				</div>
 				<div class="flex-fill text-center">
-					<a v-if="canPostPoll" class="btn btn-outline-light btn-block px-5 font-weight-bold rounded-pill" href="/i/stories/new" @click.prevent="pollPreview">Next</a>
-					<a class="btn btn-outline-secondary btn-block px-5 font-weight-bold rounded-pill" href="/i/stories/new" @click.prevent="goBack()">Go back</a>
+					<a v-if="canPostPoll" class="btn btn-outline-light btn-block px-5 font-weight-bold rounded-pill" href="/i/stories/new" @click.prevent="pollPreview">{{ $t("story.next")}}</a>
+					<a class="btn btn-outline-secondary btn-block px-5 font-weight-bold rounded-pill" href="/i/stories/new" @click.prevent="goBack()">{{ $t('story.goBack')}}</a>
 				</div>
 			</div>
 		</div>
@@ -247,7 +247,7 @@
 		<div class="col-12 col-md-6 offset-md-3 bg-dark rounded-lg px-0" style="height: 90vh;">
 			<div class="w-100 h-100 d-flex justify-content-center align-items-center">
 				<div class="spinner-border text-lighter" role="status">
-					<span class="sr-only">Loading...</span>
+					<span class="sr-only">{{ $t('common.loading') }}</span>
 				</div>
 			</div>
 		</div>

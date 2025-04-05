@@ -32,6 +32,8 @@ return [
 		'sensitive' => 'Sensível',
 		'sensitiveContent' => 'Conteúdo sensível',
 		'sensitiveContentWarning' => 'Este post pode conter conteúdo sensível',
+
+        'loading' => 'Carregando...',
 	],
 
 	'site' => [
@@ -205,7 +207,10 @@ return [
         'expiresIn' => 'Expira em',
         'viewers' => 'Visualizadores',
         'report' => 'Denunciar',
-        'close' => 'Fechar'
+        'close' => 'Fechar',
+        'myStories' => 'My Stories',
+        'seeAll' => 'Ver todas as stories',
+
 	],
 
 	'timeline' => [

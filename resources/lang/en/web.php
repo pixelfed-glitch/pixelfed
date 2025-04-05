@@ -32,6 +32,8 @@ return [
 		'sensitive' => 'Sensitive',
 		'sensitiveContent' => 'Sensitive Content',
 		'sensitiveContentWarning' => 'This post may contain sensitive content',
+
+        'loading' => 'Loading...',
 	],
 
 	'site' => [
@@ -62,7 +64,7 @@ return [
         'appearance' => 'Appearance',
 		'compose' => 'Create New',
 		'logout' => 'Logout',
-        "createStory" => "Create Story"
+        "createStory" => "Create Story",
 
 
 		// Nav footer
@@ -207,7 +209,9 @@ return [
         'expiresIn' => 'Expires in',
         'viewers' => 'Viewers',
         'report' => 'Report',
-        'close' => 'Close'
+        'close' => 'Close',
+        'myStories' => 'My Stories',
+        'seeAll' => 'See All',
 	],
 
 	'timeline' => [
