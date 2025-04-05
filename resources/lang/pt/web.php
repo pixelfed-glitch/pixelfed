@@ -62,6 +62,7 @@ return [
         'appearance' => 'Aparência',
 		'compose' => 'Criar novo',
 		'logout' => 'Terminar Sessão',
+        "createStory" => "Criar Story",
 
 		// Nav footer
 		'about' => 'Sobre',

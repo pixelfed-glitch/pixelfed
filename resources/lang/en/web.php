@@ -62,6 +62,8 @@ return [
         'appearance' => 'Appearance',
 		'compose' => 'Create New',
 		'logout' => 'Logout',
+        "createStory" => "Create Story"
+
 
 		// Nav footer
 		'about' => 'About',
@@ -71,7 +73,8 @@ return [
 		'terms' => 'Terms',
 
 		// Temporary links
-		'backToPreviousDesign' => 'Go back to previous design'
+		'backToPreviousDesign' => 'Go back to previous design',
+
 	],
 
 	'directMessages' => [
