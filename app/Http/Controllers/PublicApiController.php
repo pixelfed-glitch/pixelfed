@@ -788,6 +788,14 @@ class PublicApiController extends Controller
 
     private function determineVisibility($profile, $user)
     {
+        if (! $user || ! isset($user->profile_id)) {
+            return [];
+        }
+
+        if (! $profile || ! isset($profile['id'])) {
+            return [];
+        }
+
         if ($profile['id'] == $user->profile_id) {
             return ['public', 'unlisted', 'private'];
         }
@@ -798,17 +806,13 @@ class PublicApiController extends Controller
             }
 
             $pid = $user->profile_id;
-            $isFollowing = Follower::whereProfileId($pid)
-                ->whereFollowingId($profile['id'])
-                ->exists();
+            $isFollowing = FollowerService::follows($pid, $profile['id']);
 
             return $isFollowing ? ['public', 'unlisted', 'private'] : ['public'];
         } else {
             if ($user) {
                 $pid = $user->profile_id;
-                $isFollowing = Follower::whereProfileId($pid)
-                    ->whereFollowingId($profile['id'])
-                    ->exists();
+                $isFollowing = FollowerService::follows($pid, $profile['id']);
 
                 return $isFollowing ? ['public', 'unlisted', 'private'] : ['public', 'unlisted'];
             } else {
