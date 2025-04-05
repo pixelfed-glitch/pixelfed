@@ -151,7 +151,7 @@
 										</p>
 									</div>
 								</div>
-								<div class="small text-muted font-weight-bold"  style="font-size: 0.575em;"  st :title="n.created_at">{{timeAgo(n.created_at)}}</div>
+								<div class="small text-muted font-weight-bold"  style="font-size: 12px;" :title="n.created_at">{{timeAgo(n.created_at)}}</div>
 							</div>
 						</div>
 
