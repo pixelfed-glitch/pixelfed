@@ -788,15 +788,11 @@ class PublicApiController extends Controller
 
     private function determineVisibility($profile, $user)
     {
-        if (! $user || ! isset($user->profile_id)) {
-            return [];
-        }
-
         if (! $profile || ! isset($profile['id'])) {
             return [];
         }
 
-        if ($profile['id'] == $user->profile_id) {
+        if ($user && $profile['id'] == $user->profile_id) {
             return ['public', 'unlisted', 'private'];
         }
 
