@@ -6,6 +6,7 @@
 - Pinned Posts ([2f655d000](https://github.com/pixelfed/pixelfed/commit/2f655d000))
 
 ### Updates
+- Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
