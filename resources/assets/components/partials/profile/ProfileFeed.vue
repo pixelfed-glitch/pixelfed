@@ -270,14 +270,14 @@
                         :key="'prs'+s.id+':'+index"
                         :profile="user"
                         :status="s"
-                        v-on:like="likeStatus(index)"
-                        v-on:unlike="unlikeStatus(index)"
-                        v-on:share="shareStatus(index)"
-                        v-on:unshare="unshareStatus(index)"
-                        v-on:menu="openContextMenu(index)"
+                        v-on:like="likeStatus(index, 'feed')"
+                        v-on:unlike="unlikeStatus(index, 'feed')"
+                        v-on:share="shareStatus(index, 'feed')"
+                        v-on:unshare="unshareStatus(index, 'feed')"
+                        v-on:menu="openContextMenu(index, 'feed')"
                         v-on:counter-change="counterChange(index, $event)"
-                        v-on:likes-modal="openLikesModal(index)"
-                        v-on:shares-modal="openSharesModal(index)"
+                        v-on:likes-modal="openLikesModal(index, 'feed')"
+                        v-on:shares-modal="openSharesModal(index, 'feed')"
                         v-on:comment-likes-modal="openCommentLikesModal"
                         v-on:bookmark="handleBookmark(index)"
                         v-on:handle-report="handleReport" />
@@ -361,12 +361,15 @@
                         :key="'prs'+s.id+':'+index"
                         :profile="user"
                         :status="s"
-                        v-on:like="likeStatus(index)"
-                        v-on:unlike="unlikeStatus(index)"
-                        v-on:share="shareStatus(index)"
-                        v-on:unshare="unshareStatus(index)"
+                        v-on:like="likeStatus(index, 'likes')"
+                        v-on:unlike="unlikeStatus(index, 'likes')"
+                        v-on:menu="openContextMenu(index, 'likes')"
+                        v-on:share="shareStatus(index, 'likes')"
+                        v-on:unshare="unshareStatus(index, 'likes')"
                         v-on:counter-change="counterChange(index, $event)"
-                        v-on:likes-modal="openLikesModal(index)"
+                        v-on:likes-modal="openLikesModal(index, 'likes')"
+                        v-on:shares-modal="openSharesModal(index, 'likes')"
+                        v-on:bookmark="handleBookmark(index, 'likes')"
                         v-on:comment-likes-modal="openCommentLikesModal"
                         v-on:handle-report="handleReport" />
                 </div>
@@ -395,10 +398,15 @@
                         :profile="user"
                         :new-reactions="true"
                         :status="s"
-                        v-on:menu="openContextMenu(index)"
+                        v-on:like="likeStatus(index, 'bookmarks')"
+                        v-on:unlike="unlikeStatus(index, 'bookmarks')"
+                        v-on:menu="openContextMenu(index, 'bookmarks')"
                         v-on:counter-change="counterChange(index, $event)"
-                        v-on:likes-modal="openLikesModal(index)"
-                        v-on:bookmark="handleBookmark(index)"
+                        v-on:share="shareStatus(index, 'bookmarks')"
+                        v-on:unshare="unshareStatus(index, 'bookmarks')"
+                        v-on:likes-modal="openLikesModal(index, 'bookmarks')"
+                        v-on:bookmark="handleBookmark(index, 'bookmarks')"
+                        v-on:shares-modal="openSharesModal(index, 'bookmarks')"
                         v-on:comment-likes-modal="openCommentLikesModal"
                         v-on:handle-report="handleReport" />
                 </div>
@@ -556,7 +564,8 @@
                 archivesLoaded: false,
                 archivesPage: 1,
                 canLoadMoreArchives: false,
-                contextMenuPost: {}
+                contextMenuPost: {},
+                contextMenuType: undefined,
             }
         },
 
@@ -888,64 +897,113 @@
                 return App.util.format.timeAgo(ts);
             },
 
-            likeStatus(index) {
-                let status = this.feed[index];
-                let state = status.favourited;
-                let count = status.favourites_count;
-                this.feed[index].favourites_count = count + 1;
-                this.feed[index].favourited = !status.favourited;
+            likeStatus(index, source = 'feed') {
+                const sourceMap = {
+                    'feed': this.feed,
+                    'likes': this.favourites,
+                    'bookmarks': this.bookmarks
+                };
 
-                axios.post('/api/v1/statuses/' + status.id + '/favourite')
-                .catch(err => {
-                    this.feed[index].favourites_count = count;
-                    this.feed[index].favourited = false;
-                })
+                const sourceArray = sourceMap[source] || this.feed;
+                const status = sourceArray[index];
+                const originalFavourited = status.favourited;
+                const originalCount = status.favourites_count;
+
+                sourceArray[index].favourites_count = originalCount + 1;
+                sourceArray[index].favourited = !originalFavourited;
+
+                axios.post(`/api/v1/statuses/${status.id}/favourite`)
+                    .catch(err => {
+                        sourceArray[index].favourites_count = originalCount;
+                        sourceArray[index].favourited = originalFavourited;
+                    });
             },
 
-            unlikeStatus(index) {
-                let status = this.feed[index];
-                let state = status.favourited;
-                let count = status.favourites_count;
-                this.feed[index].favourites_count = count - 1;
-                this.feed[index].favourited = !status.favourited;
+            unlikeStatus(index, source = 'feed') {
+                const sourceMap = {
+                    'feed': this.feed,
+                    'likes': this.favourites,
+                    'bookmarks': this.bookmarks
+                };
 
-                axios.post('/api/v1/statuses/' + status.id + '/unfavourite')
-                .catch(err => {
-                    this.feed[index].favourites_count = count;
-                    this.feed[index].favourited = false;
-                })
+                const sourceArray = sourceMap[source] || this.feed;
+                const status = sourceArray[index];
+                const originalFavourited = status.favourited;
+                const originalCount = status.favourites_count;
+
+                sourceArray[index].favourites_count = originalCount - 1;
+                sourceArray[index].favourited = !originalFavourited;
+
+                axios.post(`/api/v1/statuses/${status.id}/unfavourite`)
+                    .catch(err => {
+                        sourceArray[index].favourites_count = originalCount;
+                        sourceArray[index].favourited = originalFavourited;
+                    });
             },
 
             openContextMenu(idx, type = 'feed') {
-                switch(type) {
-                    case 'feed':
-                        this.postIndex = idx;
-                        this.contextMenuPost = this.feed[idx];
-                    break;
+                const sourceMap = {
+                    'feed': this.feed,
+                    'likes': this.favourites,
+                    'bookmarks': this.bookmarks,
+                    'archive': this.archives
+                };
 
-                    case 'archive':
-                        this.postIndex = idx;
-                        this.contextMenuPost = this.archives[idx];
-                    break;
-                }
+                const sourceArray = sourceMap[type] || this.feed;
+
+                this.postIndex = idx;
+                this.contextMenuPost = sourceArray[idx];
+                this.contextMenuType = type;
                 this.showMenu = true;
                 this.$nextTick(() => {
                     this.$refs.contextMenu.open();
                 });
             },
 
-            openLikesModal(idx) {
+            openLikesModal(idx, source = 'feed') {
                 this.postIndex = idx;
-                this.likesModalPost = this.feed[this.postIndex];
+                switch(source) {
+                    case 'feed':
+                        this.likesModalPost = this.feed[this.postIndex];
+                    break;
+
+                    case 'likes':
+                        this.likesModalPost = this.favourites[this.postIndex];
+                    break;
+
+                    case 'bookmarks':
+                        this.likesModalPost = this.bookmarks[this.postIndex];
+                    break;
+
+                    default:
+                        this.likesModalPost = this.feed[this.postIndex];
+                    break;
+                }
                 this.showLikesModal = true;
                 this.$nextTick(() => {
                     this.$refs.likesModal.open();
                 });
             },
 
-            openSharesModal(idx) {
+            openSharesModal(idx, source = 'feed') {
                 this.postIndex = idx;
-                this.sharesModalPost = this.feed[this.postIndex];
+                switch(source) {
+                    case 'feed':
+                        this.sharesModalPost = this.feed[this.postIndex];
+                    break;
+
+                    case 'likes':
+                        this.sharesModalPost = this.favourites[this.postIndex];
+                    break;
+
+                    case 'bookmarks':
+                        this.sharesModalPost = this.bookmarks[this.postIndex];
+                    break;
+
+                    default:
+                        this.sharesModalPost = this.feed[this.postIndex];
+                    break;
+                }
                 this.showSharesModal = true;
                 this.$nextTick(() => {
                     this.$refs.sharesModal.open();
@@ -955,23 +1013,32 @@
             commitModeration(type) {
                 let idx = this.postIndex;
 
+                const sourceMap = {
+                    'feed': this.feed,
+                    'likes': this.favourites,
+                    'bookmarks': this.bookmarks,
+                    'archive': this.archives
+                };
+
+                const sourceType = this.contextMenuType;
+
                 switch(type) {
                     case 'addcw':
-                        this.feed[idx].sensitive = true;
+                        sourceMap[sourceType][idx].sensitive = true;
                     break;
 
                     case 'remcw':
-                        this.feed[idx].sensitive = false;
+                        sourceMap[sourceType][idx].sensitive = false;
                     break;
 
                     case 'unlist':
-                        this.feed.splice(idx, 1);
+                        sourceMap[sourceType].splice(idx, 1);
                     break;
 
                     case 'spammer':
-                        let id = this.feed[idx].account.id;
+                        let id = sourceMap[sourceType][idx].account.id;
 
-                        this.feed = this.feed.filter(post => {
+                        sourceMap[sourceType] = sourceMap[sourceType].filter(post => {
                             return post.account.id != id;
                         });
                     break;
@@ -998,32 +1065,48 @@
                 });
             },
 
-            shareStatus(index) {
-                let status = this.feed[index];
-                let state = status.reblogged;
-                let count = status.reblogs_count;
-                this.feed[index].reblogs_count = count + 1;
-                this.feed[index].reblogged = !status.reblogged;
+            shareStatus(index, source = 'feed') {
+                const sourceMap = {
+                    'feed': this.feed,
+                    'likes': this.favourites,
+                    'bookmarks': this.bookmarks
+                };
 
-                axios.post('/api/v1/statuses/' + status.id + '/reblog')
-                .catch(err => {
-                    this.feed[index].reblogs_count = count;
-                    this.feed[index].reblogged = false;
-                })
+                const sourceArray = sourceMap[source] || this.feed;
+                const status = sourceArray[index];
+                const originalReblogged = status.reblogged;
+                const originalCount = status.reblogs_count;
+
+                sourceArray[index].reblogs_count = originalCount + 1;
+                sourceArray[index].reblogged = !originalReblogged;
+
+                axios.post(`/api/v1/statuses/${status.id}/reblog`)
+                    .catch(err => {
+                        sourceArray[index].reblogs_count = originalCount;
+                        sourceArray[index].reblogged = originalReblogged;
+                    });
             },
 
-            unshareStatus(index) {
-                let status = this.feed[index];
-                let state = status.reblogged;
-                let count = status.reblogs_count;
-                this.feed[index].reblogs_count = count - 1;
-                this.feed[index].reblogged = !status.reblogged;
+            unshareStatus(index, source = 'feed') {
+                const sourceMap = {
+                    'feed': this.feed,
+                    'likes': this.favourites,
+                    'bookmarks': this.bookmarks
+                };
 
-                axios.post('/api/v1/statuses/' + status.id + '/unreblog')
-                .catch(err => {
-                    this.feed[index].reblogs_count = count;
-                    this.feed[index].reblogged = false;
-                })
+                const sourceArray = sourceMap[source] || this.feed;
+                const status = sourceArray[index];
+                const originalReblogged = status.reblogged;
+                const originalCount = status.reblogs_count;
+
+                sourceArray[index].reblogs_count = originalCount - 1;
+                sourceArray[index].reblogged = !originalReblogged;
+
+                axios.post(`/api/v1/statuses/${status.id}/unreblog`)
+                    .catch(err => {
+                        sourceArray[index].reblogs_count = originalCount;
+                        sourceArray[index].reblogged = originalReblogged;
+                    });
             },
 
             handleReport(post) {
@@ -1069,25 +1152,29 @@
                 })
             },
 
-            handleBookmark(index) {
-                if(!window.confirm('Are you sure you want to unbookmark this post?')) {
-                    return;
+            handleBookmark(index, source = 'feed') {
+                this.postIndex = index;
+
+                const sourceMap = {
+                    'feed': this.feed,
+                    'likes': this.favourites,
+                    'bookmarks': this.bookmarks
+                };
+
+                const sourceArray = sourceMap[source] || this.feed;
+                const item = sourceArray[this.postIndex];
+
+                if(item.bookmarked) {
+                    if(!window.confirm('Are you sure you want to unbookmark this post?')) {
+                        return;
+                    }
                 }
 
-                let p = this.bookmarks[index];
-
                 axios.post('/i/bookmark', {
-                    item: p.id
+                    item: item.id
                 })
                 .then(res => {
-                    this.bookmarks = this.bookmarks.map(post => {
-                        if(post.id == p.id) {
-                            post.bookmarked = false;
-                            delete post.bookmarked_at;
-                        }
-                        return post;
-                    });
-                    this.bookmarks.splice(index, 1);
+                    item.bookmarked = !item.bookmarked;
                 })
                 .catch(err => {
                     this.$bvToast.toast('Cannot bookmark post at this time.', {
@@ -1097,7 +1184,6 @@
                     });
                 });
             },
-
         }
     }
 </script>
