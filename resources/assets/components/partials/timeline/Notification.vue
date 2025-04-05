@@ -142,35 +142,7 @@
 			},
 
             timeAgo(ts) {
-                let date = new Date(ts);
-                let now = new Date();
-                let seconds = Math.floor((now - date) / 1000);
-                let interval = Math.floor(seconds / 31536000);
-                if (interval >= 1) {
-                    return new Intl.RelativeTimeFormat(this.$i18n.locale, { numeric: 'auto' }).format(-interval, 'year');
-                }
-                interval = Math.floor(seconds / 2592000);
-                if (interval >= 1) {
-                    return new Intl.RelativeTimeFormat(this.$i18n.locale, { numeric: 'auto' }).format(-interval, 'month');
-                }
-                interval = Math.floor(seconds / 604800);
-                if (interval >= 1) {
-                    return new Intl.RelativeTimeFormat(this.$i18n.locale, { numeric: 'auto' }).format(-interval, 'week');
-                }
-                interval = Math.floor(seconds / 86400);
-                if (interval >= 1) {
-                    return new Intl.RelativeTimeFormat(this.$i18n.locale, { numeric: 'auto' }).format(-interval, 'day');
-                }
-                interval = Math.floor(seconds / 3600);
-                if (interval >= 1) {
-                    return new Intl.RelativeTimeFormat(this.$i18n.locale, { numeric: 'auto' }).format(-interval, 'hour');
-                }
-                interval = Math.floor(seconds / 60);
-                if (interval >= 1) {
-                    return new Intl.RelativeTimeFormat(this.$i18n.locale, { numeric: 'auto' }).format(-interval, 'minute');
-                }
-                return new Intl.RelativeTimeFormat(this.$i18n.locale, { numeric: 'auto' }).format(-seconds, 'second');
-
+                return App.util.format.timeAgo(ts);
 			},
 
 			mentionUrl(status) {

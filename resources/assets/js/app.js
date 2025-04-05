@@ -96,36 +96,40 @@ window.App.util = {
 			}
 			return new Intl.NumberFormat(locale, { notation: notation , compactDisplay: "short" }).format(count);
 		}),
-		timeAgo: (function(ts) {
-            let date = new Date(ts);
-            let now = new Date();
-            let seconds = Math.floor((now - date) / 1000);
-            let interval = Math.floor(seconds / 31536000);
+        timeAgo: (function(ts) {
+            const date = new Date(ts);
+            const now = new Date();
+
+            const seconds = Math.floor((now - date) / 1000);
+
+            const secondsInYear = 60 * 60 * 24 * 365.25;
+            let interval = Math.floor(seconds / secondsInYear);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'year');
+                return interval + "y";
             }
-            interval = Math.floor(seconds / 2592000);
+
+            interval = Math.floor(seconds / (60 * 60 * 24 * 7));
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'month');
+                return interval + "w";
             }
-            interval = Math.floor(seconds / 604800);
+
+            interval = Math.floor(seconds / (60 * 60 * 24));
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'week');
+                return interval + "d";
             }
-            interval = Math.floor(seconds / 86400);
+
+            interval = Math.floor(seconds / (60 * 60));
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'day');
+                return interval + "h";
             }
-            interval = Math.floor(seconds / 3600);
-            if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'hour');
-            }
+
             interval = Math.floor(seconds / 60);
             if (interval >= 1) {
-                return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-interval, 'minute');
+                return interval + "m";
             }
-            return new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }).format(-seconds, 'second');
-		}),
+
+            return Math.floor(seconds) + "s";
+        }),
 		timeAhead: (function(ts, short = true) {
 			let date = Date.parse(ts);
 			let diff = date - Date.parse(new Date());
