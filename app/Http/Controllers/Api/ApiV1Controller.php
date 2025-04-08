@@ -35,6 +35,7 @@ use App\Jobs\VideoPipeline\VideoThumbnail;
 use App\Like;
 use App\Media;
 use App\Models\Conversation;
+use App\Models\CustomFilter;
 use App\Notification;
 use App\Profile;
 use App\Services\AccountService;
@@ -2514,6 +2515,14 @@ class ApiV1Controller extends Controller
         ['photo', 'photo:album', 'video', 'video:album', 'photo:video:album'];
         AccountService::setLastActive($request->user()->id);
 
+        $cachedFilters = CustomFilter::getCachedFiltersForAccount($pid);
+
+        $homeFilters = array_filter($cachedFilters, function ($item) {
+            [$filter, $rules] = $item;
+
+            return in_array('home', $filter->context);
+        });
+
         if (config('exp.cached_home_timeline')) {
             $paddedLimit = $includeReblogs ? $limit + 10 : $limit + 50;
             if ($min || $max) {
@@ -2549,6 +2558,21 @@ class ApiV1Controller extends Controller
                 })
                 ->filter(function ($s) use ($includeReblogs) {
                     return $includeReblogs ? true : $s['reblog'] == null;
+                })
+                ->filter(function ($s) use ($homeFilters) {
+                    $filterResults = CustomFilter::applyCachedFilters($homeFilters, $s);
+
+                    if (! empty($filterResults)) {
+                        $shouldHide = collect($filterResults)->contains(function ($result) {
+                            return $result['filter']->action === CustomFilter::ACTION_HIDE;
+                        });
+
+                        if ($shouldHide) {
+                            return false;
+                        }
+                    }
+
+                    return true;
                 })
                 ->take($limit)
                 ->map(function ($status) use ($pid) {

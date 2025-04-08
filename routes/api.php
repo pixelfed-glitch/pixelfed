@@ -187,6 +187,7 @@ Route::group(['prefix' => 'api'], function () use ($middleware) {
         Route::post('media', 'Api\ApiV2Controller@mediaUploadV2')->middleware($middleware);
         Route::get('streaming/config', 'Api\ApiV2Controller@getWebsocketConfig');
         Route::get('instance', 'Api\ApiV2Controller@instance');
+        Route::apiResource('filters', 'CustomFilterController')->middleware($middleware);
     });
 
     Route::group(['prefix' => 'v1.1'], function () use ($middleware) {
