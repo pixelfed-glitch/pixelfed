@@ -1734,11 +1734,11 @@ class ApiV1Controller extends Controller
                 'mobile_registration' => (bool) config_cache('pixelfed.open_registration') && config('auth.in_app_registration'),
                 'configuration' => [
                     'media_attachments' => [
-                        'image_matrix_limit' => 16777216,
+                        'image_matrix_limit' => 2073600,
                         'image_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                         'supported_mime_types' => explode(',', config_cache('pixelfed.media_types')),
                         'video_frame_rate_limit' => 120,
-                        'video_matrix_limit' => 2304000,
+                        'video_matrix_limit' => 2073600,
                         'video_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                     ],
                     'polls' => [
@@ -2441,12 +2441,13 @@ class ApiV1Controller extends Controller
 
                 return true;
             })
-            ->map(function($n) use($pid) {
-                if(isset($n['status'])) {
+            ->map(function ($n) use ($pid) {
+                if (isset($n['status'])) {
                     $n['status']['favourited'] = (bool) LikeService::liked($pid, $n['status']['id']);
                     $n['status']['reblogged'] = (bool) ReblogService::get($pid, $n['status']['id']);
                     $n['status']['bookmarked'] = (bool) BookmarkService::get($pid, $n['status']['id']);
                 }
+
                 return $n;
             })
             ->filter(function ($n) use ($types) {
