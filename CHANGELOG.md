@@ -15,6 +15,9 @@
 - Update instance config, return proper matrix limits. Fixes #4780 ([473201908](https://github.com/pixelfed/pixelfed/commit/473201908))
 - Update SearchApiV2Service, fix offset bug. Fixes #5875 ([0a98b7ad2](https://github.com/pixelfed/pixelfed/commit/0a98b7ad2))
 - Update ApiV1Controller, add better direct error message. Fixes #4789 ([658fe6898](https://github.com/pixelfed/pixelfed/commit/658fe6898))
+- Update DiscoverController, improve public hashtag feed. Fixes #5866 ([32fc3180c](https://github.com/pixelfed/pixelfed/commit/32fc3180c))
+- Update report views, fix missing forms ([475d1d627](https://github.com/pixelfed/pixelfed/commit/475d1d627))
+- Update private settings, change "Private Account" to "Manually Review Follow Requests" ([31dd1ab35](https://github.com/pixelfed/pixelfed/commit/31dd1ab35))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
