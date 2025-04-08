@@ -77,10 +77,14 @@ class InstanceUpdateTotalLocalPosts extends Command
 
     protected function getTotalLocalPosts()
     {
+        if ((bool) config('instance.total_count_estimate') && config('database.default') === 'mysql') {
+            return DB::select("EXPLAIN SELECT COUNT(*) FROM statuses WHERE deleted_at IS NULL AND local = 1 AND type != 'share'")[0]->rows;
+        }
+
         return DB::table('statuses')
             ->whereNull('deleted_at')
             ->where('local', true)
-            ->whereNot('type', 'share') # Ignore boosts for the post count
+            ->whereNot('type', 'share')
             ->count();
     }
 }

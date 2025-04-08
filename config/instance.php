@@ -188,4 +188,6 @@ return [
     'show_peers' => env('INSTANCE_SHOW_PEERS', false),
 
     'allow_new_account_dms' => env('INSTANCE_ALLOW_NEW_DMS', true),
+
+    'total_count_estimate' => env('INSTANCE_TOTAL_POSTS_COUNT_ESTIMATE', false),
 ];
