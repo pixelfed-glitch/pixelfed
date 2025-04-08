@@ -1734,11 +1734,11 @@ class ApiV1Controller extends Controller
                 'mobile_registration' => (bool) config_cache('pixelfed.open_registration') && config('auth.in_app_registration'),
                 'configuration' => [
                     'media_attachments' => [
-                        'image_matrix_limit' => 16777216,
+                        'image_matrix_limit' => 2073600,
                         'image_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                         'supported_mime_types' => explode(',', config_cache('pixelfed.media_types')),
                         'video_frame_rate_limit' => 120,
-                        'video_matrix_limit' => 2304000,
+                        'video_matrix_limit' => 2073600,
                         'video_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                     ],
                     'polls' => [
@@ -2440,6 +2440,15 @@ class ApiV1Controller extends Controller
                 }
 
                 return true;
+            })
+            ->map(function ($n) use ($pid) {
+                if (isset($n['status'])) {
+                    $n['status']['favourited'] = (bool) LikeService::liked($pid, $n['status']['id']);
+                    $n['status']['reblogged'] = (bool) ReblogService::get($pid, $n['status']['id']);
+                    $n['status']['bookmarked'] = (bool) BookmarkService::get($pid, $n['status']['id']);
+                }
+
+                return $n;
             })
             ->filter(function ($n) use ($types) {
                 if (! $types) {
@@ -3516,12 +3525,18 @@ class ApiV1Controller extends Controller
             'in_reply_to_id' => 'nullable',
             'media_ids' => 'sometimes|array|max:'.(int) config_cache('pixelfed.max_album_length'),
             'sensitive' => 'nullable',
-            'visibility' => 'string|in:private,unlisted,public',
+            'visibility' => 'string|in:private,unlisted,public,direct',
             'spoiler_text' => 'sometimes|max:140',
             'place_id' => 'sometimes|integer|min:1|max:128769',
             'collection_ids' => 'sometimes|array|max:3',
             'comments_disabled' => 'sometimes|boolean',
         ]);
+
+        if ($request->filled('visibility') && $request->input('visibility') === 'direct') {
+            return $this->json([
+                'error' => 'Direct visibility is not available.',
+            ], 400);
+        }
 
         if ($request->hasHeader('idempotency-key')) {
             $key = 'pf:api:v1:status:idempotency-key:'.$request->user()->id.':'.hash('sha1', $request->header('idempotency-key'));
