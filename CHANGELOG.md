@@ -10,6 +10,11 @@
 - Update Profile.vue, fix pagination ([2ea107805](https://github.com/pixelfed/pixelfed/commit/2ea107805))
 - Update ProfileMigrationController, fix race condition by chaining batched jobs ([3001365025](https://github.com/pixelfed/pixelfed/commit/3001365025))
 - Update Instance total post, add optional estimation for huge status tables ([5a5821fe8](https://github.com/pixelfed/pixelfed/commit/5a5821fe8))
+- Update ApiV1Controller, fix notifications favourited/reblogged/bookmarked state. Fixes #5901 ([8a86808a0](https://github.com/pixelfed/pixelfed/commit/8a86808a0))
+- Update ApiV1Controller, fix relationship fields. Fixes #5900 ([245ab3bc4](https://github.com/pixelfed/pixelfed/commit/245ab3bc4))
+- Update instance config, return proper matrix limits. Fixes #4780 ([473201908](https://github.com/pixelfed/pixelfed/commit/473201908))
+- Update SearchApiV2Service, fix offset bug. Fixes #5875 ([0a98b7ad2](https://github.com/pixelfed/pixelfed/commit/0a98b7ad2))
+- Update ApiV1Controller, add better direct error message. Fixes #4789 ([658fe6898](https://github.com/pixelfed/pixelfed/commit/658fe6898))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
