@@ -4,6 +4,7 @@
 
 ### Added
 - Pinned Posts ([2f655d000](https://github.com/pixelfed/pixelfed/commit/2f655d000))
+- Custom Filters ([437d742ac](https://github.com/pixelfed/pixelfed/commit/437d742ac))
 
 ### Updates
 - Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
@@ -18,6 +19,7 @@
 - Update DiscoverController, improve public hashtag feed. Fixes #5866 ([32fc3180c](https://github.com/pixelfed/pixelfed/commit/32fc3180c))
 - Update report views, fix missing forms ([475d1d627](https://github.com/pixelfed/pixelfed/commit/475d1d627))
 - Update private settings, change "Private Account" to "Manually Review Follow Requests" ([31dd1ab35](https://github.com/pixelfed/pixelfed/commit/31dd1ab35))
+- Update ReportController, fix type validation ([ccc7f2fc6](https://github.com/pixelfed/pixelfed/commit/ccc7f2fc6))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
