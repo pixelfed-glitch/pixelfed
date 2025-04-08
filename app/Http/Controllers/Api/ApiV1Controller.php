@@ -2441,6 +2441,14 @@ class ApiV1Controller extends Controller
 
                 return true;
             })
+            ->map(function($n) use($pid) {
+                if(isset($n['status'])) {
+                    $n['status']['favourited'] = (bool) LikeService::liked($pid, $n['status']['id']);
+                    $n['status']['reblogged'] = (bool) ReblogService::get($pid, $n['status']['id']);
+                    $n['status']['bookmarked'] = (bool) BookmarkService::get($pid, $n['status']['id']);
+                }
+                return $n;
+            })
             ->filter(function ($n) use ($types) {
                 if (! $types) {
                     return true;
