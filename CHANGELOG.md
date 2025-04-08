@@ -8,6 +8,8 @@
 ### Updates
 - Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
 - Update Profile.vue, fix pagination ([2ea107805](https://github.com/pixelfed/pixelfed/commit/2ea107805))
+- Update ProfileMigrationController, fix race condition by chaining batched jobs ([3001365025](https://github.com/pixelfed/pixelfed/commit/3001365025))
+- Update Instance total post, add optional estimation for huge status tables ([5a5821fe8](https://github.com/pixelfed/pixelfed/commit/5a5821fe8))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
