@@ -3525,12 +3525,18 @@ class ApiV1Controller extends Controller
             'in_reply_to_id' => 'nullable',
             'media_ids' => 'sometimes|array|max:'.(int) config_cache('pixelfed.max_album_length'),
             'sensitive' => 'nullable',
-            'visibility' => 'string|in:private,unlisted,public',
+            'visibility' => 'string|in:private,unlisted,public,direct',
             'spoiler_text' => 'sometimes|max:140',
             'place_id' => 'sometimes|integer|min:1|max:128769',
             'collection_ids' => 'sometimes|array|max:3',
             'comments_disabled' => 'sometimes|boolean',
         ]);
+
+        if ($request->filled('visibility') && $request->input('visibility') === 'direct') {
+            return $this->json([
+                'error' => 'Direct visibility is not available.',
+            ], 400);
+        }
 
         if ($request->hasHeader('idempotency-key')) {
             $key = 'pf:api:v1:status:idempotency-key:'.$request->user()->id.':'.hash('sha1', $request->header('idempotency-key'));
