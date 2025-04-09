@@ -6,18 +6,18 @@ return [
 		'comment' => 'Comentar',
 		'commented' => 'Comentado',
 		'comments' => 'Comentários',
-		'like' => 'Gosto',
-		'liked' => 'Gostei',
-		'likes' => 'Gostos',
+		'like' => 'Curtir',
+		'liked' => 'Curtiu',
+		'likes' => 'Curtidas',
 		'share' => 'Compartilhar',
 		'shared' => 'Compartilhado',
-		'shares' => 'Partilhas',
+		'shares' => 'Compartilhamentos',
 		'unshare' => 'Despartilhar',
 		'bookmark' => 'Favorito',
 
 		'cancel' => 'Cancelar',
 		'copyLink' => 'Copiar link',
-		'delete' => 'Eliminar',
+		'delete' => 'Excluir',
 		'error' => 'Erro',
 		'errorMsg' => 'Algo correu mal. Por favor, tente novamente mais tarde.',
 		'oops' => 'Opa!',
@@ -41,7 +41,7 @@ return [
 
 	'navmenu' => [
 		'search' => 'Pesquisa',
-		'admin' => 'Painel de Administração',
+		'admin' => 'Painel de Administrativo',
 
 		// Timelines
 		'homeFeed' => 'Inicio',
@@ -49,7 +49,7 @@ return [
 		'globalFeed' => 'Feed global',
 
 		// Core features
-		'discover' => 'Descobrir',
+		'discover' => 'Explorar',
 		'directMessages' => 'Mensagens Diretas',
 		'notifications' => 'Notificações',
 		'groups' => 'Grupos',
@@ -58,7 +58,7 @@ return [
 		// Self links
 		'profile' => 'Perfil',
 		'drive' => 'Drive',
-		'settings' => 'Definições',
+		'settings' => 'Configurações',
 		'compose' => 'Criar novo',
 		'logout' => 'Terminar Sessão',
 
