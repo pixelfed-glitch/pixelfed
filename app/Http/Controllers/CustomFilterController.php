@@ -281,7 +281,7 @@ class CustomFilterController extends Controller
         ]);
 
         $rateKey = 'filters_updated:'.$request->user()->id;
-        $maxUpdatesPerHour = 30;
+        $maxUpdatesPerHour = CustomFilter::MAX_UPDATES_PER_HOUR;
         $currentCount = Cache::get($rateKey, 0);
 
         if ($currentCount >= $maxUpdatesPerHour) {

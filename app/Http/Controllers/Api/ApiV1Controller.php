@@ -2559,21 +2559,23 @@ class ApiV1Controller extends Controller
                 ->filter(function ($s) use ($includeReblogs) {
                     return $includeReblogs ? true : $s['reblog'] == null;
                 })
-                ->filter(function ($s) use ($homeFilters) {
-                    $filterResults = CustomFilter::applyCachedFilters($homeFilters, $s);
+                ->map(function($status) use ($homeFilters) {
+                    $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
 
-                    if (! empty($filterResults)) {
-                        $shouldHide = collect($filterResults)->contains(function ($result) {
-                            return $result['filter']->action === CustomFilter::ACTION_HIDE;
+                    if (!empty($filterResults)) {
+                        $status['filtered'] = $filterResults;
+                        $shouldHide = collect($filterResults)->contains(function($result) {
+                            return $result['filter']['filter_action'] === "hide";
                         });
 
                         if ($shouldHide) {
-                            return false;
+                            return null;
                         }
                     }
 
-                    return true;
+                    return $status;
                 })
+                ->filter()
                 ->take($limit)
                 ->map(function ($status) use ($pid) {
                     if ($pid) {
@@ -2682,6 +2684,23 @@ class ApiV1Controller extends Controller
 
                     return $status;
                 })
+                ->map(function($status) use ($homeFilters) {
+                    $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
+
+                    if (!empty($filterResults)) {
+                        $status['filtered'] = $filterResults;
+                        $shouldHide = collect($filterResults)->contains(function($result) {
+                            return $result['filter']['filter_action'] === "hide";
+                        });
+
+                        if ($shouldHide) {
+                            return null;
+                        }
+                    }
+
+                    return $status;
+                })
+                ->filter()
                 ->take($limit)
                 ->values();
         } else {
@@ -2736,6 +2755,23 @@ class ApiV1Controller extends Controller
 
                     return $status;
                 })
+                ->map(function($status) use ($homeFilters) {
+                    $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
+
+                    if (!empty($filterResults)) {
+                        $status['filtered'] = $filterResults;
+                        $shouldHide = collect($filterResults)->contains(function($result) {
+                            return $result['filter']['filter_action'] === "hide";
+                        });
+
+                        if ($shouldHide) {
+                            return null;
+                        }
+                    }
+
+                    return $status;
+                })
+                ->filter()
                 ->take($limit)
                 ->values();
         }
@@ -2797,7 +2833,7 @@ class ApiV1Controller extends Controller
             $limit = 40;
         }
         $user = $request->user();
-
+        $pid = $user->profile_id;
         $remote = $request->has('remote') && $request->boolean('remote');
         $local = $request->boolean('local');
         $userRoleKey = $remote ? 'can-view-network-feed' : 'can-view-public-feed';
@@ -2810,6 +2846,14 @@ class ApiV1Controller extends Controller
         $hideNsfw = config('instance.hide_nsfw_on_public_feeds');
         $amin = SnowflakeService::byDate(now()->subDays(config('federation.network_timeline_days_falloff')));
         $asf = AdminShadowFilterService::getHideFromPublicFeedsList();
+
+        $cachedFilters = CustomFilter::getCachedFiltersForAccount($pid);
+
+        $homeFilters = array_filter($cachedFilters, function ($item) {
+            [$filter, $rules] = $item;
+
+            return in_array('public', $filter->context);
+        });
         if ($local && $remote) {
             $feed = Status::select(
                 'id',
@@ -3000,6 +3044,23 @@ class ApiV1Controller extends Controller
 
                 return true;
             })
+            ->map(function($status) use ($homeFilters) {
+                $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
+
+                if (!empty($filterResults)) {
+                    $status['filtered'] = $filterResults;
+                    $shouldHide = collect($filterResults)->contains(function($result) {
+                        return $result['filter']['filter_action'] === "hide";
+                    });
+
+                    if ($shouldHide) {
+                        return null;
+                    }
+                }
+
+                return $status;
+            })
+            ->filter()
             ->take($limit)
             ->values();
 

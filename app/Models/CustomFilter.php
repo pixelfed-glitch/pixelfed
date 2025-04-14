@@ -43,6 +43,8 @@ class CustomFilter extends Model
 
     const MAX_PER_HOUR = 40;
 
+    const MAX_UPDATES_PER_HOUR = 40;
+
     const EXPIRATION_DURATIONS = [
         1800,   // 30 minutes
         3600,   // 1 hour
