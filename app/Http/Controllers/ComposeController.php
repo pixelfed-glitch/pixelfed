@@ -30,7 +30,6 @@ use App\Util\Media\License;
 use Auth;
 use Cache;
 use DB;
-use Purify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use League\Fractal;
@@ -240,7 +239,13 @@ class ComposeController extends Controller
         abort_if(! $request->user(), 403);
 
         $this->validate($request, [
-            'q' => 'required|string|min:1|max:50',
+            'q' => [
+                'required',
+                'string',
+                'min:1',
+                'max:300',
+                new \App\Rules\WebFinger,
+            ],
         ]);
 
         $q = $request->input('q');
@@ -571,7 +576,7 @@ class ComposeController extends Controller
             $status->cw_summary = $request->input('spoiler_text');
         }
 
-        $defaultCaption = "";
+        $defaultCaption = '';
         $status->caption = strip_tags($request->input('caption')) ?? $defaultCaption;
         $status->rendered = $defaultCaption;
         $status->scope = 'draft';
@@ -677,7 +682,7 @@ class ComposeController extends Controller
         $place = $request->input('place');
         $cw = $request->input('cw');
         $tagged = $request->input('tagged');
-        $defaultCaption = config_cache('database.default') === 'mysql' ? null : "";
+        $defaultCaption = config_cache('database.default') === 'mysql' ? null : '';
 
         if ($place && is_array($place)) {
             $status->place_id = $place['id'];

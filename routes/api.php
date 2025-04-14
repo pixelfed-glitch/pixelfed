@@ -187,6 +187,12 @@ Route::group(['prefix' => 'api'], function () use ($middleware) {
         Route::post('media', 'Api\ApiV2Controller@mediaUploadV2')->middleware($middleware);
         Route::get('streaming/config', 'Api\ApiV2Controller@getWebsocketConfig');
         Route::get('instance', 'Api\ApiV2Controller@instance');
+
+        Route::get('filters', 'CustomFilterController@index')->middleware($middleware);
+        Route::get('filters/{id}', 'CustomFilterController@show')->middleware($middleware);
+        Route::post('filters', 'CustomFilterController@store')->middleware($middleware);
+        Route::put('filters/{id}', 'CustomFilterController@update')->middleware($middleware);
+        Route::delete('filters/{id}', 'CustomFilterController@delete')->middleware($middleware);
     });
 
     Route::group(['prefix' => 'v1.1'], function () use ($middleware) {
