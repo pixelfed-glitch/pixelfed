@@ -4,7 +4,7 @@
 
 ### Added
 - Pinned Posts ([2f655d000](https://github.com/pixelfed/pixelfed/commit/2f655d000))
-- Custom Filters ([437d742ac](https://github.com/pixelfed/pixelfed/commit/437d742ac))
+- Custom Filters ([#5928](https://github.com/pixelfed/pixelfed/pull/5928)) ([437d742ac](https://github.com/pixelfed/pixelfed/commit/437d742ac))
 
 ### Updates
 - Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
