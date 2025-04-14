@@ -85,7 +85,7 @@
                                                 type="button"
                                                 class="btn btn-sm p-0 ml-2"
                                                 :class="{'keyword-tag-whole-times': keyword.whole_word, 'keyword-tag-partial-times': !keyword.whole_word}"
-                                                @click="removeKeyword(index)"
+                                                @click="removeKeyword(keyword)"
                                                 >
                                                 <i class="fas fa-times"></i>
                                             </button>
@@ -408,7 +408,7 @@
                                                 <button
                                                 type="button"
                                                 class="btn btn-outline-danger"
-                                                @click="removeKeyword(index)"
+                                                @click="removeKeyword(keyword)"
                                                 >
                                                 <i class="fas fa-trash"></i>
                                                 </button>
@@ -670,6 +670,7 @@
                 formData: {
                     title: '',
                     keywords: [],
+                    keywords_attributes: [],
                     context: [],
                     irreversible: false,
                     filter_action: 'warn',
@@ -773,6 +774,7 @@
                     id: this.filter.id,
                     title: this.filter.title || '',
                     keywords: this.filter.keywords ? [...this.filter.keywords] : [],
+                    keywords_attributes: this.filter.keywords ? [...this.filter.keywords] : [],
                     context: Array.isArray(this.filter.context) ? [...this.filter.context] : [],
                     irreversible: this.filter.irreversible || false,
                     filter_action: this.filter.filter_action || 'warn',
@@ -810,6 +812,10 @@
                     keyword: '',
                     whole_word: true
                 });
+                this.formData.keywords_attributes.push({
+                    keyword: '',
+                    whole_word: true
+                });
 
                 this.$set(this.keywordErrors, this.formData.keywords.length - 1, '');
             },
@@ -832,6 +838,11 @@
                 }
 
                 this.formData.keywords.push({
+                    keyword: trimmedKeyword,
+                    whole_word: true
+                });
+
+                this.formData.keywords_attributes.push({
                     keyword: trimmedKeyword,
                     whole_word: true
                 });
@@ -889,8 +900,9 @@
                 }
 
                 this.isPosting = true;
-
-                this.formData.keywords_attributes = this.formData.keywords.filter(k => k.keyword && k.keyword.trim() !== '');
+                if(!this.isEditing) {
+                    this.formData.keywords_attributes = this.formData.keywords.filter(k => k.keyword && k.keyword.trim() !== '');
+                }
 
                 if (this.selectedDuration === '-1' && this.customDuration) {
                     this.formData.expires_in = parseInt(this.customDuration);
@@ -941,11 +953,29 @@
                 this.$emit('delete');
             },
 
-            removeKeyword(index) {
-                this.formData.keywords.splice(index, 1);
+            removeKeyword(keywordObj) {
+                const attrIndex = this.formData.keywords_attributes.findIndex(item =>
+                    item.keyword === keywordObj.keyword &&
+                    (item.id === keywordObj.id || (!item.id && !keywordObj.id))
+                );
+
+                if (attrIndex !== -1) {
+                    this.formData.keywords_attributes[attrIndex]['_destroy'] = true;
+                }
+
+                const keywordIndex = this.formData.keywords.findIndex(item =>
+                    item.keyword === keywordObj.keyword &&
+                    (item.id === keywordObj.id || (!item.id && !keywordObj.id))
+                );
+
+                if (keywordIndex !== -1) {
+                    this.formData.keywords.splice(keywordIndex, 1);
+                }
+
                 if (this.formData.keywords.length === 0 && this.wizardMode) {
                     this.addKeyword();
                 }
+
                 this.validateKeywords();
             },
 
