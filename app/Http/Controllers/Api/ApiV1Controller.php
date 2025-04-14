@@ -2559,13 +2559,13 @@ class ApiV1Controller extends Controller
                 ->filter(function ($s) use ($includeReblogs) {
                     return $includeReblogs ? true : $s['reblog'] == null;
                 })
-                ->map(function($status) use ($homeFilters) {
+                ->map(function ($status) use ($homeFilters) {
                     $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
 
-                    if (!empty($filterResults)) {
+                    if (! empty($filterResults)) {
                         $status['filtered'] = $filterResults;
-                        $shouldHide = collect($filterResults)->contains(function($result) {
-                            return $result['filter']['filter_action'] === "hide";
+                        $shouldHide = collect($filterResults)->contains(function ($result) {
+                            return $result['filter']['filter_action'] === 'hide';
                         });
 
                         if ($shouldHide) {
@@ -2684,13 +2684,13 @@ class ApiV1Controller extends Controller
 
                     return $status;
                 })
-                ->map(function($status) use ($homeFilters) {
+                ->map(function ($status) use ($homeFilters) {
                     $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
 
-                    if (!empty($filterResults)) {
+                    if (! empty($filterResults)) {
                         $status['filtered'] = $filterResults;
-                        $shouldHide = collect($filterResults)->contains(function($result) {
-                            return $result['filter']['filter_action'] === "hide";
+                        $shouldHide = collect($filterResults)->contains(function ($result) {
+                            return $result['filter']['filter_action'] === 'hide';
                         });
 
                         if ($shouldHide) {
@@ -2755,13 +2755,13 @@ class ApiV1Controller extends Controller
 
                     return $status;
                 })
-                ->map(function($status) use ($homeFilters) {
+                ->map(function ($status) use ($homeFilters) {
                     $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
 
-                    if (!empty($filterResults)) {
+                    if (! empty($filterResults)) {
                         $status['filtered'] = $filterResults;
-                        $shouldHide = collect($filterResults)->contains(function($result) {
-                            return $result['filter']['filter_action'] === "hide";
+                        $shouldHide = collect($filterResults)->contains(function ($result) {
+                            return $result['filter']['filter_action'] === 'hide';
                         });
 
                         if ($shouldHide) {
@@ -3044,13 +3044,13 @@ class ApiV1Controller extends Controller
 
                 return true;
             })
-            ->map(function($status) use ($homeFilters) {
+            ->map(function ($status) use ($homeFilters) {
                 $filterResults = CustomFilter::applyCachedFilters($homeFilters, $status);
 
-                if (!empty($filterResults)) {
+                if (! empty($filterResults)) {
                     $status['filtered'] = $filterResults;
-                    $shouldHide = collect($filterResults)->contains(function($result) {
-                        return $result['filter']['filter_action'] === "hide";
+                    $shouldHide = collect($filterResults)->contains(function ($result) {
+                        return $result['filter']['filter_action'] === 'hide';
                     });
 
                     if ($shouldHide) {
@@ -4004,8 +4004,16 @@ class ApiV1Controller extends Controller
         $pe = $request->has(self::PF_API_ENTITY_KEY);
         $pid = $request->user()->profile_id;
 
+        $cachedFilters = CustomFilter::getCachedFiltersForAccount($pid);
+
+        $tagFilters = array_filter($cachedFilters, function ($item) {
+            [$filter, $rules] = $item;
+
+            return in_array('tags', $filter->context);
+        });
+
         if ($min || $max) {
-            $minMax = SnowflakeService::byDate(now()->subMonths(6));
+            $minMax = SnowflakeService::byDate(now()->subMonths(9));
             if ($min && intval($min) < $minMax) {
                 return [];
             }
@@ -4060,6 +4068,23 @@ class ApiV1Controller extends Controller
 
                 return ! in_array($i['account']['id'], $filters) && ! in_array($domain, $domainBlocks);
             })
+            ->map(function ($status) use ($tagFilters) {
+                $filterResults = CustomFilter::applyCachedFilters($tagFilters, $status);
+
+                if (! empty($filterResults)) {
+                    $status['filtered'] = $filterResults;
+                    $shouldHide = collect($filterResults)->contains(function ($result) {
+                        return $result['filter']['filter_action'] === 'hide';
+                    });
+
+                    if ($shouldHide) {
+                        return null;
+                    }
+                }
+
+                return $status;
+            })
+            ->filter()
             ->take($limit)
             ->values()
             ->toArray();
