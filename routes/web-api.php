@@ -70,6 +70,8 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
                 Route::post('accounts/{id}/unblock', 'Api\ApiV1Controller@accountUnblockById');
                 Route::post('accounts/{id}/removeFollow', 'Api\ApiV1Controller@accountRemoveFollowById');
                 Route::get('statuses/{id}', 'PublicApiController@getStatus');
+                Route::post('statuses/{id}/pin', 'PublicApiController@statusPin');
+                Route::post('statuses/{id}/unpin', 'PublicApiController@statusUnpin');
                 Route::get('accounts/{id}', 'PublicApiController@account');
                 Route::post('avatar/update', 'ApiController@avatarUpdate');
                 Route::get('custom_emojis', 'Api\ApiV1Controller@customEmojis');

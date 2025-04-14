@@ -81,6 +81,7 @@ return [
 	],
 
 	'notifications' => [
+        'title' => 'Notifications',
 		'liked' => 'liked your',
 		'commented' => 'commented on your',
 		'reacted' => 'reacted to your',
@@ -104,6 +105,23 @@ return [
 		'post' => 'post',
 		'story' => 'story',
 		'noneFound' => 'No notifications found',
+        'youRecent' => 'You recent',
+        'hasUnlisted' => 'has been unlisted',
+        'cannotDisplay' => 'We cannot display this notification at this time.',
+        'followRequest' => 'Follow Requests',
+        'filteringResults' => 'Filtering results may not include older notifications',
+        'mentions' => 'Mentions',
+        'mentionsDescription' => 'Replies to your posts and posts you were mentioned in',
+        'likes' => 'Likes',
+        'likesDescription' => 'Accounts that liked your posts',
+        'followers' => 'Followers',
+        'followersDescription' => 'Accounts that followed you',
+        'reblogs' => 'Reblogs',
+        'reblogsDescription' => 'Accounts that shared or reblogged your posts',
+        'dms' => 'DMs',
+        'dmsDescription' => 'Direct messages you have with other accounts',
+        'accept' => 'Accept',
+        'reject' => 'Reject'
 	],
 
 	'post' => [
@@ -127,12 +145,30 @@ return [
 
 		'emptyCollections' => 'We can\'t seem to find any collections',
 		'emptyPosts' => 'We can\'t seem to find any posts',
+
+        'blocking' => 'You are blocking this account',
+        'sponsor' => 'Donate',
+        'followYou' => 'Follows You',
+        'archives' => 'Archives',
+        'bookmarks' => 'Bookmarks',
+        'likes' => 'Likes',
+        'muted' => 'Muted',
+        'blocked' => 'Blocked',
+        'myPortifolio' => 'My Portfolio',
+        'private' => 'This profile is private',
+        'public' => 'Public',
+        'draft' => 'Draft',
+        'emptyLikes' => 'We can\'t seem to find any posts you have liked',
+        'emptyBookmarks' => 'We can\'t seem to find any posts you have bookmarked',
+        'emptyArchives' => 'We can\'t seem to find any archived posts',
+        'untitled' => 'Untitled',
+        'noDescription' => 'No description available'
 	],
 
-	'menu' => [
-		'viewPost' => 'View Post',
-		'viewProfile' => 'View Profile',
-		'moderationTools' => 'Moderation Tools',
+    'menu' => [
+        'viewPost' => 'View Post',
+        'viewProfile' => 'View Profile',
+        'moderationTools' => 'Moderation Tools',
 		'report' => 'Report',
 		'archive' => 'Archive',
 		'unarchive' => 'Unarchive',
@@ -176,6 +212,10 @@ return [
 		'deletePostConfirm' => 'Are you sure you want to delete this post?',
 		'archivePostConfirm' => 'Are you sure you want to archive this post?',
 		'unarchivePostConfirm' => 'Are you sure you want to unarchive this post?',
+        'pin' => "Pin",
+        'unpin' => "Unpin",
+        'pinPostConfirm' => 'Are you sure you want to pin this post?',
+        'unpinPostConfirm' => 'Are you sure you want to unpin this post?'
 	],
 
 	'story' => [

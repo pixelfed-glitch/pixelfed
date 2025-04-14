@@ -26,6 +26,7 @@ use App\Jobs\ImageOptimizePipeline\ImageOptimize;
 use App\Jobs\LikePipeline\LikePipeline;
 use App\Jobs\MediaPipeline\MediaDeletePipeline;
 use App\Jobs\MediaPipeline\MediaSyncLicensePipeline;
+use App\Jobs\NotificationPipeline\NotificationWarmUserCache;
 use App\Jobs\SharePipeline\SharePipeline;
 use App\Jobs\SharePipeline\UndoSharePipeline;
 use App\Jobs\StatusPipeline\NewStatusPipeline;
@@ -763,7 +764,8 @@ class ApiV1Controller extends Controller
             'reblog_of_id',
             'type',
             'id',
-            'scope'
+            'scope',
+            'pinned_order'
         )
             ->whereProfileId($profile['id'])
             ->whereNull('in_reply_to_id')
@@ -1537,7 +1539,7 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
-        $res = FollowRequest::whereFollowingId($user->profile->id)
+        $res = FollowRequest::whereFollowingId($user->profile_id)
             ->limit($request->input('limit', 40))
             ->pluck('follower_id')
             ->map(function ($id) {
@@ -1732,11 +1734,11 @@ class ApiV1Controller extends Controller
                 'mobile_registration' => (bool) config_cache('pixelfed.open_registration') && config('auth.in_app_registration'),
                 'configuration' => [
                     'media_attachments' => [
-                        'image_matrix_limit' => 16777216,
+                        'image_matrix_limit' => 2073600,
                         'image_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                         'supported_mime_types' => explode(',', config_cache('pixelfed.media_types')),
                         'video_frame_rate_limit' => 120,
-                        'video_matrix_limit' => 2304000,
+                        'video_matrix_limit' => 2073600,
                         'video_size_limit' => config_cache('pixelfed.max_photo_size') * 1024,
                     ],
                     'polls' => [
@@ -2387,7 +2389,7 @@ class ApiV1Controller extends Controller
         if (empty($res)) {
             if (! Cache::has('pf:services:notifications:hasSynced:'.$pid)) {
                 Cache::put('pf:services:notifications:hasSynced:'.$pid, 1, 1209600);
-                NotificationService::warmCache($pid, 400, true);
+                NotificationWarmUserCache::dispatch($pid);
             }
         }
 
@@ -2438,6 +2440,15 @@ class ApiV1Controller extends Controller
                 }
 
                 return true;
+            })
+            ->map(function ($n) use ($pid) {
+                if (isset($n['status'])) {
+                    $n['status']['favourited'] = (bool) LikeService::liked($pid, $n['status']['id']);
+                    $n['status']['reblogged'] = (bool) ReblogService::get($pid, $n['status']['id']);
+                    $n['status']['bookmarked'] = (bool) BookmarkService::get($pid, $n['status']['id']);
+                }
+
+                return $n;
             })
             ->filter(function ($n) use ($types) {
                 if (! $types) {
@@ -3514,12 +3525,18 @@ class ApiV1Controller extends Controller
             'in_reply_to_id' => 'nullable',
             'media_ids' => 'sometimes|array|max:'.(int) config_cache('pixelfed.max_album_length'),
             'sensitive' => 'nullable',
-            'visibility' => 'string|in:private,unlisted,public',
+            'visibility' => 'string|in:private,unlisted,public,direct',
             'spoiler_text' => 'sometimes|max:140',
             'place_id' => 'sometimes|integer|min:1|max:128769',
             'collection_ids' => 'sometimes|array|max:3',
             'comments_disabled' => 'sometimes|boolean',
         ]);
+
+        if ($request->filled('visibility') && $request->input('visibility') === 'direct') {
+            return $this->json([
+                'error' => 'Direct visibility is not available.',
+            ], 400);
+        }
 
         if ($request->hasHeader('idempotency-key')) {
             $key = 'pf:api:v1:status:idempotency-key:'.$request->user()->id.':'.hash('sha1', $request->header('idempotency-key'));
@@ -4471,5 +4488,61 @@ class ApiV1Controller extends Controller
 
 
         return $this->json([]);
+    }
+    /**
+     *  GET /api/v1/statuses/{id}/pin
+     */
+    public function statusPin(Request $request, $id)
+    {
+        abort_if(! $request->user(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
+        $user = $request->user();
+        $status = Status::whereScope('public')->find($id);
+
+        if (! $status) {
+            return $this->json(['error' => 'Record not found'], 404);
+        }
+
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => "Validation failed: Someone else's post cannot be pinned"], 422);
+        }
+
+        $res = StatusService::markPin($status->id);
+
+        if (! $res['success']) {
+            return $this->json([
+                'error' => $res['error'],
+            ], 422);
+        }
+
+        $statusRes = StatusService::get($status->id, true, true);
+        $status['pinned'] = true;
+
+        return $this->json($statusRes);
+    }
+
+    /**
+     *  GET /api/v1/statuses/{id}/unpin
+     */
+    public function statusUnpin(Request $request, $id)
+    {
+        abort_if(! $request->user(), 403);
+        abort_unless($request->user()->tokenCan('write'), 403);
+        $status = Status::whereScope('public')->findOrFail($id);
+        $user = $request->user();
+
+        if ($status->profile_id != $user->profile_id) {
+            return $this->json(['error' => 'Record not found'], 404);
+        }
+
+        $res = StatusService::unmarkPin($status->id);
+        if (! $res) {
+            return $this->json($res, 422);
+        }
+
+        $status = StatusService::get($status->id, true, true);
+        $status['pinned'] = false;
+
+        return $this->json($status);
     }
 }

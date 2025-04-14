@@ -49,7 +49,7 @@
 				<input type="checkbox" name="check" class="form-control check-all">
 			</th> --}}
 			<th scope="col">{{__('settings.relationships.username')}}</th>
-			<th scope="col">{{__('settings.relationship.action')}}</th>
+			<th scope="col">{{__('settings.relationships.action')}}</th>
 		</tr>
 	</thead>
 	<tbody>
