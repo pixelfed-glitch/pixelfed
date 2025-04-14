@@ -19,6 +19,11 @@ class CustomFilterKeyword extends Model
         return $this->belongsTo(CustomFilter::class);
     }
 
+    public function setKeywordAttribute($value)
+    {
+        $this->attributes['keyword'] = mb_strtolower(trim($value));
+    }
+
     public function toRegex()
     {
         $pattern = preg_quote($this->keyword, '/');
