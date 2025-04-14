@@ -11,10 +11,11 @@ class CustomFilter extends Model
     public $shouldInvalidateCache = false;
 
     protected $fillable = [
-        'phrase', 'context', 'expires_at', 'action', 'profile_id',
+        'title', 'phrase', 'context', 'expires_at', 'action', 'profile_id',
     ];
 
     protected $casts = [
+        'id' => 'string',
         'context' => 'array',
         'expires_at' => 'datetime',
         'action' => 'integer',
@@ -29,6 +30,18 @@ class CustomFilter extends Model
         'thread',
         'account',
     ];
+
+    const MAX_LIMIT = 20;
+
+    const MAX_KEYWORDS_PER_FILTER = 10;
+
+    const MAX_STATUSES_PER_FILTER = 10;
+
+    const MAX_CONTENT_SCAN_LEN = 1000;
+
+    const MAX_KEYWORD_LEN = 40;
+
+    const MAX_PER_HOUR = 40;
 
     const EXPIRATION_DURATIONS = [
         1800,   // 30 minutes
@@ -60,6 +73,34 @@ class CustomFilter extends Model
         return $this->hasMany(CustomFilterStatus::class);
     }
 
+    public function toFilterArray()
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'context' => $this->context,
+            'expires_at' => $this->expires_at,
+            'filter_action' => $this->filterAction,
+        ];
+    }
+
+    public function getFilterActionAttribute()
+    {
+        switch ($this->action) {
+            case 0:
+                return 'warn';
+                break;
+
+            case 1:
+                return 'hide';
+                break;
+
+            case 2:
+                return 'blur';
+                break;
+        }
+    }
+
     public function getTitleAttribute()
     {
         return $this->phrase;
@@ -68,11 +109,6 @@ class CustomFilter extends Model
     public function setTitleAttribute($value)
     {
         $this->attributes['phrase'] = $value;
-    }
-
-    public function getFilterActionAttribute()
-    {
-        return $this->action;
     }
 
     public function setFilterActionAttribute($value)
@@ -159,12 +195,17 @@ class CustomFilter extends Model
         Cache::forget("filters:v3:{$this->profile_id}");
     }
 
+    /**
+     * Get cached filters for an account with simplified, secure approach
+     *
+     * @param  int  $profileId  The profile ID
+     * @return Collection The collection of filters
+     */
     public static function getCachedFiltersForAccount($profileId)
     {
         $activeFilters = Cache::remember("filters:v3:{$profileId}", 3600, function () use ($profileId) {
             $filtersHash = [];
 
-            // Get keyword filters
             $keywordFilters = CustomFilterKeyword::with(['customFilter' => function ($query) use ($profileId) {
                 $query->unexpired()->where('profile_id', $profileId);
             }])->get();
@@ -176,8 +217,12 @@ class CustomFilter extends Model
                     return;
                 }
 
-                $regexPatterns = $keywords->map(function ($keyword) {
+                $maxPatternsPerFilter = self::MAX_KEYWORDS_PER_FILTER;
+                $keywordsToProcess = $keywords->take($maxPatternsPerFilter);
+
+                $regexPatterns = $keywordsToProcess->map(function ($keyword) {
                     $pattern = preg_quote($keyword->keyword, '/');
+
                     if ($keyword->whole_word) {
                         $pattern = '\b'.$pattern.'\b';
                     }
@@ -185,8 +230,18 @@ class CustomFilter extends Model
                     return $pattern;
                 })->toArray();
 
+                if (empty($regexPatterns)) {
+                    return;
+                }
+
+                $combinedPattern = implode('|', $regexPatterns);
+                $maxPatternLength = self::MAX_KEYWORD_LEN;
+                if (strlen($combinedPattern) > $maxPatternLength) {
+                    $combinedPattern = substr($combinedPattern, 0, $maxPatternLength);
+                }
+
                 $filtersHash[$filterId] = [
-                    'keywords' => '/'.implode('|', $regexPatterns).'/i',
+                    'keywords' => '/'.$combinedPattern.'/i',
                     'filter' => $filter,
                 ];
             });
@@ -206,7 +261,8 @@ class CustomFilter extends Model
                     $filtersHash[$filterId] = ['filter' => $filter];
                 }
 
-                $filtersHash[$filterId]['status_ids'] = $statuses->pluck('status_id')->toArray();
+                $maxStatusIds = self::MAX_STATUSES_PER_FILTER;
+                $filtersHash[$filterId]['status_ids'] = $statuses->take($maxStatusIds)->pluck('status_id')->toArray();
             });
 
             return array_map(function ($item) {
@@ -224,23 +280,42 @@ class CustomFilter extends Model
         })->toArray();
     }
 
+    /**
+     * Apply cached filters to a status with reasonable safety measures
+     *
+     * @param  array  $cachedFilters  The cached filters
+     * @param  mixed  $status  The status to check
+     * @return array The filter matches
+     */
     public static function applyCachedFilters($cachedFilters, $status)
     {
         $results = [];
 
         foreach ($cachedFilters as [$filter, $rules]) {
             $keywordMatches = [];
-            $statusMatches = [];
+            $statusMatches = null;
 
             if (isset($rules['keywords'])) {
-                $text = $status['content'];
-                preg_match_all($rules['keywords'], $text, $matches);
-                if (! empty($matches[0])) {
-                    $keywordMatches = $matches[0];
+                $text = strip_tags($status['content']);
+
+                $maxContentLength = self::MAX_CONTENT_SCAN_LEN;
+                if (mb_strlen($text) > $maxContentLength) {
+                    $text = mb_substr($text, 0, $maxContentLength);
+                }
+
+                try {
+                    preg_match_all($rules['keywords'], $text, $matches, PREG_PATTERN_ORDER, 0);
+                    if (! empty($matches[0])) {
+                        $maxReportedMatches = 10;
+                        $keywordMatches = array_slice($matches[0], 0, $maxReportedMatches);
+                    }
+                } catch (\Throwable $e) {
+                    \Log::error('Filter regex error: '.$e->getMessage(), [
+                        'filter_id' => $filter->id,
+                    ]);
                 }
             }
 
-            // Check for status matches
             if (isset($rules['status_ids'])) {
                 $statusId = $status->id;
                 $reblogId = $status->reblog_of_id ?? null;
@@ -253,9 +328,9 @@ class CustomFilter extends Model
 
             if (! empty($keywordMatches) || ! empty($statusMatches)) {
                 $results[] = [
-                    'filter' => $filter,
-                    'keyword_matches' => $keywordMatches,
-                    'status_matches' => $statusMatches,
+                    'filter' => $filter->toFilterArray(),
+                    'keyword_matches' => $keywordMatches ?: null,
+                    'status_matches' => ! empty($statusMatches) ? $statusMatches : null,
                 ];
             }
         }
