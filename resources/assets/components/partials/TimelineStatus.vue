@@ -46,18 +46,18 @@
             </template>
 
             <template v-else>
-                <div class="card shadow-none mx-3 border-0">
-                  <div class="card-body bg-warning-light p-3">
-                    <div class="d-flex justify-content-center align-items-center">
-                      <i class="fas fa-exclamation-triangle text-warning mr-2" aria-hidden="true"></i>
-                      <h5 class="card-title mb-0">Filtered</h5>
+                <div class="card shadow-none mt-n2 mx-3 border-0">
+                  <div class="card-body bg-warning-light p-3 ft-std">
+                    <div class="badge badge-warning p-2" style="border-radius: 10px;">
+                      <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                      <span>Warning</span>
                     </div>
-                    <p class="card-text mt-2 text-center">
-                      Hidden because it contains the following filtered keywords:
-                      <span v-for="term in filteredTerms" class="badge badge-warning mr-1">{{ term }}</span>
+                    <p class="card-text mt-3" style="word-break:break-all;">
+                      This post contains the following filtered keyword{{ filteredTerms?.length > 1 ? 's' : ''}}:
+                      <span v-for="(term, idx) in filteredTerms" class="font-weight-bold">{{ term }}{{filteredTerms?.length === (idx + 1) ? '' : ', '}}</span>
                     </p>
-                    <button class="btn btn-primary rounded-pill btn-block" @click="showHiddenStatus()">
-                      <i class="fas fa-eye mr-1"></i> Show
+                    <button class="btn btn-outline-primary font-weight-bold" @click="showHiddenStatus()" style="border-radius: 10px;">
+                      Show Content
                     </button>
                   </div>
                 </div>
