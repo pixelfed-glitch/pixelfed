@@ -22,7 +22,7 @@ class CustomFilterController extends Controller
 
         $filters = CustomFilter::where('profile_id', $request->user()->profile_id)
             ->unexpired()
-            ->with(['keywords', 'statuses'])
+            ->with(['keywords'])
             ->orderByDesc('updated_at')
             ->get()
             ->map(function ($filter) {
@@ -39,12 +39,7 @@ class CustomFilterController extends Controller
                             'whole_word' => (bool) $keyword->whole_word,
                         ];
                     }),
-                    'statuses' => $filter->statuses->map(function ($status) {
-                        return [
-                            'id' => $status->id,
-                            'status_id' => $status->status_id,
-                        ];
-                    }),
+                    'statuses' => [],
                 ];
             });
 
@@ -59,7 +54,7 @@ class CustomFilterController extends Controller
         $filter = CustomFilter::findOrFail($id);
         Gate::authorize('view', $filter);
 
-        $filter->load(['keywords', 'statuses']);
+        $filter->load(['keywords']);
 
         $res = [
             'id' => $filter->id,
@@ -74,12 +69,7 @@ class CustomFilterController extends Controller
                     'whole_word' => (bool) $keyword->whole_word,
                 ];
             }),
-            'statuses' => $filter->statuses->map(function ($status) {
-                return [
-                    'id' => $status->id,
-                    'status_id' => $status->status_id,
-                ];
-            }),
+            'statuses' => [],
         ];
 
         return response()->json($res);
