@@ -31,19 +31,7 @@ class CustomFilter extends Model
         'account',
     ];
 
-    const MAX_LIMIT = 20;
-
-    const MAX_KEYWORDS_PER_FILTER = 10;
-
     const MAX_STATUSES_PER_FILTER = 10;
-
-    const MAX_CONTENT_SCAN_LEN = 1000;
-
-    const MAX_KEYWORD_LEN = 40;
-
-    const MAX_PER_HOUR = 40;
-
-    const MAX_UPDATES_PER_HOUR = 40;
 
     const EXPIRATION_DURATIONS = [
         1800,   // 30 minutes
@@ -59,6 +47,20 @@ class CustomFilter extends Model
     const ACTION_HIDE = 1;
 
     const ACTION_BLUR = 2;
+
+    protected static ?int $maxContentScanLimit = null;
+
+    protected static ?int $maxFiltersPerUser = null;
+
+    protected static ?int $maxKeywordsPerFilter = null;
+
+    protected static ?int $maxKeywordsLength = null;
+
+    protected static ?int $maxPatternLength = null;
+
+    protected static ?int $maxCreatePerHour = null;
+
+    protected static ?int $maxUpdatesPerHour = null;
 
     public function account()
     {
@@ -166,6 +168,11 @@ class CustomFilter extends Model
             $model->shouldInvalidateCache = true;
         });
 
+        static::updating(function ($model) {
+            $model->prepareContextForStorage();
+            $model->shouldInvalidateCache = true;
+        });
+
         static::deleting(function ($model) {
             $model->shouldInvalidateCache = true;
         });
@@ -197,6 +204,69 @@ class CustomFilter extends Model
         Cache::forget("filters:v3:{$this->profile_id}");
     }
 
+    public static function getMaxContentScanLimit(): int
+    {
+        if (self::$maxContentScanLimit === null) {
+            self::$maxContentScanLimit = config('instance.custom_filters.max_content_scan_limit', 2500);
+        }
+
+        return self::$maxContentScanLimit;
+    }
+
+    public static function getMaxFiltersPerUser(): int
+    {
+        if (self::$maxFiltersPerUser === null) {
+            self::$maxFiltersPerUser = config('instance.custom_filters.max_filters_per_user', 20);
+        }
+
+        return self::$maxFiltersPerUser;
+    }
+
+    public static function getMaxKeywordsPerFilter(): int
+    {
+        if (self::$maxKeywordsPerFilter === null) {
+            self::$maxKeywordsPerFilter = config('instance.custom_filters.max_keywords_per_filter', 10);
+        }
+
+        return self::$maxKeywordsPerFilter;
+    }
+
+    public static function getMaxKeywordLength(): int
+    {
+        if (self::$maxKeywordsLength === null) {
+            self::$maxKeywordsLength = config('instance.custom_filters.max_keyword_length', 40);
+        }
+
+        return self::$maxKeywordsLength;
+    }
+
+    public static function getMaxPatternLength(): int
+    {
+        if (self::$maxPatternLength === null) {
+            self::$maxPatternLength = config('instance.custom_filters.max_pattern_length', 10000);
+        }
+
+        return self::$maxPatternLength;
+    }
+
+    public static function getMaxCreatePerHour(): int
+    {
+        if (self::$maxCreatePerHour === null) {
+            self::$maxCreatePerHour = config('instance.custom_filters.max_create_per_hour', 20);
+        }
+
+        return self::$maxCreatePerHour;
+    }
+
+    public static function getMaxUpdatesPerHour(): int
+    {
+        if (self::$maxUpdatesPerHour === null) {
+            self::$maxUpdatesPerHour = config('instance.custom_filters.max_updates_per_hour', 40);
+        }
+
+        return self::$maxUpdatesPerHour;
+    }
+
     /**
      * Get cached filters for an account with simplified, secure approach
      *
@@ -219,7 +289,7 @@ class CustomFilter extends Model
                     return;
                 }
 
-                $maxPatternsPerFilter = self::MAX_KEYWORDS_PER_FILTER;
+                $maxPatternsPerFilter = self::getMaxFiltersPerUser();
                 $keywordsToProcess = $keywords->take($maxPatternsPerFilter);
 
                 $regexPatterns = $keywordsToProcess->map(function ($keyword) {
@@ -237,7 +307,7 @@ class CustomFilter extends Model
                 }
 
                 $combinedPattern = implode('|', $regexPatterns);
-                $maxPatternLength = self::MAX_KEYWORD_LEN;
+                $maxPatternLength = self::getMaxPatternLength();
                 if (strlen($combinedPattern) > $maxPatternLength) {
                     $combinedPattern = substr($combinedPattern, 0, $maxPatternLength);
                 }
@@ -248,24 +318,24 @@ class CustomFilter extends Model
                 ];
             });
 
-            $statusFilters = CustomFilterStatus::with(['customFilter' => function ($query) use ($profileId) {
-                $query->unexpired()->where('profile_id', $profileId);
-            }])->get();
+            // $statusFilters = CustomFilterStatus::with(['customFilter' => function ($query) use ($profileId) {
+            //     $query->unexpired()->where('profile_id', $profileId);
+            // }])->get();
 
-            $statusFilters->groupBy('custom_filter_id')->each(function ($statuses, $filterId) use (&$filtersHash) {
-                $filter = $statuses->first()->customFilter;
+            // $statusFilters->groupBy('custom_filter_id')->each(function ($statuses, $filterId) use (&$filtersHash) {
+            //     $filter = $statuses->first()->customFilter;
 
-                if (! $filter) {
-                    return;
-                }
+            //     if (! $filter) {
+            //         return;
+            //     }
 
-                if (! isset($filtersHash[$filterId])) {
-                    $filtersHash[$filterId] = ['filter' => $filter];
-                }
+            //     if (! isset($filtersHash[$filterId])) {
+            //         $filtersHash[$filterId] = ['filter' => $filter];
+            //     }
 
-                $maxStatusIds = self::MAX_STATUSES_PER_FILTER;
-                $filtersHash[$filterId]['status_ids'] = $statuses->take($maxStatusIds)->pluck('status_id')->toArray();
-            });
+            //     $maxStatusIds = self::MAX_STATUSES_PER_FILTER;
+            //     $filtersHash[$filterId]['status_ids'] = $statuses->take($maxStatusIds)->pluck('status_id')->toArray();
+            // });
 
             return array_map(function ($item) {
                 $filter = $item['filter'];
@@ -300,7 +370,7 @@ class CustomFilter extends Model
             if (isset($rules['keywords'])) {
                 $text = strip_tags($status['content']);
 
-                $maxContentLength = self::MAX_CONTENT_SCAN_LEN;
+                $maxContentLength = self::getMaxContentScanLimit();
                 if (mb_strlen($text) > $maxContentLength) {
                     $text = mb_substr($text, 0, $maxContentLength);
                 }
@@ -308,7 +378,7 @@ class CustomFilter extends Model
                 try {
                     preg_match_all($rules['keywords'], $text, $matches, PREG_PATTERN_ORDER, 0);
                     if (! empty($matches[0])) {
-                        $maxReportedMatches = 10;
+                        $maxReportedMatches = (int) config('instance.custom_filters.max_reported_matches', 10);
                         $keywordMatches = array_slice($matches[0], 0, $maxReportedMatches);
                     }
                 } catch (\Throwable $e) {
@@ -318,15 +388,15 @@ class CustomFilter extends Model
                 }
             }
 
-            if (isset($rules['status_ids'])) {
-                $statusId = $status->id;
-                $reblogId = $status->reblog_of_id ?? null;
+            // if (isset($rules['status_ids'])) {
+            //     $statusId = $status->id;
+            //     $reblogId = $status->reblog_of_id ?? null;
 
-                $matchingIds = array_intersect($rules['status_ids'], array_filter([$statusId, $reblogId]));
-                if (! empty($matchingIds)) {
-                    $statusMatches = $matchingIds;
-                }
-            }
+            //     $matchingIds = array_intersect($rules['status_ids'], array_filter([$statusId, $reblogId]));
+            //     if (! empty($matchingIds)) {
+            //         $statusMatches = $matchingIds;
+            //     }
+            // }
 
             if (! empty($keywordMatches) || ! empty($statusMatches)) {
                 $results[] = [
