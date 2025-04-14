@@ -8,9 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class CustomFilterController extends Controller
 {
+    // const ACTIVE_TYPES = ['home', 'public', 'tags', 'notifications', 'thread', 'profile', 'groups'];
+    const ACTIVE_TYPES = ['home', 'public', 'tags'];
+
     public function index(Request $request)
     {
         abort_if(! $request->user() || ! $request->user()->token(), 403);
@@ -91,15 +95,18 @@ class CustomFilterController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:100',
             'context' => 'required|array',
-            'context.*' => 'string|in:home,notifications,public,thread,account,tags,groups',
+            'context.*' => [
+                'string',
+                Rule::in(self::ACTIVE_TYPES),
+            ],
             'filter_action' => 'string|in:warn,hide,blur',
             'expires_in' => 'nullable|integer|min:0|max:63072000',
-            'keywords_attributes' => 'required|array|min:1|max:'.CustomFilter::MAX_KEYWORDS_PER_FILTER,
+            'keywords_attributes' => 'required|array|min:1|max:'.CustomFilter::getMaxKeywordsPerFilter(),
             'keywords_attributes.*.keyword' => [
                 'required',
                 'string',
                 'min:1',
-                'max:'.CustomFilter::MAX_KEYWORD_LEN,
+                'max:'.CustomFilter::getMaxKeywordLength(),
                 'regex:/^[\p{L}\p{N}\p{Zs}\p{P}\p{M}]+$/u',
                 function ($attribute, $value, $fail) {
                     if (preg_match('/(.)\1{20,}/', $value)) {
@@ -109,12 +116,22 @@ class CustomFilterController extends Controller
             ],
             'keywords_attributes.*.whole_word' => 'boolean',
         ]);
+        $profile_id = $request->user()->profile_id;
+        $userFilterCount = CustomFilter::where('profile_id', $profile_id)->count();
+        $maxFiltersPerUser = CustomFilter::getMaxFiltersPerUser();
+
+        if (! $request->user()->is_admin && $userFilterCount >= $maxFiltersPerUser) {
+            return response()->json([
+                'error' => 'Filter limit exceeded',
+                'message' => 'You can only have '.$maxFiltersPerUser.' filters at a time.',
+            ], 422);
+        }
 
         $rateKey = 'filters_created:'.$request->user()->id;
-        $maxFiltersPerHour = CustomFilter::MAX_PER_HOUR;
+        $maxFiltersPerHour = CustomFilter::getMaxCreatePerHour();
         $currentCount = Cache::get($rateKey, 0);
 
-        if ($currentCount >= $maxFiltersPerHour) {
+        if (! $request->user()->is_admin && $currentCount >= $maxFiltersPerHour) {
             return response()->json([
                 'error' => 'Rate limit exceeded',
                 'message' => 'You can only create '.$maxFiltersPerHour.' filters per hour.',
@@ -124,10 +141,9 @@ class CustomFilterController extends Controller
         DB::beginTransaction();
 
         try {
-            $profile_id = $request->user()->profile_id;
 
             $requestedKeywords = array_map(function ($item) {
-                return $item['keyword'];
+                return mb_strtolower(trim($item['keyword']));
             }, $validatedData['keywords_attributes']);
 
             $existingKeywords = DB::table('custom_filter_keywords')
@@ -141,16 +157,6 @@ class CustomFilterController extends Controller
                 return response()->json([
                     'error' => 'Duplicate keywords found',
                     'message' => 'The following keywords already exist: '.implode(', ', $existingKeywords),
-                ], 422);
-            }
-
-            $userFilterCount = CustomFilter::where('profile_id', $profile_id)->count();
-            $maxFiltersPerUser = CustomFilter::MAX_LIMIT;
-
-            if ($userFilterCount >= $maxFiltersPerUser) {
-                return response()->json([
-                    'error' => 'Filter limit exceeded',
-                    'message' => 'You can only have '.$maxFiltersPerUser.' filters at a time.',
                 ], 422);
             }
 
@@ -253,22 +259,42 @@ class CustomFilterController extends Controller
         abort_unless($request->user()->tokenCan('write'), 403);
 
         $filter = CustomFilter::findOrFail($id);
-
+        $pid = $request->user()->profile_id;
+        if ($filter->profile_id !== $pid) {
+            return response()->json(['error' => 'This action is unauthorized'], 401);
+        }
         Gate::authorize('update', $filter);
 
         $validatedData = $request->validate([
             'title' => 'string|max:100',
             'context' => 'array|max:10',
             'context.*' => 'string|in:home,notifications,public,thread,account,tags,groups',
+            'context.*' => [
+                'string',
+                Rule::in(self::ACTIVE_TYPES),
+            ],
             'filter_action' => 'string|in:warn,hide,blur',
             'expires_in' => 'nullable|integer|min:0|max:63072000',
-            'keywords_attributes' => 'required|array|min:1|max:'.CustomFilter::MAX_KEYWORDS_PER_FILTER,
+            'keywords_attributes' => [
+                'required',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) {
+                    $activeKeywords = collect($value)->filter(function ($keyword) {
+                        return ! isset($keyword['_destroy']) || $keyword['_destroy'] !== true;
+                    })->count();
+
+                    if ($activeKeywords > CustomFilter::getMaxKeywordsPerFilter()) {
+                        $fail('You may not have more than '.CustomFilter::getMaxKeywordsPerFilter().' active keywords.');
+                    }
+                },
+            ],
             'keywords_attributes.*.id' => 'nullable|integer|exists:custom_filter_keywords,id',
             'keywords_attributes.*.keyword' => [
                 'required_without:keywords_attributes.*.id',
                 'string',
                 'min:1',
-                'max:'.CustomFilter::MAX_KEYWORD_LEN,
+                'max:'.CustomFilter::getMaxKeywordLength(),
                 'regex:/^[\p{L}\p{N}\p{Zs}\p{P}\p{M}]+$/u',
                 function ($attribute, $value, $fail) {
                     if (preg_match('/(.)\1{20,}/', $value)) {
@@ -281,10 +307,10 @@ class CustomFilterController extends Controller
         ]);
 
         $rateKey = 'filters_updated:'.$request->user()->id;
-        $maxUpdatesPerHour = CustomFilter::MAX_UPDATES_PER_HOUR;
+        $maxUpdatesPerHour = CustomFilter::getMaxUpdatesPerHour();
         $currentCount = Cache::get($rateKey, 0);
 
-        if ($currentCount >= $maxUpdatesPerHour) {
+        if (! $request->user()->is_admin && $currentCount >= $maxUpdatesPerHour) {
             return response()->json([
                 'error' => 'Rate limit exceeded',
                 'message' => 'You can only update filters '.$maxUpdatesPerHour.' times per hour.',
@@ -294,12 +320,18 @@ class CustomFilterController extends Controller
         DB::beginTransaction();
 
         try {
-            $pid = $request->user()->profile_id;
+
+            $keywordIds = collect($validatedData['keywords_attributes'])->pluck('id')->filter()->toArray();
+            if (count($keywordIds) && ! CustomFilterKeyword::whereCustomFilterId($filter->id)->whereIn('id', $keywordIds)->count()) {
+                return response()->json([
+                    'error' => 'Record not found',
+                ], 404);
+            }
 
             $requestedKeywords = [];
             foreach ($validatedData['keywords_attributes'] as $item) {
                 if (isset($item['keyword']) && (! isset($item['_destroy']) || ! $item['_destroy'])) {
-                    $requestedKeywords[] = $item['keyword'];
+                    $requestedKeywords[] = mb_strtolower(trim($item['keyword']));
                 }
             }
 
@@ -307,8 +339,8 @@ class CustomFilterController extends Controller
                 $existingKeywords = DB::table('custom_filter_keywords')
                     ->join('custom_filters', 'custom_filter_keywords.custom_filter_id', '=', 'custom_filters.id')
                     ->where('custom_filters.profile_id', $pid)
-                    ->where('custom_filter_keywords.custom_filter_id', '!=', $id)
                     ->whereIn('custom_filter_keywords.keyword', $requestedKeywords)
+                    ->where('custom_filter_keywords.custom_filter_id', '!=', $id)
                     ->pluck('custom_filter_keywords.keyword')
                     ->toArray();
 
@@ -349,7 +381,7 @@ class CustomFilterController extends Controller
 
                 foreach ($validatedData['keywords_attributes'] as $keywordData) {
                     // Case 1: Explicit deletion with _destroy flag
-                    if (isset($keywordData['id']) && isset($keywordData['_destroy']) && $keywordData['_destroy']) {
+                    if (isset($keywordData['id']) && isset($keywordData['_destroy']) && (bool) $keywordData['_destroy']) {
                         // Verify this ID belongs to this filter before deletion
                         $kwf = CustomFilterKeyword::where('custom_filter_id', $filter->id)
                             ->where('id', $keywordData['id'])
@@ -371,6 +403,13 @@ class CustomFilterController extends Controller
                         $keyword = CustomFilterKeyword::where('custom_filter_id', $filter->id)
                             ->where('id', $keywordData['id'])
                             ->first();
+
+                        if (! isset($keywordData['_destroy']) && $filter->keywords()->pluck('id')->search($keywordData['id']) === false) {
+                            return response()->json([
+                                'error' => 'Duplicate keywords found',
+                                'message' => 'The following keywords already exist: '.$keywordData['keyword'],
+                            ], 422);
+                        }
 
                         if ($keyword) {
                             $updateData = [];
@@ -394,13 +433,18 @@ class CustomFilterController extends Controller
                     elseif (isset($keywordData['keyword'])) {
                         // Check if we're about to exceed the keyword limit
                         $existingKeywordCount = $filter->keywords()->count();
-                        $maxKeywordsPerFilter = CustomFilter::MAX_KEYWORDS_PER_FILTER;
+                        $maxKeywordsPerFilter = CustomFilter::getMaxKeywordsPerFilter();
 
                         if ($existingKeywordCount >= $maxKeywordsPerFilter) {
                             return response()->json([
                                 'error' => 'Keyword limit exceeded',
                                 'message' => 'A filter can have a maximum of '.$maxKeywordsPerFilter.' keywords.',
                             ], 422);
+                        }
+
+                        // Skip existing case-insensitive keywords
+                        if ($filter->keywords()->pluck('keyword')->search(mb_strtolower(trim($keywordData['keyword']))) !== false) {
+                            continue;
                         }
 
                         $filter->keywords()->create([
@@ -416,7 +460,7 @@ class CustomFilterController extends Controller
                 Cache::put($rateKey, 1, 3600);
             }
 
-            Cache::forget("filters:v3:{$request->user()->profile_id}");
+            Cache::forget("filters:v3:{$pid}");
 
             DB::commit();
 
@@ -464,6 +508,6 @@ class CustomFilterController extends Controller
         Gate::authorize('delete', $filter);
         $filter->delete();
 
-        return response()->json([], 200);
+        return response()->json((object) [], 200);
     }
 }
