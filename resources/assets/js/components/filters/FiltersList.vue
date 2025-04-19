@@ -3,22 +3,21 @@
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
             <div class="title">
                 <h3 class="font-weight-bold mb-0">
-                    Filters
+                    {{ $t("settings.filters.title")}}
                 </h3>
-                <p class="lead mb-3 mb-md-0">Manage your custom filters.</p>
+                <p class="lead mb-3 mb-md-0">{{ $t('settings.filters.manage_your_custom_filters') }}</p>
             </div>
             <button
                 @click="showAddFilterModal = true"
                 class="btn btn-primary font-weight-bold rounded-pill px-3"
                 :disabled="filters?.length >= 20">
-                <i class="fas fa-plus mr-1"></i> Add New Filter
+                <i class="fas fa-plus mr-1"></i> {{ $t('settings.filters.add_new_filter') }}
             </button>
         </div>
 
-        <!-- <p>Customize your experience with powerful content filters that screen for specific words or phrases throughout your entire account—including home and public timelines, notifications, messages, groups, hashtag feeds, and explore sections.</p> -->
-        <p>Customize your experience with powerful content filters that screen for specific words or phrases throughout your entire account - including home and public timelines, and hashtag feeds.</p>
-        <p class="text-muted mb-0">You can add up to <strong>20 filters</strong> that can have up to <strong>10 keywords</strong>.</p>
-        <p class="text-muted mb-4 small">Learn more in our <a href="/site/help">Help Center</a>.</p>
+        <p>{{ $t("settings.filters.customize_your_experience") }}</p>
+        <p class="text-muted mb-0" v-html="$t('settings.filters.limit_message', { filters_num: 20, keyword_num: 10 })"></p>
+        <p class="text-muted mb-4 small" v-html="$t('settings.filters.learn_more_help_center')"  ></p>
 
         <div v-if="loading" class="d-flex justify-content-center py-4">
             <div class="spinner-border text-primary" role="status">
@@ -29,12 +28,12 @@
         <div v-else-if="filters.length === 0" class="bg-light p-4 rounded text-center border">
             <div class="py-3">
                 <i class="fas fa-filter text-secondary fa-3x mb-3"></i>
-                <p class="font-weight-bold text-secondary">You don't have any content filters yet.</p>
+                <p class="font-weight-bold text-secondary">{{ $t("settings.filters.no_filters")}}</p>
                 <p class="text-muted small mt-2">
-                    Filters help you hide content containing specific words or phrases from your timelines.
+                    {{ $t('settings.filters.no_filters_message') }}
                 </p>
                 <button @click="showAddFilterModal = true" class="btn btn-outline-primary rounded-pill font-weight-light mt-2">
-                    <i class="fas fa-plus mr-1"></i> Create Your First Filter
+                    <i class="fas fa-plus mr-1"></i> {{ $t('settings.filters.create_first_filter') }}
                 </button>
             </div>
         </div>
@@ -67,12 +66,12 @@
             <div v-if="searchQuery && filteredFilters.length === 0" class="bg-light p-4 rounded text-center border">
                 <div class="py-3">
                     <i class="fas fa-filter text-secondary fa-3x mb-3"></i>
-                    <p class="lead text-secondary">You don't have any content filters that match <strong>{{searchQuery}}</strong>.</p>
+                    <p class="lead text-secondary" v-html="$t('settings.filters.no_matching_filters', { searchQuery })"></p>
                     <p class="text-muted small mt-2">
-                    Filters help you hide content containing specific words or phrases from your timelines.
+                        {{ $t('settings.filters.no_matching_filters_message') }}
                     </p>
                     <button @click="showAddFilterModal = true" class="btn btn-outline-primary rounded-pill font-weight-light mt-2">
-                        <i class="fas fa-plus mr-1"></i> Create new Filter
+                        <i class="fas fa-plus mr-1"></i> {{ $t('settings.filters.create_new_filter') }}
                     </button>
                 </div>
             </div>
