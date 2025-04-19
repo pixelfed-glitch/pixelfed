@@ -108,7 +108,13 @@
 									</div>
 									<div v-else-if="n.type == 'share'">
 										<p class="my-0">
-											<a :href="getProfileUrl(n.account)" class="font-weight-bold text-dark word-break" :title="n.account.acct">{{n.account.local == false ? '@':''}}{{truncate(n.account.username)}}</a> {{ $t("notifications.shared")}} <a class="font-weight-bold" :href="getPostUrl(n.status)" @click.prevent="goToPost(n.status)">{{ $t("notifications.post")}}</a>.
+											<a :href="getProfileUrl(n.account)" class="font-weight-bold text-dark word-break" :title="n.account.acct">{{n.account.local == false ? '@':''}}{{truncate(n.account.username)}}</a> {{ $t("notifications.shared")}}
+                                            <span v-if="n.status && n.status.hasOwnProperty('media_attachments')">
+												<a class="font-weight-bold" v-bind:href="getPostUrl(n.status)" :id="'fvn-' + n.id" @click.prevent="goToPost(n.status)">{{ $t("notifications.post")}}</a>.
+												<b-popover :target="'fvn-' + n.id" title="" triggers="hover" placement="top" boundary="window">
+													<img :src="notificationPreview(n)" width="100px" height="100px" style="object-fit: cover;">
+												</b-popover>
+											</span>
 										</p>
 									</div>
 									<div v-else-if="n.type == 'modlog'">
