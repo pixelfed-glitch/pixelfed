@@ -134,7 +134,7 @@ return [
 		'moderationTools' => 'Strumenti di moderazione',
 		'report' => 'Segnala',
 		'archive' => 'Archivia',
-		'unarchive' => 'Ripristina',
+		'unarchive' => 'Rimuovi dall\'archivio',
 		'embed' => 'Incorpora',
 
 		'selectOneOption' => 'Scegli una delle seguenti opzioni',
