@@ -7,7 +7,7 @@
                     <div class="modal-header bg-light d-flex align-items-center">
                         <h5 class="modal-title font-weight-bold">
                             <i class="fal fa-filter text-dark mr-2"></i>
-                            {{ isEditing ? 'Edit Filter' : 'Create Filter' }}
+                            {{ isEditing ? $t("settings.filters.edit_filter") : $t("settings.filters.create_filter") }}
                         </h5>
                         <div class="ml-auto d-flex align-items-center">
                             <div class="custom-control custom-switch mr-3">
@@ -19,7 +19,7 @@
                                 @change="toggleWizardMode($event)"
                                 >
                                 <label class="custom-control-label" for="wizard-toggle">
-                                    <small>{{ !wizardMode ? 'Advanced Mode' : 'Simple Mode' }}</small>
+                                    <small>{{ !wizardMode ? $t("settings.filters.advance_mode") : $t("settings.filters.simple_mode") }}</small>
                                 </label>
                             </div>
                             <button type="button" class="close" @click="closeModal()">
@@ -31,13 +31,13 @@
                     <form v-if="!wizardMode" @submit.prevent="saveFilter" class="simple-wizard">
                         <div class="modal-body px-4">
                             <div class="form-group">
-                                <label for="title" class="label">Filter title</label>
+                                <label for="title" class="label">{{ $t('settings.filters.filter_title') }}</label>
                                 <input
                                     v-model="formData.title"
                                     type="text"
                                     id="title"
                                     class="form-control form-control-lg form-control-mat"
-                                    placeholder="Enter filter title"
+                                    :placeholder="$t('settings.filters.enter_filter_title')"
                                     required
                                 />
                             </div>
@@ -45,17 +45,17 @@
                             <div class="form-group">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="flex-grow-1">
-                                        <label class="label">Keywords</label>
+                                        <label class="label">{{ $t("settings.filters.keywords") }}</label>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
-                                        <p class="small text-muted mb-0">Legend</p>
+                                        <p class="small text-muted mb-0">{{ $t("settings.filters.legend") }}</p>
                                         <button
                                             type="button"
                                             class="btn btn-xs rounded-pill keyword-tag keyword-tag-whole py-1 px-3"
                                             @click="showWholeWordExplanation()"
                                             >
                                             <i class="far fa-info-circle mr-1"></i>
-                                            Whole word
+                                            {{ $t("settings.filters.whole_word") }}
                                         </button>
                                         <button
                                             type="button"
@@ -63,7 +63,7 @@
                                             @click="showPartialPhraseExplanation()"
                                             >
                                             <i class="far fa-info-circle mr-1"></i>
-                                            Partial word
+                                            {{ $t("settings.filters.partial_word") }}
                                         </button>
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
                                             type="text"
                                             :maxlength="40"
                                             class="form-control border-0 bg-transparent rounded-pill flex-grow-1 mb-2"
-                                            placeholder="Add a keyword..."
+                                            :placeholder=" $t('settings.filters.add_keyword') "
                                             @keydown.enter.prevent="addKeywordFromInput"
                                             style="min-width: 150px;"
                                             />
@@ -105,12 +105,12 @@
                                 </div>
                                 <div v-if="isDuplicateError" class="alert alert-warning rounded-lg mt-2 p-2 small">
                                     <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    Duplicate keywords are not allowed
+                                    {{ $t("settings.filters.duplicate_not_allowed") }}
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="label">Filter Action</label>
+                                <label class="label">{{ $t("settings.filters.filter_action") }}</label>
                                 <div class="filter-action-options">
                                     <div class="custom-control custom-radio mb-2">
                                         <input
@@ -123,7 +123,7 @@
                                         />
                                         <label class="custom-control-label d-flex align-items-center" for="action-blur">
                                             <span class="badge badge-primary mr-2">Blur</span>
-                                            Hide media behind a blurbash
+                                            {{ $t("settings.filters.hide_media_blur") }}
                                         </label>
                                     </div>
                                     <div class="custom-control custom-radio mb-2">
@@ -137,7 +137,7 @@
                                         />
                                         <label class="custom-control-label d-flex align-items-center" for="action-warn">
                                             <span class="badge badge-warning mr-2">Warning</span>
-                                            Show warning before displaying content
+                                            {{ $t("settings.filters.show_warning") }}
                                         </label>
                                     </div>
                                     <div class="custom-control custom-radio mb-2">
@@ -151,14 +151,14 @@
                                         />
                                         <label class="custom-control-label d-flex align-items-center" for="action-hide">
                                             <span class="badge badge-danger mr-2">Hidden</span>
-                                            Hide content completely
+                                            {{ $t("settings.filters.hide_content_completely") }}
                                         </label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="label">Apply filters to</label>
+                                <label class="label">{{ $t("settings.filters.apply_filters_to") }}</label>
                                 <div class="row">
                                     <div v-if="contextItemKeys.includes('home')" class="col-6 mb-2">
                                         <div class="custom-control custom-checkbox">
@@ -170,7 +170,7 @@
                                             v-model="formData.context"
                                             />
                                             <label class="custom-control-label" for="context-home">
-                                                Home timeline
+                                                {{ $t("settings.filters.home_timeline") }}
                                             </label>
                                         </div>
                                     </div>
@@ -184,7 +184,7 @@
                                             v-model="formData.context"
                                             />
                                             <label class="custom-control-label" for="context-notifications">
-                                                Notifications
+                                                {{ $t("settings.filters.notifications") }}
                                             </label>
                                         </div>
                                     </div>
@@ -198,7 +198,7 @@
                                             v-model="formData.context"
                                             />
                                             <label class="custom-control-label" for="context-public">
-                                                Public timelines
+                                                {{ $t("settings.filters.public_timeline") }}
                                             </label>
                                         </div>
                                     </div>
@@ -212,7 +212,7 @@
                                             v-model="formData.context"
                                             />
                                             <label class="custom-control-label" for="context-hashtags">
-                                                Hashtags
+                                                {{ $t("settings.filters.hashtags") }}
                                             </label>
                                         </div>
                                     </div>
@@ -226,7 +226,7 @@
                                             v-model="formData.context"
                                             />
                                             <label class="custom-control-label" for="context-thread">
-                                                Conversations
+                                                {{ $t("settings.filters.conversations") }}
                                             </label>
                                         </div>
                                     </div>
@@ -240,7 +240,7 @@
                                             v-model="formData.context"
                                             />
                                             <label class="custom-control-label" for="context-groups">
-                                                Groups
+                                                {{ $t("settings.filters.groups") }}
                                             </label>
                                         </div>
                                     </div>
@@ -248,16 +248,16 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="duration" class="label">Duration</label>
+                                <label for="duration" class="label"> {{ $t("settings.filters.duration") }}</label>
                                 <select v-model="selectedDuration" id="duration" class="custom-select custom-select-lg form-control-mat">
-                                    <option value="0">Forever</option>
-                                    <option value="1800">30 minutes</option>
-                                    <option value="3600">1 hour</option>
-                                    <option value="21600">6 hours</option>
-                                    <option value="43200">12 hours</option>
-                                    <option value="86400">1 day</option>
-                                    <option value="604800">1 week</option>
-                                    <option value="-1">Custom...</option>
+                                    <option value="0">{{ $t("settings.filters.forever") }}</option>
+                                    <option value="1800">{{ $t("settings.filters.30_minutes") }}</option>
+                                    <option value="3600">{{ $t("settings.filters.1_hour") }}</option>
+                                    <option value="21600">{{ $t("settings.filters.6_hours") }}</option>
+                                    <option value="43200">{{ $t("settings.filters.12_hours") }}</option>
+                                    <option value="86400">{{ $t("settings.filters.1_day") }}</option>
+                                    <option value="604800">{{ $t("settings.filters.1_week") }}</option>
+                                    <option value="-1">{{ $t("settings.filters.1_week") }}</option>
                                 </select>
                                 <div v-if="selectedDuration === '-1'" class="input-group mt-2">
                                     <input
@@ -265,7 +265,7 @@
                                     type="number"
                                     min="1"
                                     class="form-control form-control-lg form-control-mat"
-                                    placeholder="Enter duration in seconds"
+                                    :placeholder="$t('settings.filters.enter_duration_in_seconds')"
                                     />
                                     <div class="input-group-append overflow-hidden">
                                         <span class="input-group-text">seconds</span>
@@ -277,7 +277,7 @@
                         <div class="modal-footer bg-light d-flex justify-content-between align-items-center">
                             <div>
                                 <button type="button" @click="closeModal()" class="btn btn-outline-secondary font-weight-light rounded-pill">
-                                    Cancel
+                                   {{ $t('common.cancel')}}
                                 </button>
 
                                 <button
@@ -285,7 +285,7 @@
                                     type="button"
                                     class="btn btn-outline-danger font-weight-light rounded-pill"
                                     @click="deleteFilter()">
-                                    Delete
+                                    {{ $t('common.delete')}}
                                 </button>
                             </div>
                             <button type="submit" class="btn btn-primary font-weight-bold rounded-pill" :disabled="!isValid">
@@ -295,7 +295,7 @@
                                     </div>
                                 </template>
                                 <template v-else>
-                                    {{ isEditing ? 'Save Changes' : 'Create Filter' }}
+                                    {{ isEditing ? $t("settings.filters.save_changes") :  $t("settings.filters.create_filter") }}
                                 </template>
                             </button>
                         </div>
@@ -328,31 +328,31 @@
                                         <div class="step-content-info-icon">
                                             <i class="fal fa-filter fa-3x"></i>
                                         </div>
-                                        <h4>Name Your Filter</h4>
-                                        <p class="text-muted">Give your filter a name that will help you remember what content it filters.</p>
+                                        <h4>{{ $t('settings.filters.name_your_filter') }}</h4>
+                                        <p class="text-muted">{{ $t('settings.filters.give_your_filter_a_name') }}</p>
                                     </div>
                                     <div class="form-group">
-                                        <label for="wizard-title">Filter title</label>
+                                        <label for="wizard-title">{{ $t('settings.filters.filter_title') }}</label>
                                         <input
                                         v-model="formData.title"
                                         type="text"
                                         id="wizard-title"
                                         class="form-control form-control-lg"
-                                        placeholder="My filter name"
+                                        :placeholder="$t('settings.filters.my_filter_name')"
                                         required
                                         />
                                     </div>
                                     <div class="form-group">
-                                        <label for="wizard-duration">Filter Duration</label>
+                                        <label for="wizard-duration">{{ $t('settings.filters.filter_duration') }}</label>
                                         <select v-model="selectedDuration" id="wizard-duration" class="custom-select">
-                                            <option value="0">Forever</option>
-                                            <option value="1800">30 minutes</option>
-                                            <option value="3600">1 hour</option>
-                                            <option value="21600">6 hours</option>
-                                            <option value="43200">12 hours</option>
-                                            <option value="86400">1 day</option>
-                                            <option value="604800">1 week</option>
-                                            <option value="-1">Custom...</option>
+                                            <option value="0">{{ $t("settings.filters.forever") }}</option>
+                                            <option value="1800">{{ $t("settings.filters.30_minutes") }}</option>
+                                            <option value="3600">{{ $t("settings.filters.1_hour") }}</option>
+                                            <option value="21600">{{ $t("settings.filters.6_hours") }}</option>
+                                            <option value="43200">{{ $t("settings.filters.12_hours") }}</option>
+                                            <option value="86400">{{ $t("settings.filters.1_day") }}</option>
+                                            <option value="604800">{{ $t("settings.filters.1_week") }}</option>
+                                            <option value="-1">{{ $t("settings.filters.1_week") }}</option>
                                         </select>
                                         <div v-if="selectedDuration === '-1'" class="input-group mt-2">
                                             <input
@@ -361,7 +361,7 @@
                                             min="1"
                                             max="63072000"
                                             class="form-control"
-                                            placeholder="Enter duration in seconds"
+                                            :placeholder="$t('settings.filters.enter_duration_in_seconds')"
                                             />
                                             <div class="input-group-append">
                                                 <span class="input-group-text">seconds</span>
@@ -375,8 +375,8 @@
                                         <div class="step-content-info-icon">
                                             <i class="fal fa-key fa-3x"></i>
                                         </div>
-                                        <h4>Add Filter Keywords</h4>
-                                        <p class="text-muted">Add words or phrases you want to filter.<br />Content containing these words will be filtered according to your settings.</p>
+                                        <h4>{{ $t('settings.filters.add_filter_keywords')}}</h4>
+                                        <p class="text-muted"  v-html="$t('settings.filters.add_word_or_phrase')"></p>
                                     </div>
 
                                     <div class="keywords-container d-flex flex-column align-items-center">
@@ -421,7 +421,7 @@
                                             </div>
 
                                             <small class="text-muted">
-                                                {{ keyword.whole_word ? 'Whole word match - filters exact matches only (e.g. "book" won\'t match "bookstore")' : 'Partial word match - filters any content containing this text (e.g. "book" will match "bookstore")' }}
+                                                {{ keyword.whole_word ? $t('settings.filters.whole_word_match') :  $t('settings.filters.partial_word_match')}}
                                             </small>
                                         </div>
 
@@ -431,12 +431,12 @@
                                             class="btn btn-outline-primary mt-3 font-weight-light rounded-pill"
                                             @click="addKeyword"
                                         >
-                                            <i class="fas fa-plus mr-1"></i> Add another keyword
+                                            <i class="fas fa-plus mr-1"></i> {{ $t('settings.filters.add_another_keyword')}}
                                         </button>
 
                                         <div v-if="isDuplicateError" class="alert alert-warning mt-4 w-75">
                                             <i class="fas fa-exclamation-triangle mr-2"></i>
-                                            Please remove duplicate keywords before continuing
+                                            {{ $t('settings.filters.please_remove_duplicate_keywords')}}
                                         </div>
                                     </div>
                                 </div>
@@ -446,8 +446,8 @@
                                         <div class="step-content-info-icon">
                                             <i class="fal fa-shield-alt fa-3x"></i>
                                         </div>
-                                        <h4>Choose Filter Action</h4>
-                                        <p class="text-muted">How would you like to handle content that matches your filter?</p>
+                                        <h4>{{ $t('settings.filters.choose_filter_action')}}</h4>
+                                        <p class="text-muted">{{ $t('settings.filters.choose_filter_action_description')}}</p>
                                     </div>
 
                                     <div class="card-deck">
@@ -459,7 +459,7 @@
                                             <div class="card-body">
                                                 <i class="fas fa-tint fa-2x text-info mb-3"></i>
                                                 <h5 class="card-title">Blur</h5>
-                                                <p class="card-text text-muted small">Hide media behind a blurhash</p>
+                                                <p class="card-text text-muted small">{{ $t('settings.filters.hide_media_blur') }}</p>
                                             </div>
                                         </div>
                                         <div
@@ -470,7 +470,7 @@
                                             <div class="card-body">
                                                 <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
                                                 <h5 class="card-title">Warn</h5>
-                                                <p class="card-text text-muted small">Show a warning before displaying the content</p>
+                                                <p class="card-text text-muted small">{{ $t('settings.filters.show_warning') }}</p>
                                             </div>
                                         </div>
                                         <div
@@ -481,7 +481,7 @@
                                             <div class="card-body">
                                                 <i class="fas fa-eye-slash fa-2x text-danger mb-3"></i>
                                                 <h5 class="card-title">Hide</h5>
-                                                <p class="card-text text-muted small">Completely hide content that matches</p>
+                                                <p class="card-text text-muted small">{{ $t('settings.filters.hide_completely') }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -492,8 +492,8 @@
                                         <div class="step-content-info-icon">
                                             <i class="fal fa-map fa-3x"></i>
                                         </div>
-                                        <h4>Choose Where to Apply</h4>
-                                        <p class="text-muted">Select which sections of the application should use this filter.</p>
+                                        <h4>{{ $t('settings.filters.choose_where_to_apply') }}</h4>
+                                        <p class="text-muted">{{ $t('settings.filters.choose_where_to_apply_description') }}</p>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3" v-for="item in contextItems" :key="item.value">
@@ -528,8 +528,8 @@
                                         <div class="step-content-info-icon bg-success border-success">
                                             <i class="fas fa-check fa-3x text-white"></i>
                                         </div>
-                                        <h4>Review Your Filter</h4>
-                                        <p class="text-muted">Here's a summary of the filter you've created.</p>
+                                        <h4>{{ $t('settings.filters.review_your_filter') }}</h4>
+                                        <p class="text-muted">{{ $t('settings.filters.review_your_filter_description') }}</p>
                                     </div>
                                     <div class="card shadow-none border rounded-lg mb-3">
                                         <div class="card-header bg-light">
@@ -537,7 +537,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row mb-3">
-                                                <div class="col-md-4 font-weight-bold">Keywords:</div>
+                                                <div class="col-md-4 font-weight-bold">{{ $t('settings.filters.keywords')  }}:</div>
                                                 <div class="col-md-8">
                                                     <div v-if="formData.keywords.length > 0">
                                                         <span
@@ -549,11 +549,11 @@
                                                             <span v-if="keyword.whole_word" class="small font-italic ml-1">(whole)</span>
                                                         </span>
                                                     </div>
-                                                    <span v-else class="text-muted">No keywords specified</span>
+                                                    <span v-else class="text-muted">{{ $t('settings.filters.no_keywords_specified')  }}</span>
                                                 </div>
                                             </div>
                                             <div class="row mb-4">
-                                                <div class="col-md-4 font-weight-bold">Action:</div>
+                                                <div class="col-md-4 font-weight-bold">{{ $t('settings.filters.action')  }}:</div>
                                                 <div class="col-md-8">
                                                     <span
                                                         class="font-weight-bold mb-1"
@@ -575,15 +575,15 @@
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
-                                                <div class="col-md-4 font-weight-bold">Duration:</div>
+                                                <div class="col-md-4 font-weight-bold">{{ $t("settings.filters.duration") }}:</div>
                                                 <div class="col-md-8 text-muted small">
-                                                    <span v-if="selectedDuration === '0'">Forever</span>
-                                                    <span v-else-if="selectedDuration === '1800'">30 minutes</span>
-                                                    <span v-else-if="selectedDuration === '3600'">1 hour</span>
-                                                    <span v-else-if="selectedDuration === '21600'">6 hours</span>
-                                                    <span v-else-if="selectedDuration === '43200'">12 hours</span>
-                                                    <span v-else-if="selectedDuration === '86400'">1 day</span>
-                                                    <span v-else-if="selectedDuration === '604800'">1 week</span>
+                                                    <span v-if="selectedDuration === '0'">{{ $t("settings.filters.forever") }}</span>
+                                                    <span v-else-if="selectedDuration === '1800'">{{ $t("settings.filters.30_minutes") }}</span>
+                                                    <span v-else-if="selectedDuration === '3600'">{{ $t("settings.filters.1_hour") }}</span>
+                                                    <span v-else-if="selectedDuration === '21600'">{{ $t("settings.filters.6_hours") }}</span>
+                                                    <span v-else-if="selectedDuration === '43200'">{{ $t("settings.filters.12_hours") }}</span>
+                                                    <span v-else-if="selectedDuration === '86400'">{{ $t("settings.filters.1_day") }}</span>
+                                                    <span v-else-if="selectedDuration === '604800'">{{ $t("settings.filters.1_week") }}</span>
                                                     <span v-else-if="selectedDuration === '-1'">{{ customDuration }} seconds</span>
                                                 </div>
                                             </div>
@@ -609,7 +609,7 @@
                                     class="btn btn-outline-danger font-weight-light rounded-pill"
                                     @click="deleteFilter()"
                                 >
-                                    Delete
+                                    {{ $t('common.delete')}}
                                 </button>
                             </div>
                             <div>
@@ -620,7 +620,7 @@
                                     @click="nextStep"
                                     :disabled="!canContinue"
                                 >
-                                    Continue
+                                    {{ $t('common.continue')}}
                                 </button>
                                 <button
                                     v-else
@@ -635,7 +635,7 @@
                                         </div>
                                     </template>
                                     <template v-else>
-                                        {{ isEditing ? 'Save Changes' : 'Create Filter' }}
+                                        {{ isEditing ? $t("settings.filters.save_changes") : $t("settings.filters.create_filter")  }}
                                     </template>
                                 </button>
                             </div>
@@ -715,11 +715,11 @@
                     // },
                 ],
                 wizardSteps: [
-                    { label: 'Title', field: 'title' },
-                    { label: 'Keywords', field: 'keywords' },
-                    { label: 'Action', field: 'filter_action' },
-                    { label: 'Context', field: 'context' },
-                    { label: 'Review', field: null }
+                    { label: this.$t('settings.filters.titleAdvance'), field: 'title' },
+                    { label: this.$t('settings.filters.keywords'), field: 'keywords' },
+                    { label: this.$t('settings.filters.action'), field: 'filter_action' },
+                    { label: this.$t('settings.filters.context'), field: 'context' },
+                    { label: this.$t('settings.filters.review'), field: null }
                 ]
             }
         },

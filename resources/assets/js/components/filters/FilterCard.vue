@@ -9,10 +9,10 @@
                     </div>
                     <div class="text-muted">·</div>
                     <div v-if="filter.expires_at" class="small text-muted">
-                        Expires: {{ formatExpiry(filter.expires_at) }}
+                        {{ $t('settings.filters.expires')  }}: {{ formatExpiry(filter.expires_at) }}
                     </div>
                     <div v-else class="small text-muted">
-                        Never expires
+                        {{ $t('settings.filters.never_expires')  }}
                     </div>
                 </div>
                 <div>

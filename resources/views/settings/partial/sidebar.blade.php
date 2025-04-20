@@ -18,7 +18,7 @@
                 <a class="nav-link font-weight-light text-muted" href="{{route('settings.media')}}">{{__('settings.media')}}</a>
             </li>
             <li class="nav-item pl-3 {{request()->is('settings/filters*')?'active':''}}">
-                <a class="nav-link font-weight-light text-muted" href="{{route('settings.filters')}}">Filters</a>
+                <a class="nav-link font-weight-light text-muted" href="{{route('settings.filters')}}">{{__('settings.filters')}}</a>
             </li>
             {{-- <li class="nav-item pl-3 {{request()->is('settings/notifications')?'active':''}}">
                 <a class="nav-link font-weight-light text-muted" href="{{route('settings.notifications')}}">{{__('settings.notifications')}}</a>
