@@ -12,7 +12,7 @@ return [
 		'share' => 'Compartilhar',
 		'shared' => 'Compartilhado',
 		'shares' => 'Compartilhamentos',
-		'unshare' => 'Despartilhar',
+		'unshare' => 'Remover compartilhamento',
 		'bookmark' => 'Favorito',
 
 		'cancel' => 'Cancelar',
@@ -41,7 +41,7 @@ return [
 
 	'navmenu' => [
 		'search' => 'Pesquisa',
-		'admin' => 'Painel de Administrativo',
+		'admin' => 'Painel Administrativo',
 
 		// Timelines
 		'homeFeed' => 'Inicio',
@@ -60,7 +60,7 @@ return [
 		'drive' => 'Drive',
 		'settings' => 'Configurações',
 		'compose' => 'Criar novo',
-		'logout' => 'Terminar Sessão',
+		'logout' => 'Sair',
 
 		// Nav footer
 		'about' => 'Sobre',
@@ -138,11 +138,11 @@ return [
 		'embed' => 'Incorporar',
 
 		'selectOneOption' => 'Selecione uma das seguintes opções',
-		'unlistFromTimelines' => 'Remover das cronologias',
+		'unlistFromTimelines' => 'Remover das Timelines',
 		'addCW' => 'Adicionar aviso de conteúdo',
 		'removeCW' => 'Remover aviso de conteúdo',
 		'markAsSpammer' => 'Marcar como Spammer',
-		'markAsSpammerText' => 'Remover das cronologias e adicionar um aviso de conteúdo às publicações existentes e futuras',
+		'markAsSpammerText' => 'Remover das timelines e adicionar um aviso de conteúdo às publicações existentes e futuras',
 		'spam' => 'Lixo Eletrônico',
 		'sensitive' => 'Conteúdo Sensível',
 		'abusive' => 'Abusivo ou prejudicial',
