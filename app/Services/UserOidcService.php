@@ -15,7 +15,7 @@ class UserOidcService extends GenericProvider {
             'urlAccessToken' => config('remote-auth.oidc.tokenURL'),
             'urlResourceOwnerDetails' => config('remote-auth.oidc.profileURL'),
             'scopes' => config('remote-auth.oidc.scopes'),
-            'accessTokenResourceOwnerId' => config('remote-auth.oidc.field_id'),
+            'responseResourceOwnerId' => config('remote-auth.oidc.field_id'),
         ]);
     }
 }
