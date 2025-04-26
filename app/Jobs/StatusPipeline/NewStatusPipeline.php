@@ -4,12 +4,14 @@ namespace App\Jobs\StatusPipeline;
 
 use App\Media;
 use App\Status;
+use Cache;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class NewStatusPipeline implements ShouldQueue
 {
@@ -62,10 +64,17 @@ class NewStatusPipeline implements ShouldQueue
      */
     public function handle()
     {
-        // Skip media check if cloud storage isn't enabled or fast processing is on
-        if (! config_cache('pixelfed.cloud_storage') || config('pixelfed.media_fast_process')) {
-            $this->dispatchFederation();
+        // Check if status still exists
+        if (!Status::where('id', $this->status->id)->exists()) {
+            if(config('federation.activitypub.delivery.logger.enabled')) {
+                Log::info('Status ' . $this->status->id . ' was deleted before federation');
+            }
+            return;
+        }
 
+        // Skip media check if cloud storage isn't enabled or fast processing is on
+        if (!config_cache('pixelfed.cloud_storage') || config('pixelfed.media_fast_process')) {
+            $this->dispatchFederation();
             return;
         }
 
@@ -82,18 +91,16 @@ class NewStatusPipeline implements ShouldQueue
                 ->first();
 
             // If media has been processing for more than 10 minutes, proceed anyway
-            if ($oldestProcessingMedia && $oldestProcessingMedia->replicated_at && $oldestProcessingMedia->replicated_at->diffInMinutes(now()) > 10) {
-                if (config('federation.activitypub.delivery.logger.enabled')) {
-                    Log::warning('Media processing timeout for status '.$this->status->id.'. Proceeding with federation.');
+            if ($oldestProcessingMedia && now()->diffInMinutes($oldestProcessingMedia->created_at) > 10) {
+                if(config('federation.activitypub.delivery.logger.enabled')) {
+                    Log::warning('Media processing timeout for status ' . $this->status->id . '. Proceeding with federation.');
                 }
                 $this->dispatchFederation();
-
                 return;
             }
 
             // Release job back to queue with delay of 30 seconds
             $this->release(30);
-
             return;
         }
 
@@ -111,8 +118,8 @@ class NewStatusPipeline implements ShouldQueue
         try {
             StatusEntityLexer::dispatch($this->status);
         } catch (\Exception $e) {
-            if (config('federation.activitypub.delivery.logger.enabled')) {
-                Log::error('Federation dispatch failed for status '.$this->status->id.': '.$e->getMessage());
+            if(config('federation.activitypub.delivery.logger.enabled')) {
+                Log::error('Federation dispatch failed for status ' . $this->status->id . ': ' . $e->getMessage());
             }
             throw $e;
         }
@@ -121,14 +128,15 @@ class NewStatusPipeline implements ShouldQueue
     /**
      * Handle a job failure.
      *
+     * @param  \Throwable  $exception
      * @return void
      */
     public function failed(\Throwable $exception)
     {
-        if (config('federation.activitypub.delivery.logger.enabled')) {
-            Log::error('NewStatusPipeline failed for status '.$this->status->id, [
+        if(config('federation.activitypub.delivery.logger.enabled')) {
+            Log::error('NewStatusPipeline failed for status ' . $this->status->id, [
                 'exception' => $exception->getMessage(),
-                'trace' => $exception->getTraceAsString(),
+                'trace' => $exception->getTraceAsString()
             ]);
         }
     }
