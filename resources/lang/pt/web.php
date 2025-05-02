@@ -6,18 +6,18 @@ return [
 		'comment' => 'Comentar',
 		'commented' => 'Comentado',
 		'comments' => 'Comentários',
-		'like' => 'Gosto',
-		'liked' => 'Gostei',
-		'likes' => 'Gostos',
+		'like' => 'Curtir',
+		'liked' => 'Curtiu',
+		'likes' => 'Curtidas',
 		'share' => 'Compartilhar',
 		'shared' => 'Compartilhado',
-		'shares' => 'Partilhas',
-		'unshare' => 'Despartilhar',
+		'shares' => 'Compartilhamentos',
+		'unshare' => 'Remover compartilhamento',
 		'bookmark' => 'Favorito',
 
 		'cancel' => 'Cancelar',
 		'copyLink' => 'Copiar link',
-		'delete' => 'Eliminar',
+		'delete' => 'Excluir',
 		'error' => 'Erro',
 		'errorMsg' => 'Algo correu mal. Por favor, tente novamente mais tarde.',
 		'oops' => 'Opa!',
@@ -43,7 +43,7 @@ return [
 
 	'navmenu' => [
 		'search' => 'Pesquisa',
-		'admin' => 'Painel de Administração',
+		'admin' => 'Painel Administrativo',
 
 		// Timelines
 		'homeFeed' => 'Inicio',
@@ -51,7 +51,7 @@ return [
 		'globalFeed' => 'Feed global',
 
 		// Core features
-		'discover' => 'Descobrir',
+		'discover' => 'Explorar',
 		'directMessages' => 'Mensagens Diretas',
 		'notifications' => 'Notificações',
 		'groups' => 'Grupos',
@@ -61,10 +61,11 @@ return [
 		'profile' => 'Perfil',
 		'drive' => 'Drive',
 		'settings' => 'Definições',
-        'appearance' => 'Aparência',
+    'appearance' => 'Aparência',
 		'compose' => 'Criar novo',
 		'logout' => 'Terminar Sessão',
-        "createStory" => "Criar Story",
+     "createStory" => "Criar Story",
+
 
 		// Nav footer
 		'about' => 'Sobre',
@@ -174,11 +175,11 @@ return [
 		'embed' => 'Incorporar',
 
 		'selectOneOption' => 'Selecione uma das seguintes opções',
-		'unlistFromTimelines' => 'Remover das cronologias',
+		'unlistFromTimelines' => 'Remover das Timelines',
 		'addCW' => 'Adicionar aviso de conteúdo',
 		'removeCW' => 'Remover aviso de conteúdo',
 		'markAsSpammer' => 'Marcar como Spammer',
-		'markAsSpammerText' => 'Remover das cronologias e adicionar um aviso de conteúdo às publicações existentes e futuras',
+		'markAsSpammerText' => 'Remover das timelines e adicionar um aviso de conteúdo às publicações existentes e futuras',
 		'spam' => 'Lixo Eletrônico',
 		'sensitive' => 'Conteúdo Sensível',
 		'abusive' => 'Abusivo ou prejudicial',
