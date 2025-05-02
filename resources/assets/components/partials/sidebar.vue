@@ -256,7 +256,7 @@
             <a href="/site/terms">{{ $t('navmenu.terms') }}</a>
         </div> -->
 
-        <div class="sidebar-attribution pr-3 d-flex flex-wrap justify-content-between align-items-center">
+        <div class="sidebar-attribution pr-3 d-flex flex-wrap justify-content-between align-items-center" style="gap:5px;">
             <router-link to="/i/web/language">
                 <i class="fal fa-language fa-2x" alt="Select a language"></i>
             </router-link>
