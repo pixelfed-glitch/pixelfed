@@ -108,7 +108,7 @@ Route::group(['prefix' => 'api'], function () use ($middleware) {
         Route::post('accounts/{id}/unfollow', 'Api\ApiV1Controller@accountUnfollowById')->middleware($middleware);
         Route::post('accounts/{id}/block', 'Api\ApiV1Controller@accountBlockById')->middleware($middleware);
         Route::post('accounts/{id}/unblock', 'Api\ApiV1Controller@accountUnblockById')->middleware($middleware);
-        Route::post('accounts/{id}/removeFollow', 'Api\ApiV1Controller@accountRemoveFollowById')->middleware($middleware);
+        Route::post('accounts/{id}/remove_from_followers', 'Api\ApiV1Controller@accountRemoveFollowById')->middleware($middleware);
         Route::post('accounts/{id}/pin', 'Api\ApiV1Controller@accountEndorsements')->middleware($middleware);
         Route::post('accounts/{id}/unpin', 'Api\ApiV1Controller@accountEndorsements')->middleware($middleware);
         Route::post('accounts/{id}/mute', 'Api\ApiV1Controller@accountMuteById')->middleware($middleware);

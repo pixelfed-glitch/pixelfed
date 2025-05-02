@@ -155,7 +155,7 @@
 				});
                 break;
                 case 'removeFollow':
-                axios.post('/api/v1/accounts/' + id + '/removeFollow').then(res => {
+                axios.post('/api/pixelfed/v1/accounts/' + id + '/remove_from_followers').then(res => {
                     swal(
                         '{{__('settings.relationships.unfollow_successful')}}',
                         '{{__('settings.relationships.you_have_successfully_unfollowed_that_user')}}',

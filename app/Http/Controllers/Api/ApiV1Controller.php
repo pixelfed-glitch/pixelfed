@@ -4563,41 +4563,45 @@ class ApiV1Controller extends Controller
         );
     }
 
-    public function accountRemoveFollowById(Request $request, $target_id)
+    public function accountRemoveFollowById(Request $request, $id)
     {
         abort_if(! $request->user(), 403);
 
-        $pid =  $request->user()->profile_id;
+        $pid = $request->user()->profile_id;
 
-        if (intval($pid) === intval($target_id)) {
+        if ($pid === $id) {
             return $this->json(['error' => 'Request invalid! target_id is same user id.'], 500);
         }
 
-        Follower::whereProfileId($target_id)
+        $exists = Follower::whereProfileId($id)
             ->whereFollowingId($pid)
-            ->delete();
+            ->first();
 
-        RelationshipService::refresh($pid, $target_id);
+        abort_unless($exists, 404);
 
-        UnfollowPipeline::dispatch($pid, $pid)->onQueue('high');
+        $exists->delete();
 
-        RelationshipService::refresh($pid, $target_id);
-        Cache::forget('profile:following:'.$target_id);
-        Cache::forget('profile:followers:'.$target_id);
+        RelationshipService::refresh($pid, $id);
+        RelationshipService::refresh($pid, $id);
+
+        UnfollowPipeline::dispatch($id, $pid)->onQueue('high');
+
+        Cache::forget('profile:following:'.$id);
+        Cache::forget('profile:followers:'.$id);
         Cache::forget('profile:following:'.$pid);
         Cache::forget('profile:followers:'.$pid);
         Cache::forget('api:local:exp:rec:'.$pid);
-        Cache::forget('user:account:id:'.$target_id);
+        Cache::forget('user:account:id:'.$id);
         Cache::forget('user:account:id:'.$pid);
-        Cache::forget('profile:follower_count:'.$target_id);
+        Cache::forget('profile:follower_count:'.$id);
         Cache::forget('profile:follower_count:'.$pid);
-        Cache::forget('profile:following_count:'.$target_id);
+        Cache::forget('profile:following_count:'.$id);
         Cache::forget('profile:following_count:'.$pid);
         AccountService::del($pid);
-        AccountService::del($target_id);
+        AccountService::del($id);
 
-
-        return $this->json([]);
+        $res = RelationshipService::get($id, $pid);
+        return $this->json($res);
     }
     /**
      *  GET /api/v1/statuses/{id}/pin
