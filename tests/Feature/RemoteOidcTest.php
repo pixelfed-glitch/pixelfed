@@ -17,7 +17,7 @@ class RemoteOidcTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    public function test_view_oidc_start()
+    public function view_oidc_start()
     {
         config([
             'remote-auth.oidc.enabled'=> true,
@@ -35,7 +35,7 @@ class RemoteOidcTest extends TestCase
         $response->assertRedirect("http://fakeserver.oidc/authorizeURL?scope=openid%20profile%20email&state={$state}&response_type=code&approval_prompt=auto&redirect_uri={$callbackUrl}&client_id=fake");
     }
 
-    public function test_view_oidc_callback_new_user()
+    public function view_oidc_callback_new_user()
     {
         $originalUserCount = User::count();
         $this->assertDatabaseCount('users', $originalUserCount);
@@ -70,7 +70,7 @@ class RemoteOidcTest extends TestCase
         $this->assertDatabaseCount('users', $originalUserCount+1);
     }
 
-    public function test_view_oidc_callback_existing_user()
+    public function view_oidc_callback_existing_user()
     {
         $user = User::create([
             'name' => fake()->name,

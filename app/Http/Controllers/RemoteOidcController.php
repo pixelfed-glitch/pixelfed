@@ -21,7 +21,7 @@ class RemoteOidcController extends Controller
 
     public function start(UserOidcService $provider, Request $request)
     {
-        abort_unless(config('remote-auth.oidc.enabled'), 404);
+        abort_unless((bool) config('remote-auth.oidc.enabled'), 404);
         if ($request->user()) {
             return redirect('/');
         }
@@ -37,7 +37,7 @@ class RemoteOidcController extends Controller
 
     public function handleCallback(UserOidcService $provider, Request $request)
     {
-        abort_unless(config('remote-auth.oidc.enabled'), 404);
+        abort_unless((bool) config('remote-auth.oidc.enabled'), 404);
 
         if ($request->user()) {
             return redirect('/');
