@@ -281,8 +281,7 @@
                                 {{ relationship.blocking ? 'Unblock' : 'Block' }}
                             </b-dropdown-item>
 
-                            <b-dropdown-item :href="'/i/report?type=user&id=' + profile.id"
-                                             link-class="text-danger font-weight-bold">Report
+                            <b-dropdown-item :href="'/i/report?type=user&id=' + profile.id" link-class="text-danger font-weight-bold">Report
                             </b-dropdown-item>
                         </div>
                     </b-dropdown>
@@ -620,6 +619,7 @@ export default {
             this.$emit('unfollow');
         }
     }
+}
 
 </script>
 
