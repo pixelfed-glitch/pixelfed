@@ -32,8 +32,8 @@ return [
 		'sensitive' => 'Sensível',
 		'sensitiveContent' => 'Conteúdo sensível',
 		'sensitiveContentWarning' => 'Este post pode conter conteúdo sensível',
-
-        'continue' => 'Continuar',
+    'loading' => 'Carregando...',
+    'continue' => 'Continuar',
 	],
 
 	'site' => [
@@ -64,6 +64,7 @@ return [
         'appearance' => 'Aparência',
 		'compose' => 'Criar novo',
 		'logout' => 'Terminar Sessão',
+        "createStory" => "Criar Story",
 
 		// Nav footer
 		'about' => 'Sobre',
@@ -216,8 +217,36 @@ return [
         "unpinPostConfirm" => "Tem certeza de que deseja desafixar esta publicação?"
 	],
 
-	'story' => [
-		'add' => 'Adicionar Story'
+  'story' => [
+        'add' => 'Adicionar Story',
+        'myStory' => 'Minha Story',
+        'viewMyStory' => 'Ver Minha Story',
+        'goBack' => 'Voltar',
+        'delete' => 'Excluir',
+        'crop' => 'Cortar',
+        'error' => 'Ocorreu um erro, por favor tente novamente mais tarde.',
+        'cropping' => 'Cortando',
+        'storyDuration' => 'Duração da Story',
+        'seconds' => 'segundos',
+        'processing' => 'Processando',
+        'shareWithFollowers' => 'Compartilhe momentos com seguidores que duram 24 horas',
+        'cancel' => 'Cancelar',
+        'viewdBy' => 'Visualizado por',
+        'next' => 'Próximo',
+        'zoom' => 'Mova e pinça para dar zoom',
+        'options' => 'Opções',
+        'allowReplies' => 'Permitir Respostas',
+        'allowReactions' => 'Permitir Reações',
+        'limit' => 'Você atingiu o limite para novas stories',
+        'reactionSent' => 'Reação enviada',
+        'replySent' => 'Resposta enviada',
+        'expiresIn' => 'Expira em',
+        'viewers' => 'Visualizadores',
+        'report' => 'Denunciar',
+        'close' => 'Fechar',
+        'myStories' => 'My Stories',
+        'seeAll' => 'Ver todas as stories',
+
 	],
 
 	'timeline' => [

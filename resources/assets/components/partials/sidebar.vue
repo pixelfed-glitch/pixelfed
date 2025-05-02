@@ -23,43 +23,42 @@
                             <span class="stats-followers">
 								<span class="followers-count">{{ formatCount(user.followers_count) }}</span> Followers
 							</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <div class="btn-group btn-group-lg btn-block mb-4">
-            <!-- <button type="button" class="btn btn-outline-primary btn-block font-weight-bold" style="border-top-left-radius: 18px;border-bottom-left-radius:18px;font-size:18px;font-weight:300!important" @click="createNewPost()">
-                <i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.compose') }} Post
-            </button> -->
-            <router-link to="/i/web/compose" class="btn btn-primary btn-block font-weight-bold">
-                <i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.compose') }} Post
-            </router-link>
-            <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split"
-                    data-toggle="dropdown" aria-expanded="false">
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item font-weight-bold" href="/i/collections/create">Create Collection</a>
-                <a v-if="hasStories" class="dropdown-item font-weight-bold" href="/i/stories/new">Create Story</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item font-weight-bold" href="/settings/home">Account Settings</a>
-            </div>
-        </div>
+		<div class="btn-group btn-group-lg btn-block mb-4">
+			<!-- <button type="button" class="btn btn-outline-primary btn-block font-weight-bold" style="border-top-left-radius: 18px;border-bottom-left-radius:18px;font-size:18px;font-weight:300!important" @click="createNewPost()">
+				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.compose') }} Post
+			</button> -->
+			<router-link to="/i/web/compose" class="btn btn-primary btn-block font-weight-bold">
+				<i class="fal fa-arrow-circle-up mr-1"></i> {{ $t('navmenu.compose') }} Post
+			</router-link>
+			<button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
+				<span class="sr-only">Toggle Dropdown</span>
+			</button>
+			<div class="dropdown-menu dropdown-menu-right">
+				<a class="dropdown-item font-weight-bold" href="/i/collections/create">Create Collection</a>
+				<a v-if="hasStories" class="dropdown-item font-weight-bold" href="/i/stories/new">{{ $t("navmenu.createStory")}}</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item font-weight-bold" href="/settings/home">Account Settings</a>
+			</div>
+		</div>
 
-        <!-- <router-link to="/i/web/compose" class="btn btn-primary btn-lg btn-block mb-4 shadow-sm font-weight-bold">
-            <i class="far fa-plus-square mr-1"></i> {{ $t('navmenu.compose') }}
-        </router-link> -->
+		<!-- <router-link to="/i/web/compose" class="btn btn-primary btn-lg btn-block mb-4 shadow-sm font-weight-bold">
+			<i class="far fa-plus-square mr-1"></i> {{ $t('navmenu.compose') }}
+		</router-link> -->
 
-        <div class="sidebar-sticky shadow-sm">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <!-- <router-link class="nav-link text-center" to="/i/web">
-                            <div class="icon text-lighter"><i class="far fa-home fa-lg"></i></div>
-                            <div class="small">{{ $t('navmenu.homeFeed') }}</div>
-                        </router-link> -->
+		<div class="sidebar-sticky shadow-sm">
+			<ul class="nav flex-column">
+				<li class="nav-item">
+					<div class="d-flex justify-content-between align-items-center">
+						<!-- <router-link class="nav-link text-center" to="/i/web">
+							<div class="icon text-lighter"><i class="far fa-home fa-lg"></i></div>
+							<div class="small">{{ $t('navmenu.homeFeed') }}</div>
+						</router-link> -->
                         <a
                             class="nav-link text-center"
                             href="/i/web"
