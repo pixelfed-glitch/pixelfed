@@ -4563,6 +4563,42 @@ class ApiV1Controller extends Controller
         );
     }
 
+    public function accountRemoveFollowById(Request $request, $target_id)
+    {
+        abort_if(! $request->user(), 403);
+
+        $pid =  $request->user()->profile_id;
+
+        if (intval($pid) === intval($target_id)) {
+            return $this->json(['error' => 'Request invalid! target_id is same user id.'], 500);
+        }
+
+        Follower::whereProfileId($target_id)
+            ->whereFollowingId($pid)
+            ->delete();
+
+        RelationshipService::refresh($pid, $target_id);
+
+        UnfollowPipeline::dispatch($pid, $pid)->onQueue('high');
+
+        RelationshipService::refresh($pid, $target_id);
+        Cache::forget('profile:following:'.$target_id);
+        Cache::forget('profile:followers:'.$target_id);
+        Cache::forget('profile:following:'.$pid);
+        Cache::forget('profile:followers:'.$pid);
+        Cache::forget('api:local:exp:rec:'.$pid);
+        Cache::forget('user:account:id:'.$target_id);
+        Cache::forget('user:account:id:'.$pid);
+        Cache::forget('profile:follower_count:'.$target_id);
+        Cache::forget('profile:follower_count:'.$pid);
+        Cache::forget('profile:following_count:'.$target_id);
+        Cache::forget('profile:following_count:'.$pid);
+        AccountService::del($pid);
+        AccountService::del($target_id);
+
+
+        return $this->json([]);
+    }
     /**
      *  GET /api/v1/statuses/{id}/pin
      */

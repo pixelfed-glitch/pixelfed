@@ -135,6 +135,7 @@ return [
     'relationships.unfollow' =>                                                 'Deixar de seguir',
     'relationships.mute' =>                                                     'Silenciar',
     'relationships.block' =>                                                    'Bloquear',
+    'relationships.removeFollow' =>                                             'Remover Seguidor',
     'relationships.mute_successful' =>                                          'Silenciamento bem-sucedido',
     'relationships.you_have_successfully_muted_that_user' =>                    'Você silenciou com sucesso esse usuário',
     'relationships.block_successful' =>                                         'Bloqueio bem-sucedido',

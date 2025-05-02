@@ -135,6 +135,7 @@ return [
     'relationships.unfollow' =>                                                 'Unfollow',
     'relationships.mute' =>                                                     'Mute',
     'relationships.block' =>                                                    'Block',
+    'relationships.removeFollow' =>                                             'Remove  Follow',
     'relationships.mute_successful' =>                                          'Mute Successful',
     'relationships.you_have_successfully_muted_that_user' =>                    'You have successfully muted that user',
     'relationships.block_successful' =>                                         'Block Successful',
