@@ -117,53 +117,51 @@
                     <span v-if="profile.locked">
 						<i class="fal fa-lock ml-1 fa-sm text-lighter"></i>
 					</span>
-                </p>
 
-                <p v-if="user.id != profile.id && (relationship.followed_by || relationship.muting || relationship.blocking)"
-                   class="mt-n3 text-center">
-                    <span v-if="relationship.followed_by" class="badge badge-primary p-1">Follows you</span>
-                    <span v-if="relationship.muting" class="badge badge-dark p-1 ml-1">Muted</span>
-                    <span v-if="relationship.blocking" class="badge badge-danger p-1 ml-1">Blocked</span>
-                </p>
-            </div>
+				</p>
 
-            <div class="d-none d-md-block stats py-2">
-                <div class="d-flex justify-content-between">
-                    <button
-                        class="btn btn-link stat-item"
-                        @click="toggleTab('index')">
-                        <strong :title="profile.statuses_count">{{ formatCount(profile.statuses_count) }}</strong>
-                        <span>{{ $t('profile.posts') }}</span>
-                    </button>
+				<p v-if="user.id != profile.id && (relationship.followed_by || relationship.muting || relationship.blocking)" class="mt-n3 text-center">
+					<span v-if="relationship.followed_by" class="badge badge-primary p-1">{{ $t("profile.followYou")}}</span>
+					<span v-if="relationship.muting" class="badge badge-dark p-1 ml-1">{{ $t("profile.muted")}}</span>
+					<span v-if="relationship.blocking" class="badge badge-danger p-1 ml-1">{{ $t("profile.blocked") }}</span>
+				</p>
+			</div>
 
-                    <button
-                        class="btn btn-link stat-item"
-                        @click="toggleTab('followers')">
-                        <strong :title="profile.followers_count">{{ formatCount(profile.followers_count) }}</strong>
-                        <span>{{ $t('profile.followers') }}</span>
-                    </button>
+			<div class="d-none d-md-block stats py-2">
+				<div class="d-flex justify-content-between">
+					<button
+						class="btn btn-link stat-item"
+						@click="toggleTab('index')">
+						<strong :title="profile.statuses_count">{{ formatCount(profile.statuses_count) }}</strong>
+						<span>{{ $t('profile.posts') }}</span>
+					</button>
 
-                    <button
-                        class="btn btn-link stat-item"
-                        @click="toggleTab('following')">
-                        <strong :title="profile.following_count">{{ formatCount(profile.following_count) }}</strong>
-                        <span>{{ $t('profile.following') }}</span>
-                    </button>
-                </div>
-            </div>
+					<button
+						class="btn btn-link stat-item"
+						@click="toggleTab('followers')">
+						<strong :title="profile.followers_count">{{ formatCount(profile.followers_count) }}</strong>
+						<span>{{ $t('profile.followers') }}</span>
+					</button>
 
-            <div class="d-flex align-items-center mb-3 mb-md-0">
-                <div v-if="user.id === profile.id" style="flex-grow: 1;">
-                    <!-- <router-link
-                        class="btn btn-light font-weight-bold btn-block follow-btn"
-                        to="/i/web/settings">
-                        {{ $t('profile.editProfile') }}
-                    </router-link> -->
-                    <a class="btn btn-light font-weight-bold btn-block follow-btn"
-                       href="/settings/home">{{ $t('profile.editProfile') }}</a>
-                    <a v-if="!profile.locked" class="btn btn-light font-weight-bold btn-block follow-btn mt-md-n4"
-                       href="/i/web/my-portfolio">
-                        My Portfolio
+					<button
+						class="btn btn-link stat-item"
+						@click="toggleTab('following')">
+						<strong :title="profile.following_count">{{ formatCount(profile.following_count) }}</strong>
+						<span>{{ $t('profile.following') }}</span>
+					</button>
+				</div>
+			</div>
+
+			<div class="d-flex align-items-center mb-3 mb-md-0">
+				<div v-if="user.id === profile.id" style="flex-grow: 1;">
+					<!-- <router-link
+						class="btn btn-light font-weight-bold btn-block follow-btn"
+						to="/i/web/settings">
+						{{ $t('profile.editProfile') }}
+					</router-link> -->
+                    <a class="btn btn-light font-weight-bold btn-block follow-btn" href="/settings/home">{{ $t('profile.editProfile') }}</a>
+					<a v-if="!profile.locked" class="btn btn-light font-weight-bold btn-block follow-btn mt-md-n4" href="/i/web/my-portfolio">
+                       {{ $t("profile.myPortifolio") }}
                         <span class="badge badge-success ml-1">NEW</span>
                     </a>
                 </div>
@@ -622,7 +620,7 @@ export default {
             this.$emit('unfollow');
         }
     }
-}
+
 </script>
 
 <style lang="scss">

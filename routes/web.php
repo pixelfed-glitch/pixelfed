@@ -365,6 +365,10 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             Route::get('manage', 'ProfileMigrationController@index');
             Route::post('manage', 'ProfileMigrationController@store');
         });
+
+        Route::group(['prefix' => 'filters'], function() {
+            Route::get('/', 'SettingsController@filtersHome')->name('settings.filters');
+        });
     });
 
     Route::group(['prefix' => 'site'], function () {

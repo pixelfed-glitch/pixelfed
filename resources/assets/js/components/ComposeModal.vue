@@ -717,10 +717,10 @@
 							<div class="media-body">
 								<div class="form-group">
 									<label class="font-weight-bold text-muted small">Media Description</label>
-									<textarea class="form-control" v-model="media[carouselCursor].alt" placeholder="Add a media description here..." maxlength="140"></textarea>
+									<textarea class="form-control" v-model="media[carouselCursor].alt" placeholder="Add a media description here..." maxlength="{{config.uploader.max_altext_length}}"></textarea>
 									<p class="help-text small text-muted mb-0 d-flex justify-content-between">
 										<span>Describe your photo for people with visual impairments.</span>
-										<span>{{media[carouselCursor].alt ? media[carouselCursor].alt.length : 0}}/140</span>
+										<span>{{media[carouselCursor].alt ? media[carouselCursor].alt.length : 0}}/{{config.uploader.max_altext_length}}</span>
 									</p>
 								</div>
 								<div class="form-group">

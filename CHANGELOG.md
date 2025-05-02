@@ -1,9 +1,28 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.3...dev)
+## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
+
+### Added
+- Pinned Posts ([2f655d000](https://github.com/pixelfed/pixelfed/commit/2f655d000))
+- Custom Filters ([#5928](https://github.com/pixelfed/pixelfed/pull/5928)) ([437d742ac](https://github.com/pixelfed/pixelfed/commit/437d742ac))
+
+### Updates
+- Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
+- Update Profile.vue, fix pagination ([2ea107805](https://github.com/pixelfed/pixelfed/commit/2ea107805))
+- Update ProfileMigrationController, fix race condition by chaining batched jobs ([3001365025](https://github.com/pixelfed/pixelfed/commit/3001365025))
+- Update Instance total post, add optional estimation for huge status tables ([5a5821fe8](https://github.com/pixelfed/pixelfed/commit/5a5821fe8))
+- Update ApiV1Controller, fix notifications favourited/reblogged/bookmarked state. Fixes #5901 ([8a86808a0](https://github.com/pixelfed/pixelfed/commit/8a86808a0))
+- Update ApiV1Controller, fix relationship fields. Fixes #5900 ([245ab3bc4](https://github.com/pixelfed/pixelfed/commit/245ab3bc4))
+- Update instance config, return proper matrix limits. Fixes #4780 ([473201908](https://github.com/pixelfed/pixelfed/commit/473201908))
+- Update SearchApiV2Service, fix offset bug. Fixes #5875 ([0a98b7ad2](https://github.com/pixelfed/pixelfed/commit/0a98b7ad2))
+- Update ApiV1Controller, add better direct error message. Fixes #4789 ([658fe6898](https://github.com/pixelfed/pixelfed/commit/658fe6898))
+- Update DiscoverController, improve public hashtag feed. Fixes #5866 ([32fc3180c](https://github.com/pixelfed/pixelfed/commit/32fc3180c))
+- Update report views, fix missing forms ([475d1d627](https://github.com/pixelfed/pixelfed/commit/475d1d627))
+- Update private settings, change "Private Account" to "Manually Review Follow Requests" ([31dd1ab35](https://github.com/pixelfed/pixelfed/commit/31dd1ab35))
+- Update ReportController, fix type validation ([ccc7f2fc6](https://github.com/pixelfed/pixelfed/commit/ccc7f2fc6))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
-## [v0.12.5 (2024-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
+## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
 
 ### Added
 - Add app register email verify resends ([dbd1e17](https://github.com/pixelfed/pixelfed/commit/dbd1e17))
