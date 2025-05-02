@@ -147,6 +147,8 @@ Route::group(['prefix' => 'api'], function () use ($middleware) {
         Route::post('statuses/{id}/unreblog', 'Api\ApiV1Controller@statusUnshare')->middleware($middleware);
         Route::post('statuses/{id}/bookmark', 'Api\ApiV1Controller@bookmarkStatus')->middleware($middleware);
         Route::post('statuses/{id}/unbookmark', 'Api\ApiV1Controller@unbookmarkStatus')->middleware($middleware);
+        Route::post('statuses/{id}/pin', 'Api\ApiV1Controller@statusPin')->middleware($middleware);
+        Route::post('statuses/{id}/unpin', 'Api\ApiV1Controller@statusUnpin')->middleware($middleware);
         Route::delete('statuses/{id}', 'Api\ApiV1Controller@statusDelete')->middleware($middleware);
         Route::get('statuses/{id}', 'Api\ApiV1Controller@statusById')->middleware($middleware);
         Route::post('statuses', 'Api\ApiV1Controller@statusCreate')->middleware($middleware);
@@ -185,6 +187,12 @@ Route::group(['prefix' => 'api'], function () use ($middleware) {
         Route::post('media', 'Api\ApiV2Controller@mediaUploadV2')->middleware($middleware);
         Route::get('streaming/config', 'Api\ApiV2Controller@getWebsocketConfig');
         Route::get('instance', 'Api\ApiV2Controller@instance');
+
+        Route::get('filters', 'CustomFilterController@index')->middleware($middleware);
+        Route::get('filters/{id}', 'CustomFilterController@show')->middleware($middleware);
+        Route::post('filters', 'CustomFilterController@store')->middleware($middleware);
+        Route::put('filters/{id}', 'CustomFilterController@update')->middleware($middleware);
+        Route::delete('filters/{id}', 'CustomFilterController@delete')->middleware($middleware);
     });
 
     Route::group(['prefix' => 'v1.1'], function () use ($middleware) {

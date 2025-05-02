@@ -6,6 +6,7 @@ return [
     'email' =>                  'Email',
     'invites' =>                'Convites',
     'media' =>                  'Mídia',
+    'filters' =>                'Filtros',
     'notifications' =>          'Notificações',
     'password' =>               'Senha',
     'privacy' =>                'Privacidade',
@@ -185,4 +186,6 @@ return [
     'labs' =>                                                                   'Laboratórios',
     'labs.experimental_features' =>                                             'Recursos experimentais',
     'labs.use_dark_mode_theme' =>                                               'Usar tema de modo escuro.',
+
+    
 ];

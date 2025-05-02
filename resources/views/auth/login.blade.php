@@ -111,6 +111,17 @@
                     </form>
                     @endif
 
+                    @if( config('remote-auth.oidc.enabled') )
+                    <hr>
+                    <div class="form-group row mb-0">
+                        <div class="col-md-12">
+                            <a href="/auth/oidc/start" class="btn btn-primary btn-sm btn-block rounded-pill font-weight-bold" style="background: linear-gradient(#6364FF, #563ACC);">
+                                Sign-in with OIDC
+                            </a>
+                        </div>
+                    </div>
+                    @endif
+
                     @if((bool) config_cache('pixelfed.open_registration') || (bool) config_cache('instance.curated_registration.enabled'))
                     <hr>
 
