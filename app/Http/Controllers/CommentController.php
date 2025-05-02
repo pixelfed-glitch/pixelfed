@@ -55,14 +55,12 @@ class CommentController extends Controller
         }
 
         $reply = DB::transaction(function () use ($comment, $status, $profile, $nsfw) {
-            $defaultCaption = config_cache('database.default') === 'mysql' ? null : "";
-
             $scope = $profile->is_private == true ? 'private' : 'public';
             $reply = new Status;
             $reply->profile_id = $profile->id;
             $reply->is_nsfw = $nsfw;
             $reply->caption = Purify::clean($comment);
-            $reply->rendered = $defaultCaption;
+            $reply->rendered = "";
             $reply->in_reply_to_id = $status->id;
             $reply->in_reply_to_profile_id = $status->profile_id;
             $reply->scope = $scope;

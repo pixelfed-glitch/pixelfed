@@ -30,7 +30,6 @@ use App\Util\Media\License;
 use Auth;
 use Cache;
 use DB;
-use Purify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use League\Fractal;
@@ -133,6 +132,7 @@ class ComposeController extends Controller
             case 'image/jpeg':
             case 'image/png':
             case 'image/webp':
+            case 'image/avif':
                 ImageOptimize::dispatch($media)->onQueue('mmo');
                 break;
 
@@ -239,7 +239,13 @@ class ComposeController extends Controller
         abort_if(! $request->user(), 403);
 
         $this->validate($request, [
-            'q' => 'required|string|min:1|max:50',
+            'q' => [
+                'required',
+                'string',
+                'min:1',
+                'max:300',
+                new \App\Rules\WebFinger,
+            ],
         ]);
 
         $q = $request->input('q');
@@ -262,10 +268,11 @@ class ComposeController extends Controller
 
         $blocked->push($request->user()->profile_id);
 
+        $operator = config('database.default') === 'pgsql' ? 'ilike' : 'like';
         $results = Profile::select('id', 'domain', 'username')
             ->whereNotIn('id', $blocked)
             ->whereNull('domain')
-            ->where('username', 'like', '%'.$q.'%')
+            ->where('username', $operator, '%'.$q.'%')
             ->limit(15)
             ->get()
             ->map(function ($r) {
@@ -570,7 +577,7 @@ class ComposeController extends Controller
             $status->cw_summary = $request->input('spoiler_text');
         }
 
-        $defaultCaption = config_cache('database.default') === 'mysql' ? null : "";
+        $defaultCaption = '';
         $status->caption = strip_tags($request->input('caption')) ?? $defaultCaption;
         $status->rendered = $defaultCaption;
         $status->scope = 'draft';
@@ -676,7 +683,7 @@ class ComposeController extends Controller
         $place = $request->input('place');
         $cw = $request->input('cw');
         $tagged = $request->input('tagged');
-        $defaultCaption = config_cache('database.default') === 'mysql' ? null : "";
+        $defaultCaption = config_cache('database.default') === 'mysql' ? null : '';
 
         if ($place && is_array($place)) {
             $status->place_id = $place['id'];
@@ -773,6 +780,7 @@ class ComposeController extends Controller
         $default = [
             'default_license' => 1,
             'media_descriptions' => false,
+            'max_media_attachments' => (int) config_cache('pixelfed.max_album_length'),
             'max_altext_length' => config_cache('pixelfed.max_altext_length'),
         ];
         $settings = AccountService::settings($uid);

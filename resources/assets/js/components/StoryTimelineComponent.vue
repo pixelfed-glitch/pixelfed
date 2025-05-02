@@ -3,7 +3,7 @@
 		<div v-if="show" class="card card-body p-0 border mt-md-4 mb-md-3 shadow-none">
 			<div v-if="loading" class="w-100 h-100 d-flex align-items-center justify-content-center">
 				<div class="spinner-border spinner-border-sm text-lighter" role="status">
-					<span class="sr-only">Loading...</span>
+					<span class="sr-only">{{ $t('common.loading') }}</span>
 				</div>
 			</div>
 			<div v-else class="d-flex align-items-center justify-content-start scrolly">
@@ -11,7 +11,8 @@
 					v-for="(story, index) in stories"
 					class="px-3 pt-3 text-center cursor-pointer"
 					:class="{ seen: story.seen }"
-					@click="showStory(index)">
+					@click="showStory(index)"
+					>
 					<span
 						:class="[
 							story.seen ? 'not-seen' : '',
@@ -24,6 +25,8 @@
 						class="small font-weight-bold text-truncate"
 						:class="{ 'text-lighter': story.seen }"
 						style="max-width: 69px"
+						v-b-tooltip.hover
+						placement="bottom"
 						:title="story.username"
 						>
 						{{story.username}}
@@ -117,6 +120,18 @@
 		img {
 			background: #fff;
 			padding: 3px;
+		}
+
+		&.new {
+			background: none;
+			width: 70px;
+			height: 70px;
+			border: dashed 4px #d92d77;
+
+			img {
+				width: 56px;
+				height: 56px;
+			}
 		}
 	}
 

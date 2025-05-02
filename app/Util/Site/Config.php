@@ -29,6 +29,7 @@ class Config
             return [
                 'version' => config('pixelfed.version'),
                 'open_registration' => (bool) config_cache('pixelfed.open_registration'),
+                'show_legal_notice_link' => (bool) config('instance.has_legal_notice'),
                 'uploader' => [
                     'max_photo_size' => (int) config_cache('pixelfed.max_photo_size'),
                     'max_caption_length' => (int) config_cache('pixelfed.max_caption_length'),
@@ -82,6 +83,7 @@ class Config
                         'network' => (bool) config('federation.network_timeline'),
                     ],
                     'mobile_apis' => (bool) config_cache('pixelfed.oauth_enabled'),
+                    'mobile_registration' => config('auth.in_app_registration'),
                     'stories' => (bool) config_cache('instance.stories.enabled'),
                     'video' => Str::contains(config_cache('pixelfed.media_types'), 'video/mp4'),
                     'import' => [

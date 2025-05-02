@@ -8,6 +8,10 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::get('authorize_interaction', 'AuthorizeInteractionController@get');
 
     Auth::routes();
+
+    Route::get('auth/oidc/start', 'RemoteOidcController@start');
+    Route::get('auth/oidc/callback', 'RemoteOidcController@handleCallback');
+
     Route::get('auth/raw/mastodon/start', 'RemoteAuthController@startRedirect');
     Route::post('auth/raw/mastodon/config', 'RemoteAuthController@getConfig');
     Route::post('auth/raw/mastodon/domains', 'RemoteAuthController@getAuthDomains');
@@ -138,6 +142,11 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::get('discover/places', 'PlaceController@directoryHome')->name('discover.places');
     Route::get('discover/places/{id}/{slug}', 'PlaceController@show');
     Route::get('discover/location/country/{country}', 'PlaceController@directoryCities');
+
+    Route::get('/i/app-email-verify', 'AppRegisterController@index');
+    Route::post('/i/app-email-verify', 'AppRegisterController@store')->middleware('throttle:app-signup');
+    Route::get('/i/app-email-resend', 'AppRegisterController@resendVerification');
+    Route::post('/i/app-email-resend', 'AppRegisterController@resendVerificationStore')->middleware('throttle:app-code-resend');
 
     Route::group(['prefix' => 'i'], function () {
         Route::redirect('/', '/');
@@ -360,6 +369,10 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             Route::get('manage', 'ProfileMigrationController@index');
             Route::post('manage', 'ProfileMigrationController@store');
         });
+
+        Route::group(['prefix' => 'filters'], function() {
+            Route::get('/', 'SettingsController@filtersHome')->name('settings.filters');
+        });
     });
 
     Route::group(['prefix' => 'site'], function () {
@@ -469,7 +482,6 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     });
     Route::get('g/{hid}', 'GroupController@groupShortLinkRedirect');
 
-    Route::get('storage/m/_v2/{pid}/{mhash}/{uhash}/{f}', 'MediaController@fallbackRedirect');
     Route::get('stories/{username}', 'ProfileController@stories');
     Route::get('p/{id}', 'StatusController@shortcodeRedirect');
     Route::get('c/{collection}', 'CollectionController@show');
