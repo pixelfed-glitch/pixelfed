@@ -71,6 +71,7 @@ return [
 		'language' => 'Language',
 		'privacy' => 'Privacy',
 		'terms' => 'Terms',
+        'legalNotice' => 'Legal Notice',
 
 		// Temporary links
 		'backToPreviousDesign' => 'Go back to previous design'
