@@ -58,9 +58,9 @@ class AvatarOptimize implements ShouldQueue
         $extension = strtolower($fileInfo['extension'] ?? 'jpg');
 
         $driver = match(config('image.driver')) {
-            'imagick' => new \Intervention\Image\Drivers\Imagick\Driver(),
-            'vips' => new \Intervention\Image\Drivers\Vips\Driver(),
-            default => new \Intervention\Image\Drivers\Gd\Driver()
+            'imagick' => new \Intervention\Image\Drivers\Imagick\Driver::class,
+            'vips' => new \Intervention\Image\Drivers\Vips\Driver::class,
+            default => new \Intervention\Image\Drivers\Gd\Driver::class
         };
 
         $imageManager = new ImageManager(
