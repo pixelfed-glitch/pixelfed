@@ -5,6 +5,9 @@
 ### Added
 - Pinned Posts ([2f655d000](https://github.com/pixelfed/pixelfed/commit/2f655d000))
 - Custom Filters ([#5928](https://github.com/pixelfed/pixelfed/pull/5928)) ([437d742ac](https://github.com/pixelfed/pixelfed/commit/437d742ac))
+- Legal Notice page ([#5606](https://github.com/pixelfed/pixelfed/pull/5606)) ([c72fa0529](https://github.com/pixelfed/pixelfed/commit/c72fa0529))
+- OIDC Support ([#5608](https://github.com/pixelfed/pixelfed/pull/5608)) ([c72fa0529](https://github.com/pixelfed/pixelfed/commit/c72fa0529))
+- Avif, HEIC, webp, libvips support + Preserve ICC color profiles  ([ab9c13fe0](https://github.com/pixelfed/pixelfed/commit/ab9c13fe0))
 
 ### Updates
 - Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
@@ -20,6 +23,10 @@
 - Update report views, fix missing forms ([475d1d627](https://github.com/pixelfed/pixelfed/commit/475d1d627))
 - Update private settings, change "Private Account" to "Manually Review Follow Requests" ([31dd1ab35](https://github.com/pixelfed/pixelfed/commit/31dd1ab35))
 - Update ReportController, fix type validation ([ccc7f2fc6](https://github.com/pixelfed/pixelfed/commit/ccc7f2fc6))
+- Update footer to use legalNotice i18n ([0e59098da](https://github.com/pixelfed/pixelfed/commit/0e59098da))
+- Update sidebar with gap padding for footer links ([dbd8289fe](https://github.com/pixelfed/pixelfed/commit/dbd8289fe))
+- Update translations for Stories ([0a4dc7724](https://github.com/pixelfed/pixelfed/commit/0a4dc7724))
+- Update translations for Auth ([756102696](https://github.com/pixelfed/pixelfed/commit/756102696))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)

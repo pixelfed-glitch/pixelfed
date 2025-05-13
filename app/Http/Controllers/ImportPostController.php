@@ -201,7 +201,7 @@ class ImportPostController extends Controller
 
         $this->checkPermissions($request);
 
-        $allowedMimeTypes = ['image/png', 'image/jpeg'];
+        $allowedMimeTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 
         if (config('import.instagram.allow_image_webp') && str_contains(config_cache('pixelfed.media_types'), 'image/webp')) {
             $allowedMimeTypes[] = 'image/webp';

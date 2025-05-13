@@ -268,10 +268,11 @@ class ComposeController extends Controller
 
         $blocked->push($request->user()->profile_id);
 
+        $operator = config('database.default') === 'pgsql' ? 'ilike' : 'like';
         $results = Profile::select('id', 'domain', 'username')
             ->whereNotIn('id', $blocked)
             ->whereNull('domain')
-            ->where('username', 'like', '%'.$q.'%')
+            ->where('username', $operator, '%'.$q.'%')
             ->limit(15)
             ->get()
             ->map(function ($r) {
