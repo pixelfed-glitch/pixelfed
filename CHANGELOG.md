@@ -7,6 +7,7 @@
 - Custom Filters ([#5928](https://github.com/pixelfed/pixelfed/pull/5928)) ([437d742ac](https://github.com/pixelfed/pixelfed/commit/437d742ac))
 - Legal Notice page ([#5606](https://github.com/pixelfed/pixelfed/pull/5606)) ([c72fa0529](https://github.com/pixelfed/pixelfed/commit/c72fa0529))
 - OIDC Support ([#5608](https://github.com/pixelfed/pixelfed/pull/5608)) ([c72fa0529](https://github.com/pixelfed/pixelfed/commit/c72fa0529))
+- Avif, HEIC, webp, libvips support + Preserve ICC color profiles  ([ab9c13fe0](https://github.com/pixelfed/pixelfed/commit/ab9c13fe0))
 
 ### Updates
 - Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
