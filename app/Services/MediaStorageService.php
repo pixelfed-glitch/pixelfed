@@ -138,6 +138,7 @@ class MediaStorageService
         }
 
         $mimes = [
+            'image/jpg',
             'image/jpeg',
             'image/png',
             'video/mp4',
@@ -166,6 +167,7 @@ class MediaStorageService
                 $ext = '.gif';
                 break;
 
+            case 'image/jpg':
             case 'image/jpeg':
                 $ext = '.jpg';
                 break;
@@ -219,6 +221,7 @@ class MediaStorageService
 
         $mimes = [
             'application/octet-stream',
+            'image/jpg',
             'image/jpeg',
             'image/png',
         ];
@@ -249,7 +252,7 @@ class MediaStorageService
         }
 
         $base = ($local ? 'public/cache/' : 'cache/').'avatars/'.$avatar->profile_id;
-        $ext = $head['mime'] == 'image/jpeg' ? 'jpg' : 'png';
+        $ext = ($head['mime'] == 'image/png') ? 'png' : 'jpg';
         $path = 'avatar_'.strtolower(Str::random(random_int(3, 6))).'.'.$ext;
         $tmpBase = storage_path('app/remcache/');
         $tmpPath = 'avatar_'.$avatar->profile_id.'-'.$path;
@@ -262,7 +265,7 @@ class MediaStorageService
 
         $mimeCheck = Storage::mimeType('remcache/'.$tmpPath);
 
-        if (! $mimeCheck || ! in_array($mimeCheck, ['image/png', 'image/jpeg'])) {
+        if (! $mimeCheck || ! in_array($mimeCheck, ['image/png', 'image/jpeg', 'image/jpg'])) {
             $avatar->last_fetched_at = now();
             $avatar->save();
             unlink($tmpName);

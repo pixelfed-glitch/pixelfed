@@ -243,7 +243,7 @@ class ApiV1Controller extends Controller
         }
 
         $this->validate($request, [
-            'avatar' => 'sometimes|mimetypes:image/jpeg,image/png|max:'.config('pixelfed.max_avatar_size'),
+            'avatar' => 'sometimes|mimetypes:image/jpeg,image/jpg,image/png|max:'.config('pixelfed.max_avatar_size'),
             'display_name' => 'nullable|string|max:30',
             'note' => 'nullable|string|max:200',
             'locked' => 'nullable',
@@ -1907,6 +1907,7 @@ class ApiV1Controller extends Controller
         $media->save();
 
         switch ($media->mime) {
+            case 'image/jpg':
             case 'image/jpeg':
             case 'image/png':
             case 'image/webp':
@@ -2137,6 +2138,7 @@ class ApiV1Controller extends Controller
         $media->save();
 
         switch ($media->mime) {
+            case 'image/jpg':
             case 'image/jpeg':
             case 'image/png':
             case 'image/webp':

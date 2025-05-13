@@ -310,6 +310,7 @@ class ApiV2Controller extends Controller
 
         switch ($media->mime) {
             case 'image/jpeg':
+            case 'image/jpg':
             case 'image/png':
                 ImageOptimize::dispatch($media)->onQueue('mmo');
                 break;
