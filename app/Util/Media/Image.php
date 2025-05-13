@@ -43,9 +43,9 @@ class Image
         $this->orientation = null;
 
         $driver = match(config('image.driver')) {
-            'imagick' => new \Intervention\Image\Drivers\Imagick\Driver::class,
-            'vips' => new \Intervention\Image\Drivers\Vips\Driver::class,
-            default => new \Intervention\Image\Drivers\Gd\Driver::class
+            'imagick' => \Intervention\Image\Drivers\Imagick\Driver::class,
+            'vips' => \Intervention\Image\Drivers\Vips\Driver::class,
+            default => \Intervention\Image\Drivers\Gd\Driver::class
         };
 
         $this->imageManager = new ImageManager(
