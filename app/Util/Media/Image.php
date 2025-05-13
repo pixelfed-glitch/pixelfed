@@ -10,6 +10,7 @@ use Intervention\Image\Encoders\AvifEncoder;
 use Intervention\Image\Encoders\PngEncoder;
 use Cache, Log, Storage;
 use App\Util\Media\Blurhash;
+use App\Services\StatusService;
 
 class Image
 {
@@ -75,20 +76,15 @@ class Image
         ];
     }
 
-    public function getAspectRatio($mediaPath, $thumbnail = false)
+    public function getAspect($width, $height, $isThumbnail)
     {
-        if ($thumbnail) {
+        if ($isThumbnail) {
             return [
                 'dimensions'  => $this->thumbnail,
                 'orientation' => 'thumbnail',
             ];
         }
 
-        if (!is_file($mediaPath)) {
-            throw new \Exception('Invalid Media Path');
-        }
-
-        list($width, $height) = getimagesize($mediaPath);
         $aspect = $width / $height;
         $orientation = $aspect === 1 ? 'square' :
         ($aspect > 1 ? 'landscape' : 'portrait');
@@ -129,13 +125,11 @@ class Image
         if (!in_array($media->mime, $this->acceptedMimes)) {
             return;
         }
-        $ratio = $this->getAspectRatio($file, $thumbnail);
-        $aspect = $ratio['dimensions'];
-        $orientation = $ratio['orientation'];
 
         try {
             $fileInfo = pathinfo($file);
             $extension = strtolower($fileInfo['extension'] ?? 'jpg');
+            $outputExtension = $extension;
 
             $metadata = null;
             if (!$thumbnail && config('media.exif.database', false) == true) {
@@ -184,6 +178,10 @@ class Image
 
             $img = $this->imageManager->read($file);
 
+            $ratio = $this->getAspect($img->width(), $img->height(), $thumbnail);
+            $aspect = $ratio['dimensions'];
+            $orientation = $ratio['orientation'];
+
             if ($thumbnail) {
                 $img = $img->coverDown(
                     $aspect['width'],
@@ -201,9 +199,6 @@ class Image
                 }
             }
 
-            $converted = $this->setBaseName($path, $thumbnail, $extension);
-            $newPath = storage_path('app/'.$converted['path']);
-
             $quality = config_cache('pixelfed.image_quality');
 
             $encoder = null;
@@ -211,24 +206,31 @@ class Image
                 case 'jpeg':
                 case 'jpg':
                     $encoder = new JpegEncoder($quality);
+                    $outputExtension = 'jpg';
                     break;
                 case 'png':
                     $encoder = new PngEncoder();
+                    $outputExtension = 'png';
                     break;
                 case 'webp':
                     $encoder = new WebpEncoder($quality);
+                    $outputExtension = 'webp';
                     break;
                 case 'avif':
-                    $encoder = new AvifEncoder($quality);
+                    $encoder = new JpegEncoder($quality);
+                    $outputExtension = 'jpg';
                     break;
                 case 'heic':
                     $encoder = new JpegEncoder($quality);
-                    $extension = 'jpg';
+                    $outputExtension = 'jpg';
                     break;
                 default:
                     $encoder = new JpegEncoder($quality);
-                    $extension = 'jpg';
+                    $outputExtension = 'jpg';
             }
+
+            $converted = $this->setBaseName($path, $thumbnail, $outputExtension);
+            $newPath = storage_path('app/'.$converted['path']);
 
             $encoded = $encoder->encode($img);
 
@@ -242,7 +244,7 @@ class Image
                 $media->height = $img->height();
                 $media->orientation = $orientation;
                 $media->media_path = $converted['path'];
-                $media->mime = 'image/' . $extension;
+                $media->mime = 'image/' . $outputExtension;
             }
 
             $media->save();
@@ -251,8 +253,11 @@ class Image
                 $this->generateBlurhash($media);
             }
 
-            Cache::forget('status:transformer:media:attachments:'.$media->status_id);
-            Cache::forget('status:thumb:'.$media->status_id);
+            if($media->status_id) {
+                Cache::forget('status:transformer:media:attachments:'.$media->status_id);
+                Cache::forget('status:thumb:'.$media->status_id);
+                StatusService::del($media->status_id);
+            }
 
         } catch (\Exception $e) {
             $media->processed_at = now();
@@ -263,13 +268,11 @@ class Image
 
     public function setBaseName($basePath, $thumbnail, $extension)
     {
-        $png = false;
         $path = explode('.', $basePath);
         $name = ($thumbnail == true) ? $path[0].'_thumb' : $path[0];
-        $ext = last($path);
-        $basePath = "{$name}.{$ext}";
+        $basePath = "{$name}.{$extension}";
 
-        return ['path' => $basePath, 'png' => $png];
+        return ['path' => $basePath, 'png' => false];
     }
 
     protected function generateBlurhash($media)

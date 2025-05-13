@@ -132,6 +132,7 @@ class ComposeController extends Controller
             case 'image/jpeg':
             case 'image/png':
             case 'image/webp':
+            case 'image/heic':
             case 'image/avif':
                 ImageOptimize::dispatch($media)->onQueue('mmo');
                 break;
