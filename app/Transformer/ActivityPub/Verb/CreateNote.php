@@ -107,7 +107,7 @@ class CreateNote extends Fractal\TransformerAbstract
                 'to' => $status->scopeToAudience('to'),
                 'cc' => $status->scopeToAudience('cc'),
                 'sensitive' => (bool) $status->is_nsfw,
-                'attachment' => MediaService::activitypub($status->id),
+                'attachment' => MediaService::activitypub($status->id, true),
                 'tag' => $tags,
                 'commentsEnabled' => (bool) ! $status->comments_disabled,
                 'capabilities' => [
