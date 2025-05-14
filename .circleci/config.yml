@@ -51,7 +51,7 @@ jobs:
       - run: php artisan key:generate
 
       # run tests with phpunit or codecept
-      - run: php artisan test
+      - run: php artisan test --env="testing"
       - store_test_results:
           path: tests/_output
       - store_artifacts:
