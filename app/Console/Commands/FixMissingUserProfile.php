@@ -41,7 +41,7 @@ class FixMissingUserProfile extends Command
         $id = search(
             label: 'Search for the affected username',
             options: fn (string $value) => strlen($value) > 0
-                ? User::doesntHave('profile')->whereNull('status')->whereLike('username', "%{$value}%")->pluck('name', 'id')->all()
+                ? User::doesntHave('profile')->whereNull('status')->whereLike('username', "%{$value}%")->pluck('username', 'id')->all()
                 : []
         );
 
