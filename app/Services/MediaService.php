@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Media;
 use App\Transformer\Api\MediaTransformer;
 use Cache;
+use Illuminate\Support\Arr;
 use League\Fractal;
 use League\Fractal\Serializer\ArraySerializer;
 
@@ -76,16 +77,16 @@ class MediaService
         }
 
         return collect($status)->map(function ($s) {
-            $license = isset($s['license']) && $s['license']['title'] ? $s['license']['title'] : null;
+            $original = Arr::get($s, 'meta.original', []);
 
             return [
                 'type' => 'Document',
                 'mediaType' => $s['mime'],
                 'url' => $s['url'],
                 'name' => $s['description'],
-                'summary' => $s['description'],
                 'blurhash' => $s['blurhash'],
-                'license' => $license,
+                'width' => $original['width'] ?? null,
+                'height' => $original['height'] ?? null,
             ];
         });
     }
