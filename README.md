@@ -12,7 +12,7 @@
 
 ## Introduction
 
-A free and ethical photo sharing platform, powered by ActivityPub federation.
+Photo sharing the way it should be. Pixelfed lets your casual shots and creative photography find their audience naturally, without algorithmic barriers. Join [millions](https://fedidb.com) of people sharing across the [fediverse](https://fediverse.info).
 
 <p align="center">
 <picture>
