@@ -78,13 +78,15 @@ class MediaService
 
         return collect($status)->map(function ($s) {
             $original = Arr::get($s, 'meta.original', []);
+            $mime = $s['mime'] === 'image/jpg' ? 'image/jpeg' : $s['mime'];
 
             return [
                 'type' => 'Document',
-                'mediaType' => $s['mime'],
+                'mediaType' => $mime,
                 'url' => $s['url'],
                 'name' => $s['description'],
                 'blurhash' => $s['blurhash'],
+                'focalPoint' => [0, 0],
                 'width' => $original['width'] ?? null,
                 'height' => $original['height'] ?? null,
             ];
