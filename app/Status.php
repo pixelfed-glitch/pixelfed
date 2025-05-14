@@ -2,16 +2,16 @@
 
 namespace App;
 
-use Auth, Cache, Hashids, Storage;
-use Illuminate\Database\Eloquent\Model;
-use App\HasSnowflakePrimary;
 use App\Http\Controllers\StatusController;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Poll;
+use App\Models\StatusEdit;
 use App\Services\AccountService;
 use App\Services\StatusService;
-use App\Models\StatusEdit;
+use Auth;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Storage;
 
 class Status extends Model
 {
@@ -31,7 +31,7 @@ class Status extends Model
      */
     protected $casts = [
         'deleted_at' => 'datetime',
-        'edited_at'  => 'datetime'
+        'edited_at' => 'datetime',
     ];
 
     protected $guarded = [];
@@ -49,7 +49,7 @@ class Status extends Model
         'story:reply',
         'story:reaction',
         'story:live',
-        'loop'
+        'loop',
     ];
 
     const MAX_MENTIONS = 20;
@@ -75,22 +75,24 @@ class Status extends Model
 
     public function viewType()
     {
-        if($this->type) {
+        if ($this->type) {
             return $this->type;
         }
+
         return $this->setType();
     }
 
     public function setType()
     {
-        if(in_array($this->type, self::STATUS_TYPES)) {
+        if (in_array($this->type, self::STATUS_TYPES)) {
             return $this->type;
         }
         $mimes = $this->media->pluck('mime')->toArray();
         $type = StatusController::mimeTypeCheck($mimes);
-        if($type) {
+        if ($type) {
             $this->type = $type;
             $this->save();
+
             return $type;
         }
     }
@@ -99,22 +101,22 @@ class Status extends Model
     {
         $entity = StatusService::get($this->id, false);
 
-        if(!$entity || !isset($entity['media_attachments']) || empty($entity['media_attachments'])) {
+        if (! $entity || ! isset($entity['media_attachments']) || empty($entity['media_attachments'])) {
             return url(Storage::url('public/no-preview.png'));
         }
 
-        if((!isset($entity['sensitive']) || $entity['sensitive']) && !$showNsfw) {
+        if ((! isset($entity['sensitive']) || $entity['sensitive']) && ! $showNsfw) {
             return url(Storage::url('public/no-preview.png'));
         }
 
-        if(!isset($entity['visibility']) || !in_array($entity['visibility'], ['public', 'unlisted'])) {
+        if (! isset($entity['visibility']) || ! in_array($entity['visibility'], ['public', 'unlisted'])) {
             return url(Storage::url('public/no-preview.png'));
         }
 
         return collect($entity['media_attachments'])
-            ->filter(fn($media) => $media['type'] == 'image' && in_array($media['mime'], ['image/jpeg', 'image/png', 'image/jpg']))
-            ->map(function($media) {
-                if(!Str::endsWith($media['preview_url'], ['no-preview.png', 'no-preview.jpg'])) {
+            ->filter(fn ($media) => $media['type'] == 'image' && in_array($media['mime'], ['image/jpeg', 'image/png', 'image/jpg']))
+            ->map(function ($media) {
+                if (! Str::endsWith($media['preview_url'], ['no-preview.png', 'no-preview.jpg'])) {
                     return $media['preview_url'];
                 }
 
@@ -125,15 +127,16 @@ class Status extends Model
 
     public function url($forceLocal = false)
     {
-        if($this->uri) {
+        if ($this->uri) {
             return $forceLocal ? "/i/web/post/_/{$this->profile_id}/{$this->id}" : $this->uri;
         } else {
             $id = $this->id;
             $account = AccountService::get($this->profile_id, true);
-            if(!$account || !isset($account['username'])) {
+            if (! $account || ! isset($account['username'])) {
                 return '/404';
             }
             $path = url(config('app.url')."/p/{$account['username']}/{$id}");
+
             return $path;
         }
     }
@@ -157,7 +160,7 @@ class Status extends Model
         $media = $this->firstMedia();
         $path = $media->media_path;
         $hash = is_null($media->processed_at) ? md5('unprocessed') : md5($media->created_at);
-        $url = $media->cdn_url ? $media->cdn_url . "?v={$hash}" : url(Storage::url($path)."?v={$hash}");
+        $url = $media->cdn_url ? $media->cdn_url."?v={$hash}" : url(Storage::url($path)."?v={$hash}");
 
         return $url;
     }
@@ -167,9 +170,9 @@ class Status extends Model
         return $this->hasMany(Like::class);
     }
 
-    public function liked() : bool
+    public function liked(): bool
     {
-        if(!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
 
@@ -200,7 +203,7 @@ class Status extends Model
 
     public function bookmarked()
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
         $profile = Auth::user()->profile;
@@ -213,9 +216,9 @@ class Status extends Model
         return $this->hasMany(self::class, 'reblog_of_id');
     }
 
-    public function shared() : bool
+    public function shared(): bool
     {
-        if(!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
         $pid = Auth::user()->profile_id;
@@ -241,7 +244,7 @@ class Status extends Model
     public function parent()
     {
         $parent = $this->in_reply_to_id ?? $this->reblog_of_id;
-        if (!empty($parent)) {
+        if (! empty($parent)) {
             return $this->findOrFail($parent);
         } else {
             return false;
@@ -256,25 +259,25 @@ class Status extends Model
     public function hashtags()
     {
         return $this->hasManyThrough(
-        Hashtag::class,
-        StatusHashtag::class,
-        'status_id',
-        'id',
-        'id',
-        'hashtag_id'
-      );
+            Hashtag::class,
+            StatusHashtag::class,
+            'status_id',
+            'id',
+            'id',
+            'hashtag_id'
+        );
     }
 
     public function mentions()
     {
         return $this->hasManyThrough(
-        Profile::class,
-        Mention::class,
-        'status_id',
-        'id',
-        'id',
-        'profile_id'
-      );
+            Profile::class,
+            Mention::class,
+            'status_id',
+            'id',
+            'id',
+            'profile_id'
+        );
     }
 
     public function reportUrl()
@@ -288,17 +291,17 @@ class Status extends Model
         $mediaCollection = [];
         foreach ($media as $image) {
             $mediaCollection[] = [
-          'type'      => 'Link',
-          'href'      => $image->url(),
-          'mediaType' => $image->mime,
-        ];
+                'type' => 'Link',
+                'href' => $image->url(),
+                'mediaType' => $image->mime,
+            ];
         }
         $obj = [
-        '@context' => 'https://www.w3.org/ns/activitystreams',
-        'type'     => 'Image',
-        'name'     => null,
-        'url'      => $mediaCollection,
-      ];
+            '@context' => 'https://www.w3.org/ns/activitystreams',
+            'type' => 'Document',
+            'name' => null,
+            'url' => $mediaCollection,
+        ];
 
         return $obj;
     }
@@ -310,7 +313,7 @@ class Status extends Model
 
     public function scopeToAudience($audience)
     {
-        if(!in_array($audience, ['to', 'cc']) || $this->local == false) { 
+        if (! in_array($audience, ['to', 'cc']) || $this->local == false) {
             return;
         }
         $res = [];
@@ -321,9 +324,9 @@ class Status extends Model
             return $mention->permalink();
         })->toArray();
 
-        if($this->in_reply_to_id != null) {
+        if ($this->in_reply_to_id != null) {
             $parent = $this->parent();
-            if($parent) {
+            if ($parent) {
                 $mentions = array_merge([$parent->profile->permalink()], $mentions);
             }
         }
@@ -331,7 +334,7 @@ class Status extends Model
         switch ($scope) {
             case 'public':
                 $res['to'] = [
-                    "https://www.w3.org/ns/activitystreams#Public"
+                    'https://www.w3.org/ns/activitystreams#Public',
                 ];
                 $res['cc'] = array_merge([$this->profile->permalink('/followers')], $mentions);
                 break;
@@ -339,7 +342,7 @@ class Status extends Model
             case 'unlisted':
                 $res['to'] = array_merge([$this->profile->permalink('/followers')], $mentions);
                 $res['cc'] = [
-                    "https://www.w3.org/ns/activitystreams#Public"
+                    'https://www.w3.org/ns/activitystreams#Public',
                 ];
                 break;
 
@@ -348,12 +351,13 @@ class Status extends Model
                 $res['cc'] = [];
                 break;
 
-            // TODO: Update scope when DMs are supported
+                // TODO: Update scope when DMs are supported
             case 'direct':
                 $res['to'] = [];
                 $res['cc'] = [];
                 break;
         }
+
         return $res[$audience];
     }
 
