@@ -3775,16 +3775,19 @@ class ApiV1Controller extends Controller
             abort(500, 'An error occured.');
         }
 
-        NewStatusPipeline::dispatch($status);
-        if ($status->in_reply_to_id) {
-            CommentPipeline::dispatch($parent, $status);
-        }
+        Cache::forget('pf:status:ap:v1:sid:'.$status->id);
+        Cache::forget('status:transformer:media:attachments:'.$status->id);
         Cache::forget('user:account:id:'.$user->id);
         Cache::forget('_api:statuses:recent_9:'.$user->profile_id);
         Cache::forget('profile:status_count:'.$user->profile_id);
         Cache::forget($user->storageUsedKey());
         Cache::forget('profile:embed:'.$status->profile_id);
         Cache::forget($limitKey);
+
+        NewStatusPipeline::dispatch($status);
+        if ($status->in_reply_to_id) {
+            CommentPipeline::dispatch($parent, $status);
+        }
 
         if ($request->has('collection_ids') && $ids) {
             $collections = Collection::whereProfileId($user->profile_id)
@@ -4605,8 +4608,10 @@ class ApiV1Controller extends Controller
         AccountService::del($id);
 
         $res = RelationshipService::get($id, $pid);
+
         return $this->json($res);
     }
+
     /**
      *  GET /api/v1/statuses/{id}/pin
      */

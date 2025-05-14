@@ -27,6 +27,11 @@
 - Update sidebar with gap padding for footer links ([dbd8289fe](https://github.com/pixelfed/pixelfed/commit/dbd8289fe))
 - Update translations for Stories ([0a4dc7724](https://github.com/pixelfed/pixelfed/commit/0a4dc7724))
 - Update translations for Auth ([756102696](https://github.com/pixelfed/pixelfed/commit/756102696))
+- Update HttpSignatures, auto generate instance actor if missing ([bb16c95b1](https://github.com/pixelfed/pixelfed/commit/bb16c95b1))
+- Update CreateNote to use cached MediaService attachments ([6a7307104](https://github.com/pixelfed/pixelfed/commit/6a7307104))
+- Update ComposeController, fix cache invalidation order ([ae47ba73d](https://github.com/pixelfed/pixelfed/commit/ae47ba73d))
+- Update ApiV1Controller, fix cache invalidation order ([4747266b0](https://github.com/pixelfed/pixelfed/commit/4747266b0))
+- Update CreateNote, improve media attachement handling by leveraging the MediaService cache ([7ae61a74a](https://github.com/pixelfed/pixelfed/commit/7ae61a74a))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)

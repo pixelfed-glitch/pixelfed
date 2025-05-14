@@ -89,14 +89,14 @@ class Media extends Model
 
     public function activityVerb()
     {
-        $verb = 'Image';
+        $verb = 'Document';
         switch ($this->mimeType()) {
             case 'audio':
                 $verb = 'Audio';
                 break;
 
             case 'image':
-                $verb = 'Image';
+                $verb = 'Document';
                 break;
 
             case 'video':

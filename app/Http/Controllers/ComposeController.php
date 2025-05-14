@@ -640,13 +640,13 @@ class ComposeController extends Controller
                 });
         }
 
-        NewStatusPipeline::dispatch($status);
         Cache::forget('user:account:id:'.$profile->user_id);
         Cache::forget('_api:statuses:recent_9:'.$profile->id);
         Cache::forget('profile:status_count:'.$profile->id);
         Cache::forget('status:transformer:media:attachments:'.$status->id);
         Cache::forget('profile:embed:'.$status->profile_id);
         Cache::forget($limitKey);
+        NewStatusPipeline::dispatch($status);
 
         return $status->url();
     }

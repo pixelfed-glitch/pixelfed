@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "80e41279435abaff339524fb0a150bc6",
+    "content-hash": "f65f184f0c7fabfe8938012287604e36",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.343.9",
+            "version": "3.343.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "6ca5eb1c60b879cf516e5fadefec87afc6219e74"
+                "reference": "473d632d03a78b19f9f75a2126c5ba8c21f09346"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6ca5eb1c60b879cf516e5fadefec87afc6219e74",
-                "reference": "6ca5eb1c60b879cf516e5fadefec87afc6219e74",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/473d632d03a78b19f9f75a2126c5ba8c21f09346",
+                "reference": "473d632d03a78b19f9f75a2126c5ba8c21f09346",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.343.9"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.343.10"
             },
-            "time": "2025-05-12T18:11:31+00:00"
+            "time": "2025-05-13T18:09:50+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -2217,80 +2217,6 @@
             "time": "2025-02-27T13:08:55+00:00"
         },
         {
-            "name": "intervention/image-driver-vips",
-            "version": "1.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Intervention/image-driver-vips.git",
-                "reference": "080de0e638bcf508b5e79c2d88e82b0fd91b12b0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/image-driver-vips/zipball/080de0e638bcf508b5e79c2d88e82b0fd91b12b0",
-                "reference": "080de0e638bcf508b5e79c2d88e82b0fd91b12b0",
-                "shasum": ""
-            },
-            "require": {
-                "intervention/image": "^3.11.0",
-                "jcupitt/vips": "^2.4",
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "ext-fileinfo": "*",
-                "phpstan/phpstan": "^2",
-                "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0",
-                "slevomat/coding-standard": "~8.0",
-                "squizlabs/php_codesniffer": "^3.8"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Intervention\\Image\\Drivers\\Vips\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Oliver Vogel",
-                    "email": "oliver@intervention.io",
-                    "homepage": "https://intervention.io/"
-                },
-                {
-                    "name": "Thomas Picquet",
-                    "email": "thomas@sctr.net"
-                }
-            ],
-            "description": "libvips driver for Intervention Image",
-            "homepage": "https://image.intervention.io/",
-            "keywords": [
-                "image",
-                "libvips",
-                "vips"
-            ],
-            "support": {
-                "issues": "https://github.com/Intervention/image-driver-vips/issues",
-                "source": "https://github.com/Intervention/image-driver-vips/tree/1.0.5"
-            },
-            "funding": [
-                {
-                    "url": "https://paypal.me/interventionio",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/Intervention",
-                    "type": "github"
-                },
-                {
-                    "url": "https://ko-fi.com/interventionphp",
-                    "type": "ko_fi"
-                }
-            ],
-            "time": "2025-05-05T13:53:52+00:00"
-        },
-        {
             "name": "jaybizzle/crawler-detect",
             "version": "v1.3.4",
             "source": {
@@ -2341,67 +2267,6 @@
                 "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.3.4"
             },
             "time": "2025-03-05T23:12:10+00:00"
-        },
-        {
-            "name": "jcupitt/vips",
-            "version": "v2.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/libvips/php-vips.git",
-                "reference": "a54c1cceea581b592a199edd61a7c06f44a24c08"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/libvips/php-vips/zipball/a54c1cceea581b592a199edd61a7c06f44a24c08",
-                "reference": "a54c1cceea581b592a199edd61a7c06f44a24c08",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ffi": "*",
-                "php": ">=7.4",
-                "psr/log": "^1.1.3|^2.0|^3.0"
-            },
-            "require-dev": {
-                "php-parallel-lint/php-parallel-lint": "^1.3",
-                "phpdocumentor/shim": "^3.3",
-                "phpunit/phpunit": "^9.5",
-                "squizlabs/php_codesniffer": "^3.7"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Jcupitt\\Vips\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "John Cupitt",
-                    "email": "jcupitt@gmail.com",
-                    "homepage": "https://github.com/jcupitt",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A high-level interface to the libvips image processing library.",
-            "homepage": "https://github.com/libvips/php-vips",
-            "keywords": [
-                "image",
-                "libvips",
-                "processing"
-            ],
-            "support": {
-                "issues": "https://github.com/libvips/php-vips/issues",
-                "source": "https://github.com/libvips/php-vips/tree/v2.5.0"
-            },
-            "time": "2025-04-04T17:10:13+00:00"
         },
         {
             "name": "jenssegers/agent",
@@ -2618,16 +2483,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.13.0",
+            "version": "v12.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "52b588bcd8efc6d01bc1493d2d67848f8065f269"
+                "reference": "84b142958d1638a7e89de94ce75c2821c601d3d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/52b588bcd8efc6d01bc1493d2d67848f8065f269",
-                "reference": "52b588bcd8efc6d01bc1493d2d67848f8065f269",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/84b142958d1638a7e89de94ce75c2821c601d3d7",
+                "reference": "84b142958d1638a7e89de94ce75c2821c601d3d7",
                 "shasum": ""
             },
             "require": {
@@ -2829,7 +2694,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-05-07T17:29:01+00:00"
+            "time": "2025-05-13T17:50:51+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -2890,16 +2755,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.31.2",
+            "version": "v5.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "e6068c65be6c02a01e34531abf3143fab91f0de0"
+                "reference": "7686a8e1996472cc341dfd6f1d437065698594ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/e6068c65be6c02a01e34531abf3143fab91f0de0",
-                "reference": "e6068c65be6c02a01e34531abf3143fab91f0de0",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/7686a8e1996472cc341dfd6f1d437065698594ad",
+                "reference": "7686a8e1996472cc341dfd6f1d437065698594ad",
                 "shasum": ""
             },
             "require": {
@@ -2964,9 +2829,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.31.2"
+                "source": "https://github.com/laravel/horizon/tree/v5.32.0"
             },
-            "time": "2025-04-18T12:57:39+00:00"
+            "time": "2025-05-09T14:58:32+00:00"
         },
         {
             "name": "laravel/passport",

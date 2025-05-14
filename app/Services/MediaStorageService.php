@@ -117,6 +117,7 @@ class MediaStorageService
             }
         }
         if ($media->status_id) {
+            Cache::forget('pf:status:ap:v1:sid:'.$media->status_id);
             Cache::forget('status:transformer:media:attachments:'.$media->status_id);
             MediaService::del($media->status_id);
             StatusService::del($media->status_id, false);
