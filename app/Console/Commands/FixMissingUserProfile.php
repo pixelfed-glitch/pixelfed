@@ -11,7 +11,6 @@ use App\UserSetting;
 use App\Services\UserFilterService;
 use App\Models\DefaultDomainBlock;
 use App\Models\UserDomainBlock;
-use App\Models\UserNotify;
 use App\Jobs\FollowPipeline\FollowPipeline;
 use DB;
 use App\Services\FollowerService;
@@ -94,11 +93,6 @@ class FixMissingUserProfile extends Command
                 $user = User::findOrFail($user->id);
                 $user->profile_id = $profile->id;
                 $user->save();
-
-                UserNotify::updateOrCreate([
-                    'profile_id' => $profile->id,
-                    'user_id' => $user->id,
-                ]);
 
                 CreateAvatar::dispatch($profile);
             });
