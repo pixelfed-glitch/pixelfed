@@ -1,42 +1,24 @@
-# PHP CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
 version: 2
 jobs:
   build:
     docker:
-      # Specify the version you desire here
       - image: cimg/php:8.3.8
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
-      # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      #
-      # - image: redis:2.8.19
-
     steps:
       - checkout
 
       - run:
-          name: "Create Environment file and generate app key"
+          name: Create Environment file and generate app key
+          command: mv .env.testing .env
+
+      - run:
+          name: Install system dependencies
           command: |
-            mv .env.testing .env
+            sudo apt-get update && sudo apt-get install -y zlib1g-dev libsqlite3-dev
 
-      - run: sudo apt install zlib1g-dev libsqlite3-dev
-
-      # Download and cache dependencies
-
-      # composer cache
       - restore_cache:
           keys:
-          # "composer.lock" can be used if it is committed to the repo
-          - v2-dependencies-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+            - v2-dependencies-{{ checksum "composer.json" }}
+            - v2-dependencies-
 
       - run: composer install -n --prefer-dist
 
@@ -50,9 +32,17 @@ jobs:
       - run: php artisan storage:link
       - run: php artisan key:generate
 
-      # run tests with phpunit or codecept
-      - run: php artisan test --env="testing"
+      # ← New steps for JUnit output
+      - run:
+          name: Prepare JUnit output directory
+          command: mkdir -p tests/_output
+
+      - run:
+          name: Run tests and generate JUnit XML report
+          command: php artisan test --env=testing --log-junit tests/_output/junit.xml
+
       - store_test_results:
           path: tests/_output
+
       - store_artifacts:
           path: tests/_output
