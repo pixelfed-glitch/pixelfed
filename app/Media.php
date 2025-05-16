@@ -111,6 +111,30 @@ class Media extends Model
         return $verb;
     }
 
+    public function mediaType()
+    {
+        $verb = 'Document';
+        switch ($this->mimeType()) {
+            case 'audio':
+                $verb = 'Audio';
+                break;
+
+            case 'image':
+                $verb = 'Image';
+                break;
+
+            case 'video':
+                $verb = 'Video';
+                break;
+
+            default:
+                $verb = 'Image';
+                break;
+        }
+
+        return $verb;
+    }
+
     public function getMetadata()
     {
         return json_decode($this->metadata, true, 3);
