@@ -2,33 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Place;
+use App\Services\StatusService;
+use App\Status;
+use Cache;
 use Illuminate\Http\Request;
-use App\{
-	Place,
-	Status
-};
 
 class PlaceController extends Controller
 {
-	public function __construct()
-	{
-		$this->middleware('auth');
-	}
+    const PLACES_CACHE_KEY = 'pf:places:sid-cache:by:placeid:';
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function show(Request $request, $id, $slug)
     {
-        $this->validate($request, [
-            'page' => 'sometimes|max:10'
-        ]);
+        $place = Place::whereSlug($slug)->findOrFail($id);
 
-    	$place = Place::whereSlug($slug)->findOrFail($id);
-    	$posts = Status::wherePlaceId($place->id)
-            ->whereNull('uri')
-    		->whereScope('public')
-    		->orderByDesc('created_at')
-    		->simplePaginate(10);
+        $statusIds = Cache::remember(self::PLACES_CACHE_KEY.$place->id, now()->addMinutes(40), function () use ($place) {
+            return Status::select('id')
+                ->wherePlaceId($place->id)
+                ->whereScope('public')
+                ->whereIn('type', ['photo', 'photo:album', 'video'])
+                ->orderByDesc('id')
+                ->limit(50)
+                ->get();
+        });
 
-    	return view('discover.places.show', compact('place', 'posts'));
+        $posts = $statusIds->map(function ($item) {
+            return StatusService::get($item->id);
+        })->filter(function ($item) {
+            return $item && count($item['media_attachments'][0]);
+        })->take(18)->values();
+
+        return view('discover.places.show', compact('place', 'posts'));
     }
 
     public function directoryHome(Request $request)
