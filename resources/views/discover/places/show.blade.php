@@ -36,12 +36,12 @@
                 @endforeach
             @else
              <div class="col-12">
-                    <div class="card shadow-sm border text-center py-5">
-                        <div class="card-body">
-                            <i class="far fa-images fa-4x text-muted mb-3"></i>
+                    <div class="text-center border rounded py-5">
+                        <div class="">
+                            <i class="far fa-exclamation-triangle fa-4x text-lighter mb-3"></i>
                             <h4>No Posts Yet</h4>
                             <p class="text-muted">There are no posts tagged at this location yet.</p>
-                            <a href="/discover/places" class="btn btn-primary mt-2">
+                            <a href="/discover/places" class="btn btn-outline-primary font-weight-bold rounded-pill mt-2">
                                 Explore Other Places
                             </a>
                         </div>

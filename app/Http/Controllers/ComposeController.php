@@ -19,6 +19,7 @@ use App\Services\MediaBlocklistService;
 use App\Services\MediaPathService;
 use App\Services\MediaStorageService;
 use App\Services\MediaTagService;
+use App\Services\PlaceService;
 use App\Services\SnowflakeService;
 use App\Services\UserRoleService;
 use App\Services\UserStorageService;
@@ -568,6 +569,7 @@ class ComposeController extends Controller
 
         if ($place && is_array($place)) {
             $status->place_id = $place['id'];
+            PlaceService::clearStatusesByPlaceId($place['id']);
         }
 
         if ($request->filled('comments_disabled')) {
