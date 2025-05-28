@@ -1,6 +1,12 @@
 # Pixelfed Glitch
 
-<p align="center"><img src="https://raw.githubusercontent.com/pixelfed-glitch/brand-assets/main/logo/icon_with_text_white.svg" width="300px"></p>
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pixelfed-glitch/brand-assets/main/logo/icon_with_text_white.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/pixelfed-glitch/brand-assets/main/logo/icon_with_text.svg">
+  <img alt="Pixelfed logo" src="https://raw.githubusercontent.com/pixelfed-glitch/brand-assets/main/logo/icon_with_text.svg">
+</picture>
+</p>
 
 <p align="center">
 <a href="https://github.com/pixelfed-glitch/pixelfed/actions/"><img src="https://github.com/pixelfed-glitch/pixelfed/actions/workflows/docker.yml/badge.svg" alt="Docker Build"></a>
@@ -10,7 +16,7 @@
 </p>
 
 <p align="center">
-<a href="https://fedidb.org/software/pixelfed"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.fedidb.org%2Fv1%2Fsoftware%2Fpixelfed&query=%24.monthly_actives&logo=pixelfed&logoColor=white&label=Monthly%20Active%20Users" alt="Monthly active users from FediDB" /></a>
+<a href="https://fedidb.org/software/pixelfed"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.fedidb.org%2Fv1%2Fsoftware%2Fpixelfed&query=%24.user_count&logo=pixelfed&logoColor=white&label=Total%20Users" alt="Total Pixelfed users from FediDB" /></a>
 </p>
 
 ## Introduction
@@ -20,7 +26,11 @@ This is a fork of the official Pixelfed ActivityPub platform.
 Pixelfed is a free and ethical photo sharing platform, powered by ActivityPub federation.
 
 <p align="center">
-<img src="https://pixelfed.nyc3.cdn.digitaloceanspaces.com/media/pixelfed-screenshot.jpg">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://pixelfed.nyc3.cdn.digitaloceanspaces.com/media/pixelfed-readme-dark.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="https://pixelfed.nyc3.cdn.digitaloceanspaces.com/media/pixelfed-readme-light.jpg">
+  <img alt="Pixelfed web user interface in light mode" src="https://pixelfed.nyc3.cdn.digitaloceanspaces.com/media/pixelfed-readme-light.jpg">
+</picture>
 </p>
 
 ## Documentation

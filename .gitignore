@@ -11,6 +11,8 @@
 /.gitconfig
 #/.gitignore
 /.idea
+/.phpunit.cache
+/.phpunit.result.cache
 /.vagrant
 /.vscode
 /bootstrap/cache
