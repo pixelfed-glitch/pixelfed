@@ -613,3 +613,18 @@ function as-boolean()
 
     esac
 }
+
+# @description Remove leading and trailing spaces from input
+# @arg $@ string The string to trim
+function trim-whitespace()
+{
+    local var="$*"
+
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+
+    printf '%s' "$var"
+}

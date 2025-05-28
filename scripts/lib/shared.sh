@@ -79,6 +79,12 @@ function __gum()
     return $?
 }
 
+function __feature()
+{
+    "${project_root:?missing}/scripts/feature" "$@"
+    return $?
+}
+
 function as-boolean()
 {
     local input="${1:-}"
@@ -177,4 +183,24 @@ function ask_confirm_profile()
     __dottie set "${key_name}"="disabled" && action_ok "Successfully set '${key_name}' to 'disabled'" && echo "" && return 0
 
     return 1
+}
+
+function ensure-dot-env-file()
+{
+    local project_root="${PWD}"
+    command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
+
+    # Check if the .env file exist, or copy the template
+    if [[ ! -f "${project_root}/.env" ]]; then
+        action_start_newline "No '.env' file found, copying the default one for you"
+        cp -v "${project_root}/.env.docker" "${project_root}/.env" || action_error_exit "copy operation failed"
+        action_ok "OK"
+        echo
+
+        action_start_newline "Ensuring permissions are correct (0777)"
+        chmod -v 0777 "${project_root}/.env" || action_error_exit "chmod operation failed"
+        action_ok "OK"
+        echo
+    fi
+
 }

@@ -31,11 +31,6 @@ git pull || action_error_exit "could not update branch ${docker_release}"
 action_ok "OK"
 echo
 
-action_start_newline "update .env file (via dottie)"
-scripts/dottie update || action_error_exit "could not update .env file"
-action_ok "OK"
-echo
-
 action_start_newline "Updating 'DOCKER_APP_RELEASE' in '.env' file (via dottie)"
 scripts/dottie set DOCKER_APP_RELEASE="${pixelfed_release}" || action_error_exit "could not update DOCKER_APP_RELEASE"
 action_ok "OK"
@@ -46,12 +41,24 @@ docker compose pull || action_error_exit "could not pull docker images"
 action_ok "OK"
 echo
 
-action_start_newline "stopping web/worker/cron docker services"
-docker compose down worker web cron || action_error_exit "could not stop docker containers"
+action_start_newline "update .env file (via dottie)"
+scripts/dottie update || action_error_exit "could not update .env file"
+action_ok "OK"
+echo
+
+# Stopping worker/cron containers first, since they can take the longest to turn off
+action_start_newline "stopping worker/cron docker services"
+docker compose down worker cron || action_error_exit "could not stop docker containers"
+action_ok "OK"
+
+# Stopping 'web' for itself since its usually pretty fast at shutting down
+# minimizing downtime while upgrading
+action_start_newline "stopping web docker services"
+docker compose down web || action_error_exit "could not stop docker containers"
 action_ok "OK"
 
 action_start_newline "clearing cache"
-rm --verbose --force "${DOCKER_APP_HOST_CACHE_PATH:?missing}/*" || action_error_exit "could not clear cache"
+"${project_root}/scripts/clear-cache" || action_error_exit "could not clear cache"
 action_ok "OK"
 
 action_start_newline "starting docker services"

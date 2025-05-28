@@ -25,7 +25,13 @@ scripts/dottie set \
     APP_NAME="docker-pixelfed e2e" \
     DB_PASSWORD="helloworld" \
     DOCKER_APP_TAG="${DOCKER_APP_TAG:?missing}" \
+    DOCKER_APP_PHP_VERSION="${DOCKER_APP_PHP_VERSION:?missing}" \
+    DOCKER_PROXY_ACME_PROFILE="disabled" \
     DOCKER_PROXY_LETSENCRYPT_TEST="disabled" \
+    DOCKER_PROXY_PROFILE="disabled" \
     ENFORCE_EMAIL_VERIFICATION="false" \
     INSTANCE_CONTACT_EMAIL="github@example.com" \
-    OAUTH_ENABLED="true"
+    ACTIVITY_PUB="true" \
+    OAUTH_ENABLED="true" \
+    PF_LOGIN_WITH_MASTODON_ENABLED="true" \
+    DOCKER_APP_PHP_MEMORY_LIMIT="256M"

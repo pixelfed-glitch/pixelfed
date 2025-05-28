@@ -8,27 +8,27 @@
 # See: https://nginx.org/
 #
 # renovate: datasource=docker depName=nginx versioning=semver
-ARG NGINX_VERSION="1.27.3"
+ARG NGINX_VERSION="1.27.5"
 
 # See: https://github.com/ddollar/forego
 #
 # renovate: datasource=docker depName=nginxproxy/forego
-ARG FOREGO_VERSION="0.18.2"
+ARG FOREGO_VERSION="0.18.3"
 
 # See: https://github.com/hairyhenderson/gomplate
 #
 # renovate: datasource=github-releases depName=hairyhenderson/gomplate
-ARG GOMPLATE_VERSION="4.3.0"
+ARG GOMPLATE_VERSION="4.3.2"
 
 # See: https://github.com/jippi/dottie
 #
 # renovate: datasource=docker depName=ghcr.io/jippi/dottie
-ARG DOTTIE_VERSION="v0.14.3"
+ARG DOTTIE_VERSION="v0.16.0"
 
 # See: https://github.com/composer/composer
 #
 # renovate: datasource=github-releases depName=composer/composer
-ARG COMPOSER_VERSION="2.8.4"
+ARG COMPOSER_VERSION="2.8.9"
 
 # See: https://github.com/jippi/dottie
 #
@@ -66,7 +66,7 @@ ARG PHP_PECL_EXTENSIONS_EXTRA=
 # PHP extensions installed via https://deb.sury.org/
 # ! NOTE: Must not include the "php8.x-" prefix for packages
 # !       so [php8.4-bcmath] should just be [bcmath] here
-ARG PHP_EXTENSIONS="bcmath curl gd imagick intl mbstring redis xml yaml zip"
+ARG PHP_EXTENSIONS="bcmath curl gd imagick intl mbstring redis vips xml yaml zip"
 ARG PHP_EXTENSIONS_EXTRA=""
 ARG PHP_EXTENSIONS_DATABASE="pgsql mysql sqlite"
 
@@ -86,7 +86,7 @@ ARG NGINX_GPGKEY_PATH="/usr/share/keyrings/nginx-archive-keyring.gpg"
 # NOTE: Docker will *not* pull this image unless it's referenced (via build target)
 FROM public.ecr.aws/nginx/nginx:${NGINX_VERSION} AS nginx-image
 
-# Forego is a Procfile "runner" that makes it trival to run multiple
+# Forego is a Procfile "runner" that makes it trivial to run multiple
 # processes under a simple init / PID 1 process.
 #
 # NOTE: Docker will *not* pull this image unless it's referenced (via build target)
@@ -138,8 +138,8 @@ ARG POSTGRESQL_CLIENT_VERSION
 # Copy the base layer installer into the image
 COPY docker/rootfs/shared/docker/install/base.sh /docker/install/base.sh
 
-RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/lib/apt \
-    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/cache/apt \
+RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/lib/apt \
+    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/cache/apt \
     /docker/install/base.sh
 
 #######################################################
@@ -147,6 +147,7 @@ RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TA
 #######################################################
 
 ARG COMPOSER_VERSION
+ARG PHP_VERSION
 ARG PHP_EXTENSIONS
 ARG PHP_EXTENSIONS_DATABASE
 ARG PHP_EXTENSIONS_EXTRA
@@ -157,10 +158,9 @@ ARG PHP_BASE_TYPE
 # Copy the PHP layer installer into the image
 COPY docker/rootfs/shared/docker/install/php.sh /docker/install/php.sh
 
-RUN --mount=type=cache,id=pixelfed-pear-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/tmp/pear \
-    --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/lib/apt \
-    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/cache/apt \
-    IPE_KEEP_SYSPKG_CACHE=1 \
+RUN --mount=type=cache,id=pixelfed-pear-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/tmp/pear \
+    --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/lib/apt \
+    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/cache/apt \
     COMPOSER_VERSION=${COMPOSER_VERSION} \
     PHP_EXTENSIONS_DATABASE=${PHP_EXTENSIONS_DATABASE} \
     PHP_EXTENSIONS_EXTRA=${PHP_EXTENSIONS_EXTRA} \
@@ -180,7 +180,7 @@ ENV COMPOSER_CACHE_DIR="/cache/composer"
 # Don't enforce any memory limits for composer
 ENV COMPOSER_MEMORY_LIMIT=-1
 
-# Disable interactvitity from composer
+# Disable interactivity from composer
 ENV COMPOSER_NO_INTERACTION=1
 
 #######################################################
@@ -255,9 +255,7 @@ ARG RUNTIME_GID
 
 # Install composer dependencies
 # NOTE: we skip the autoloader generation here since we don't have all files available (yet)
-RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},sharing=locked,target=/cache/composer \
-    --mount=type=bind,source=composer.json,target=/var/www/composer.json \
-    --mount=type=bind,source=composer.lock,target=/var/www/composer.lock \
+RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},uid=${RUNTIME_UID},gid=${RUNTIME_GID},sharing=locked,target=/cache/composer \
     set -ex \
     && composer install --prefer-dist --no-autoloader --ignore-platform-reqs
 
@@ -330,14 +328,14 @@ ARG PHP_DEBIAN_RELEASE
 ARG PHP_VERSION
 ARG TARGETPLATFORM
 
-COPY docker/rootfs/apache /
-
 # Install apache webserver
-RUN --mount=type=cache,id=pixelfed-apt-lists-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/lib/apt/lists \
-    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/cache/apt \
+RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/lib/apt \
+    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/cache/apt \
     set -ex \
     && apt-get update \
     && apt-get install -y --no-install-recommends apache2
+
+COPY docker/rootfs/apache /
 
 RUN set -ex \
     && a2dismod mpm_event \
@@ -377,8 +375,8 @@ ARG TARGETPLATFORM
 ENV PHP_VERSION=${PHP_VERSION}
 
 # Install nginx dependencies
-RUN --mount=type=cache,id=pixelfed-apt-lists-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/lib/apt/lists \
-    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},sharing=locked,target=/var/cache/apt \
+RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/lib/apt \
+    --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/cache/apt \
     set -ex \
     && gpg1 --keyserver "hkp://keyserver.ubuntu.com:80" --keyserver-options timeout=10 --recv-keys "${NGINX_GPGKEY}" \
     && gpg1 --export "$NGINX_GPGKEY" > "$NGINX_GPGKEY_PATH" \
@@ -388,6 +386,7 @@ RUN --mount=type=cache,id=pixelfed-apt-lists-${PHP_VERSION}-${PHP_DEBIAN_RELEASE
 
 # copy docker entrypoints from the *real* nginx image directly
 COPY --link --from=nginx-image /docker-entrypoint.d /docker/entrypoint.d/
+
 COPY docker/rootfs/nginx /
 
 STOPSIGNAL SIGQUIT

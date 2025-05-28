@@ -1,7 +1,31 @@
 #!/usr/bin/env bash
 
-declare service="${PF_SERVICE:=worker}"
-declare user="${PF_USER:=www-data}"
+set -e -o errexit -o nounset -o pipefail
+
+declare project_root="${PWD}"
+command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
+
+# shellcheck source=lib/shared.sh
+source "${project_root}/scripts/lib/shared.sh"
+
+# Check if the .env file exist, or copy the template
+if [[ ! -f "${project_root}/.env" ]]; then
+    action_error_exit "No [$(highlight .env)${RED}] file found in your project root. Please run [$(highlight "./scripts/setup")${RED}] first"
+fi
+
+declare -r compose_service="${PF_SERVICE:=worker}"
+
+# [docker compose run] flags
+declare -a compose_flags=(
+    --rm
+    --no-deps
+    --env TERM
+    --env COLORTERM
+    --entrypoint=''
+)
+
+# if the shell is interactive, attach the tty and stdin to the container
+tty -s && [ $# -eq 0 ] && compose_flags+=(--interactive --tty)
 
 declare -a command=("bash")
 
@@ -9,9 +33,10 @@ if [[ $# -ge 1 ]]; then
     command=("$@")
 fi
 
-exec docker compose exec \
-    --user "${user}" \
-    --env TERM \
-    --env COLORTERM \
-    "${service}" \
+exec \
+    docker \
+    compose \
+    run \
+    "${compose_flags[@]}" \
+    "${compose_service}" \
     "${command[@]}"

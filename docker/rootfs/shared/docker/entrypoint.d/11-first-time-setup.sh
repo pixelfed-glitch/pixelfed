@@ -42,3 +42,7 @@ fi
 if is-true "${OAUTH_ENABLED:-false}"; then
     only-once "passport:keys" run-as-runtime-user php artisan passport:keys
 fi
+
+if is-true "${PF_LOGIN_WITH_MASTODON_ENABLED:-false}"; then
+    only-once "passport:client::personal" run-as-runtime-user php artisan passport:client --personal --name "Created_By_Docker_11-first-time-setup.sh"
+fi

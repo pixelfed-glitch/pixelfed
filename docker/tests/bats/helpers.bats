@@ -2,6 +2,9 @@ setup() {
     DIR="$(cd "$(dirname "${BATS_TEST_FILENAME:-}")" >/dev/null 2>&1 && pwd)"
     ROOT="$(dirname "$(dirname "$DIR")")"
 
+    export RUNTIME_UID=0
+    export ENTRYPOINT_D_ROOT="/var/www/docker/rootfs/shared/docker/entrypoint.d/"
+
     load "$ROOT/rootfs/shared/docker/helpers.sh"
 }
 

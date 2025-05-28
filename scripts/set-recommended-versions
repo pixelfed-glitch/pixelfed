@@ -8,8 +8,8 @@ command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
 # shellcheck source=lib/shared.sh
 source "${project_root}/scripts/lib/shared.sh"
 
-# @renovate datasource=docker depName=mariadb versioning=docker
-DB_VERSION="11.4"
+# @renovate datasource=docker depName=mariadb
+DB_VERSION="11.6"
 
 # @renovate datasource=docker depName=php versioning=semver-coerced
 DOCKER_APP_PHP_VERSION="8.4"
@@ -18,7 +18,7 @@ DOCKER_APP_PHP_VERSION="8.4"
 DOCKER_APP_RELEASE="v0.14"
 
 # @renovate datasource=docker depName=nginxproxy/nginx-proxy versioning=semver-coerced
-DOCKER_PROXY_VERSION="1.6.4"
+DOCKER_PROXY_VERSION="1.7.1"
 
 # @renovate datasource=docker depName=redis versioning=semver-coerced
 DOCKER_REDIS_VERSION="7.4.2"
@@ -28,7 +28,6 @@ DOCKER_DB_IMAGE=$(__dottie value DOCKER_DB_IMAGE)
 if [[ $DOCKER_DB_IMAGE == mariadb* ]]; then
     action_start_newline "Setting [DB_VERSION] to [${DB_VERSION}]"
     __dottie set --error-if-missing DB_VERSION="${DB_VERSION}" || action_error_exit "Failed"
-
 fi
 
 action_start_newline "Setting [DOCKER_APP_PHP_VERSION] to [${DOCKER_APP_PHP_VERSION}]"

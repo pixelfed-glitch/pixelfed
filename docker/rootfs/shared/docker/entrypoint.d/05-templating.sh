@@ -53,6 +53,11 @@ find "${ENTRYPOINT_TEMPLATE_DIR}" -follow -type f -print | while read -r templat
 
     # Show the diff from the envsubst command
     if is-true "${ENTRYPOINT_SHOW_TEMPLATE_DIFF}"; then
-        git --no-pager diff --color=always "${template_file}" "${output_file_path}" || : # ignore diff exit code
+        # In case the file being written is a symlink, we resolved the full path
+        # before calling [git diff], so the output diff is based on file content and not
+        # file types
+        resolved_path="$(readlink -f "${output_file_path}")"
+
+        stream-prefix-command-output git --no-pager diff --text --color=always "${template_file}" "${resolved_path}" || : # ignore diff exit code
     fi
 done

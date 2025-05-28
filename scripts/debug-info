@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2016
+
+set -e -o errexit -o nounset -o pipefail
+
+declare project_root="${PWD}"
+command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
+
+# shellcheck source=lib/shared.sh
+source "${project_root}/scripts/lib/shared.sh"
+
+ensure-dot-env-file
+
+docker compose pull --policy=missing worker
+
+# want date outputs in UTC
+export TZ="UTC"
+
+echo
+echo -e "${BLUE}Printing debug information for GitHub issue${NO_COLOR}"
+echo
+echo -e "${GREEN}<!--- COPY FROM BELOW THIS LINE --->${NO_COLOR}"
+echo
+
+echo -n "_Generated on_ "
+echo -n '`'
+date | tr -d '\n'
+echo -n '`'
+echo -n " by "
+echo '`scripts/debug-info`'
+echo
+
+echo '<details><summary>System info</summary>'
+echo
+echo '```'
+lsb_release -a
+echo
+free -h
+echo '```'
+echo '</details>'
+echo
+
+echo '<details><summary>Docker info</summary>'
+echo
+echo '```'
+docker compose version
+echo
+docker version
+echo
+echo '```'
+echo '</details>'
+echo
+
+echo '<details><summary>Enabled compose services</summary>'
+echo
+echo '```'
+docker compose config --services
+echo '```'
+echo '</details>'
+
+echo
+echo '<details><summary>.env settings</summary>'
+echo
+echo '```sh'
+scripts/dottie print \
+    "$@" \
+    APP_DEBUG \
+    ENABLE_CONFIG_CACHE \
+    OAUTH_ENABLED \
+    INSTANCE_PUBLIC_TIMELINE_CACHED \
+    INSTANCE_PUBLIC_HASHTAGS \
+    INSTANCE_DISCOVER_PUBLIC \
+    INSTANCE_PUBLIC_LOCAL_TIMELINE \
+    CACHE_DRIVER \
+    BROADCAST_DRIVER \
+    DB_VERSION \
+    DB_CONNECTION \
+    DB_APPLY_NEW_MIGRATIONS_AUTOMATICALLY \
+    MAIL_DRIVER \
+    MAIL_HOST \
+    MAIL_PORT \
+    MAIL_ENCRYPTION \
+    REDIS_CLIENT \
+    REDIS_HOST \
+    REDIS_PORT \
+    ACTIVITY_PUB \
+    PF_ENABLE_CLOUD \
+    FILESYSTEM_CLOUD \
+    LOG_CHANNEL \
+    LOG_LEVEL \
+    QUEUE_DRIVER \
+    SESSION_DRIVER \
+    DOCKER_ALL_HOST_ROOT_PATH \
+    DOCKER_ALL_HOST_DATA_ROOT_PATH \
+    DOCKER_ALL_HOST_CONFIG_ROOT_PATH \
+    DOCKER_APP_HOST_OVERRIDES_PATH \
+    TZ \
+    DOCKER_APP_RELEASE \
+    DOCKER_APP_PHP_VERSION \
+    DOCKER_APP_RUNTIME \
+    DOCKER_APP_DEBIAN_RELEASE \
+    DOCKER_APP_BASE_TYPE \
+    DOCKER_APP_IMAGE \
+    DOCKER_APP_TAG \
+    DOCKER_APP_HOST_STORAGE_PATH \
+    DOCKER_APP_HOST_CACHE_PATH \
+    DOCKER_APP_RUN_ONE_TIME_SETUP_TASKS \
+    DOCKER_APP_ENSURE_OWNERSHIP_PATHS \
+    ENTRYPOINT_SKIP_SCRIPTS \
+    DOCKER_APP_PHP_MEMORY_LIMIT \
+    DOCKER_APP_PHP_ERROR_REPORTING \
+    DOCKER_APP_PHP_DISPLAY_ERRORS \
+    DOCKER_APP_BUILD_FRONTEND \
+    DOCKER_REDIS_VERSION \
+    DOCKER_DB_IMAGE \
+    DOCKER_DB_COMMAND \
+    DOCKER_DB_HOST_DATA_PATH \
+    DOCKER_DB_HOST_CONFIG_PATH \
+    DOCKER_DB_CONTAINER_DATA_PATH \
+    DOCKER_DB_HOST_PORT \
+    DOCKER_DB_CONTAINER_PORT
+echo '```'
+echo '</details>'
+
+echo
+echo -e "${GREEN}<!--- STOP COPYING --->${NO_COLOR}"
+echo
+echo -e "${BLUE}Please paste the output above into your GitHub issue or comment${NO_COLOR}"
+echo -e "${BLUE}Before pasting, ensure there are no output you consider sensitive to share${NO_COLOR}"

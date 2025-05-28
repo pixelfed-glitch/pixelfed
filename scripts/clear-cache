@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -e -o errexit -o nounset -o pipefail
+
+declare project_root="${PWD}"
+command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
+
+# shellcheck source=lib/shared.sh
+source "${project_root}/scripts/lib/shared.sh"
+
+ensure-dot-env-file
+
+# shellcheck source=../.env
+source "${project_root}/.env"
+
+action_start_newline "clearing cache in [${DOCKER_APP_HOST_CACHE_PATH:?missing}]"
+find "${DOCKER_APP_HOST_CACHE_PATH:?missing}" -maxdepth 1 -type f -delete -print || action_error_exit "could not clear cache"
+action_ok "OK"
+
+action_start_newline "clearing cache in [${DOCKER_APP_HOST_CACHE_PATH:?missing}]"
+find "${DOCKER_APP_HOST_CACHE_PATH:?missing}" -maxdepth 1 -type f -delete -print || action_error_exit "could not clear cache"
+action_ok "OK"
+
+action_start_newline "running 'config:cache'"
+./scripts/artisan config:cache || action_error_exit "failed"
+action_ok "OK"
+
+action_start_newline "running 'route:cache'"
+./scripts/artisan route:cache || action_error_exit "failed"
+action_ok "OK"
+
+action_start_newline "running 'view:cache'"
+./scripts/artisan view:cache || action_error_exit "failed"
+action_ok "OK"

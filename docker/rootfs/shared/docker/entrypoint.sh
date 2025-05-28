@@ -91,8 +91,11 @@ find "${ENTRYPOINT_D_ROOT}" -follow -type f -print | sort -V | while read -r fil
                 log-error-and-exit "File [${file}] is not executable (please 'chmod +x' it)"
             fi
 
+            skip_value="$(trim-whitespace "$(trim-whitespace "$ENTRYPOINT_SKIP_SCRIPTS") $script_name")"
+
             log-info "${section_message_color}============================================================${color_clear}"
             log-info "${section_message_color}Executing [${file}]${color_clear}"
+            log-info "${section_message_color}You can disable this script by setting [\$ENTRYPOINT_SKIP_SCRIPTS=\"${skip_value}\"] in your .env file"
             log-info "${section_message_color}============================================================${color_clear}"
 
             "${file}"

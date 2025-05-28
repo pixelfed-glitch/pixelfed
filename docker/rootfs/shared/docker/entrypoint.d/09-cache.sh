@@ -17,5 +17,7 @@ run-as-runtime-user rm -f ./bootstrap/cache/packages.php
 run-as-runtime-user rm -f ./bootstrap/cache/routes*.php
 run-as-runtime-user rm -f ./bootstrap/cache/services.php
 
-run-as-runtime-user php artisan optimize:clear
+run-as-runtime-user php artisan config:cache
+run-as-runtime-user php artisan route:cache
+run-as-runtime-user php artisan view:cache
 run-as-runtime-user php artisan optimize
