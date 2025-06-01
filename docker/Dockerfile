@@ -256,6 +256,8 @@ ARG RUNTIME_GID
 # Install composer dependencies
 # NOTE: we skip the autoloader generation here since we don't have all files available (yet)
 RUN --mount=type=cache,id=pixelfed-composer-${PHP_VERSION},uid=${RUNTIME_UID},gid=${RUNTIME_GID},sharing=locked,target=/cache/composer \
+    --mount=type=bind,source=composer.json,target=/var/www/composer.json \
+    --mount=type=bind,source=composer.lock,target=/var/www/composer.lock \
     set -ex \
     && composer install --prefer-dist --no-autoloader --ignore-platform-reqs
 
