@@ -41,6 +41,14 @@ class AddSoftwareColumnToInstancesTable extends Migration
 
 	protected function runPostMigration()
 	{
-		InstanceCrawlPipeline::dispatch();
+		$type = config('database.default');
+        switch($type)
+        {
+            case 'sqlite':
+                break;
+            default:
+				InstanceCrawlPipeline::dispatch();
+                break;
+        }
 	}
 }
