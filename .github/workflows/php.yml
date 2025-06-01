@@ -83,7 +83,7 @@ jobs:
           key: composer-${{matrix.php_version}}-${{ hashFiles('composer.lock') }}
 
       - name: Install composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist -n
+        run: php composer.phar install --no-progress --no-suggest --prefer-dist -n
 
       - name: Setup Environment
         run: |
