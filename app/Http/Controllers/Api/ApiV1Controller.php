@@ -2719,7 +2719,6 @@ class ApiV1Controller extends Controller
                 ->filter()
                 ->take($limit)
                 ->values();
-        }
 
         $baseUrl = config('app.url').'/api/v1/timelines/home?limit='.$limit.'&';
         $minId = $res->map(function ($s) {
