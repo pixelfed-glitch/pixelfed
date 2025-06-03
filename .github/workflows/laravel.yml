@@ -9,9 +9,11 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         php: [ '8.3' ]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,36 +22,63 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, sqlite, xml, ctype, json, openssl
+          extensions: mbstring, sqlite, pdo_sqlite, bcmath, xml, ctype, json, openssl, curl, gd
+          coverage: none
           ini-values: post_max_size=256M, memory_limit=512M
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: php composer.phar --no-progress --no-suggest --prefer-dist -n
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Copy .env and generate key
+      - name: Copy .env.testing
         run: |
-          cp .env.example .env
-          php artisan key:generate
+          cp .env.testing .env
+          php artisan key:generate --env=testing
 
-      - name: Prepare SQLite database
+      - name: Configure SQLite for testing
         run: |
+          mkdir -p database
           touch database/database.sqlite
-          php artisan migrate --env=testing --force --database=sqlite
+          echo "DB_CONNECTION=sqlite" >> .env.testing
 
-      - name: Run tests
+      - name: Clear caches
         run: |
-          php artisan test --env=testing --log-junit=tests/_output/junit.xml
-        continue-on-error: false
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan route:clear
 
-      - name: Upload JUnit test results
+      - name: Run database migrations
+        run: php artisan migrate --env=testing --force
+
+      - name: Run tests with PHPUnit
+        run: vendor/bin/phpunit --log-junit tests/_output/junit.xml
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: :memory:
+
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: junit-results
+          name: test-results
           path: tests/_output/junit.xml
+          retention-days: 7
+
+      - name: Upload Laravel logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: laravel-logs
+          path: storage/logs
+          retention-days: 7
