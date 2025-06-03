@@ -30,7 +30,7 @@ jobs:
           key: composer-${{ hashFiles('**/composer.lock') }}
 
       - name: Install Composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist -n
+        run: php composer.phar --no-progress --no-suggest --prefer-dist -n
 
       - name: Copy .env and generate key
         run: |
