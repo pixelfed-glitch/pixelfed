@@ -64,10 +64,10 @@ jobs:
       - name: Create test output directory
         run: mkdir -p tests/_output
 
-      - name: Run tests with PHPUnit
-        run: vendor/bin/phpunit --log-junit tests/_output/junit.xml
-        env:
-          DB_CONNECTION: sqlite
+      - name: Run tests
+        run: |
+          php artisan test --env=testing --log-junit=tests/_output/junit.xml
+        continue-on-error: false
 
       - name: Upload test results
         if: always()
@@ -75,6 +75,7 @@ jobs:
         with:
           name: test-results
           path: tests/_output/junit.xml
+          if-no-files-found: warn
           retention-days: 7
 
       - name: Upload Laravel logs
