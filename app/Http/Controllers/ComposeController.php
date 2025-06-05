@@ -800,7 +800,9 @@ class ComposeController extends Controller
             $settings['compose_settings'] = $s;
         }
 
-        return array_merge($default, $settings['compose_settings']);
+        $res = array_merge($default, $settings['compose_settings']);
+
+        return response()->json($res, 200, [], JSON_UNESCAPED_SLASHES);
     }
 
     public function createPoll(Request $request)
