@@ -781,8 +781,11 @@ class ComposeController extends Controller
         abort_if($request->user()->has_roles && ! UserRoleService::can('can-post', $request->user()->id), 403, 'Invalid permissions for this action');
 
         $default = [
+            'allowed_media_types' => config_cache('pixelfed.media_types'),
+            'max_caption_length' => (int) config_cache('pixelfed.max_caption_length'),
             'default_license' => 1,
             'media_descriptions' => false,
+            'max_file_size' => config_cache('pixelfed.max_photo_size'),
             'max_media_attachments' => (int) config_cache('pixelfed.max_album_length'),
             'max_altext_length' => config_cache('pixelfed.max_altext_length'),
         ];
