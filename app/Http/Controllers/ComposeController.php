@@ -780,14 +780,18 @@ class ComposeController extends Controller
         $uid = $request->user()->id;
         abort_if($request->user()->has_roles && ! UserRoleService::can('can-post', $request->user()->id), 403, 'Invalid permissions for this action');
 
+        $types = config_cache('pixelfed.media_types');
+        if (str_contains($types, ',')) {
+            $types = explode(',', $types);
+        }
         $default = [
-            'allowed_media_types' => config_cache('pixelfed.media_types'),
+            'allowed_media_types' => $types,
             'max_caption_length' => (int) config_cache('pixelfed.max_caption_length'),
             'default_license' => 1,
             'media_descriptions' => false,
-            'max_file_size' => config_cache('pixelfed.max_photo_size'),
+            'max_file_size' => (int) config_cache('pixelfed.max_photo_size'),
             'max_media_attachments' => (int) config_cache('pixelfed.max_album_length'),
-            'max_altext_length' => config_cache('pixelfed.max_altext_length'),
+            'max_altext_length' => (int) config_cache('pixelfed.max_altext_length'),
         ];
         $settings = AccountService::settings($uid);
         if (isset($settings['other']) && isset($settings['other']['scope'])) {
@@ -796,7 +800,9 @@ class ComposeController extends Controller
             $settings['compose_settings'] = $s;
         }
 
-        return array_merge($default, $settings['compose_settings']);
+        $res = array_merge($default, $settings['compose_settings']);
+
+        return response()->json($res, 200, [], JSON_UNESCAPED_SLASHES);
     }
 
     public function createPoll(Request $request)
