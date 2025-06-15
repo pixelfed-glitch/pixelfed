@@ -9,18 +9,8 @@ on:
   push:
     branches:
       - main
-      - staging
-      - develop
-      - ci/*
     tags:
       - "*"
-
-  # See: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
 
 jobs:
   lint:

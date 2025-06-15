@@ -20,7 +20,7 @@ class RestrictedAccess
     {
         if(config('instance.restricted.enabled')) {
             if (!Auth::guard($guard)->check()) {
-                $p = ['login', 'password*', 'loginAs*'];
+                $p = ['login', 'password*', 'loginAs*', 'oauth/token', '/api/nodeinfo*', '/api/service/health-check'];
                 if(!$request->is($p)) {
                     return redirect('/login');
                 }
