@@ -20,7 +20,18 @@ class RestrictedAccess
     {
         if(config('instance.restricted.enabled')) {
             if (!Auth::guard($guard)->check()) {
-                $p = ['login', 'password*', 'loginAs*', 'oauth/token', '/api/nodeinfo*', '/api/service/health-check'];
+                $p = [
+                    'login',
+                    'password*',
+                    'loginAs*',
+                    'oauth/token',
+                    '/api/nodeinfo*',
+                    '/api/service/health-check',
+                    'css/*',      // Allow CSS files
+                    'js/*',       // Allow JS files
+                    'fonts/*',    // Allow fonts, if used
+                    'images/*',   // Allow static images (not user-uploaded media)
+                ];
                 if(!$request->is($p)) {
                     return redirect('/login');
                 }
