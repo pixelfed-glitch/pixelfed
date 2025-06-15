@@ -172,7 +172,7 @@ jobs:
           context: .
           file: docker/Dockerfile
           target: ${{ matrix.target_runtime }}-runtime
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           builder: ${{ steps.buildx.outputs.name }}
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
