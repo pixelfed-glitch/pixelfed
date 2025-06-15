@@ -27,6 +27,8 @@ class RestrictedAccess
                     'password*',
                     'loginAs*',
                     'oauth/token',
+                    'api/nodeinfo*',
+                    'api/service/health-check',
                 ];
                 if(!$request->is($p)) {
                     Log::debug('RestrictedAccess: Request path', ['path' => $request->path()]);
