@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 class RestrictedAccess
 {
@@ -25,10 +27,11 @@ class RestrictedAccess
                     'password*',
                     'loginAs*',
                     'oauth/token',
-                    '/api/nodeinfo*',
-                    '/api/service/health-check',
+                    'api/nodeinfo*',
+                    'api/service/health-check',
                 ];
                 if(!$request->is($p)) {
+                    Log::debug('RestrictedAccess: Request path', ['path' => $request->path()]);
                     return redirect('/login');
                 }
             }
