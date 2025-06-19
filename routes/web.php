@@ -48,7 +48,7 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::post('auth/forgot/email', 'UserEmailForgotController@store')->middleware('throttle:10,900,forgotEmail');
 
 
-    Route::get('/storage_auth', function () {
+    Route::get('storage_auth', function () {
         if(config('instance.restricted.enabled')) {
             if(!Auth::guard('web')->check()) {
                 return response('Unauthorized', 401);
