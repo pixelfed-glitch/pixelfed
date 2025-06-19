@@ -49,7 +49,7 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::post('auth/forgot/email', 'UserEmailForgotController@store')->middleware('throttle:10,900,forgotEmail');
 
 
-    Route::get('auth', function () {
+    Route::get('storage_auth', function () {
         Log::debug('Auth Route Hit', [
             'headers' => request()->headers->all(),
             'cookies' => request()->cookies->all(),
