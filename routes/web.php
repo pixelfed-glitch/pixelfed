@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofactor', 'localization'])->group(function () {
     Route::get('/', 'SiteController@home')->name('timeline.personal');
     Route::redirect('/home', '/')->name('home');
@@ -45,6 +48,20 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::get('auth/forgot/email', 'UserEmailForgotController@index')->name('email.forgot');
     Route::post('auth/forgot/email', 'UserEmailForgotController@store')->middleware('throttle:10,900,forgotEmail');
 
+
+    Route::get('auth', function () {
+        Log::debug('Auth Route Hit', [
+            'headers' => request()->headers->all(),
+            'cookies' => request()->cookies->all(),
+            'user_authenticated' => Auth::guard('web')->check(),
+        ]);
+        if(config('instance.restricted.enabled')) {
+            if(!Auth::guard('web')->check()) {
+                return response('Unauthorized', 401);
+            }
+        }
+        return response('OK', 200);
+    });
 
     Route::group([
         'as' => 'passport.',

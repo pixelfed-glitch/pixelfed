@@ -1,25 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\TagsController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-
 
 $middleware = ['auth:api', 'validemail'];
-
-Route::get('auth', function () {
-    Log::debug('Auth Route Hit', [
-        'headers' => request()->headers->all(),
-        'cookies' => request()->cookies->all(),
-        'user_authenticated' => Auth::guard('web')->check(),
-    ]);
-    if(config('instance.restricted.enabled')) {
-        if(!Auth::guard('web')->check()) {
-            return response('Unauthorized', 401);
-        }
-    }
-    return response('OK', 200);
-});
 
 Route::post('/f/inbox', 'FederationController@sharedInbox');
 Route::post('/users/{username}/inbox', 'FederationController@userInbox');
