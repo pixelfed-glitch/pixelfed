@@ -55,7 +55,7 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             }
         }
         return response('OK', 200);
-    })->middleware('web');
+    });
 
     Route::group([
         'as' => 'passport.',
