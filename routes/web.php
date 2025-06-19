@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+
 Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofactor', 'localization'])->group(function () {
     Route::get('/', 'SiteController@home')->name('timeline.personal');
     Route::redirect('/home', '/')->name('home');
@@ -44,6 +46,16 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::post('auth/sign_up/resend-confirmation', 'CuratedRegisterController@resendConfirmationProcess');
     Route::get('auth/forgot/email', 'UserEmailForgotController@index')->name('email.forgot');
     Route::post('auth/forgot/email', 'UserEmailForgotController@store')->middleware('throttle:10,900,forgotEmail');
+
+
+    Route::get('/storage_auth', function () {
+        if(config('instance.restricted.enabled')) {
+            if !Auth::guard('web')->check() {
+                return response('Unauthorized', 401);
+            }
+        }
+        return response('OK', 200);
+    })->middleware('web');
 
     Route::group([
         'as' => 'passport.',
