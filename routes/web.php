@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\FileToken;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -55,23 +54,11 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             'headers' => request()->headers->all(),
             'cookies' => request()->cookies->all(),
             'user_authenticated' => Auth::check(),
-            'token' => request()->query('token'),
         ]);
         if(config('instance.restricted.enabled')) {
             if(Auth::check()) {
                 return response('OK', 200);
             }
-
-            $token = request()->query('token');
-            if ($token) {
-                $tokenRecord = FileAccessToken::where('token', $token)
-                    ->where('expires_at', '>', now())
-                    ->first();
-                if ($tokenRecord) {
-                    return response('OK', 200);
-                }
-            }
-
             return response('Unauthorized', 401);
         }
         return response('OK', 200);
