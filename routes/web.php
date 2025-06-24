@@ -53,10 +53,10 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
         Log::debug('Auth Route Hit', [
             'headers' => request()->headers->all(),
             'cookies' => request()->cookies->all(),
-            'user_authenticated' => Auth::guard('web')->check() || Auth::guard('api')->check(),
+            'user_authenticated' => Auth::check(),
         ]);
         if(config('instance.restricted.enabled')) {
-            if(Auth::guard('web')->check() || Auth::guard('api')->check()) {
+            if(Auth::check()) {
                 return response('OK', 200);
             }
             return response('Unauthorized', 401);
