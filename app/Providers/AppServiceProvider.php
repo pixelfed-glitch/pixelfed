@@ -106,10 +106,11 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perHour(10)->by($request->ip());
         });
         Storage::extend('signed-local', function ($app, $config) {
-            $filesystem = new Filesystem(
-                new \League\Flysystem\Local\LocalFilesystemAdapter($config['root'])
+            $adapter = new LocalFilesystemAdapter($config['root']);
+            return new SignedUrlAdapter(
+                new \League\Flysystem\Filesystem($adapter),
+                $config
             );
-            return new SignedUrlAdapter($filesystem, $config);
         });
 
         // Model::preventLazyLoading(true);
