@@ -56,7 +56,8 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             'user_authenticated' => Auth::check(),
         ]);
         if(config('instance.restricted.enabled')) {
-            if(Auth::check()) {
+            $guard = request()->header('Authorization') ? 'api' : 'web';
+            if(Auth::guard($guard)->check()) {
                 return response('OK', 200);
             }
             return response('Unauthorized', 401);
