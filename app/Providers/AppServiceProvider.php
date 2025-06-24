@@ -40,7 +40,7 @@ use Illuminate\Http\Request;
 use URL;
 use App\Filesystem\SignedUrlAdapter;
 use Illuminate\Support\Facades\Storage;
-use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 
 
 class AppServiceProvider extends ServiceProvider
