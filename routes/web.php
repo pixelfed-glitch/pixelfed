@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 
 Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofactor', 'localization'])->group(function () {
     Route::get('/', 'SiteController@home')->name('timeline.personal');
@@ -49,15 +48,21 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::get('auth/forgot/email', 'UserEmailForgotController@index')->name('email.forgot');
     Route::post('auth/forgot/email', 'UserEmailForgotController@store')->middleware('throttle:10,900,forgotEmail');
 
-    Route::get('/storage/{file}', function ($file) {
-        Log::info('Serving file: ' . $file);
-        $path = storage_path('app/public/' . $file);
-        if (file_exists($path)) {
-            return response()->file($path);
+
+    Route::get('storage_auth', function () {
+        Log::debug('Auth Route Hit', [
+            'headers' => request()->headers->all(),
+            'cookies' => request()->cookies->all(),
+            'user_authenticated' => Auth::check(),
+        ]);
+        if(config('instance.restricted.enabled')) {
+            if(Auth::check()) {
+                return response('OK', 200);
+            }
+            return response('Unauthorized', 401);
         }
-        Log::warning('File not found: ' . $path);
-        abort(404);
-    })->middleware('signed')->name('storage.file');
+        return response('OK', 200);
+    });
 
     Route::group([
         'as' => 'passport.',

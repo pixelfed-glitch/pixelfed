@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('DANGEROUSLY_SET_FILESYSTEM_DRIVER', 'public'),
+    'default' => env('DANGEROUSLY_SET_FILESYSTEM_DRIVER', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ return [
         ],
 
         'public' => [
-            'driver'     => 'signed-local',
+            'driver'     => 'local',
             'root'       => storage_path('app/public'),
             'url'        => env('APP_URL').'/storage',
             'visibility' => 'public',

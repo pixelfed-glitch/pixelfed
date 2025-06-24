@@ -38,10 +38,6 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Pulse\Facades\Pulse;
 use Illuminate\Http\Request;
 use URL;
-use App\Filesystem\SignedUrlAdapter;
-use Illuminate\Support\Facades\Storage;
-use League\Flysystem\Local\LocalFilesystemAdapter;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -104,13 +100,6 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('app-code-resend', function (Request $request) {
             return Limit::perHour(10)->by($request->ip());
-        });
-        Storage::extend('signed-local', function ($app, $config) {
-            $adapter = new LocalFilesystemAdapter($config['root']);
-            return new SignedUrlAdapter(
-                new \League\Flysystem\Filesystem($adapter),
-                $config
-            );
         });
 
         // Model::preventLazyLoading(true);
