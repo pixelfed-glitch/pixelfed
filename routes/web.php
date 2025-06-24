@@ -50,10 +50,12 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::post('auth/forgot/email', 'UserEmailForgotController@store')->middleware('throttle:10,900,forgotEmail');
 
     Route::get('/storage/{file}', function ($file) {
+        Log::info('Serving file: ' . $file);
         $path = storage_path('app/public/' . $file);
         if (file_exists($path)) {
             return response()->file($path);
         }
+        Log::warning('File not found: ' . $path);
         abort(404);
     })->middleware('signed')->name('storage.file');
 
