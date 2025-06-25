@@ -204,7 +204,7 @@ class GroupController extends GroupFederationController
                 $url = url(URL::temporarySignedRoute(
                     'storage.file',
                     now()->addMinutes(30),
-                    ['file' => $path, 'user_id' => auth()->id()]
+                    ['file' => preg_replace('#^/public/#','',$path), 'user_id' => auth()->id()]
                 ));
                 $metadata['avatar'] = [
                     'path' => $path,
@@ -230,7 +230,7 @@ class GroupController extends GroupFederationController
                 $url = url(URL::temporarySignedRoute(
                     'storage.file',
                     now()->addMinutes(30),
-                    ['file' => $path, 'user_id' => auth()->id()]
+                    ['file' => preg_replace('#^/public/#','',$path), 'user_id' => auth()->id()]
                 ));
                 $metadata['header'] = [
                     'path' => $path,
