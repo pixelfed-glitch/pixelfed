@@ -58,7 +58,7 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
             return Storage::disk('local')->response($file);
         }
         abort(404);
-    })->middleware('signed')->name('storage.file');
+    })->middleware('signed')->name('storage.file')->where('file', '.*');;
 
     Route::group([
         'as' => 'passport.',
