@@ -5,7 +5,6 @@ namespace App\Util\Media;
 use App\Media;
 use Image as Intervention;
 use Cache, Log, Storage;
-use Illuminate\Support\Facades\URL;
 
 class Image
 {
@@ -178,11 +177,7 @@ class Image
 
 			if ($thumbnail == true) {
 				$media->thumbnail_path = $converted['path'];
-				$media->thumbnail_url = url(URL::temporarySignedRoute(
-                    'storage.file',
-                    now()->addMinutes(30),
-                    ['file' => $converted['path'], 'user_id' => auth()->id()]
-                ));
+				$media->thumbnail_url = url(Storage::url($converted['path']));
 			} else {
 				$media->width = $img->width();
 				$media->height = $img->height();
