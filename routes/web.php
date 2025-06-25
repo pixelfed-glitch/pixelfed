@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 
 Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofactor', 'localization'])->group(function () {
     Route::get('/', 'SiteController@home')->name('timeline.personal');
@@ -48,9 +49,9 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
     Route::post('auth/forgot/email', 'UserEmailForgotController@store')->middleware('throttle:10,900,forgotEmail');
 
 
-    Route::get('/storage/{file}', function ($file) {
+    Route::get('storage/{file}', function ($file) {
         $path = storage_path('app/public/' . $file);
-        \Log::info('Storage Route: Serving file', [
+        Log::info('Storage Route: Serving file', [
             'file' => $file,
             'path' => $path,
             'exists' => file_exists($path),
@@ -58,7 +59,7 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
         if (file_exists($path)) {
             return response()->file($path);
         }
-        \Log::info('Storage Route: File not found', ['path' => $path]);
+        Log::info('Storage Route: File not found', ['path' => $path]);
         abort(404);
     })->middleware('signed')->name('storage.file');
 
