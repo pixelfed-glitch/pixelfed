@@ -50,16 +50,13 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
 
 
     Route::get('storage/{file}', function ($file) {
-        $path = storage_path('app/public/' . $file);
         Log::info('Storage Route: Serving file', [
             'file' => $file,
-            'path' => $path,
-            'exists' => file_exists($path),
+            'exists' => Storage::disk('local')->exists($file),
         ]);
-        if (file_exists($path)) {
-            return response()->file($path);
+        if (Storage::disk('local')->exists($file)) {
+            return Storage::disk('local')->response($file);
         }
-        Log::info('Storage Route: File not found', ['path' => $path]);
         abort(404);
     })->middleware('signed')->name('storage.file');
 
