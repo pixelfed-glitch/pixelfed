@@ -29,7 +29,7 @@ class RestrictedAccess
                     'oauth/token',
                     'api/nodeinfo*',
                     'api/service/health-check',
-                    'storage',
+                    'storage/*',
                 ];
                 if(!$request->is($p)) {
                     Log::debug('RestrictedAccess: Request path', ['path' => $request->path()]);
