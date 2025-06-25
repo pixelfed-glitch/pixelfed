@@ -7,22 +7,20 @@ use Auth;
 use App\UserInvite;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\UserInvitePipeline\DispatchUserInvitePipeline;
 
 class UserInviteController extends Controller
 {
 	public function create(Request $request)
 	{
-		//abort_if(!config('pixelfed.user_invites.enabled'), 404);
+		abort_if(!config('pixelfed.user_invites.enabled'), 404);
 		abort_unless(Auth::check(), 403);
 		return view('settings.invites.create');
 	}
 
 	public function show(Request $request)
 	{
-        Log::info('Invites: ', [
-            'user_invites' => config('pixelfed.user_invites.enabled'),
-        ]);
-		//abort_if(!config('pixelfed.user_invites.enabled'), 404);
+		abort_if(!config('pixelfed.user_invites.enabled'), 404);
 		abort_unless(Auth::check(), 403);
 		$invites = UserInvite::whereUserId(Auth::id())->paginate(10);
 		$limit = config('pixelfed.user_invites.limit.total');
@@ -32,7 +30,7 @@ class UserInviteController extends Controller
 
 	public function store(Request $request)
 	{
-		//abort_if(!config('pixelfed.user_invites.enabled'), 404);
+		abort_if(!config('pixelfed.user_invites.enabled'), 404);
 		abort_unless(Auth::check(), 403);
 		$this->validate($request, [
 			'email' => 'required|email|unique:users|unique:user_invites',
@@ -48,6 +46,8 @@ class UserInviteController extends Controller
 		$invite->key = (string) Str::uuid();
 		$invite->token = str_random(32);
 		$invite->save();
+
+        DispatchUserInvitePipeline::dispatch($invite);
 
 		return redirect(route('settings.invites'));
 	}
