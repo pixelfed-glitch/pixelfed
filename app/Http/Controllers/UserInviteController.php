@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\UserInvite;
+use App\Models\UserInvite;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\UserInvitePipeline\DispatchUserInvitePipeline;
