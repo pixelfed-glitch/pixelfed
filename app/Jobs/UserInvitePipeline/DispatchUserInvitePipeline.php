@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\UserInvite;
-use App\Mail\UserInvite;
+use App\Mail\UserInviteMessage;
 use Illuminate\Support\Facades\Mail;
 
 class DispatchUserInvitePipeline implements ShouldQueue
@@ -33,6 +33,6 @@ class DispatchUserInvitePipeline implements ShouldQueue
     {
         $invite = $this->invite;
 
-        Mail::to($invite->email)->send(new UserInvite($invite));
+        Mail::to($invite->email)->send(new UserInviteMessage($invite));
     }
 }
