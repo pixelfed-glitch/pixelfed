@@ -35,7 +35,7 @@ class StoryVerb extends Fractal\TransformerAbstract
 				'url' => url(URL::temporarySignedRoute(
                     'storage.file',
                     now()->addMinutes(30),
-                    ['file' => preg_replace('#^/public/#','',$story->path), 'user_id' => auth()->id()]
+                    ['file' => $story->path, 'user_id' => auth()->id()]
                 )),
 				'mediaType' => $story->mime,
 			],

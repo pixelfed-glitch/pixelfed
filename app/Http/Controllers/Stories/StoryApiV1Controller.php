@@ -75,7 +75,7 @@ class StoryApiV1Controller extends Controller
                 'src' => url(URL::temporarySignedRoute(
                     'storage.file',
                     now()->addMinutes(30),
-                    ['file' => preg_replace('#^/public/#','',$s->path), 'user_id' => auth()->id()]
+                    ['file' => $s->path, 'user_id' => auth()->id()]
                 )),
                 'duration' => $s->duration ?? 3,
                 'seen' => StoryService::hasSeen($pid, $s->id),
@@ -123,7 +123,7 @@ class StoryApiV1Controller extends Controller
                         'src' => url(URL::temporarySignedRoute(
                             'storage.file',
                             now()->addMinutes(30),
-                            ['file' => preg_replace('#^/public/#','',$s->path), 'user_id' => auth()->id()]
+                            ['file' => $s->path, 'user_id' => auth()->id()]
                         )),
                         'duration' => $s->duration,
                         'seen' => true,
@@ -195,7 +195,7 @@ class StoryApiV1Controller extends Controller
                 'src' => url(URL::temporarySignedRoute(
                     'storage.file',
                     now()->addMinutes(30),
-                    ['file' => preg_replace('#^/public/#','',$s->path), 'user_id' => auth()->id()]
+                    ['file' => $s->path, 'user_id' => auth()->id()]
                 )),
                 'duration' => $s->duration ?? 3,
                 'seen' => StoryService::hasSeen($pid, $s->id),
@@ -254,7 +254,7 @@ class StoryApiV1Controller extends Controller
                         'src' => url(URL::temporarySignedRoute(
                             'storage.file',
                             now()->addMinutes(30),
-                            ['file' => preg_replace('#^/public/#','',$s->path), 'user_id' => auth()->id()]
+                            ['file' => $s->path, 'user_id' => auth()->id()]
                         )),
                         'duration' => $s->duration,
                         'seen' => true,
@@ -319,7 +319,7 @@ class StoryApiV1Controller extends Controller
             'media_url' => url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#^/public/#','',$story->path), 'user_id' => auth()->id()]
+                ['file' => $story->path, 'user_id' => auth()->id()]
             )).'?v='.time(),
             'media_type' => $story->type,
         ];
@@ -459,7 +459,7 @@ class StoryApiV1Controller extends Controller
             'story_media_url' => url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#^/public/#','',$story->path), 'user_id' => auth()->id()]
+                ['file' => $story->path, 'user_id' => auth()->id()]
             )),
             'caption' => $text,
         ]);
