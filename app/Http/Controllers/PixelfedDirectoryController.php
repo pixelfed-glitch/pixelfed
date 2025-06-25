@@ -59,7 +59,7 @@ class PixelfedDirectoryController extends Controller
             $res['banner_image'] = url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#^public/#','/',$res['banner_image']), 'user_id' => auth()->id()]
+                ['file' => $res['banner_image'], 'user_id' => auth()->id()]
             );
         }
 

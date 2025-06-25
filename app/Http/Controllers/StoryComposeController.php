@@ -77,7 +77,7 @@ class StoryComposeController extends Controller
             'media_url' => url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#^public/#','/',$story->path), 'user_id' => auth()->id()]
+                ['file' => $story->path, 'user_id' => auth()->id()]
             )).'?v='.time(),
             'media_type' => $story->type,
         ];
@@ -430,7 +430,7 @@ class StoryComposeController extends Controller
             'story_media_url' => url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#^public/#','/',$story->path), 'user_id' => auth()->id()]
+                ['file' => $story->path, 'user_id' => auth()->id()]
             )),
             'reaction' => $text,
         ]);
@@ -506,7 +506,7 @@ class StoryComposeController extends Controller
             'story_media_url' => url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#^public/#','/',$story->path), 'user_id' => auth()->id()]
+                ['file' => $story->path, 'user_id' => auth()->id()]
             )),
             'caption' => $text,
         ]);
