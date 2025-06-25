@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\UserInvite;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class UserInviteController extends Controller
 {
@@ -18,6 +19,9 @@ class UserInviteController extends Controller
 
 	public function show(Request $request)
 	{
+        Log::info('Invites: ', [
+            'user_invites' => config('pixelfed.user_invites.enabled'),
+        ]);
 		//abort_if(!config('pixelfed.user_invites.enabled'), 404);
 		abort_unless(Auth::check(), 403);
 		$invites = UserInvite::whereUserId(Auth::id())->paginate(10);
