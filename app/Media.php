@@ -51,7 +51,7 @@ class Media extends Model
         return url(URL::temporarySignedRoute(
             'storage.file',
             now()->addMinutes(30),
-            ['file' => preg_replace('#^/public/#','',$this->media_path), 'user_id' => auth()->id()]
+            ['file' => preg_replace('#/public/#','/',$this->media_path), 'user_id' => auth()->id()]
         ));
     }
 
@@ -65,7 +65,7 @@ class Media extends Model
             return url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#^/public/#','',$this->thumbnail_path), 'user_id' => auth()->id()]
+                ['file' => preg_replace('#/public/#','/',$this->thumbnail_path), 'user_id' => auth()->id()]
             ));
         }
 
@@ -79,7 +79,7 @@ class Media extends Model
                 url(URL::temporarySignedRoute(
                     'storage.file',
                     now()->addMinutes(30),
-                    ['file' => preg_replace('#^/public/#','',$this->media_path), 'user_id' => auth()->id()]
+                    ['file' => preg_replace('#/public/#','/',$this->media_path), 'user_id' => auth()->id()]
                 ));
         }
 
