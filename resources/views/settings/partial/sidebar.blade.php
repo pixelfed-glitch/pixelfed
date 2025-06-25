@@ -9,7 +9,7 @@
             <li class="nav-item pl-3 {{request()->is('settings/email')?'active':''}}">
                 <a class="nav-link font-weight-light text-muted" href="{{route('settings.email')}}">{{__('settings.email')}}</a>
             </li>
-            {{-- @if(config_cache('pixelfed.user_invites.enabled'))
+            {{-- @if(config('pixelfed.user_invites.enabled'))
             <li class="nav-item pl-3 {{request()->is('settings/invites*')?'active':''}}">
                 <a class="nav-link font-weight-light text-muted" href="{{route('settings.invites')}}">{{__('settings.invites')}}</a>
             </li>
