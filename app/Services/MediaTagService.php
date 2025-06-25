@@ -22,7 +22,7 @@ class MediaTagService
 	public static function coldGet($mediaId, $usernames = true)
 	{
 		$k = 'pf:services:media_tags:get:sid:' . $mediaId;
-		return Cache::remember($k, now()->addMinutes(60), function() use($mediaId, $usernames) {
+		return Cache::remember($k, now()->addMinutes(30), function() use($mediaId, $usernames) {
 			$key = self::CACHE_KEY . $mediaId;
 			if(Redis::zCount($key, '-inf', '+inf') == 0) {
 				$tags = MediaTag::whereStatusId($mediaId)->get();

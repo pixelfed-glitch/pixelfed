@@ -159,7 +159,7 @@ class Profile extends Model
 
 	public function avatarUrl()
 	{
-		$url = Cache::remember('avatar:'.$this->id, 1209600, function () {
+		$url = Cache::remember('avatar:'.$this->id, now()->addMinutes(30), function () {
 			$avatar = $this->avatar;
 
 			if(!$avatar) {

@@ -18,7 +18,7 @@ class MediaService
 
 	public static function get($statusId)
 	{
-		return Cache::remember(self::CACHE_KEY.$statusId, 21600, function() use($statusId) {
+		return Cache::remember(self::CACHE_KEY.$statusId, now()->addMinutes(30), function() use($statusId) {
 			$media = Media::whereStatusId($statusId)->orderBy('order')->get();
 			if(!$media) {
 				return [];
