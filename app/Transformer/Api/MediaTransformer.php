@@ -34,7 +34,7 @@ class MediaTransformer extends Fractal\TransformerAbstract
             $res['hls_manifest'] = url(URL::temporarySignedRoute(
                 'storage.file',
                 now()->addMinutes(30),
-                ['file' => preg_replace('#/public/#','/',$media->hls_path), 'user_id' => auth()->id()]
+                ['file' => preg_replace('#^/public/#','',$media->hls_path), 'user_id' => auth()->id()]
             ));
         }
 
