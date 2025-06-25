@@ -60,7 +60,7 @@ class PixelfedDirectoryController extends Controller
                 'storage.file',
                 now()->addMinutes(30),
                 ['file' => $res['banner_image'], 'user_id' => auth()->id()]
-            );
+            ));
         }
 
         if (isset($res['favourite_posts'])) {
