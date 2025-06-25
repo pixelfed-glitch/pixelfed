@@ -61,7 +61,7 @@ class StoryService
 					'media' => url(URL::temporarySignedRoute(
                         'storage.file',
                         now()->addMinutes(30),
-                        ['file' => $s->path, 'user_id' => auth()->id()]
+                        ['file' => preg_replace('#^public/#','/',$s->path), 'user_id' => auth()->id()]
                     )),
 					'can_reply' => (bool) $s->can_reply,
 					'can_react' => (bool) $s->can_react,

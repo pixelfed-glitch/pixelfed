@@ -33,7 +33,7 @@ class GroupMedia extends Model
         return url(URL::temporarySignedRoute(
             'storage.file',
             now()->addMinutes(30),
-            ['file' => $this->media_path, 'user_id' => auth()->id()]
+            ['file' => preg_replace('#^public/#','/',$this->media_path), 'user_id' => auth()->id()]
         ));
     }
 
@@ -42,7 +42,7 @@ class GroupMedia extends Model
         return url(URL::temporarySignedRoute(
             'storage.file',
             now()->addMinutes(30),
-            ['file' => $this->thumbnail_url, 'user_id' => auth()->id()]
+            ['file' => preg_replace('#^public/#','/',$this->thumbnail_url), 'user_id' => auth()->id()]
         ));
     }
 }

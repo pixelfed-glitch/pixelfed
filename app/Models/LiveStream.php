@@ -16,7 +16,7 @@ class LiveStream extends Model
 		$path = URL::temporarySignedRoute(
             'storage.file',
             now()->addMinutes(30),
-            ['file' => "live-hls/{$this->stream_id}/index.m3u8", 'user_id' => auth()->id()]
+            ['file' => preg_replace('#^public/#','/',"live-hls/{$this->stream_id}/index.m3u8"), 'user_id' => auth()->id()]
         );
 		return url($path);
 	}
