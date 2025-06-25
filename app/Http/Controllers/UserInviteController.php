@@ -18,6 +18,7 @@ class UserInviteController extends Controller
 
 	public function show(Request $request)
 	{
+        \Log::info("Result is: ", config_cache('pixelfed.user_invites.enabled'));
 		abort_if(!config_cache('pixelfed.user_invites.enabled'), 404);
 		abort_unless(Auth::check(), 403);
 		$invites = UserInvite::whereUserId(Auth::id())->paginate(10);
