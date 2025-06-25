@@ -12,6 +12,7 @@ use App\Services\AccountService;
 use App\Services\StatusService;
 use App\Models\StatusEdit;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 
 class Status extends Model
 {
@@ -157,7 +158,11 @@ class Status extends Model
 		$media = $this->firstMedia();
 		$path = $media->media_path;
 		$hash = is_null($media->processed_at) ? md5('unprocessed') : md5($media->created_at);
-		$url = $media->cdn_url ? $media->cdn_url . "?v={$hash}" : url(Storage::url($path)."?v={$hash}");
+		$url = $media->cdn_url ? $media->cdn_url . "?v={$hash}" : url(URL::temporarySignedRoute(
+            'storage.file',
+            now()->addMinutes(30),
+            ['file' => $path, 'user_id' => auth()->id()]
+        )."?v={$hash}");
 
 		return $url;
 	}
