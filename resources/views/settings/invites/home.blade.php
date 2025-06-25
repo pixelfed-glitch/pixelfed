@@ -7,7 +7,7 @@
     <p class="lead">Send email invites to your friends and family!</p>
   </div>
   <hr>
-  @if($invites->count() > 0) 
+  @if($invites->count() > 0)
   <table class="table table-light">
     <thead>
       <tr>
@@ -25,6 +25,9 @@
         <td>{{$invite->message}}</td>
         <td>
           @if($invite->used_at == null)
+           <form action="/settings/invites/delete" method="post">
+           @csrf
+           <input type="hidden" name="id" value="{{$invite->id}}">
           <button class="btn btn-outline-danger btn-sm">Delete</button>
           @endif
         </td>

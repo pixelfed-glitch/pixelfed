@@ -51,4 +51,15 @@ class UserInviteController extends Controller
 
 		return redirect(route('settings.invites'));
 	}
+
+    public function delete(Request $request)
+    {
+        $this->authPreflight($request);
+        $invite = UserInvite::whereParentId($request->user()->id)
+            ->findOrFail($request->input('id'));
+
+        $invite->delete();
+
+		return redirect(route('settings.invites'));
+    }
 }
