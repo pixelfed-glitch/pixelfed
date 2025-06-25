@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use App\Story;
 use App\StoryView;
+use Illuminate\Support\Facades\URL;
 
 class StoryService
 {
 	const STORY_KEY = 'pf:services:stories:v1:';
 
-	public static function get($id) 
+	public static function get($id)
 	{
 		$account = AccountService::get($id);
 		if(!$account) {
@@ -57,7 +58,11 @@ class StoryService
 					'seen' => in_array($pid, self::views($s->id)),
 					'created_at' => $s->created_at->toAtomString(),
 					'expires_at' => $s->expires_at->toAtomString(),
-					'media' => url(Storage::url($s->path)),
+					'media' => url(URL::temporarySignedRoute(
+                        'storage.file',
+                        now()->addMinutes(30),
+                        ['file' => $s->path, 'user_id' => auth()->id()]
+                    )),
 					'can_reply' => (bool) $s->can_reply,
 					'can_react' => (bool) $s->can_react,
 					'poll' => $s->type == 'poll' ? PollService::storyPoll($s->id) : null

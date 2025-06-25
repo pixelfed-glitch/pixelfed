@@ -21,6 +21,7 @@ use App\Status;
 use App\User;
 use Illuminate\Http\Request;
 use Storage;
+use Illuminate\Support\Facades\URL;
 
 class GroupController extends GroupFederationController
 {
@@ -200,7 +201,11 @@ class GroupController extends GroupFederationController
 
                 $fileName = 'avatar_'.strtolower(str_random($len)).'.'.$avatar->extension();
                 $path = $avatar->storePubliclyAs('public/g/'.$group->id.'/meta', $fileName);
-                $url = url(Storage::url($path));
+                $url = url(URL::temporarySignedRoute(
+                    'storage.file',
+                    now()->addMinutes(30),
+                    ['file' => $path, 'user_id' => auth()->id()]
+                ));
                 $metadata['avatar'] = [
                     'path' => $path,
                     'url' => $url,
@@ -222,7 +227,11 @@ class GroupController extends GroupFederationController
 
                 $fileName = 'header_'.strtolower(str_random($len)).'.'.$header->extension();
                 $path = $header->storePubliclyAs('public/g/'.$group->id.'/meta', $fileName);
-                $url = url(Storage::url($path));
+                $url = url(URL::temporarySignedRoute(
+                    'storage.file',
+                    now()->addMinutes(30),
+                    ['file' => $path, 'user_id' => auth()->id()]
+                ));
                 $metadata['header'] = [
                     'path' => $path,
                     'url' => $url,

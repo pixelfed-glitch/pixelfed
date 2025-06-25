@@ -23,6 +23,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Image as Intervention;
 use Storage;
+use Illuminate\Support\Facades\URL;
+
 
 class StoryComposeController extends Controller
 {
@@ -72,7 +74,11 @@ class StoryComposeController extends Controller
             'code' => 200,
             'msg' => 'Successfully added',
             'media_id' => (string) $story->id,
-            'media_url' => url(Storage::url($url)).'?v='.time(),
+            'media_url' => url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $story->path, 'user_id' => auth()->id()]
+            )).'?v='.time(),
             'media_type' => $story->type,
         ];
 
@@ -421,7 +427,11 @@ class StoryComposeController extends Controller
             'story_username' => $story->profile->username,
             'story_actor_username' => $request->user()->username,
             'story_id' => $story->id,
-            'story_media_url' => url(Storage::url($story->path)),
+            'story_media_url' => url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $story->path, 'user_id' => auth()->id()]
+            )),
             'reaction' => $text,
         ]);
         $dm->save();
@@ -493,7 +503,11 @@ class StoryComposeController extends Controller
             'story_username' => $story->profile->username,
             'story_actor_username' => $request->user()->username,
             'story_id' => $story->id,
-            'story_media_url' => url(Storage::url($story->path)),
+            'story_media_url' => url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $story->path, 'user_id' => auth()->id()]
+            )),
             'caption' => $text,
         ]);
         $dm->save();

@@ -29,6 +29,8 @@ use League\Fractal\Resource\Item;
 use App\Transformer\ActivityPub\Verb\StoryVerb;
 use App\Jobs\StoryPipeline\StoryViewDeliver;
 use App\Services\UserRoleService;
+use Illuminate\Support\Facades\URL;
+
 
 class StoryController extends StoryComposeController
 {
@@ -103,7 +105,11 @@ class StoryController extends StoryComposeController
                 'latest' => [
                     'id' => $s->id,
                     'type' => $s->type,
-                    'preview_url' => url(Storage::url($s->path))
+                    'preview_url' => url(URL::temporarySignedRoute(
+                        'storage.file',
+                        now()->addMinutes(30),
+                        ['file' => $s->path, 'user_id' => auth()->id()]
+                    )),
                 ],
                 'url' => $url,
                 'seen' => StoryService::hasSeen($pid, StoryService::latest($s->profile_id)),
@@ -140,7 +146,11 @@ class StoryController extends StoryComposeController
                 'id' => (string) $s->id,
                 'type' => $s->type,
                 'duration' => $s->duration,
-                'src' => url(Storage::url($s->path)),
+                'src' => url(URL::temporarySignedRoute(
+                    'storage.file',
+                    now()->addMinutes(30),
+                    ['file' => $s->path, 'user_id' => auth()->id()]
+                )),
                 'created_at' => $s->created_at->toAtomString(),
                 'expires_at' => $s->expires_at->toAtomString(),
                 'view_count' => ($authed == $s->profile_id) ? ($s->view_count ?? 0) : null,

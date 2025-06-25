@@ -11,6 +11,7 @@ use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Storage;
+use Illuminate\Support\Facades\URL;
 
 class PixelfedDirectoryController extends Controller
 {
@@ -55,7 +56,11 @@ class PixelfedDirectoryController extends Controller
         }
 
         if (isset($res['banner_image']) && ! empty($res['banner_image'])) {
-            $res['banner_image'] = url(Storage::url($res['banner_image']));
+            $res['banner_image'] = url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $res['banner_image'], 'user_id' => auth()->id()]
+            );
         }
 
         if (isset($res['favourite_posts'])) {

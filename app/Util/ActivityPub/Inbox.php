@@ -52,6 +52,7 @@ use Illuminate\Support\Str;
 use Purify;
 use Storage;
 use Throwable;
+use Illuminate\Support\Facades\URL;
 
 class Inbox
 {
@@ -1137,7 +1138,11 @@ class Inbox
             'story_username' => $targetProfile->username,
             'story_actor_username' => $actorProfile->username,
             'story_id' => $story->id,
-            'story_media_url' => url(Storage::url($story->path)),
+            'story_media_url' => url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $story->path, 'user_id' => auth()->id()]
+            )),
             'reaction' => $text,
         ]);
         $dm->save();
@@ -1257,7 +1262,11 @@ class Inbox
             'story_username' => $targetProfile->username,
             'story_actor_username' => $actorProfile->username,
             'story_id' => $story->id,
-            'story_media_url' => url(Storage::url($story->path)),
+            'story_media_url' => url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $story->path, 'user_id' => auth()->id()]
+            )),
             'caption' => $text,
         ]);
         $dm->save();

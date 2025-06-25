@@ -5,6 +5,7 @@ namespace App\Transformer\Api;
 use App\Media;
 use League\Fractal;
 use Storage;
+use Illuminate\Support\Facades\URL;
 
 class MediaTransformer extends Fractal\TransformerAbstract
 {
@@ -30,7 +31,11 @@ class MediaTransformer extends Fractal\TransformerAbstract
         ];
 
         if(config('media.hls.enabled') && $media->hls_transcoded_at != null && $media->hls_path) {
-            $res['hls_manifest'] = url(Storage::url($media->hls_path));
+            $res['hls_manifest'] = url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $media->hls_path, 'user_id' => auth()->id()]
+            ));
         }
 
         if($media->width && $media->height) {

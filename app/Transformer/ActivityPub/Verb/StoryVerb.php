@@ -6,6 +6,7 @@ use Storage;
 use App\Story;
 use League\Fractal;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 
 class StoryVerb extends Fractal\TransformerAbstract
 {
@@ -31,7 +32,11 @@ class StoryVerb extends Fractal\TransformerAbstract
 			'can_react' => (bool) $story->can_react,
 			'attachment' => [
 				'type' => $type,
-				'url' => url(Storage::url($story->path)),
+				'url' => url(URL::temporarySignedRoute(
+                    'storage.file',
+                    now()->addMinutes(30),
+                    ['file' => $story->path, 'user_id' => auth()->id()]
+                )),
 				'mediaType' => $story->mime,
 			],
 		];

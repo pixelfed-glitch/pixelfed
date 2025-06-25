@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 
 class StoryApiV1Controller extends Controller
 {
@@ -71,7 +72,11 @@ class StoryApiV1Controller extends Controller
                 'id' => (string) $s->id,
                 'pid' => (string) $s->profile_id,
                 'type' => $s->type,
-                'src' => url(Storage::url($s->path)),
+                'src' => url(URL::temporarySignedRoute(
+                    'storage.file',
+                    now()->addMinutes(30),
+                    ['file' => $s->path, 'user_id' => auth()->id()]
+                )),
                 'duration' => $s->duration ?? 3,
                 'seen' => StoryService::hasSeen($pid, $s->id),
                 'created_at' => $s->created_at->format('c'),
@@ -115,7 +120,11 @@ class StoryApiV1Controller extends Controller
                     return [
                         'id' => (string) $s->id,
                         'type' => $s->type,
-                        'src' => url(Storage::url($s->path)),
+                        'src' => url(URL::temporarySignedRoute(
+                            'storage.file',
+                            now()->addMinutes(30),
+                            ['file' => $s->path, 'user_id' => auth()->id()]
+                        )),
                         'duration' => $s->duration,
                         'seen' => true,
                         'created_at' => $s->created_at->format('c'),
@@ -183,7 +192,11 @@ class StoryApiV1Controller extends Controller
                 'id' => (string) $s->id,
                 'pid' => (string) $s->profile_id,
                 'type' => $s->type,
-                'src' => url(Storage::url($s->path)),
+                'src' => url(URL::temporarySignedRoute(
+                    'storage.file',
+                    now()->addMinutes(30),
+                    ['file' => $s->path, 'user_id' => auth()->id()]
+                )),
                 'duration' => $s->duration ?? 3,
                 'seen' => StoryService::hasSeen($pid, $s->id),
                 'created_at' => $s->created_at->format('c'),
@@ -238,7 +251,11 @@ class StoryApiV1Controller extends Controller
                     return [
                         'id' => (string) $s->id,
                         'type' => $s->type,
-                        'src' => url(Storage::url($s->path)),
+                        'src' => url(URL::temporarySignedRoute(
+                            'storage.file',
+                            now()->addMinutes(30),
+                            ['file' => $s->path, 'user_id' => auth()->id()]
+                        )),
                         'duration' => $s->duration,
                         'seen' => true,
                         'created_at' => $s->created_at->format('c'),
@@ -299,7 +316,11 @@ class StoryApiV1Controller extends Controller
             'code' => 200,
             'msg' => 'Successfully added',
             'media_id' => (string) $story->id,
-            'media_url' => url(Storage::url($url)).'?v='.time(),
+            'media_url' => url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $story->path, 'user_id' => auth()->id()]
+            )).'?v='.time(),
             'media_type' => $story->type,
         ];
 
@@ -435,7 +456,11 @@ class StoryApiV1Controller extends Controller
             'story_username' => $story->profile->username,
             'story_actor_username' => $request->user()->username,
             'story_id' => $story->id,
-            'story_media_url' => url(Storage::url($story->path)),
+            'story_media_url' => url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $story->path, 'user_id' => auth()->id()]
+            )),
             'caption' => $text,
         ]);
         $dm->save();

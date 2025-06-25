@@ -8,6 +8,7 @@ use App\HasSnowflakePrimary;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use App\Services\FollowerService;
 use App\Models\ProfileAlias;
+use Illuminate\Support\Facades\URL;
 
 class Profile extends Model
 {
@@ -195,12 +196,20 @@ class Profile extends Model
 			}
 
 			if(config('filesystems.default') !== 'local') {
-				return Storage::url($path);
+				return URL::temporarySignedRoute(
+                    'storage.file',
+                    now()->addMinutes(30),
+                    ['file' => $path, 'user_id' => auth()->id()]
+                );
 			}
 
 			$path = "{$path}?v={$avatar->change_count}";
 
-			return url(Storage::url($path));
+			return url(URL::temporarySignedRoute(
+                'storage.file',
+                now()->addMinutes(30),
+                ['file' => $path, 'user_id' => auth()->id()]
+            ));
 		});
 
 		return $url;

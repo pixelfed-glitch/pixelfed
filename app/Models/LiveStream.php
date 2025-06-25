@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Storage;
+use Illuminate\Support\Facades\URL;
 
 class LiveStream extends Model
 {
@@ -12,7 +13,11 @@ class LiveStream extends Model
 
 	public function getHlsUrl()
 	{
-		$path = Storage::url("live-hls/{$this->stream_id}/index.m3u8");
+		$path = URL::temporarySignedRoute(
+            'storage.file',
+            now()->addMinutes(30),
+            ['file' => "live-hls/{$this->stream_id}/index.m3u8", 'user_id' => auth()->id()]
+        );
 		return url($path);
 	}
 

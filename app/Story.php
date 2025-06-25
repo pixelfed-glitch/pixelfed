@@ -7,6 +7,7 @@ use Storage;
 use Illuminate\Database\Eloquent\Model;
 use App\HasSnowflakePrimary;
 use App\Util\Lexer\Bearcap;
+use Illuminate\Support\Facades\URL;
 
 class Story extends Model
 {
@@ -62,7 +63,11 @@ class Story extends Model
 
 	public function mediaUrl()
 	{
-		return url(Storage::url($this->path));
+		return url(URL::temporarySignedRoute(
+            'storage.file',
+            now()->addMinutes(30),
+            ['file' => $this->path, 'user_id' => auth()->id()]
+        ));
 	}
 
 	public function bearcapUrl()

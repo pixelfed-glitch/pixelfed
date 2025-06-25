@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Pixelfed\Snowflake\HasSnowflakePrimary;
 use Storage;
+use Illuminate\Support\Facades\URL;
 
 class StoryItem extends Model
 {
@@ -35,6 +36,10 @@ class StoryItem extends Model
 
 	public function url()
 	{
-		return url(Storage::url($this->media_path));
+		return url(URL::temporarySignedRoute(
+            'storage.file',
+            now()->addMinutes(30),
+            ['file' => $this->media_path, 'user_id' => auth()->id()]
+        ));
 	}
 }
