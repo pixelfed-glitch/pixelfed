@@ -2,7 +2,7 @@
 # You've been invited to join Pixelfed!
 
 <x-mail::panel>
-An account with the username **{{ $verify->user_id->username }}** has invited you to join Pixelfed.
+An account has invited you to join Pixelfed.
 
 {{ $verify->message }}
 
