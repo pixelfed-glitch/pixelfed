@@ -28,7 +28,8 @@
            <form action="/settings/invites/delete" method="post">
            @csrf
            <input type="hidden" name="id" value="{{$invite->id}}">
-          <button type="submit" class="btn btn-outline-danger btn-sm form-submit">Delete</button>
+           <button type="submit" class="btn btn-outline-danger btn-sm form-submit">Delete</button>
+           </form>
           @endif
         </td>
       </tr>

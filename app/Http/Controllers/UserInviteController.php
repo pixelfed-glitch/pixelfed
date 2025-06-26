@@ -11,17 +11,32 @@ use App\Jobs\UserInvitePipeline\DispatchUserInvitePipeline;
 
 class UserInviteController extends Controller
 {
+    public function authPreflight($request, $maxUserCheck = false, $authCheck = true)
+    {
+        if($authCheck) {
+            abort_unless($request->user(), 404);
+        }
+        abort_unless(config('pixelfed.user_invites.enabled'), 404);
+        }
+        if($maxUserCheck == true) {
+            $hasLimit = config('pixelfed.enforce_max_users');
+            if($hasLimit) {
+                $count = User::where(function($q){ return $q->whereNull('status')->orWhereNotIn('status', ['deleted','delete']); })->count();
+                $limit = (int) config('pixelfed.max_users');
+
+                abort_if($limit && $limit <= $count, 404);
+            }
+        }
+    }
 	public function create(Request $request)
 	{
-		abort_if(!config('pixelfed.user_invites.enabled'), 404);
-		abort_unless(Auth::check(), 403);
+        $this->authPreflight($request);
 		return view('settings.invites.create');
 	}
 
 	public function show(Request $request)
 	{
-		abort_if(!config('pixelfed.user_invites.enabled'), 404);
-		abort_unless(Auth::check(), 403);
+        $this->authPreflight($request);
 		$invites = UserInvite::whereUserId(Auth::id())->paginate(10);
 		$limit = config('pixelfed.user_invites.limit.total');
 		$used = UserInvite::whereUserId(Auth::id())->count();
@@ -30,8 +45,7 @@ class UserInviteController extends Controller
 
 	public function store(Request $request)
 	{
-		abort_if(!config('pixelfed.user_invites.enabled'), 404);
-		abort_unless(Auth::check(), 403);
+        $this->authPreflight($request);
 		$this->validate($request, [
 			'email' => 'required|email|unique:users|unique:user_invites',
 			'message' => 'nullable|string|max:500',
@@ -54,10 +68,13 @@ class UserInviteController extends Controller
 
     public function delete(Request $request)
     {
+        $this->authPreflight($request);
+        $this->validate($request, [
+            'id' => 'required',
+        ]);
         Log::info('Delete request: ', [
             'request' => $request,
         ]);
-        $this->authPreflight($request);
         $invite = UserInvite::whereParentId($request->user()->id)
             ->findOrFail($request->input('id'));
 
