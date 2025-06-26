@@ -54,6 +54,9 @@ class UserInviteController extends Controller
 
     public function delete(Request $request)
     {
+        Log::info('Delete request: ', [
+            'request' => $request,
+        ]);
         $this->authPreflight($request);
         $invite = UserInvite::whereParentId($request->user()->id)
             ->findOrFail($request->input('id'));

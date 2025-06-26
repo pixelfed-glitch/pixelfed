@@ -9,7 +9,7 @@ class UserInvite extends Model
 {
 	public function sender()
 	{
-		return $this->belongsTo(Profile::class, 'profile_id');
+		return $this->profile_id;
 	}
 
     public function url()
