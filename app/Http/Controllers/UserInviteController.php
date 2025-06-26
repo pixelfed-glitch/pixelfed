@@ -17,7 +17,6 @@ class UserInviteController extends Controller
             abort_unless($request->user(), 404);
         }
         abort_unless(config('pixelfed.user_invites.enabled'), 404);
-        }
         if($maxUserCheck == true) {
             $hasLimit = config('pixelfed.enforce_max_users');
             if($hasLimit) {
@@ -28,6 +27,7 @@ class UserInviteController extends Controller
             }
         }
     }
+
 	public function create(Request $request)
 	{
         $this->authPreflight($request);
