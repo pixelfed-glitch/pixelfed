@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Profile;
 use Illuminate\Database\Eloquent\Model;
 
 class UserInvite extends Model
