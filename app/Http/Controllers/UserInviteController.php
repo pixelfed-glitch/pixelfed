@@ -75,7 +75,7 @@ class UserInviteController extends Controller
         Log::info('Delete request: ', [
             'request' => $request,
         ]);
-        $invite = UserInvite::whereParentId($request->user()->id)
+        $invite = UserInvite::whereUserId($request->user()->id)
             ->findOrFail($request->input('id'));
 
         $invite->delete();
