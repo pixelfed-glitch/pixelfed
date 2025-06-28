@@ -69,7 +69,7 @@
 										Settings
 									</a>
 									<a class="dropdown-item font-weight-bold" href="/settings/invites">
-										<span class="fas fa-cog pr-2 text-lighter"></span>
+										<span class="fas fa-user-plus pr-2 text-lighter"></span>
 										Invites
 									</a>
 									<div v-if="curUser.is_admin">

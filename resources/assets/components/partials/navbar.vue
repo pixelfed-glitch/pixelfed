@@ -243,6 +243,13 @@
                                             </router-link>
                                         </li>
 
+                                        <li class="nav-item">
+                                            <router-link class="nav-link" to="/settings/invites">
+                                                <span class="icon text-lighter"><i class="far fa-user-plus"></i></span>
+                                                {{ $t('navmenu.invites') }}
+                                            </router-link>
+                                        </li>
+
                                         <li v-if="user.is_admin" class="nav-item">
                                             <hr class="mt-n1" style="opacity: 0.4;margin-bottom: 0;" />
                                             <a class="nav-link" href="/i/admin/dashboard">
