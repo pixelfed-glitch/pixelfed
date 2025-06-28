@@ -47,10 +47,11 @@ class UserInviteController extends Controller
 	public function show(Request $request)
 	{
         $this->authPreflight($request);
-		$invites = UserInvite::whereUserId(Auth::id())->paginate(10);
-		$limit = config('pixelfed.user_invites.limit.total');
-		$used = UserInvite::whereUserId(Auth::id())->count();
-		return view('settings.invites.home', compact('invites', 'limit', 'used'));
+        $invites = Auth::user()->invites()->paginate(10);
+        if ($request->wantsJson()) {
+            return response()->json($invites);
+        }
+        return view('settings.invites.home', compact('invites'));
 	}
 
 	public function store(Request $request)
@@ -59,7 +60,6 @@ class UserInviteController extends Controller
 		$this->validate($request, [
 			'email' => 'required|email|unique:users|unique:user_invites',
 			'message' => 'nullable|string|max:500',
-			'tos'	=> 'required|accepted'
 		]);
 
 		$invite = new UserInvite;
@@ -72,6 +72,10 @@ class UserInviteController extends Controller
 		$invite->save();
 
         DispatchUserInvitePipeline::dispatch($invite);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'invite' => $invite]);
+        }
 
 		return redirect(route('settings.invites'));
 	}
