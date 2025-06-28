@@ -237,14 +237,14 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <router-link :key="$route.fullPath" class="nav-link" to="/settings/home">
+                                            <router-link class="nav-link" to="/settings/home?force_old_ui=1">
                                                 <span class="icon text-lighter"><i class="far fa-cog"></i></span>
                                                 {{ $t('navmenu.settings') }}
                                             </router-link>
                                         </li>
 
                                         <li class="nav-item">
-                                            <router-link :key="$route.fullPath" class="nav-link" to="/settings/invites">
+                                            <router-link class="nav-link" to="/settings/invites?force_old_ui=1">
                                                 <span class="icon text-lighter"><i class="far fa-user-plus"></i></span>
                                                 {{ $t('navmenu.invites') }}
                                             </router-link>
