@@ -68,6 +68,10 @@
 										<span class="fas fa-cog pr-2 text-lighter"></span>
 										Settings
 									</a>
+									<a class="dropdown-item font-weight-bold" href="/settings/invites">
+										<span class="fas fa-cog pr-2 text-lighter"></span>
+										Invites
+									</a>
 									<div v-if="curUser.is_admin">
 										<div class="dropdown-divider"></div>
 										<a class="dropdown-item font-weight-bold" href="/i/admin/dashboard">

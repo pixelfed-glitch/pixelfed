@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Purify;
-use Auth;
 use App\Profile;
 use App\User;
 use App\Models\UserInvite;
