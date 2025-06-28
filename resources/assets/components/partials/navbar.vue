@@ -237,17 +237,17 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <router-link class="nav-link" to="/settings/home?force_old_ui=1">
+                                            <a class="nav-link" target="_parent" href="/settings/home">
                                                 <span class="icon text-lighter"><i class="far fa-cog"></i></span>
                                                 {{ $t('navmenu.settings') }}
-                                            </router-link>
+                                            </a>
                                         </li>
 
                                         <li class="nav-item">
-                                            <router-link class="nav-link" to="/settings/invites?force_old_ui=1">
+                                            <a class="nav-link" target="_parent" href="/settings/invites">
                                                 <span class="icon text-lighter"><i class="far fa-user-plus"></i></span>
                                                 {{ $t('navmenu.invites') }}
-                                            </router-link>
+                                            </a>
                                         </li>
 
                                         <li v-if="user.is_admin" class="nav-item">
