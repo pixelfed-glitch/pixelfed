@@ -237,23 +237,17 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <hr class="mt-n1" style="opacity: 0.4;margin-bottom: 0;" />
-                                            <a class="nav-link" href="/settings/invites">
-                                                <span class="icon text-lighter">
-                                                    <i class="far fa-cog"></i>
-                                                </span>
+                                            <router-link :key="$route.fullPath" class="nav-link" to="/settings/home">
+                                                <span class="icon text-lighter"><i class="far fa-cog"></i></span>
                                                 {{ $t('navmenu.settings') }}
-                                            </a>
+                                            </router-link>
                                         </li>
 
                                         <li class="nav-item">
-                                            <hr class="mt-n1" style="opacity: 0.4;margin-bottom: 0;" />
-                                            <a class="nav-link" href="/settings/invites">
-                                                <span class="icon text-lighter">
-                                                    <i class="far fa-user-plus"></i>
-                                                </span>
+                                            <router-link :key="$route.fullPath" class="nav-link" to="/settings/invites">
+                                                <span class="icon text-lighter"><i class="far fa-user-plus"></i></span>
                                                 {{ $t('navmenu.invites') }}
-                                            </a>
+                                            </router-link>
                                         </li>
 
                                         <li v-if="user.is_admin" class="nav-item">
