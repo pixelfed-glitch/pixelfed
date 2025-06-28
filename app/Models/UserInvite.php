@@ -14,6 +14,6 @@ class UserInvite extends Model
 
     public function url()
     {
-    	return url("/i/invite/code/{$this->key}/{$this->token}");
+        return url('/auth/invite/u/' . $this->token);
     }
 }

@@ -463,6 +463,8 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
 
     Route::get('auth/invite/a/{code}', 'AdminInviteController@index');
     Route::post('api/v1.1/auth/invite/admin/re', 'AdminInviteController@apiRegister')->middleware('throttle:5,1440');
+    Route::get('auth/invite/u/{code}', 'UserInviteController@index');
+    Route::post('api/v1.1/auth/invite/user/re', 'UserInviteController@apiRegister')->middleware('throttle:5,1440');
 
     Route::redirect('groups/', '/groups/home');
     Route::redirect('groups/home', '/groups/feed');

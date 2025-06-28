@@ -269,6 +269,9 @@ Route::group(['prefix' => 'api'], function () use ($middleware) {
             Route::post('invite/admin/verify', 'AdminInviteController@apiVerifyCheck')->middleware('throttle:20,120');
             Route::post('invite/admin/uc', 'AdminInviteController@apiUsernameCheck')->middleware('throttle:20,120');
             Route::post('invite/admin/ec', 'AdminInviteController@apiEmailCheck')->middleware('throttle:10,1440');
+            Route::post('invite/user/verify', 'UserInviteController@apiVerifyCheck')->middleware('throttle:20,120');
+            Route::post('invite/user/uc', 'UserInviteController@apiUsernameCheck')->middleware('throttle:20,120');
+            Route::post('invite/user/ec', 'UserInviteController@apiEmailCheck')->middleware('throttle:10,1440');
         });
 
         Route::group(['prefix' => 'push'], function () use ($middleware) {
