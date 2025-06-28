@@ -27,6 +27,7 @@ class RestrictedAccess
                     'password*',
                     'loginAs*',
                     'oauth/token',
+                    'oauth/authorize',
                     'api/nodeinfo*',
                     'api/service/health-check',
                     'storage/*',
