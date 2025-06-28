@@ -107,9 +107,9 @@ class UserInviteController extends Controller
 			'token' => 'required',
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))->first();
+		$invite = UserInvite::whereToken($request->input('token'))
+            ::where('valid_until', '<', now()->first();
 		abort_if(!$invite, 404);
-		abort_if($invite->valid_until && $invite->valid_until->lt(now()), 400, 'Invite has expired.');
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 		$res = [
 			'message' => $invite->message,
@@ -126,9 +126,9 @@ class UserInviteController extends Controller
 			'username' => 'required'
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))->first();
+		$invite = UserInvite::whereToken($request->input('token'))
+            ::where('valid_until', '<', now()->first();
 		abort_if(!$invite, 404);
-		abort_if($invite->valid_until && $invite->valid_until->lt(now()), 400, 'Invite has expired.');
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 
 		$usernameRules = [
@@ -186,9 +186,9 @@ class UserInviteController extends Controller
 			'email' => 'required'
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))->first();
+		$invite = UserInvite::whereToken($request->input('token'))
+            ::where('valid_until', '<', now()->first();
 		abort_if(!$invite, 404);
-		abort_if($invite->valid_until && $invite->valid_until->lt(now()), 400, 'Invite has expired.');
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 
 		$emailRules = [
@@ -274,8 +274,8 @@ class UserInviteController extends Controller
 			'password_confirm' => 'required'
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))->firstOrFail();
-		abort_if($invite->valid_until && $invite->valid_until->lt(now()), 400, 'Invite expired');
+		$invite = UserInvite::whereToken($request->input('token'))
+            ::where('valid_until', '<', now()->first();
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 
 		$invite->used_at = now();
