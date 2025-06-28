@@ -107,8 +107,9 @@ class UserInviteController extends Controller
 			'token' => 'required',
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))
-            ::where('valid_until', '<', now())->first();
+        $invite = UserInvite::where('token', $request->input('token'))
+            ->where('valid_until', '>=', now())
+            ->first();
 		abort_if(!$invite, 404);
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 		$res = [
@@ -126,8 +127,9 @@ class UserInviteController extends Controller
 			'username' => 'required'
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))
-            ::where('valid_until', '<', now())->first();
+        $invite = UserInvite::where('token', $request->input('token'))
+            ->where('valid_until', '>=', now())
+            ->first();
 		abort_if(!$invite, 404);
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 
@@ -186,8 +188,9 @@ class UserInviteController extends Controller
 			'email' => 'required'
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))
-            ::where('valid_until', '<', now())->first();
+        $invite = UserInvite::where('token', $request->input('token'))
+            ->where('valid_until', '>=', now())
+            ->first();
 		abort_if(!$invite, 404);
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 
@@ -274,8 +277,9 @@ class UserInviteController extends Controller
 			'password_confirm' => 'required'
 		]);
 
-		$invite = UserInvite::whereToken($request->input('token'))
-            ::where('valid_until', '<', now())->first();
+        $invite = UserInvite::where('token', $request->input('token'))
+            ->where('valid_until', '>=', now())
+            ->first();
 		abort_if($invite->used_at != null, 400, 'Invite already used.');
 
 		$invite->used_at = now();
