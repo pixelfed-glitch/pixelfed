@@ -24,6 +24,7 @@ class RestrictedAccess
             if (!Auth::guard($guard)->check()) {
                 $p = [
                     'login',
+                    'auth/invite/*',
                     'password*',
                     'loginAs*',
                     'oauth/token',
