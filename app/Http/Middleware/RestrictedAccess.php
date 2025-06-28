@@ -25,6 +25,7 @@ class RestrictedAccess
                 $p = [
                     'login',
                     'auth/invite/*',
+                    'api/v1.1/auth/invite/user/re',
                     'password*',
                     'loginAs*',
                     'oauth/token',
