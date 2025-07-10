@@ -10,10 +10,10 @@ use App\Services\ImportService;
 use App\Services\MediaPathService;
 use App\Status;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
-use Storage;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Storage;
 
 class TransformImports extends Command
 {
@@ -72,10 +72,28 @@ class TransformImports extends Command
                 continue;
             }
 
-            $idk = ImportService::getId($ip->user_id, $ip->creation_year, $ip->creation_month, $ip->creation_day);
-            if (! $idk) {
+            if ($id > 999999) {
                 $ip->skip_missing_media = true;
                 $ip->save();
+
+                continue;
+            }
+            if ($ip->creation_year < 9 || $ip->creation_year > (int) now()->addYear()->format('y')) {
+                $ip->skip_missing_media = true;
+                $ip->save();
+
+                continue;
+            }
+            if ($ip->creation_month < 1 || $ip->creation_month > 12) {
+                $ip->skip_missing_media = true;
+                $ip->save();
+
+                continue;
+            }
+            if ($ip->creation_day < 1 || $ip->creation_day > 31) {
+                $ip->skip_missing_media = true;
+                $ip->save();
+
                 continue;
             }
 
@@ -104,18 +122,9 @@ class TransformImports extends Command
                 continue;
             }
 
-            $caption = $ip->caption ?? "";
-            $status = new Status;
-            $status->profile_id = $pid;
-            $status->caption = $caption;
-            $status->type = $ip->post_type;
+            $caption = $ip->caption ?? '';
 
-            $status->scope = 'public';
-            $status->visibility = 'public';
-            $status->id = $idk['id'];
-            $status->created_at = now()->parse($ip->creation_date);
-            $status->saveQuietly();
-
+            $mediaRecords = [];
             foreach ($ip->media as $ipm) {
                 $fileName = last(explode('/', $ipm['uri']));
                 $ext = last(explode('.', $fileName));
@@ -125,25 +134,23 @@ class TransformImports extends Command
                     $ip->skip_missing_media = true;
                     $ip->save();
 
-                    continue;
+                    continue 2;
                 }
                 $size = Storage::size($og);
                 $mime = Storage::mimeType($og);
                 $newFile = Str::random(40).'.'.$ext;
                 $np = $basePath.'/'.$newFile;
                 Storage::move($og, $np);
-                $media = new Media;
-                $media->profile_id = $pid;
-                $media->user_id = $id;
-                $media->status_id = $status->id;
-                $media->media_path = $np;
-                $media->mime = $mime;
-                $media->size = $size;
-                $media->save();
+
+                $mediaRecords[] = [
+                    'media_path' => $np,
+                    'mime' => $mime,
+                    'size' => $size,
+                ];
             }
 
             try {
-                DB::transaction(function () use ($ip, $status, $profile, $id) {
+                DB::transaction(function () use ($ip, $profile, $id, $pid, $caption, $mediaRecords) {
                     $uniqueIdData = ImportService::getUniqueCreationId(
                         $id,
                         $ip->creation_year,
@@ -152,8 +159,36 @@ class TransformImports extends Command
                         $ip->id
                     );
 
-                    if (!$uniqueIdData) {
+                    if (! $uniqueIdData) {
                         throw new \Exception("Could not generate unique creation_id for ImportPost ID {$ip->id}");
+                    }
+
+                    $uid = str_pad($id, 6, 0, STR_PAD_LEFT);
+                    $yearStr = str_pad($uniqueIdData['year'], 2, 0, STR_PAD_LEFT);
+                    $monthStr = str_pad($uniqueIdData['month'], 2, 0, STR_PAD_LEFT);
+                    $dayStr = str_pad($uniqueIdData['day'], 2, 0, STR_PAD_LEFT);
+                    $zone = $yearStr.$monthStr.$dayStr.str_pad($uniqueIdData['incr'], 3, 0, STR_PAD_LEFT);
+                    $statusId = '1'.$uid.$zone;
+
+                    $status = new Status;
+                    $status->profile_id = $pid;
+                    $status->caption = $caption;
+                    $status->type = $ip->post_type;
+                    $status->scope = 'public';
+                    $status->visibility = 'public';
+                    $status->id = $statusId;
+                    $status->created_at = now()->parse($ip->creation_date);
+                    $status->saveQuietly();
+
+                    foreach ($mediaRecords as $mediaData) {
+                        $media = new Media;
+                        $media->profile_id = $pid;
+                        $media->user_id = $id;
+                        $media->status_id = $status->id;
+                        $media->media_path = $mediaData['media_path'];
+                        $media->mime = $mediaData['mime'];
+                        $media->size = $mediaData['size'];
+                        $media->save();
                     }
 
                     $ip->status_id = $status->id;
@@ -181,21 +216,27 @@ class TransformImports extends Command
                 ImportService::getPostCount($profile->id, true);
 
             } catch (QueryException $e) {
-                $this->error("Database error for ImportPost ID {$ip->id}: " . $e->getMessage());
+                $this->error("Database error for ImportPost ID {$ip->id}: ".$e->getMessage());
                 $ip->skip_missing_media = true;
                 $ip->save();
 
-                $status->delete();
-                Media::where('status_id', $status->id)->delete();
+                foreach ($mediaRecords as $mediaData) {
+                    if (Storage::exists($mediaData['media_path'])) {
+                        Storage::delete($mediaData['media_path']);
+                    }
+                }
 
                 continue;
             } catch (\Exception $e) {
-                $this->error("Error processing ImportPost ID {$ip->id}: " . $e->getMessage());
+                $this->error("Error processing ImportPost ID {$ip->id}: ".$e->getMessage());
                 $ip->skip_missing_media = true;
                 $ip->save();
 
-                $status->delete();
-                Media::where('status_id', $status->id)->delete();
+                foreach ($mediaRecords as $mediaData) {
+                    if (Storage::exists($mediaData['media_path'])) {
+                        Storage::delete($mediaData['media_path']);
+                    }
+                }
 
                 continue;
             }
