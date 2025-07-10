@@ -10,10 +10,10 @@ use App\Services\ImportService;
 use App\Services\MediaPathService;
 use App\Status;
 use Illuminate\Console\Command;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Storage;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class TransformImports extends Command
 {
@@ -76,54 +76,7 @@ class TransformImports extends Command
             if (! $idk) {
                 $ip->skip_missing_media = true;
                 $ip->save();
-
                 continue;
-            }
-
-            $originalIncr = $idk['incr'];
-            $attempts = 0;
-            while ($attempts < 999) {
-                $duplicateCheck = ImportPost::where('user_id', $id)
-                    ->where('creation_year', $ip->creation_year)
-                    ->where('creation_month', $ip->creation_month)
-                    ->where('creation_day', $ip->creation_day)
-                    ->where('creation_id', $idk['incr'])
-                    ->where('id', '!=', $ip->id)
-                    ->exists();
-
-                if (! $duplicateCheck) {
-                    break;
-                }
-
-                $idk['incr']++;
-                $attempts++;
-
-                if ($idk['incr'] > 999) {
-                    $this->warn("Could not find unique creation_id for ImportPost ID {$ip->id} on {$ip->creation_year}-{$ip->creation_month}-{$ip->creation_day}");
-                    $ip->skip_missing_media = true;
-                    $ip->save();
-
-                    continue 2;
-                }
-            }
-
-            if ($attempts >= 999) {
-                $this->warn("Exhausted attempts finding unique creation_id for ImportPost ID {$ip->id}");
-                $ip->skip_missing_media = true;
-                $ip->save();
-
-                continue;
-            }
-
-            if ($idk['incr'] !== $originalIncr) {
-                $uid = str_pad($id, 6, 0, STR_PAD_LEFT);
-                $yearStr = str_pad($ip->creation_year, 2, 0, STR_PAD_LEFT);
-                $monthStr = str_pad($ip->creation_month, 2, 0, STR_PAD_LEFT);
-                $dayStr = str_pad($ip->creation_day, 2, 0, STR_PAD_LEFT);
-                $zone = $yearStr.$monthStr.$dayStr.str_pad($idk['incr'], 3, 0, STR_PAD_LEFT);
-                $idk['id'] = '1'.$uid.$zone;
-
-                $this->info("Adjusted creation_id from {$originalIncr} to {$idk['incr']} for ImportPost ID {$ip->id}");
             }
 
             if (Storage::exists('imports/'.$id.'/'.$ip->filename) === false) {
@@ -151,7 +104,7 @@ class TransformImports extends Command
                 continue;
             }
 
-            $caption = $ip->caption ?? '';
+            $caption = $ip->caption ?? "";
             $status = new Status;
             $status->profile_id = $pid;
             $status->caption = $caption;
@@ -190,9 +143,33 @@ class TransformImports extends Command
             }
 
             try {
-                DB::transaction(function () use ($ip, $status, $profile, $idk) {
+                DB::transaction(function () use ($ip, $status, $profile, $id) {
+                    $uniqueIdData = ImportService::getUniqueCreationId(
+                        $id,
+                        $ip->creation_year,
+                        $ip->creation_month,
+                        $ip->creation_day,
+                        $ip->id
+                    );
+
+                    if (!$uniqueIdData) {
+                        throw new \Exception("Could not generate unique creation_id for ImportPost ID {$ip->id}");
+                    }
+
                     $ip->status_id = $status->id;
-                    $ip->creation_id = $idk['incr'];
+                    $ip->creation_id = $uniqueIdData['incr'];
+
+                    if ($uniqueIdData['year'] !== $ip->creation_year ||
+                        $uniqueIdData['month'] !== $ip->creation_month ||
+                        $uniqueIdData['day'] !== $ip->creation_day) {
+
+                        $ip->creation_year = $uniqueIdData['year'];
+                        $ip->creation_month = $uniqueIdData['month'];
+                        $ip->creation_day = $uniqueIdData['day'];
+
+                        $this->info("Date shifted for ImportPost ID {$ip->id} to {$uniqueIdData['year']}-{$uniqueIdData['month']}-{$uniqueIdData['day']}");
+                    }
+
                     $ip->save();
 
                     $profile->status_count = $profile->status_count + 1;
@@ -204,18 +181,23 @@ class TransformImports extends Command
                 ImportService::getPostCount($profile->id, true);
 
             } catch (QueryException $e) {
-                if ($e->getCode() === '23000') {
-                    $this->warn("Constraint violation for ImportPost ID {$ip->id}: ".$e->getMessage());
-                    $ip->skip_missing_media = true;
-                    $ip->save();
+                $this->error("Database error for ImportPost ID {$ip->id}: " . $e->getMessage());
+                $ip->skip_missing_media = true;
+                $ip->save();
 
-                    Media::where('status_id', $status->id)->delete();
-                    $status->delete();
+                $status->delete();
+                Media::where('status_id', $status->id)->delete();
 
-                    continue;
-                } else {
-                    throw $e;
-                }
+                continue;
+            } catch (\Exception $e) {
+                $this->error("Error processing ImportPost ID {$ip->id}: " . $e->getMessage());
+                $ip->skip_missing_media = true;
+                $ip->save();
+
+                $status->delete();
+                Media::where('status_id', $status->id)->delete();
+
+                continue;
             }
         }
     }
