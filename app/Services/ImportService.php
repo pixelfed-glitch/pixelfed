@@ -192,23 +192,48 @@ class ImportService
             }
 
             $maxExistingIncr = $query->max('creation_id') ?? 0;
+
             $incr = $maxExistingIncr + 1;
 
-            if ($incr > 999) {
-                [$newYear, $newMonth, $newDay] = self::getNextValidDate($year, $month, $day);
-                if (! $newYear) {
-                    return null;
+            while ($incr <= 999) {
+                $uid = str_pad($userId, 6, 0, STR_PAD_LEFT);
+                $yearStr = str_pad($year, 2, 0, STR_PAD_LEFT);
+                $monthStr = str_pad($month, 2, 0, STR_PAD_LEFT);
+                $dayStr = str_pad($day, 2, 0, STR_PAD_LEFT);
+                $zone = $yearStr.$monthStr.$dayStr.str_pad($incr, 3, 0, STR_PAD_LEFT);
+                $statusId = '1'.$uid.$zone;
+
+                $statusExists = DB::table('statuses')->where('id', $statusId)->exists();
+
+                $importExists = ImportPost::where('user_id', $userId)
+                    ->where('creation_year', $year)
+                    ->where('creation_month', $month)
+                    ->where('creation_day', $day)
+                    ->where('creation_id', $incr)
+                    ->when($excludeImportPostId, function ($q) use ($excludeImportPostId) {
+                        return $q->where('id', '!=', $excludeImportPostId);
+                    })
+                    ->exists();
+
+                if (! $statusExists && ! $importExists) {
+                    return [
+                        'incr' => $incr,
+                        'year' => $year,
+                        'month' => $month,
+                        'day' => $day,
+                        'status_id' => $statusId,
+                    ];
                 }
 
-                return self::getUniqueCreationId($userId, $newYear, $newMonth, $newDay, $excludeImportPostId);
+                $incr++;
             }
 
-            return [
-                'incr' => $incr,
-                'year' => $year,
-                'month' => $month,
-                'day' => $day,
-            ];
+            [$newYear, $newMonth, $newDay] = self::getNextValidDate($year, $month, $day);
+            if (! $newYear) {
+                return null;
+            }
+
+            return self::getUniqueCreationId($userId, $newYear, $newMonth, $newDay, $excludeImportPostId);
         }, 3);
     }
 
