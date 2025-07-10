@@ -163,12 +163,7 @@ class TransformImports extends Command
                         throw new \Exception("Could not generate unique creation_id for ImportPost ID {$ip->id}");
                     }
 
-                    $uid = str_pad($id, 6, 0, STR_PAD_LEFT);
-                    $yearStr = str_pad($uniqueIdData['year'], 2, 0, STR_PAD_LEFT);
-                    $monthStr = str_pad($uniqueIdData['month'], 2, 0, STR_PAD_LEFT);
-                    $dayStr = str_pad($uniqueIdData['day'], 2, 0, STR_PAD_LEFT);
-                    $zone = $yearStr.$monthStr.$dayStr.str_pad($uniqueIdData['incr'], 3, 0, STR_PAD_LEFT);
-                    $statusId = '1'.$uid.$zone;
+                    $statusId = $uniqueIdData['status_id'];
 
                     $status = new Status;
                     $status->profile_id = $pid;
