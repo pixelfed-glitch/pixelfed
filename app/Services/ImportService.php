@@ -41,7 +41,6 @@ class ImportService
 
                     $incr = $maxExistingIncr + 1;
 
-                    // If we've exceeded 999 for this day, try next day
                     if ($incr > 999) {
                         [$newYear, $newMonth, $newDay] = self::getNextValidDate($year, $month, $day);
                         if (! $newYear) {
