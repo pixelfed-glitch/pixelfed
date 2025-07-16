@@ -246,20 +246,19 @@ class ComposeController extends Controller
                 'string',
                 'min:1',
                 'max:300',
-                new \App\Rules\WebFinger,
             ],
         ]);
 
         $q = $request->input('q');
 
-        if (Str::of($q)->startsWith('@')) {
-            if (strlen($q) < 3) {
-                return [];
-            }
-            $q = mb_substr($q, 1);
+        $cleanQuery = Str::of($q)->startsWith('@') ? Str::substr($q, 1) : $q;
+
+        if (strlen($cleanQuery) < 2) {
+            return [];
         }
 
         $user = $request->user();
+        $currentUserId = $request->user()->profile_id;
 
         abort_if($user->has_roles && ! UserRoleService::can('can-post', $user->id), 403, 'Invalid permissions for this action');
 
@@ -271,10 +270,26 @@ class ComposeController extends Controller
         $blocked->push($request->user()->profile_id);
 
         $operator = config('database.default') === 'pgsql' ? 'ilike' : 'like';
-        $results = Profile::select('id', 'domain', 'username')
-            ->whereNotIn('id', $blocked)
-            ->whereNull('domain')
-            ->where('username', $operator, '%'.$q.'%')
+        $results = Profile::select([
+            'profiles.id',
+            'profiles.domain',
+            'profiles.username',
+            'profiles.followers_count',
+        ])
+            ->selectRaw('MAX(CASE WHEN followers.following_id IS NOT NULL THEN 1 ELSE 0 END) as is_followed')
+            ->leftJoin('followers', function ($join) use ($currentUserId) {
+                $join->on('followers.following_id', '=', 'profiles.id')
+                    ->where('followers.profile_id', '=', $currentUserId);
+            })
+            ->whereNotIn('profiles.id', $blocked)
+            ->where(function ($query) use ($cleanQuery, $operator) {
+                $query->where('profiles.username', $operator, $cleanQuery.'%')
+                    ->orWhere('profiles.username', $operator, '%'.$cleanQuery.'%');
+            })
+            ->groupBy('profiles.id', 'profiles.domain', 'profiles.username', 'profiles.followers_count')
+            ->orderByDesc('is_followed')
+            ->orderByDesc('profiles.followers_count')
+            ->orderBy('profiles.username')
             ->limit(15)
             ->get()
             ->map(function ($r) {
