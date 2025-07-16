@@ -408,38 +408,62 @@ class ComposeController extends Controller
         abort_if(! $request->user(), 403);
 
         $this->validate($request, [
-            'q' => 'required|string|min:2|max:50',
+            'q' => [
+                'required',
+                'string',
+                'min:2',
+                'max:50',
+                'regex:/^[@]?[a-zA-Z0-9._-]+$/',
+            ],
         ]);
 
         abort_if($request->user()->has_roles && ! UserRoleService::can('can-post', $request->user()->id), 403, 'Invalid permissions for this action');
 
         $q = $request->input('q');
 
-        if (Str::of($q)->startsWith('@')) {
-            if (strlen($q) < 3) {
-                return [];
-            }
+        $cleanQuery = Str::of($q)->startsWith('@') ? Str::substr($q, 1) : $q;
+
+        if (strlen($cleanQuery) < 2) {
+            return [];
         }
 
         $blocked = UserFilter::whereFilterableType('App\Profile')
             ->whereFilterType('block')
             ->whereFilterableId($request->user()->profile_id)
-            ->pluck('user_id');
+            ->pluck('user_id')
+            ->push($request->user()->profile_id);
 
-        $blocked->push($request->user()->profile_id);
+        $currentUserId = $request->user()->profile_id;
 
-        $results = Profile::select('id', 'domain', 'username')
-            ->whereNotIn('id', $blocked)
-            ->where('username', 'like', '%'.$q.'%')
-            ->groupBy('id', 'domain')
+        $results = Profile::select([
+            'profiles.id',
+            'profiles.domain',
+            'profiles.username',
+            'profiles.followers_count',
+        ])
+            ->selectRaw('MAX(CASE WHEN followers.following_id IS NOT NULL THEN 1 ELSE 0 END) as is_followed')
+            ->leftJoin('followers', function ($join) use ($currentUserId) {
+                $join->on('followers.following_id', '=', 'profiles.id')
+                    ->where('followers.profile_id', '=', $currentUserId);
+            })
+            ->whereNotIn('profiles.id', $blocked)
+            ->where(function ($query) use ($cleanQuery) {
+                $query->where('profiles.username', 'like', $cleanQuery.'%')
+                    ->orWhere('profiles.username', 'like', '%'.$cleanQuery.'%');
+            })
+            ->groupBy('profiles.id', 'profiles.domain', 'profiles.username', 'profiles.followers_count')
+            ->orderByDesc('is_followed')
+            ->orderByDesc('profiles.followers_count')
+            ->orderBy('profiles.username')
             ->limit(15)
             ->get()
             ->map(function ($profile) {
                 $username = $profile->domain ? substr($profile->username, 1) : $profile->username;
 
                 return [
-                    'key' => '@'.str_limit($username, 30),
+                    'key' => '@'.Str::limit($username, 30),
                     'value' => $username,
+                    'is_followed' => (bool) $profile->is_followed,
                 ];
             });
 
