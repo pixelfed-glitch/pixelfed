@@ -449,6 +449,7 @@ class ComposeController extends Controller
             ->push($request->user()->profile_id);
 
         $currentUserId = $request->user()->profile_id;
+        $operator = config('database.default') === 'pgsql' ? 'ilike' : 'like';
 
         $results = Profile::select([
             'profiles.id',
@@ -462,9 +463,9 @@ class ComposeController extends Controller
                     ->where('followers.profile_id', '=', $currentUserId);
             })
             ->whereNotIn('profiles.id', $blocked)
-            ->where(function ($query) use ($cleanQuery) {
-                $query->where('profiles.username', 'like', $cleanQuery.'%')
-                    ->orWhere('profiles.username', 'like', '%'.$cleanQuery.'%');
+            ->where(function ($query) use ($cleanQuery, $operator) {
+                $query->where('profiles.username', $operator, $cleanQuery.'%')
+                    ->orWhere('profiles.username', $operator, '%'.$cleanQuery.'%');
             })
             ->groupBy('profiles.id', 'profiles.domain', 'profiles.username', 'profiles.followers_count')
             ->orderByDesc('is_followed')
