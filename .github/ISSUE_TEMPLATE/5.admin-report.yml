@@ -1,4 +1,4 @@
-name: 🧠 Administration Issues (Installation/Operation/Moderation)
+name: 🧠 Administration Issue (Installation/Operation/Moderation)
 title: "[Admin]: "
 labels: ["🧠 Admin"]
 description: Report an issue as a Pixelfed Administration/Moderation including Installation, Upgrading, and Docker.
