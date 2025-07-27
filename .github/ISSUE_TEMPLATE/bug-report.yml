@@ -1,7 +1,7 @@
-name: 🐞 Bug report
-title: "[Bug]: "
+name: 🐞 Bug report (Web Interface)
+title: "[Web Bug]: "
 labels: ["🐛 Bug"]
-description: Report an issue with Pixelfed here
+description: Report an issue with Pixelfed's web interface.
 body:
   - type: markdown
     attributes:
