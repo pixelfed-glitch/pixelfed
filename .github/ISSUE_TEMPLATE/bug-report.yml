@@ -1,6 +1,6 @@
 name: 🐞 Bug report
 title: "[Bug]: "
-labels: ["🐛Bug"]
+labels: ["🐛 Bug"]
 description: Report an issue with Pixelfed here
 body:
   - type: markdown
