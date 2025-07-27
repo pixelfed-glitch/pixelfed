@@ -1,7 +1,7 @@
 name: 💡 Feature request
-title: "[Feature]: "
-labels: ["enhancement", "triage"]
-description: Suggest a new feature for Pixelfed here
+title: "[Enhancement]: "
+labels: ["➕Enhancement"]
+description: Suggest a new feature enhancement for Pixelfed here
 body:
   - type: markdown
     attributes:
