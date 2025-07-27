@@ -1,6 +1,6 @@
 name: 🐞 Federation (ActivityPub)
 title: "[Federation]: "
-labels: ["activitypub", "triage"]
+labels: ["🕸️ Federation"]
 description: Report an issue with Pixelfed and the Fediverse/ActivityPub here
 body:
   - type: markdown
