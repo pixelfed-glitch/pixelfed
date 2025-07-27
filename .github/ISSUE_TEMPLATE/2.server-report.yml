@@ -1,4 +1,4 @@
-name: 🐞 Bug Report (Server / API)
+name: 🐞 Bug Report (Server / Backend / API)
 title: "[Server Bug]: "
 labels: ["🐛 Server Bug"]
 description: Report an issue with Pixelfed's HTTP server, REST API, etc.
