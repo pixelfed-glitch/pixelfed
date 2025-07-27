@@ -1,6 +1,6 @@
 name: 💡 Feature request
 title: "[Enhancement]: "
-labels: ["➕Enhancement"]
+labels: ["➕ Enhancement"]
 description: Suggest a new feature enhancement for Pixelfed here
 body:
   - type: markdown
