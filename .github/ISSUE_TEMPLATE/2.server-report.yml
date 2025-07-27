@@ -1,7 +1,7 @@
-name: 🐞 Bug report (server / API)
+name: 🐞 Bug Report (Server / API)
 title: "[Server Bug]: "
 labels: ["🐛 Server Bug"]
-description: Report an issue with Pixelfed's HTTP server, REST API, etc.
+description: Report an issue with Pixelfed's HTTP server, REST API, Docker, Installation etc.
 body:
   - type: markdown
     attributes:
