@@ -49,6 +49,9 @@
 - Update ComposeController, prioritize followed users and follower_count first ([10eb1a8ac](https://github.com/pixelfed/pixelfed/commit/10eb1a8ac))
 - Update ComposeController, fix user tagging endpoint ([2a9c28b81](https://github.com/pixelfed/pixelfed/commit/2a9c28b81))
 - Update RemoteStatusDelete, fix decrement logic ([4ab85248e](https://github.com/pixelfed/pixelfed/commit/4ab85248e))
+- Update DangerZone middleware to skip sudo mode for OIDC configurations. Fixes #6057 ([062ec5520](https://github.com/pixelfed/pixelfed/commit/062ec5520))
+- Update curated onboarding username max length ([ab378b8fc](https://github.com/pixelfed/pixelfed/commit/ab378b8fc))
+- Update AppRegister controller, add scheduled cleanup task to delete older than 90d ([c319dfbcc](https://github.com/pixelfed/pixelfed/commit/c319dfbcc))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
