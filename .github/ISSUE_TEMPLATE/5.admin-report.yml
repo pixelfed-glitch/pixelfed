@@ -1,15 +1,16 @@
-name: 🐞 Federation (ActivityPub)
-title: "[Federation]: "
-labels: ["activitypub", "triage"]
-description: Report an issue with Pixelfed and the Fediverse/ActivityPub here
+name: 🧠 Administration Issue (Installation/Operation/Moderation)
+title: "[Admin]: "
+labels: ["🧠 Admin"]
+description: Report an issue as a Pixelfed Administration/Moderation including Installation, Upgrading, and Docker.
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for taking the time to fill out this admin report!
 
         Before you proceed:
-
+        
+        - This is only for server/instance administrators and moderators
         - Make sure to check whether there are similar issues in the repository
         - Make sure you're using the latest version of the app
 
