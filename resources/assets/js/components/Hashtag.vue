@@ -241,6 +241,9 @@
                 });
             },
 
+            formatCount(val) {
+                return App.util.format.count(val);
+            },
         }
     }
 </script>
