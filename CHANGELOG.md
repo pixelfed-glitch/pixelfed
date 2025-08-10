@@ -52,6 +52,7 @@
 - Update DangerZone middleware to skip sudo mode for OIDC configurations. Fixes #6057 ([062ec5520](https://github.com/pixelfed/pixelfed/commit/062ec5520))
 - Update curated onboarding username max length ([ab378b8fc](https://github.com/pixelfed/pixelfed/commit/ab378b8fc))
 - Update AppRegister controller, add scheduled cleanup task to delete older than 90d ([c319dfbcc](https://github.com/pixelfed/pixelfed/commit/c319dfbcc))
+- Update MediaCloudUrlRewrite command, add avatar support. Fixes #6069 ([506fe14c1](https://github.com/pixelfed/pixelfed/commit/506fe14c1))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
