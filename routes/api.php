@@ -232,6 +232,7 @@ Route::group(['prefix' => 'api'], function () use ($middleware) {
             Route::post('thread/media', 'DirectMessageController@mediaUpload')->middleware($middleware);
             Route::post('thread/read', 'DirectMessageController@read')->middleware($middleware);
             Route::post('lookup', 'DirectMessageController@composeLookup')->middleware($middleware);
+            Route::get('compose/mutuals', 'DirectMessageController@composeMutuals')->middleware($middleware);
         });
 
         Route::group(['prefix' => 'archive'], function () use ($middleware) {
