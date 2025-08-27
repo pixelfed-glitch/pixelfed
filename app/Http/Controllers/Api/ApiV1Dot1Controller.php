@@ -35,6 +35,7 @@ use App\Services\StatusService;
 use App\Services\UserStorageService;
 use App\Status;
 use App\StatusArchived;
+use App\Story;
 use App\User;
 use App\UserSetting;
 use App\Util\Lexer\RestrictedNames;
@@ -143,6 +144,26 @@ class ApiV1Dot1Controller extends Controller
                     ->whereObjectType('App\Profile')
                     ->count();
                 $rpid = $object->id;
+                break;
+
+            case 'story':
+                $object = Story::whereActive(true)->find($object_id);
+                if (! $object) {
+                    return $this->error('Invalid object id', 400, ['error_code' => 'ERROR_INVALID_OBJECT_ID']);
+                }
+                if ($object->profile_id == $user->profile_id) {
+                    return $this->error('Cannot self report', 400, ['error_code' => 'ERROR_NO_SELF_REPORTS']);
+                }
+                if (! FollowerService::follows($user->profile_id, $object->profile_id)) {
+                    return $this->error('Invalid object id', 400, ['error_code' => 'ERROR_INVALID_OBJECT_ID']);
+                }
+                $object_type = 'App\Story';
+                $exists = Report::whereUserId($user->id)
+                    ->whereObjectId($object->id)
+                    ->whereObjectType('App\Story')
+                    ->count();
+
+                $rpid = $object->profile_id;
                 break;
 
             default:
