@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -106,11 +105,14 @@ class StoryIndexService
         $key = $this->seenKey($viewerId, $authorId);
         Redis::sadd($key, (string) $storyId);
 
-        $expiresAt = CarbonImmutable::instance($storyCreatedAt)->addSeconds(self::STORY_TTL);
-        $ttl = max(1, $expiresAt->diffInSeconds(now()));
+        $expiresAt = now()->parse($storyCreatedAt)->addSeconds(self::STORY_TTL);
+        $secondsUntilExpiry = $expiresAt->getTimestamp() - time();
+        $ttl = max(1, $secondsUntilExpiry);
 
         $currentTtl = Redis::ttl($key);
-        $currentTtl = ($currentTtl < 0) ? 0 : $currentTtl;
+        if ($currentTtl < 0) {
+            $currentTtl = 0;
+        }
 
         $finalTtl = max($ttl, $currentTtl);
 
