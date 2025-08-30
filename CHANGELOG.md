@@ -8,6 +8,7 @@
 - Legal Notice page ([#5606](https://github.com/pixelfed/pixelfed/pull/5606)) ([c72fa0529](https://github.com/pixelfed/pixelfed/commit/c72fa0529))
 - OIDC Support ([#5608](https://github.com/pixelfed/pixelfed/pull/5608)) ([c72fa0529](https://github.com/pixelfed/pixelfed/commit/c72fa0529))
 - Avif, HEIC, webp, libvips support + Preserve ICC color profiles  ([ab9c13fe0](https://github.com/pixelfed/pixelfed/commit/ab9c13fe0))
+- Added StoryIndexService, an optimized fan-out-on-write service for story carousel generation/rendering ([950fc0474](https://github.com/pixelfed/pixelfed/commit/950fc0474))
 
 ### Updates
 - Update PublicApiController, use pixelfed entities for /api/pixelfed/v1/accounts/id/statuses with bookmarked state ([5ddb6d842](https://github.com/pixelfed/pixelfed/commit/5ddb6d842))
@@ -54,6 +55,15 @@
 - Update AppRegister controller, add scheduled cleanup task to delete older than 90d ([c319dfbcc](https://github.com/pixelfed/pixelfed/commit/c319dfbcc))
 - Update MediaCloudUrlRewrite command, add avatar support. Fixes #6069 ([506fe14c1](https://github.com/pixelfed/pixelfed/commit/506fe14c1))
 - Update Notifications component, fix pagination and dark mode ([154dd4b4d](https://github.com/pixelfed/pixelfed/commit/154dd4b4d))
+- Update DirectMessageController, add mutuals endpoint ([86af73455](https://github.com/pixelfed/pixelfed/commit/86af73455))
+- Update HomeSettings, remove unnecessary relation query ([35424ccb4](https://github.com/pixelfed/pixelfed/commit/35424ccb4))
+- Update ApiV1Dot1Controller, add story report support ([f5dced0f7](https://github.com/pixelfed/pixelfed/commit/f5dced0f7))
+- Update StoryView resource, include viewed_at timestamp ([d361b0dca](https://github.com/pixelfed/pixelfed/commit/d361b0dca))
+- Update AP Inbox, handle Story View with the new StoryIndexService markSeen method ([ab8d0ff46](https://github.com/pixelfed/pixelfed/commit/ab8d0ff46))
+- Update StoryFetch pipeline job, make more robust and add StoryIndexService indexStory support ([fd3df358b](https://github.com/pixelfed/pixelfed/commit/fd3df358b))
+- Update StoryExpire pipeline job, add StoryIndexService removeStory support ([5a263e89e](https://github.com/pixelfed/pixelfed/commit/5a263e89e))
+- Update StoryController, add StoryIndexService s markSeen support for webUI endpoint ([44914a514](https://github.com/pixelfed/pixelfed/commit/44914a514))
+- Update StoryApiV1Controller, add new v1.2 endpoints ([97badbbdd](https://github.com/pixelfed/pixelfed/commit/97badbbdd))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
