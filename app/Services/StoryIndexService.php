@@ -107,8 +107,14 @@ class StoryIndexService
         Redis::sadd($key, (string) $storyId);
 
         $expiresAt = CarbonImmutable::instance($storyCreatedAt)->addSeconds(self::STORY_TTL);
-        $ttl = max(1, $expiresAt->diffInSeconds(now(), false) * -1);
-        Redis::expire($key, max($ttl, (int) Redis::ttl($key)));
+        $ttl = max(1, $expiresAt->diffInSeconds(now()));
+
+        $currentTtl = Redis::ttl($key);
+        $currentTtl = ($currentTtl < 0) ? 0 : $currentTtl;
+
+        $finalTtl = max($ttl, $currentTtl);
+
+        Redis::expire($key, $finalTtl);
     }
 
     public function rebuildIndex(): array
