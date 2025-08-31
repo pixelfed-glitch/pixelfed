@@ -64,6 +64,9 @@
 - Update StoryExpire pipeline job, add StoryIndexService removeStory support ([5a263e89e](https://github.com/pixelfed/pixelfed/commit/5a263e89e))
 - Update StoryController, add StoryIndexService s markSeen support for webUI endpoint ([44914a514](https://github.com/pixelfed/pixelfed/commit/44914a514))
 - Update StoryApiV1Controller, add new v1.2 endpoints ([97badbbdd](https://github.com/pixelfed/pixelfed/commit/97badbbdd))
+- Update StoryIndexService, improve markSeen handling ([3296a7a58](https://github.com/pixelfed/pixelfed/commit/3296a7a58))
+- Update StoryIndexService, fix markSeen method ([e09291775](https://github.com/pixelfed/pixelfed/commit/e09291775))
+- Update StoryComposeController, add StoryIndexService support ([6c701b335](https://github.com/pixelfed/pixelfed/commit/6c701b335))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
