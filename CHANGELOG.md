@@ -67,6 +67,7 @@
 - Update StoryIndexService, improve markSeen handling ([3296a7a58](https://github.com/pixelfed/pixelfed/commit/3296a7a58))
 - Update StoryIndexService, fix markSeen method ([e09291775](https://github.com/pixelfed/pixelfed/commit/e09291775))
 - Update StoryComposeController, add StoryIndexService support ([6c701b335](https://github.com/pixelfed/pixelfed/commit/6c701b335))
+- Update StoryIndexService, improve predis + phpredis support ([564d8d109](https://github.com/pixelfed/pixelfed/commit/564d8d109))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
