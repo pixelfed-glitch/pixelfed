@@ -21,8 +21,9 @@ class Story extends Model
     public $incrementing = false;
 
     protected $casts = [
-        'story' => 'array',
+        'story' => 'json',
         'expires_at' => 'datetime',
+        'view_count' => 'integer',
     ];
 
     protected $fillable = ['profile_id', 'view_count'];
