@@ -34,6 +34,71 @@ class StoryIndexService
         return 'story:rebuilding';
     }
 
+    /**
+     * Safely convert Redis result to integer, handling both predis and phpredis
+     */
+    private function redisToInt($value): int
+    {
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_string($value) || is_numeric($value)) {
+            return (int) $value;
+        }
+
+        // Handle phpredis object returns
+        if (is_object($value) && method_exists($value, '__toString')) {
+            return (int) $value->__toString();
+        }
+
+        // Fallback for unexpected types
+        return 0;
+    }
+
+    /**
+     * Safely convert Redis result to boolean
+     */
+    private function redisToBool($value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_int($value)) {
+            return $value > 0;
+        }
+
+        if (is_string($value)) {
+            return $value === '1' || strtolower($value) === 'true';
+        }
+
+        // Handle phpredis object returns
+        if (is_object($value) && method_exists($value, '__toString')) {
+            $str = $value->__toString();
+
+            return $str === '1' || strtolower($str) === 'true';
+        }
+
+        return false;
+    }
+
+    /**
+     * Safely execute Redis commands that return integers
+     */
+    private function redisInt(callable $command): int
+    {
+        return $this->redisToInt($command());
+    }
+
+    /**
+     * Safely execute Redis commands that return booleans
+     */
+    private function redisBool(callable $command): bool
+    {
+        return $this->redisToBool($command());
+    }
+
     public function indexStory($story): void
     {
         if (! $story->active) {
@@ -95,7 +160,7 @@ class StoryIndexService
             $pipe->del($this->storyKey($sid));
         });
 
-        if ((int) Redis::zcard($this->authorKey($aid)) === 0) {
+        if ($this->redisInt(fn () => Redis::zcard($this->authorKey($aid))) === 0) {
             Redis::srem('story:active_authors', $aid);
         }
     }
@@ -109,7 +174,7 @@ class StoryIndexService
         $secondsUntilExpiry = $expiresAt->getTimestamp() - time();
         $ttl = max(1, $secondsUntilExpiry);
 
-        $currentTtl = Redis::ttl($key);
+        $currentTtl = $this->redisInt(fn () => Redis::ttl($key));
         if ($currentTtl < 0) {
             $currentTtl = 0;
         }
@@ -233,7 +298,7 @@ class StoryIndexService
 
     private function ensureStoryCacheHealth(): bool
     {
-        $activeCount = (int) Redis::scard('story:active_authors');
+        $activeCount = $this->redisInt(fn () => Redis::scard('story:active_authors'));
 
         if ($activeCount > 0) {
             return true;
@@ -277,8 +342,8 @@ class StoryIndexService
             $this->hydrateFollowingFromSql($viewerId);
         }
 
-        $followingCount = (int) Redis::scard("following:{$pid}");
-        $activeCount = (int) Redis::scard('story:active_authors');
+        $followingCount = $this->redisInt(fn () => Redis::scard("following:{$pid}"));
+        $activeCount = $this->redisInt(fn () => Redis::scard('story:active_authors'));
 
         $authorIds = [];
 
@@ -293,19 +358,19 @@ class StoryIndexService
 
                 if (is_array($results) && count($results) === count($active)) {
                     foreach ($active as $i => $aid) {
-                        if ($results[$i] ?? false) {
+                        if ($this->redisToBool($results[$i] ?? false)) {
                             $authorIds[] = $aid;
                         }
                     }
                 } else {
-                    $authorIds = array_filter($active, fn ($aid) => Redis::sismember("following:{$pid}", $aid));
+                    $authorIds = array_filter($active, fn ($aid) => $this->redisBool(fn () => Redis::sismember("following:{$pid}", $aid)));
                 }
             }
         } else {
             $authorIds = Redis::sinter("following:{$pid}", 'story:active_authors');
         }
 
-        if (Redis::zcard($this->authorKey($pid)) > 0) {
+        if ($this->redisInt(fn () => Redis::zcard($this->authorKey($pid))) > 0) {
             array_unshift($authorIds, $pid);
             $authorIds = array_values(array_unique($authorIds));
         }
