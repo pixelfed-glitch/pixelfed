@@ -737,25 +737,23 @@ class StoryFetch implements ShouldQueue
 
             $type = $payload['attachment']['type'] === 'Image' ? 'photo' : 'video';
 
-            $story = new Story([
-                'profile_id' => $profile->id,
-                'object_id' => $payload['id'],
-                'size' => $mediaResult['size'],
-                'mime' => $payload['attachment']['mediaType'],
-                'duration' => $payload['duration'] ?? null,
-                'media_url' => $payload['attachment']['url'],
-                'type' => $type,
-                'public' => false,
-                'local' => false,
-                'active' => true,
-                'path' => $mediaResult['path'],
-                'view_count' => 0,
-                'can_reply' => $payload['can_reply'] ?? true,
-                'can_react' => $payload['can_react'] ?? true,
-                'created_at' => now()->parse($payload['published']),
-                'expires_at' => now()->parse($payload['expiresAt']),
-            ]);
-
+            $story = new Story;
+            $story->profile_id = $profile->id;
+            $story->object_id = $payload['id'];
+            $story->size = $mediaResult['size'];
+            $story->mime = data_get($payload, 'attachment.mediaType');
+            $story->duration = $payload['duration'] ?? null;
+            $story->media_url = data_get($payload, 'attachment.url');
+            $story->type = $type;
+            $story->public = false;
+            $story->local = false;
+            $story->active = true;
+            $story->path = $mediaResult['path'];
+            $story->view_count = 0;
+            $story->can_reply = $payload['can_reply'] ?? false;
+            $story->can_react = $payload['can_react'] ?? false;
+            $story->created_at = now()->parse($payload['published']);
+            $story->expires_at = now()->parse($payload['expiresAt']);
             $story->save();
 
             // Index the story
