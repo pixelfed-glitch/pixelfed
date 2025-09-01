@@ -70,6 +70,10 @@
 - Update StoryIndexService, improve predis + phpredis support ([564d8d109](https://github.com/pixelfed/pixelfed/commit/564d8d109))
 - Update StoryApiV1Controller, add missing validation rule ([76d9ded69](https://github.com/pixelfed/pixelfed/commit/76d9ded69))
 - Update StoryIndexService, improve predis/phpredis support ([53b74bf16](https://github.com/pixelfed/pixelfed/commit/53b74bf16))
+- Update StoryApiV1Controller, improve text overlay validation regex for improved support ([8fb44e316](https://github.com/pixelfed/pixelfed/commit/8fb44e316))
+- Update StoryIndexService, improve redis compatability ([dbba52303](https://github.com/pixelfed/pixelfed/commit/dbba52303))
+- Update StoryFetch, fix mass assignment bug preventing proper model creation ([1e3147028](https://github.com/pixelfed/pixelfed/commit/1e3147028))
+- Update StoryRotateMedia job, handle StoryIndexService cache invalidation ([e2a64c730](https://github.com/pixelfed/pixelfed/commit/e2a64c730))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
