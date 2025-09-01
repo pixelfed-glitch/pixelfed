@@ -68,6 +68,8 @@
 - Update StoryIndexService, fix markSeen method ([e09291775](https://github.com/pixelfed/pixelfed/commit/e09291775))
 - Update StoryComposeController, add StoryIndexService support ([6c701b335](https://github.com/pixelfed/pixelfed/commit/6c701b335))
 - Update StoryIndexService, improve predis + phpredis support ([564d8d109](https://github.com/pixelfed/pixelfed/commit/564d8d109))
+- Update StoryApiV1Controller, add missing validation rule ([76d9ded69](https://github.com/pixelfed/pixelfed/commit/76d9ded69))
+- Update StoryIndexService, improve predis/phpredis support ([53b74bf16](https://github.com/pixelfed/pixelfed/commit/53b74bf16))
 -  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
