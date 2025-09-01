@@ -190,7 +190,11 @@ class StoryIndexService
             $pipe->hset($keyStory, 'view_count', (string) $viewCount);
             $pipe->expire($keyStory, (int) $ttl);
 
-            $pipe->zadd($keyAuth, [$sid => $score]);
+            if (config('database.redis.client') === 'predis') {
+                $pipe->zadd($keyAuth, [$sid => $score]);
+            } else {
+                $pipe->zadd($keyAuth, $score, $sid);
+            }
             $pipe->sadd('story:active_authors', $author);
             $pipe->expire($keyAuth, (int) ($ttl + 3600));
         });
@@ -234,7 +238,11 @@ class StoryIndexService
     {
         $lockKey = $this->rebuildLockKey();
 
-        if (! Redis::set($lockKey, '1', 'EX', self::REBUILD_LOCK_TTL, 'NX')) {
+        $lockAcquired = config('database.redis.client') === 'predis'
+            ? Redis::set($lockKey, '1', 'EX', self::REBUILD_LOCK_TTL, 'NX')
+            : Redis::set($lockKey, '1', ['ex' => self::REBUILD_LOCK_TTL, 'nx' => true]);
+
+        if (! $lockAcquired) {
             return ['status' => 'already_rebuilding', 'message' => 'Index rebuild already in progress'];
         }
 
