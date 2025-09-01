@@ -765,7 +765,8 @@ class StoryApiV1Controller extends Controller
 
         $viewers = StoryView::whereStoryId($story->id)
             ->orderByDesc('id')
-            ->cursorPaginate(10);
+            ->cursorPaginate(10)
+            ->withQueryString();
 
         return StoryViewResource::collection($viewers);
     }
