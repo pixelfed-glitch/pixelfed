@@ -487,7 +487,7 @@ class StoryIndexService
                 }
 
                 $durationMs = max(((int) $h['duration']) * 1000, 10000);
-                $viewed = $isAuthor ? false : isset($seenCache[$aid][$sid]);
+                $viewed = $isAuthor ? true : isset($seenCache[$aid][$sid]);
 
                 $storyItems[] = [
                     'id' => (string) $sid,
