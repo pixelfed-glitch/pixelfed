@@ -99,6 +99,52 @@ class StoryIndexService
         return $this->redisToBool($command());
     }
 
+    /**
+     * Safely convert Redis result to array, handling both predis and phpredis
+     */
+    private function redisToArray($value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_null($value)) {
+            return [];
+        }
+
+        // Handle phpredis object returns that might be iterable
+        if (is_object($value)) {
+            if (method_exists($value, 'toArray')) {
+                return $value->toArray();
+            }
+
+            if ($value instanceof \Iterator || $value instanceof \IteratorAggregate) {
+                return iterator_to_array($value);
+            }
+
+            if (method_exists($value, '__toString')) {
+                $str = $value->__toString();
+
+                return $str ? [$str] : [];
+            }
+        }
+
+        // Handle single values
+        if (is_string($value) || is_numeric($value)) {
+            return [$value];
+        }
+
+        return [];
+    }
+
+    /**
+     * Safely execute Redis commands that return arrays
+     */
+    private function redisArray(callable $command): array
+    {
+        return $this->redisToArray($command());
+    }
+
     public function indexStory($story): void
     {
         if (! $story->active) {
@@ -283,7 +329,7 @@ class StoryIndexService
 
     private function clearStoryCache(): void
     {
-        $storyKeys = Redis::keys('story:*');
+        $storyKeys = $this->redisArray(fn () => Redis::keys('story:*'));
         $storyKeys = array_filter($storyKeys, function ($key) {
             return ! str_contains($key, 'following:');
         });
@@ -348,7 +394,7 @@ class StoryIndexService
         $authorIds = [];
 
         if ($followingCount > 1500) {
-            $active = Redis::smembers('story:active_authors');
+            $active = $this->redisArray(fn () => Redis::smembers('story:active_authors'));
             if ($active) {
                 $results = Redis::pipeline(function ($pipe) use ($active, $pid) {
                     foreach ($active as $aid) {
@@ -367,7 +413,7 @@ class StoryIndexService
                 }
             }
         } else {
-            $authorIds = Redis::sinter("following:{$pid}", 'story:active_authors');
+            $authorIds = $this->redisArray(fn () => Redis::sinter("following:{$pid}", 'story:active_authors'));
         }
 
         if ($this->redisInt(fn () => Redis::zcard($this->authorKey($pid))) > 0) {
@@ -379,16 +425,18 @@ class StoryIndexService
             return [];
         }
 
-        $responses = Redis::pipeline(function ($pipe) use ($authorIds, $opt) {
+        $responses = $this->redisArray(fn () => Redis::pipeline(function ($pipe) use ($authorIds, $opt) {
             foreach ($authorIds as $aid) {
                 $pipe->zrevrange("story:by_author:{$aid}", 0, -1, $opt);
             }
-        });
+        }));
 
         $authorToStoryIds = [];
         $authorLatestTs = [];
         foreach ($authorIds as $i => $aid) {
             $withScores = $responses[$i] ?? [];
+            // Ensure withScores is also an array
+            $withScores = $this->redisToArray($withScores);
             $authorToStoryIds[$aid] = array_keys($withScores);
             $authorLatestTs[$aid] = $withScores ? (float) array_values($withScores)[0] : 0.0;
         }
@@ -401,7 +449,7 @@ class StoryIndexService
 
         $storyMap = [];
         foreach ($allStoryIds as $sid) {
-            $h = Redis::hgetall($this->storyKey($sid));
+            $h = $this->redisArray(fn () => Redis::hgetall($this->storyKey($sid)));
             if (! empty($h)) {
                 $storyMap[$sid] = $h;
             }
@@ -409,10 +457,12 @@ class StoryIndexService
 
         $seenCache = [];
         foreach ($authorIds as $aid) {
-            $seenCache[$aid] = Redis::smembers($this->seenKey($viewerId, (int) $aid)) ?: [];
+            $seenCache[$aid] = $this->redisArray(fn () => Redis::smembers($this->seenKey($viewerId, (int) $aid)));
             $seenCache[$aid] = array_flip($seenCache[$aid]);
         }
 
+        // Ensure $authorIds is always an array before using array_map
+        $authorIds = $this->redisToArray($authorIds);
         $profiles = $profileHydrator(array_map('intval', $authorIds));
 
         $nodes = [];
