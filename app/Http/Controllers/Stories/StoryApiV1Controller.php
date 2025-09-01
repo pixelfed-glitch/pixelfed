@@ -446,7 +446,7 @@ class StoryApiV1Controller extends Controller
 
                         switch ($type) {
                             case 'text':
-                                if (! preg_match('/^[a-zA-Z0-9\s,\.]*$/', $content)) {
+                                if (! preg_match('/^[a-zA-Z0-9\s\p{P}\p{S}]*$/u', $content)) {
                                     throw ValidationException::withMessages([
                                         "overlays.{$index}.content" => 'Text overlays can only contain letters, numbers, spaces, commas, and dots.',
                                     ]);
