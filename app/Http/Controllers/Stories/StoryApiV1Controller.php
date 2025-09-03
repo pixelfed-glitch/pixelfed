@@ -389,7 +389,7 @@ class StoryApiV1Controller extends Controller
                 'image',
                 'mimes:jpeg,jpg,png',
                 File::image()
-                    ->min(50)
+                    ->min(10)
                     ->max(((int) config_cache('pixelfed.max_photo_size')) ?: (6 * 1024))
                     ->dimensions(Rule::dimensions()->width(1080)->height(1920)),
             ],
