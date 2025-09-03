@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\AccountLog;
 use App\EmailVerification;
+use App\Follower;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\StatusController;
 use App\Http\Resources\StatusStateless;
@@ -154,7 +155,7 @@ class ApiV1Dot1Controller extends Controller
                 if ($object->profile_id == $user->profile_id) {
                     return $this->error('Cannot self report', 400, ['error_code' => 'ERROR_NO_SELF_REPORTS']);
                 }
-                if (! FollowerService::follows($user->profile_id, $object->profile_id)) {
+                if (! Follower::whereProfileId($user->profile_id)->whereFollowingId($object->profile_id)->exists()) {
                     return $this->error('Invalid object id', 400, ['error_code' => 'ERROR_INVALID_OBJECT_ID']);
                 }
                 $object_type = 'App\Story';
