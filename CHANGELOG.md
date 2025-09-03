@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
 
+-  ([](https://github.com/pixelfed/pixelfed/commit/))
+
+## [v0.12.6 (2025-09-03)](https://github.com/pixelfed/pixelfed/compare/v0.12.6...dev)
+
 ### Added
 - Pinned Posts ([2f655d000](https://github.com/pixelfed/pixelfed/commit/2f655d000))
 - Custom Filters ([#5928](https://github.com/pixelfed/pixelfed/pull/5928)) ([437d742ac](https://github.com/pixelfed/pixelfed/commit/437d742ac))
@@ -77,7 +81,6 @@
 - Update ApiV1StoryController, fix viewer pagination ([5d4674daa](https://github.com/pixelfed/pixelfed/commit/5d4674daa))
 - Update StoryApiV1Controller, reduce min story size to 10kb ([f195102b3](https://github.com/pixelfed/pixelfed/commit/f195102b3))
 - Update ApiV1Dot1Controller, fix Story report follower check ([ec21eec50](https://github.com/pixelfed/pixelfed/commit/ec21eec50))
--  ([](https://github.com/pixelfed/pixelfed/commit/))
 
 ## [v0.12.5 (2025-03-23)](https://github.com/pixelfed/pixelfed/compare/v0.12.5...dev)
 
