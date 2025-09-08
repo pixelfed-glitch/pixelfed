@@ -111,9 +111,9 @@ return [
     ],
 
     'user_filters' => [
-        'max_user_blocks' => env('PF_MAX_USER_BLOCKS', 50),
-        'max_user_mutes' => env('PF_MAX_USER_MUTES', 50),
-        'max_domain_blocks' => env('PF_MAX_DOMAIN_BLOCKS', 50),
+        'max_user_blocks' => env('PF_MAX_USER_BLOCKS', 200),
+        'max_user_mutes' => env('PF_MAX_USER_MUTES', 500),
+        'max_domain_blocks' => env('PF_MAX_DOMAIN_BLOCKS', 100),
     ],
 
     'reports' => [
