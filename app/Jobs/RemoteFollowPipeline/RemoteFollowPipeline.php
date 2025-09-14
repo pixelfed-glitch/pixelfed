@@ -3,7 +3,8 @@
 namespace App\Jobs\RemoteFollowPipeline;
 
 use App\Jobs\AvatarPipeline\CreateAvatar;
-use App\{Profile};
+use App\Profile;
+use App\Services\SanitizeService;
 use GuzzleHttp\Client;
 use HttpSignatures\Context;
 use HttpSignatures\GuzzleHttpSignatures;
@@ -19,7 +20,9 @@ class RemoteFollowPipeline implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $url;
+
     protected $follower;
+
     protected $response;
 
     /**
@@ -55,15 +58,15 @@ class RemoteFollowPipeline implements ShouldQueue
     public function discover($url)
     {
         $context = new Context([
-            'keys'      => ['examplekey' => 'secret-key-here'],
+            'keys' => ['examplekey' => 'secret-key-here'],
             'algorithm' => 'hmac-sha256',
-            'headers'   => ['(request-target)', 'date'],
+            'headers' => ['(request-target)', 'date'],
         ]);
 
         $handlerStack = GuzzleHttpSignatures::defaultHandlerFromContext($context);
         $client = new Client(['handler' => $handlerStack]);
         $response = Zttp::withHeaders([
-            'Accept'     => 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+            'Accept' => 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
             'User-Agent' => 'PixelfedBot v0.1 - https://pixelfed.org',
         ])->get($url);
         $this->response = $response->json();
@@ -78,12 +81,12 @@ class RemoteFollowPipeline implements ShouldQueue
         $username = $res['preferredUsername'];
         $remoteUsername = "@{$username}@{$domain}";
 
-        $profile = new Profile();
+        $profile = new Profile;
         $profile->user_id = null;
         $profile->domain = $domain;
         $profile->username = $remoteUsername;
         $profile->name = $res['name'];
-        $profile->bio = Purify::clean($res['summary']);
+        $profile->bio = app(SanitizeService::class)->html($res['summary']);
         $profile->sharedInbox = $res['endpoints']['sharedInbox'];
         $profile->remote_url = $res['url'];
         $profile->save();
@@ -98,7 +101,7 @@ class RemoteFollowPipeline implements ShouldQueue
         $url = $res['inbox'];
 
         $activity = Zttp::withHeaders(['Content-Type' => 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'])->post($url, [
-            'type'   => 'Follow',
+            'type' => 'Follow',
             'object' => $this->follower->url(),
         ]);
     }
