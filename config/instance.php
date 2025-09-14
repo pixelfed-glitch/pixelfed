@@ -191,6 +191,10 @@ return [
 
     'total_count_estimate' => env('INSTANCE_TOTAL_POSTS_COUNT_ESTIMATE', false),
 
+    'admin' => [
+        'pid' => env('PF_ADMIN_PID', null),
+    ],
+
     'custom_filters' => [
         /*
          * The maximum number of characters from a status that will be scanned
