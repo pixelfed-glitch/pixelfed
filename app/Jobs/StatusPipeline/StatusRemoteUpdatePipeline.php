@@ -6,6 +6,7 @@ use App\Media;
 use App\Models\StatusEdit;
 use App\ModLog;
 use App\Profile;
+use App\Services\SanitizeService;
 use App\Services\StatusService;
 use App\Status;
 use Illuminate\Bus\Queueable;
@@ -120,7 +121,8 @@ class StatusRemoteUpdatePipeline implements ShouldQueue
     protected function updateImmediateAttributes($status, $activity)
     {
         if (isset($activity['content'])) {
-            $status->caption = strip_tags(Purify::clean($activity['content']));
+            $cleanedCaption = app(SanitizeService::class)->html($activity['content']);
+            $status->caption = strip_tags($cleanedCaption);
         }
 
         if (isset($activity['sensitive'])) {
@@ -143,7 +145,7 @@ class StatusRemoteUpdatePipeline implements ShouldQueue
         }
 
         if (isset($activity['summary'])) {
-            $status->cw_summary = Purify::clean($activity['summary']);
+            $status->cw_summary = app(SanitizeService::class)->html($activity['summary']);
         } else {
             $status->cw_summary = null;
         }
@@ -155,8 +157,8 @@ class StatusRemoteUpdatePipeline implements ShouldQueue
 
     protected function createEdit($status, $activity)
     {
-        $cleaned = isset($activity['content']) ? Purify::clean($activity['content']) : null;
-        $spoiler_text = isset($activity['summary']) ? Purify::clean($activity['summary']) : null;
+        $cleaned = isset($activity['content']) ? app(SanitizeService::class)->html($activity['content']) : null;
+        $spoiler_text = isset($activity['summary']) ? app(SanitizeService::class)->html($activity['summary']) : null;
         $sensitive = isset($activity['sensitive']) ? $activity['sensitive'] : null;
         $mids = $status->media()->count() ? $status->media()->orderBy('order')->pluck('id')->toArray() : null;
         StatusEdit::create([
