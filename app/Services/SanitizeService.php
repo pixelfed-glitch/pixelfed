@@ -20,7 +20,7 @@ class SanitizeService
 
     public function cleanHtmlWithSpacing($html)
     {
-        $blockTags = ['p', 'img', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'blockquote', 'br'];
+        $blockTags = ['a', 'b', 'blockquote', 'br', 'code', 'del', 'div', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'img', 'li', 'ol', 'p', 'pre', 's', 'strike', 'strong', 'u', 'ul'];
 
         foreach ($blockTags as $tag) {
             $html = preg_replace("/<\/{$tag}>/i", "</{$tag}> ", $html);
