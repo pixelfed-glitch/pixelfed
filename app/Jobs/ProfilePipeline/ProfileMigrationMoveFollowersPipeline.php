@@ -3,6 +3,7 @@
 namespace App\Jobs\ProfilePipeline;
 
 use App\Follower;
+use App\Http\Controllers\FollowerController;
 use App\Profile;
 use App\Services\AccountService;
 use Illuminate\Bus\Batchable;
@@ -13,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ProfileMigrationMoveFollowersPipeline implements ShouldBeUniqueUntilProcessing, ShouldQueue
 {
@@ -77,16 +79,25 @@ class ProfileMigrationMoveFollowersPipeline implements ShouldBeUniqueUntilProces
         if (! $og || ! $ne || $og == $ne) {
             return;
         }
-        $ne->followers_count = $og->followers_count;
-        $ne->save();
-        $og->followers_count = 0;
-        $og->save();
-        foreach (Follower::whereFollowingId($this->oldPid)->lazyById(200, 'id') as $follower) {
+
+        $targetInbox = $ne['sharedInbox'] ?? $ne['inbox_url'];
+        foreach (Follower::whereFollowingId($this->oldPid)->where('local_profile', true)->lazyById(200, 'id') as $follower) {
             try {
-                $follower->following_id = $this->newPid;
-                $follower->save();
+                if ($targetInbox) {
+                    $followerProfile = Profile::find($follower->profile_id);
+                    Follower::updateOrCreate([
+                        'profile_id' => $follower->profile_id,
+                        'following_id' => $this->newPid,
+                    ]);
+                    (new FollowerController)->sendFollow($followerProfile, $ne);
+                } else {
+                    Follower::updateOrCreate([
+                        'profile_id' => $follower->profile_id,
+                        'following_id' => $this->newPid,
+                    ]);
+                }
             } catch (Exception $e) {
-                $follower->delete();
+                Log::error($e);
             }
         }
         AccountService::del($this->oldPid);

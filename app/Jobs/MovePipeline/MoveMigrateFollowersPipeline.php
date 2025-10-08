@@ -118,14 +118,15 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
                     if (! $follower->private_key || ! $follower->username || ! $follower->user_id || $follower->status === 'delete') {
                         continue;
                     }
-
-                    Follower::updateOrCreate([
-                        'profile_id' => $follower->id,
-                        'following_id' => $targetPid,
-                    ]);
-
-                    MoveSendFollowPipeline::dispatch($follower, $targetInbox, $targetPid, $target)->onQueue('follow');
+                    if ($targetInbox) {
+                        MoveSendFollowPipeline::dispatch($follower, $targetInbox, $targetPid, $target)->onQueue('follow');
+                    } else {
+                        Follower::updateOrCreate([
+                            'profile_id' => $follower->id,
+                            'following_id' => $targetPid,
+                        ]);
+                    }
                 }
-            }, 'id');
+            }, 'profiles.id');
     }
 }

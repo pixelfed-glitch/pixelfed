@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\ThrottlesExceptions;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Log;
 
 class MoveSendFollowPipeline implements ShouldQueue
 {
@@ -107,7 +108,7 @@ class MoveSendFollowPipeline implements ShouldQueue
                 ],
             ]);
         } catch (ClientException $e) {
-
+            Log::error($e);
         }
     }
 }

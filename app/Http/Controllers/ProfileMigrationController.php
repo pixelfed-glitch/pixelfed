@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileMigrationStoreRequest;
 use App\Jobs\ProfilePipeline\ProfileMigrationDeliverMoveActivityPipeline;
 use App\Jobs\ProfilePipeline\ProfileMigrationMoveFollowersPipeline;
+use App\Jobs\MovePipeline\MoveMigrateFollowersPipeline;
 use App\Models\ProfileAlias;
 use App\Models\ProfileMigration;
 use App\Services\AccountService;
 use App\Services\WebfingerService;
 use App\Util\ActivityPub\Helpers;
+use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 
@@ -61,15 +63,17 @@ class ProfileMigrationController extends Controller
             'indexable' => false,
         ]);
         AccountService::del($user->profile_id);
+        Cache::forget('pfc:cached-user:wt:'.strtolower($user->profile->username));
+        Cache::forget('pfc:cached-user:wot:'.strtolower($user->profile->username));
 
         Bus::batch([
             [
                 new ProfileMigrationDeliverMoveActivityPipeline($migration, $user->profile, $newAccount),
             ],
             [
-                new ProfileMigrationMoveFollowersPipeline($user->profile_id, $newAccount->id),
+                new ProfileMigrationMoveFollowersPipeline($user->profile_id, $newAccount->id, $request->safe()->acct, $newAccount->permalink()),
             ]
-        ])->onQueue('follow')->dispatch();
+        ])->onQueue('move')->dispatch();
 
         return redirect()->back()->with(['status' => 'Succesfully migrated account!']);
     }
