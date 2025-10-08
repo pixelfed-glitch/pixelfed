@@ -3,6 +3,8 @@
 namespace App\Jobs\MovePipeline;
 
 use App\Follower;
+use App\Http\Controllers\FollowerController;
+use App\Profile;
 use App\Util\ActivityPub\Helpers;
 use DateTime;
 use DB;
@@ -118,8 +120,10 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
                     if (! $follower->private_key || ! $follower->username || ! $follower->user_id || $follower->status === 'delete') {
                         continue;
                     }
+
                     if ($targetInbox) {
-                        MoveSendFollowPipeline::dispatch($follower, $targetInbox, $targetPid, $target)->onQueue('follow');
+                        $followerProfile = Profile::find($follower->id);
+                        (new FollowerController)->sendFollow($followerProfile, $targetAccount);
                     } else {
                         Follower::updateOrCreate([
                             'profile_id' => $follower->id,
