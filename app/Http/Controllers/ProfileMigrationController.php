@@ -71,7 +71,7 @@ class ProfileMigrationController extends Controller
                 new ProfileMigrationDeliverMoveActivityPipeline($migration, $user->profile, $newAccount),
             ],
             [
-                new ProfileMigrationMoveFollowersPipeline($user->profile_id, $newAccount->id, $request->safe()->acct, $newAccount->permalink()),
+                new ProfileMigrationMoveFollowersPipeline($user->profile_id, $newAccount->id),
             ]
         ])->onQueue('move')->dispatch();
 
