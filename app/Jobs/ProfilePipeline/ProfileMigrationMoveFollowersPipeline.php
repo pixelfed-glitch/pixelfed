@@ -87,12 +87,12 @@ class ProfileMigrationMoveFollowersPipeline implements ShouldBeUniqueUntilProces
         $targetInbox = $ne['sharedInbox'] ?? $ne['inbox_url'];
         foreach (Follower::whereFollowingId($this->oldPid)->lazyById(200, 'id') as $follower) {
             try {
+                $follower->following_id = $this->newPid;
+                $follower->save();
                 if ($targetInbox && $follower->local_profile) {
                     $followerProfile = Profile::find($follower->profile_id);
                     (new FollowerController)->sendFollow($followerProfile, $ne);
                 }
-                $follower->following_id = $this->newPid;
-                $follower->save();
             } catch (Exception $e) {
                 Log::error($e);
             }

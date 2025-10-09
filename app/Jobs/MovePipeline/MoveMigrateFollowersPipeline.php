@@ -121,14 +121,13 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
                         continue;
                     }
 
+                    Follower::updateOrCreate([
+                        'profile_id' => $follower->id,
+                        'following_id' => $targetPid,
+                    ]);
                     if ($targetInbox) {
                         $followerProfile = Profile::find($follower->id);
                         (new FollowerController)->sendFollow($followerProfile, $targetAccount);
-                    } else {
-                        Follower::updateOrCreate([
-                            'profile_id' => $follower->id,
-                            'following_id' => $targetPid,
-                        ]);
                     }
                 }
             }, 'profiles.id', 'id');
