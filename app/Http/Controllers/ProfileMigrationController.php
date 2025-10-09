@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileMigrationStoreRequest;
 use App\Jobs\ProfilePipeline\ProfileMigrationDeliverMoveActivityPipeline;
 use App\Jobs\ProfilePipeline\ProfileMigrationMoveFollowersPipeline;
-use App\Jobs\MovePipeline\MoveMigrateFollowersPipeline;
 use App\Models\ProfileAlias;
 use App\Models\ProfileMigration;
 use App\Services\AccountService;
