@@ -79,6 +79,10 @@ class ProfileMigrationMoveFollowersPipeline implements ShouldBeUniqueUntilProces
         if (! $og || ! $ne || $og == $ne) {
             return;
         }
+        $ne->followers_count = $og->followers_count;
+        $ne->save();
+        $og->followers_count = 0;
+        $og->save();
 
         $targetInbox = $ne['sharedInbox'] ?? $ne['inbox_url'];
         foreach (Follower::whereFollowingId($this->oldPid)->lazyById(200, 'id') as $follower) {
