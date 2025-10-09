@@ -115,7 +115,7 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
             ->whereNotNull('profiles.user_id')
             ->whereNull('profiles.deleted_at')
             ->select('profiles.id', 'profiles.user_id', 'profiles.username', 'profiles.private_key', 'profiles.status')
-            ->chunkById(100, function ($followers) use ($targetInbox, $targetPid, $target) {
+            ->chunkById(100, function ($followers) use ($targetInbox, $targetPid, $targetAccount) {
                 foreach ($followers as $follower) {
                     if (! $follower->private_key || ! $follower->username || ! $follower->user_id || $follower->status === 'delete') {
                         continue;
@@ -131,6 +131,6 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
                         ]);
                     }
                 }
-            }, 'profiles.id');
+            }, 'profiles.id', 'id');
     }
 }
