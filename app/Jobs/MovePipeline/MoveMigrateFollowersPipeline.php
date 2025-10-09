@@ -114,7 +114,7 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
             ->where('followers.following_id', $actorAccount['id'])
             ->whereNotNull('profiles.user_id')
             ->whereNull('profiles.deleted_at')
-            ->select('profiles.id', 'profiles.user_id', 'profiles.username', 'profiles.private_key', 'profiles.status')
+            ->select('profiles.id', 'profiles.user_id', 'profiles.username', 'profiles.private_key', 'profiles.status', 'followers.local_profile')
             ->chunkById(100, function ($followers) use ($targetInbox, $targetPid, $targetAccount) {
                 foreach ($followers as $follower) {
                     if (! $follower->private_key || ! $follower->username || ! $follower->user_id || $follower->status === 'delete') {
@@ -125,7 +125,11 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
                         'profile_id' => $follower->id,
                         'following_id' => $targetPid,
                     ]);
-                    if ($targetInbox) {
+
+                    // If the remote user has migrated to a different instance,
+                    // send a follow request for each local follower to the new
+                    // instance
+                    if ($targetInbox && $follower->local_profile) {
                         $followerProfile = Profile::find($follower->id);
                         (new FollowerController)->sendFollow($followerProfile, $targetAccount);
                     }

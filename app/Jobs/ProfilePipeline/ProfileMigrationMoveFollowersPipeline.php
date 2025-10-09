@@ -89,6 +89,9 @@ class ProfileMigrationMoveFollowersPipeline implements ShouldBeUniqueUntilProces
             try {
                 $follower->following_id = $this->newPid;
                 $follower->save();
+
+                // If a local user has migrated to a different instance, send a
+                // follow request for each local follower to the new instance
                 if ($targetInbox && $follower->local_profile) {
                     $followerProfile = Profile::find($follower->profile_id);
                     (new FollowerController)->sendFollow($followerProfile, $ne);
