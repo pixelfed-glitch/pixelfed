@@ -98,11 +98,28 @@ class StoryComposeController extends Controller
         ];
 
         if ($story->type === 'video') {
-            $video = FFMpeg::open($path);
+            $localFs = config('filesystems.default') === 'local';
+
+            if ($localFs) {
+                $videoPath = storage_path('app/'.$path);
+            } else {
+                $disk = Storage::disk(config('filesystems.default'));
+                $tempPath = sys_get_temp_dir().'/'.Str::random(40).'.mp4';
+                file_put_contents($tempPath, $disk->get($path));
+                $videoPath = $tempPath;
+            }
+
+            $video = FFMpeg::open($videoPath);
             $duration = $video->getDurationInSeconds();
             $res['media_duration'] = $duration;
+
+            if (! $localFs && isset($tempPath) && file_exists($tempPath)) {
+                unlink($tempPath);
+            }
+
             if ($duration > 500) {
-                Storage::delete($story->path);
+                $disk = $localFs ? Storage::disk('local') : Storage::disk(config('filesystems.default'));
+                $disk->delete($story->path);
                 $story->delete();
 
                 return response()->json([
@@ -128,18 +145,38 @@ class StoryComposeController extends Controller
         }
 
         $storagePath = MediaPathService::story($user->profile);
-        $path = $photo->storePubliclyAs($storagePath, Str::random(random_int(2, 12)).'_'.Str::random(random_int(32, 35)).'_'.Str::random(random_int(1, 14)).'.'.$photo->extension());
+        $filename = Str::random(random_int(2, 12)).'_'.Str::random(random_int(32, 35)).'_'.Str::random(random_int(1, 14)).'.'.$photo->extension();
+        $path = $photo->storePubliclyAs($storagePath, $filename);
+
         if (in_array($photo->getMimeType(), ['image/jpeg', 'image/jpg', 'image/png'])) {
-            $fpath = storage_path('app/'.$path);
+            $localFs = config('filesystems.default') === 'local';
 
-            $img = $this->imageManager->read($fpath);
-            $quality = config_cache('pixelfed.image_quality');
-            $encoder = in_array($photo->getMimeType(), ['image/jpeg', 'image/jpg']) ?
-                new JpegEncoder($quality) :
-                new PngEncoder;
+            if ($localFs) {
+                $fpath = storage_path('app/'.$path);
 
-            $encoded = $img->encode($encoder);
-            file_put_contents($fpath, $encoded);
+                $img = $this->imageManager->read($fpath);
+                $quality = config_cache('pixelfed.image_quality');
+                $encoder = in_array($photo->getMimeType(), ['image/jpeg', 'image/jpg']) ?
+                    new JpegEncoder($quality) :
+                    new PngEncoder;
+
+                $encoded = $img->encode($encoder);
+                file_put_contents($fpath, $encoded);
+            } else {
+                $disk = Storage::disk(config('filesystems.default'));
+
+                $fileContent = $disk->get($path);
+
+                $img = $this->imageManager->read($fileContent);
+                $quality = config_cache('pixelfed.image_quality');
+                $encoder = in_array($photo->getMimeType(), ['image/jpeg', 'image/jpg']) ?
+                    new JpegEncoder($quality) :
+                    new PngEncoder;
+
+                $encoded = $img->encode($encoder);
+
+                $disk->put($path, $encoded);
+            }
         }
 
         return $path;
@@ -166,32 +203,71 @@ class StoryComposeController extends Controller
 
         $story = Story::whereProfileId($user->profile_id)->findOrFail($id);
 
-        $path = storage_path('app/'.$story->path);
+        $localFs = config('filesystems.default') === 'local';
 
-        if (! is_file($path)) {
-            abort(400, 'Invalid or missing media.');
+        if ($localFs) {
+            $path = storage_path('app/'.$story->path);
+
+            if (! is_file($path)) {
+                abort(400, 'Invalid or missing media.');
+            }
+        } else {
+            $disk = Storage::disk(config('filesystems.default'));
+
+            if (! $disk->exists($story->path)) {
+                abort(400, 'Invalid or missing media.');
+            }
         }
 
         if ($story->type === 'photo') {
-            $img = $this->imageManager->read($path);
-            $img = $img->crop($width, $height, $x, $y);
+            if ($localFs) {
+                $path = storage_path('app/'.$story->path);
 
-            $img = $img->resize(1080, 1920, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+                $img = $this->imageManager->read($path);
+                $img = $img->crop($width, $height, $x, $y);
 
-            $quality = config_cache('pixelfed.image_quality');
-            $extension = pathinfo($path, PATHINFO_EXTENSION);
+                $img = $img->resize(1080, 1920, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
 
-            if (in_array(strtolower($extension), ['jpg', 'jpeg'])) {
-                $encoder = new JpegEncoder($quality);
+                $quality = config_cache('pixelfed.image_quality');
+                $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+                if (in_array(strtolower($extension), ['jpg', 'jpeg'])) {
+                    $encoder = new JpegEncoder($quality);
+                } else {
+                    $encoder = new PngEncoder;
+                }
+
+                $encoded = $img->encode($encoder);
+                file_put_contents($path, $encoded);
             } else {
-                $encoder = new PngEncoder;
-            }
+                $disk = Storage::disk(config('filesystems.default'));
 
-            $encoded = $img->encode($encoder);
-            file_put_contents($path, $encoded);
+                $fileContent = $disk->get($story->path);
+
+                $img = $this->imageManager->read($fileContent);
+                $img = $img->crop($width, $height, $x, $y);
+
+                $img = $img->resize(1080, 1920, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+
+                $quality = config_cache('pixelfed.image_quality');
+                $extension = pathinfo($story->path, PATHINFO_EXTENSION);
+
+                if (in_array(strtolower($extension), ['jpg', 'jpeg'])) {
+                    $encoder = new JpegEncoder($quality);
+                } else {
+                    $encoder = new PngEncoder;
+                }
+
+                $encoded = $img->encode($encoder);
+
+                $disk->put($story->path, $encoded);
+            }
         }
 
         return [
@@ -270,7 +346,7 @@ class StoryComposeController extends Controller
     public function createPoll(Request $request)
     {
         abort_if(! (bool) config_cache('instance.stories.enabled') || ! $request->user(), 404);
-        abort_if(! config_cache('instance.polls.enabled'), 404);
+        abort_if(! config('instance.polls.enabled'), 404);
 
         return $request->all();
     }
