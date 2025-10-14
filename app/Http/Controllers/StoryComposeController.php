@@ -75,6 +75,9 @@ class StoryComposeController extends Controller
         $photo = $request->file('file');
         $path = $this->storePhoto($photo, $user);
 
+        $localFs = config('filesystems.default') === 'local';
+        $disk = $localFs ? Storage::disk('local') : Storage::disk(config('filesystems.default'));
+
         $story = new Story;
         $story->duration = 3;
         $story->profile_id = $user->profile_id;
@@ -93,38 +96,37 @@ class StoryComposeController extends Controller
             'code' => 200,
             'msg' => 'Successfully added',
             'media_id' => (string) $story->id,
-            'media_url' => url(Storage::url($url)).'?v='.time(),
+            'media_url' => $localFs ? url(Storage::url($url)).'?v='.time() : $disk->url($url).'?v='.time(),
             'media_type' => $story->type,
         ];
 
         if ($story->type === 'video') {
-            $localFs = config('filesystems.default') === 'local';
 
             if ($localFs) {
                 $videoPath = storage_path('app/'.$path);
             } else {
-                $disk = Storage::disk(config('filesystems.default'));
                 $tempPath = sys_get_temp_dir().'/'.Str::random(40).'.mp4';
                 file_put_contents($tempPath, $disk->get($path));
                 $videoPath = $tempPath;
             }
 
-            $video = FFMpeg::open($videoPath);
-            $duration = $video->getDurationInSeconds();
-            $res['media_duration'] = $duration;
+            try {
+                $video = FFMpeg::open($videoPath);
+                $duration = $video->getDurationInSeconds();
+                $res['media_duration'] = $duration;
 
-            if (! $localFs && isset($tempPath) && file_exists($tempPath)) {
-                unlink($tempPath);
-            }
+                if ($duration > 500) {
+                    $disk->delete($story->path);
+                    $story->delete();
 
-            if ($duration > 500) {
-                $disk = $localFs ? Storage::disk('local') : Storage::disk(config('filesystems.default'));
-                $disk->delete($story->path);
-                $story->delete();
-
-                return response()->json([
-                    'message' => 'Video duration cannot exceed 60 seconds',
-                ], 422);
+                    return response()->json([
+                        'message' => 'Video duration cannot exceed 60 seconds',
+                    ], 422);
+                }
+            } finally {
+                if (! $localFs && isset($tempPath) && file_exists($tempPath)) {
+                    unlink($tempPath);
+                }
             }
         }
 
@@ -161,7 +163,7 @@ class StoryComposeController extends Controller
                     new PngEncoder;
 
                 $encoded = $img->encode($encoder);
-                file_put_contents($fpath, $encoded);
+                file_put_contents($fpath, (string) $encoded);
             } else {
                 $disk = Storage::disk(config('filesystems.default'));
 
@@ -175,7 +177,7 @@ class StoryComposeController extends Controller
 
                 $encoded = $img->encode($encoder);
 
-                $disk->put($path, $encoded);
+                $disk->put($path, (string) $encoded);
             }
         }
 
@@ -220,19 +222,15 @@ class StoryComposeController extends Controller
         }
 
         if ($story->type === 'photo') {
+            $quality = config_cache('pixelfed.image_quality');
+
             if ($localFs) {
                 $path = storage_path('app/'.$story->path);
+                $extension = pathinfo($path, PATHINFO_EXTENSION);
 
                 $img = $this->imageManager->read($path);
                 $img = $img->crop($width, $height, $x, $y);
-
-                $img = $img->resize(1080, 1920, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-
-                $quality = config_cache('pixelfed.image_quality');
-                $extension = pathinfo($path, PATHINFO_EXTENSION);
+                $img = $img->coverDown(1080, 1920);
 
                 if (in_array(strtolower($extension), ['jpg', 'jpeg'])) {
                     $encoder = new JpegEncoder($quality);
@@ -241,22 +239,16 @@ class StoryComposeController extends Controller
                 }
 
                 $encoded = $img->encode($encoder);
-                file_put_contents($path, $encoded);
+                file_put_contents($path, (string) $encoded);
             } else {
                 $disk = Storage::disk(config('filesystems.default'));
+                $extension = pathinfo($story->path, PATHINFO_EXTENSION);
 
                 $fileContent = $disk->get($story->path);
 
                 $img = $this->imageManager->read($fileContent);
                 $img = $img->crop($width, $height, $x, $y);
-
-                $img = $img->resize(1080, 1920, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-
-                $quality = config_cache('pixelfed.image_quality');
-                $extension = pathinfo($story->path, PATHINFO_EXTENSION);
+                $img = $img->coverDown(1080, 1920);
 
                 if (in_array(strtolower($extension), ['jpg', 'jpeg'])) {
                     $encoder = new JpegEncoder($quality);
@@ -266,7 +258,7 @@ class StoryComposeController extends Controller
 
                 $encoded = $img->encode($encoder);
 
-                $disk->put($story->path, $encoded);
+                $disk->put($story->path, (string) $encoded);
             }
         }
 
@@ -533,6 +525,11 @@ class StoryComposeController extends Controller
         ]);
         $status->save();
 
+        $localFs = config('filesystems.default') === 'local';
+        $mediaUrl = $localFs
+            ? url(Storage::url($story->path))
+            : Storage::disk(config('filesystems.default'))->url($story->path);
+
         $dm = new DirectMessage;
         $dm->to_id = $story->profile_id;
         $dm->from_id = $pid;
@@ -542,7 +539,7 @@ class StoryComposeController extends Controller
             'story_username' => $story->profile->username,
             'story_actor_username' => $request->user()->username,
             'story_id' => $story->id,
-            'story_media_url' => url(Storage::url($story->path)),
+            'story_media_url' => $mediaUrl,
             'reaction' => $text,
         ]);
         $dm->save();
@@ -605,6 +602,11 @@ class StoryComposeController extends Controller
         ]);
         $status->save();
 
+        $localFs = config('filesystems.default') === 'local';
+        $mediaUrl = $localFs
+            ? url(Storage::url($story->path))
+            : Storage::disk(config('filesystems.default'))->url($story->path);
+
         $dm = new DirectMessage;
         $dm->to_id = $story->profile_id;
         $dm->from_id = $pid;
@@ -614,7 +616,7 @@ class StoryComposeController extends Controller
             'story_username' => $story->profile->username,
             'story_actor_username' => $request->user()->username,
             'story_id' => $story->id,
-            'story_media_url' => url(Storage::url($story->path)),
+            'story_media_url' => $mediaUrl,
             'caption' => $text,
         ]);
         $dm->save();
