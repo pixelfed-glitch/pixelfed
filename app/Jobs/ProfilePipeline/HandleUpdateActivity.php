@@ -47,8 +47,9 @@ class HandleUpdateActivity implements ShouldQueue
             return;
         }
 
-        if ($profile->sharedInbox == null || $profile->sharedInbox != $payload['object']['endpoints']['sharedInbox']) {
-            $profile->sharedInbox = $payload['object']['endpoints']['sharedInbox'];
+        $sharedInbox = isset($payload['object']['endpoints']['sharedInbox']) ? $payload['object']['endpoints']['sharedInbox'] : null;
+        if ($profile->sharedInbox !== $sharedInbox) {
+            $profile->sharedInbox = $sharedInbox;
         }
 
         if ($profile->public_key !== $payload['object']['publicKey']['publicKeyPem']) {

@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Jobs\AvatarPipeline\AvatarStorageCleanup;
 use App\Jobs\MediaPipeline\MediaDeletePipeline;
+use App\Jobs\StatusPipeline\NewStatusPipeline;
 use App\Media;
+use App\Status;
 use App\Util\ActivityPub\Helpers;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -78,6 +80,22 @@ class MediaStorageService
             }
         } else {
             (new self)->localToCloud($media);
+        }
+
+        if ($media->status_id && config_cache('pixelfed.cloud_storage') && !config('pixelfed.media_fast_process')) {
+            $still_processing = Media::whereStatusId($media->status_id)
+                ->whereNull('cdn_url')
+                ->exists();
+            if (!$still_processing) {
+                // In this configuration, publishing the status is delayed until the media uploads
+                // Since all media have been processed, we can kick the NewStatusPipeline job
+                // N.B. there's a timing condition with multiple MediaStorageService workers matching this if statement
+                // However, it's acceptable to publish the same status multiple times to ActivityPub
+                $status = Status::where('id', $media->status_id)->first(); // This could be null if the status was deleted
+                if ($status) {
+                    NewStatusPipeline::dispatch($status);
+                }
+            }
         }
     }
 
