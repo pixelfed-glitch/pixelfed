@@ -48,6 +48,7 @@ class MentionPushNotifyPipeline implements ShouldQueue
         try {
             NotificationAppGatewayService::send($pushToken, 'mention', $actor);
         } catch (Exception $e) {
+            Log::warning("FollowPushNotifyPipeline: Failed to send Mention notification to: {$actor}" . $e->getMessage());
             return;
         }
     }
