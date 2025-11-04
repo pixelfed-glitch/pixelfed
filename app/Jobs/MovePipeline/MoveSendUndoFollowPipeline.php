@@ -71,19 +71,23 @@ class MoveSendUndoFollowPipeline implements ShouldQueue
         $targetInbox = $this->targetInbox;
         $actor = $this->actor;
 
-        // Verify follower exists
+        // Verify follower and actor exists
         if (!$follower) {
             Log::info("MoveSendUndoFollowPipeline: Follower no longer exists, skipping job");
             return;
         }
-
-        // Verify actor exists
         if (!$actor) {
             Log::info("MoveSendUndoFollowPipeline: Actor no longer exists, skipping job");
             return;
         }
 
-        if (! $follower->username || ! $follower->private_key) {
+        // Verify follower username and private_key exists
+        if (! $follower->username) {
+            Log::info("MoveSendUndoFollowPipeline: Follower may no longer exists, skipping job");
+            return;
+        }
+        if (! $follower->private_key) {
+            Log::info("MoveSendUndoFollowPipeline: Follower may no longer exists, skipping job");
             return;
         }
 
