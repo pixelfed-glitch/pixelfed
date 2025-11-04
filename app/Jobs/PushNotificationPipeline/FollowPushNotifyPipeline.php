@@ -48,7 +48,7 @@ class FollowPushNotifyPipeline implements ShouldQueue
         try {
             NotificationAppGatewayService::send($pushToken, 'follow', $actor);
         } catch (Exception $e) {
-            Log::warning("FollowPushNotifyPipeline: Failed to send notification to : {$actor}" . $e->getMessage());
+            Log::warning("FollowPushNotifyPipeline: Failed to send Follow notification to: {$actor}" . $e->getMessage());
             return;
         }
     }
