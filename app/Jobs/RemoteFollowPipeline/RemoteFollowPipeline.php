@@ -13,6 +13,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Zttp\Zttp;
 
 class RemoteFollowPipeline implements ShouldQueue
@@ -46,11 +47,28 @@ class RemoteFollowPipeline implements ShouldQueue
         $follower = $this->follower;
         $url = $this->url;
 
+        // Verify follower exists
+        if (!$follower) {
+            Log::info("RemoteFollowPipeline: Follower no longer exists, skipping job");
+            return;
+        }
+
+        // Verify URL is provided
+        if (!$url) {
+            Log::info("RemoteFollowPipeline: No URL provided, skipping job");
+            return;
+        }
+
         if (Profile::whereRemoteUrl($url)->count() !== 0) {
             return true;
         }
 
-        $this->discover($url);
+        try {
+            $this->discover($url);
+        } catch (\Exception $e) {
+            Log::warning("RemoteFollowPipeline: Failed to discover profile at {$url}: " . $e->getMessage());
+            return;
+        }
 
         return true;
     }
@@ -77,22 +95,42 @@ class RemoteFollowPipeline implements ShouldQueue
     public function storeProfile()
     {
         $res = $this->response;
+        
+        // Verify response has required fields
+        if (!isset($res['url'])) {
+            Log::warning("RemoteFollowPipeline: Invalid response, missing required field url");
+            return;
+        }
+        if (!isset($res['preferredUsername'])) {
+            Log::warning("RemoteFollowPipeline: Invalid response, missing required field preferredUsername");
+            return;
+        }
+
         $domain = parse_url($res['url'], PHP_URL_HOST);
+        if (!$domain) {
+            Log::warning("RemoteFollowPipeline: Could not parse domain from URL: " . $res['url']);
+            return;
+        }
+
         $username = $res['preferredUsername'];
         $remoteUsername = "@{$username}@{$domain}";
 
-        $profile = new Profile;
-        $profile->user_id = null;
-        $profile->domain = $domain;
-        $profile->username = $remoteUsername;
-        $profile->name = $res['name'];
-        $profile->bio = app(SanitizeService::class)->html($res['summary']);
-        $profile->sharedInbox = $res['endpoints']['sharedInbox'];
-        $profile->remote_url = $res['url'];
-        $profile->save();
+        try {
+            $profile = new Profile;
+            $profile->user_id = null;
+            $profile->domain = $domain;
+            $profile->username = $remoteUsername;
+            $profile->name = $res['name'] ?? '';
+            $profile->bio = isset($res['summary']) ? app(SanitizeService::class)->html($res['summary']) : '';
+            $profile->sharedInbox = $res['endpoints']['sharedInbox'] ?? null;
+            $profile->remote_url = $res['url'];
+            $profile->save();
 
-        RemoteFollowImportRecent::dispatch($this->response, $profile);
-        CreateAvatar::dispatch($profile);
+            RemoteFollowImportRecent::dispatch($this->response, $profile);
+            CreateAvatar::dispatch($profile);
+        } catch (\Exception $e) {
+            Log::warning("RemoteFollowPipeline: Failed to store profile for {$remoteUsername}: " . $e->getMessage());
+        }
     }
 
     public function sendActivity()

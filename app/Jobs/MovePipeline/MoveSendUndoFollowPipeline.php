@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\ThrottlesExceptions;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Log;
 
 class MoveSendUndoFollowPipeline implements ShouldQueue
 {
@@ -69,6 +70,18 @@ class MoveSendUndoFollowPipeline implements ShouldQueue
         $targetPid = $this->targetPid;
         $targetInbox = $this->targetInbox;
         $actor = $this->actor;
+
+        // Verify follower exists
+        if (!$follower) {
+            Log::info("MoveSendUndoFollowPipeline: Follower no longer exists, skipping job");
+            return;
+        }
+
+        // Verify actor exists
+        if (!$actor) {
+            Log::info("MoveSendUndoFollowPipeline: Actor no longer exists, skipping job");
+            return;
+        }
 
         if (! $follower->username || ! $follower->private_key) {
             return;

@@ -56,8 +56,30 @@ class CommentPipeline implements ShouldQueue
         $status = $this->status;
         $comment = $this->comment;
 
+        // Verify status exists
+        if (!$status) {
+            Log::info("CommentPipeline: Status no longer exists, skipping job");
+            return;
+        }
+
+        // Verify comment exists
+        if (!$comment) {
+            Log::info("CommentPipeline: Comment no longer exists, skipping job");
+            return;
+        }
+
         $target = $status->profile;
         $actor = $comment->profile;
+
+        // Verify target and actor profiles exist
+        if (!$target) {
+            Log::info("CommentPipeline: Target profile no longer exists for status {$status->id}, skipping job");
+            return;
+        }
+        if (!$actor) {
+            Log::info("CommentPipeline: Actor profile no longer exists for comment {$comment->id}, skipping job");
+            return;
+        }
 
         if(config('database.default') === 'mysql') {
         	// todo: refactor
