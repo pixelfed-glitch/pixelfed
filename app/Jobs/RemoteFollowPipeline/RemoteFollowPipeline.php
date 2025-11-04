@@ -47,13 +47,11 @@ class RemoteFollowPipeline implements ShouldQueue
         $follower = $this->follower;
         $url = $this->url;
 
-        // Verify follower exists
+        // Verify follower and url exists
         if (!$follower) {
             Log::info("RemoteFollowPipeline: Follower no longer exists, skipping job");
             return;
         }
-
-        // Verify URL is provided
         if (!$url) {
             Log::info("RemoteFollowPipeline: No URL provided, skipping job");
             return;
