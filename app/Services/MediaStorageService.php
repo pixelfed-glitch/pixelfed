@@ -330,6 +330,7 @@ class MediaStorageService
         $path = storage_path('app/'.$media->media_path);
         $thumb = null;
         $thumbname = null;
+
         if ($media->thumbnail_path) {
             $thumb = storage_path('app/'.$media->thumbnail_path);
             $pt = explode('/', $media->thumbnail_path);
