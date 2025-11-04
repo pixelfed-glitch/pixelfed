@@ -56,13 +56,11 @@ class CommentPipeline implements ShouldQueue
         $status = $this->status;
         $comment = $this->comment;
 
-        // Verify status exists
+        // Verify status and comment exists
         if (!$status) {
             Log::info("CommentPipeline: Status no longer exists, skipping job");
             return;
         }
-
-        // Verify comment exists
         if (!$comment) {
             Log::info("CommentPipeline: Comment no longer exists, skipping job");
             return;
