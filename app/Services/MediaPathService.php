@@ -15,6 +15,7 @@ class MediaPathService {
 	public static function get($account, $version = 1)
 	{
 		$mh = hash('sha256', date('Y').'-.-'.date('m'));
+        $path = null;
 		
 		if($account instanceOf User) {
 			switch ($version) {
