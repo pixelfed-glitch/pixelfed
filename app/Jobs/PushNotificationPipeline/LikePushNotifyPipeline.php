@@ -48,6 +48,7 @@ class LikePushNotifyPipeline implements ShouldQueue
         try {
             NotificationAppGatewayService::send($pushToken, 'like', $actor);
         } catch (Exception $e) {
+            Log::warning("NotificationAppGatewayService: Failed to send Like notification to: {$actor}" . $e->getMessage());
             return;
         }
     }
