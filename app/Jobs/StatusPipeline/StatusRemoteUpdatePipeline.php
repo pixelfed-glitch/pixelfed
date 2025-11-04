@@ -15,6 +15,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Purify;
 
 class StatusRemoteUpdatePipeline implements ShouldQueue
@@ -37,28 +38,51 @@ class StatusRemoteUpdatePipeline implements ShouldQueue
     public function handle(): void
     {
         $activity = $this->activity;
-        $status = Status::with('media')->whereObjectUrl($activity['id'])->first();
-        if (! $status) {
+
+        // Verify activity exists and has required fields
+        if (!$activity) {
+            Log::info("StatusRemoteUpdatePipeline: Activity not found, skipping job");
             return;
         }
-        $this->createPreviousEdit($status);
-        $this->updateMedia($status, $activity);
-        $this->updateImmediateAttributes($status, $activity);
-        $this->createEdit($status, $activity);
+        if (!isset($activity['id'])) {
+            Log::info("StatusRemoteUpdatePipeline: Invalid activity data, skipping job");
+            return;
+        }
+
+        $status = Status::with('media')->whereObjectUrl($activity['id'])->first();
+        if (! $status) {
+            Log::info("StatusRemoteUpdatePipeline: Status not found for activity {$activity['id']}, skipping job");
+            return;
+        }
+
+        try {
+            $this->createPreviousEdit($status);
+            $this->updateMedia($status, $activity);
+            $this->updateImmediateAttributes($status, $activity);
+            $this->createEdit($status, $activity);
+        } catch (\Exception $e) {
+            Log::warning("StatusRemoteUpdatePipeline: Failed to update status {$status->id}: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     protected function createPreviousEdit($status)
     {
-        if (! $status->edits()->count()) {
-            StatusEdit::create([
-                'status_id' => $status->id,
-                'profile_id' => $status->profile_id,
-                'caption' => $status->caption,
-                'spoiler_text' => $status->cw_summary,
-                'is_nsfw' => $status->is_nsfw,
-                'ordered_media_attachment_ids' => $status->media()->orderBy('order')->pluck('id')->toArray(),
-                'created_at' => $status->created_at,
-            ]);
+        try {
+            if (! $status->edits()->count()) {
+                StatusEdit::create([
+                    'status_id' => $status->id,
+                    'profile_id' => $status->profile_id,
+                    'caption' => $status->caption,
+                    'spoiler_text' => $status->cw_summary,
+                    'is_nsfw' => $status->is_nsfw,
+                    'ordered_media_attachment_ids' => $status->media()->orderBy('order')->pluck('id')->toArray(),
+                    'created_at' => $status->created_at,
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::warning("StatusRemoteUpdatePipeline: Failed to create previous edit for status {$status->id}: " . $e->getMessage());
+            throw $e;
         }
     }
 

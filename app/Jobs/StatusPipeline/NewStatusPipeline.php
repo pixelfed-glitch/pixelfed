@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class NewStatusPipeline implements ShouldQueue
@@ -44,7 +45,15 @@ class NewStatusPipeline implements ShouldQueue
      */
     public function handle()
     {
-        if (!Status::where('id', $this->status->id)->exists()) {
+        $status = $this->status;
+
+        // Verify status exists
+        if (!$status) {
+            Log::info("NewStatusPipeline: Status no longer exists, skipping job");
+            return;
+        }
+
+        if (!Status::where('id', $status->id)->exists()) {
             // The status has already been deleted by the time the job is running
             // Don't publish the status, and just no-op
             return;
@@ -61,6 +70,12 @@ class NewStatusPipeline implements ShouldQueue
                 return;
             }
         }
-        StatusEntityLexer::dispatch($this->status);
+        
+        try {
+            StatusEntityLexer::dispatch($status);
+        } catch (\Exception $e) {
+            Log::warning("NewStatusPipeline: Failed to dispatch StatusEntityLexer for status {$status->id}: " . $e->getMessage());
+            throw $e;
+        }
     }
 }
