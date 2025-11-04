@@ -95,6 +95,7 @@ class ImageS3UploadPipeline implements ShouldQueue
                 $file = $disk->putFileAs($storagePath, new File($path), $name, 'public');
                 return $disk->url($file);
             } catch (S3Exception | ClientException | ConnectException | UnableToWriteFile | Exception $e) {
+                Log::warning("Groups ImageS3UploadPipeline: Failed to handle Resilient Store {$file} : " . $e->getMessage());
                 throw $e;
             }
         }, function (int $attempt, Exception $exception) {
