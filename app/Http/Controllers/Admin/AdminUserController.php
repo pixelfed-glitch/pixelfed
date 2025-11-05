@@ -50,7 +50,7 @@ trait AdminUserController
             'query' => $queryString,
         ];
 
-        $users = User::select('id', 'username', 'status', 'profile_id', 'is_admin')
+        $users = User::select('id', 'username', 'status', 'profile_id', 'is_admin', 'email', 'app_register_ip')
             ->orderBy($col, $dir)
             ->when($search, function ($q, $search) {
                 return $q->where('username', 'like', "%{$search}%");

@@ -60,6 +60,22 @@
                                 Show deleted accounts
                             </label>
                         </div>
+
+                        <div class="custom-control custom-switch ml-4 mb-2 mb-md-0 flex">
+                            <input type="checkbox" class="custom-control-input" id="showEmailToggle"
+                                   onchange="toggleEmail(this.checked)">
+                            <label class="custom-control-label text-muted text-xs pt-1" for="showEmailToggle">
+                                Show Email
+                            </label>
+                        </div>
+
+                        <div class="custom-control custom-switch ml-4 mb-2 mb-md-0">
+                            <input type="checkbox" class="custom-control-input" id="showIpToggle"
+                                   onchange="toggleIp(this.checked)">
+                            <label class="custom-control-label text-muted text-xs pt-1" for="showIpToggle">
+                                Show IP
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -166,37 +182,58 @@
                                     <span class="badge badge-outline-primary">{{$user->id}}</span>
                                 </a>
                             </td>
-                            <td class="text-center align-middle">
-                                <div class="d-flex align-items-center">
-                                    <a href="/{{$user->account['username']}}" class="font-weight-bold" target="_blank">
-                                        <div class="avatar-wrapper mr-3">
-                                            @if($user->account)
-                                            <img src="{{$user->account['avatar']}}" width="32" height="32" class="rounded-circle border"
-                                                onerror="this.src='/storage/avatars/default.jpg';this.onerror=null;" />
-                                            <div class="avatar-status bg-success"></div>
-                                            @else
-                                            <img src="/storage/avatars/default.jpg" width="32" height="32" class="rounded-circle border" />
-                                            <div class="avatar-status bg-secondary"></div>
-                                            @endif
-                                        </div>
-                                    </a>
-                                    <div>
-                                        <div class="d-flex">
-
-                                            <div class="font-weight-bold">
-                                                {{$user->username}}
-                                                @if($user->is_admin)
-                                                <span class="badge badge-danger badge-xs ml-1">
-                                                    <i class="fas fa-crown mr-1"></i>Admin
-                                                </span>
+                            <td class="">
+                                <div class="text-center align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <a href="/{{$user->account['username']}}" class="font-weight-bold" target="_blank">
+                                            <div class="avatar-wrapper mr-3">
+                                                @if($user->account)
+                                                <img src="{{$user->account['avatar']}}" width="32" height="32" class="rounded-circle border"
+                                                    onerror="this.src='/storage/avatars/default.jpg';this.onerror=null;" />
+                                                <div class="avatar-status bg-success"></div>
+                                                @else
+                                                <img src="/storage/avatars/default.jpg" width="32" height="32" class="rounded-circle border" />
+                                                <div class="avatar-status bg-secondary"></div>
                                                 @endif
                                             </div>
+                                        </a>
+                                        <div>
+                                            <div class="d-flex">
+                                                <div class="font-weight-bold">
+                                                    {{$user->username}}
+                                                    @if($user->is_admin)
+                                                    <span class="badge badge-danger badge-xs ml-1">
+                                                        <i class="fas fa-crown mr-1"></i>Admin
+                                                    </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+
+                                            <small class="text-muted">
+                                                {{ str_limit(strip_tags($user->profile->bio))}}
+                                            </small>
+                                            <small class="text-warning">
+                                                {{ parse_url($user->profile->website, PHP_URL_HOST) }}
+                                            </small>
                                         </div>
-                                        <small class="text-muted">{{ str_limit(strip_tags($user->profile->bio))}}</small>
-                                        <small class="text-warning">{{ parse_url($user->profile->website, PHP_URL_HOST) }}</small>
                                     </div>
                                 </div>
+                                <div class="user-meta mt-1 d-block">
+                                        @if($user->email)
+                                            <small class="text-muted user-email d-none">
+                                                {{$user->email}}
+                                            </small>
+                                        @endif
+
+                                        @if($user->app_register_ip)
+                                            <small class="text-muted user-ip d-none">
+                                                {{$user->app_register_ip}}
+                                            </small>
+                                        @endif
+                                </div>
                             </td>
+
                             <td class="text-center align-middle">
                                 <a href="/i/web/profile/{{$user->account['id']}}" class="font-weight-bold" target="_blank">
                                     {{$user->account['statuses_count'] ?? 0}}
@@ -572,6 +609,28 @@
         }
         url.searchParams.delete('page');
         window.location.href = url.toString();
+    }
+
+    function toggleEmail(checked) {
+        const emails = document.querySelectorAll('.user-email');
+        emails.forEach(el => {
+            if (checked) {
+                el.classList.remove('d-none');
+            } else {
+                el.classList.add('d-none');
+            }
+        });
+    }
+
+    function toggleIp(checked) {
+        const ips = document.querySelectorAll('.user-ip');
+        ips.forEach(el => {
+            if (checked) {
+                el.classList.remove('d-none');
+            } else {
+                el.classList.add('d-none');
+            }
+        });
     }
 
     async function deleteSelected() {
