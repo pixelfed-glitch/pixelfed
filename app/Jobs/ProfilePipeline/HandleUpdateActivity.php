@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Purify;
 
 class HandleUpdateActivity implements ShouldQueue
@@ -37,7 +38,14 @@ class HandleUpdateActivity implements ShouldQueue
     {
         $payload = $this->payload;
 
+        // Verify payload exists
+        if (!$payload) {
+            Log::info("HandleUpdateActivity: Payload not provided, skipping job");
+            return;
+        }
+
         if (empty($payload) || ! isset($payload['actor'])) {
+            Log::info("HandleUpdateActivity: Invalid payload or missing actor, skipping job");
             return;
         }
 

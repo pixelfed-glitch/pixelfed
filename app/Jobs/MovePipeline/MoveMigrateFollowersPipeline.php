@@ -13,6 +13,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\ThrottlesExceptionsWithRedis;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Log;
 
 class MoveMigrateFollowersPipeline implements ShouldQueue
 {
@@ -85,10 +86,26 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
         $target = $this->target;
         $actor = $this->activity;
 
-        $targetAccount = Helpers::profileFetch($target);
-        $actorAccount = Helpers::profileFetch($actor);
+        // Verify target and actor are provided
+        if (!$target) {
+            Log::info("MoveMigrateFollowersPipeline: No target provided, skipping job");
+            return;
+        }
+        if (!$actor) {
+            Log::info("MoveMigrateFollowersPipeline: No actor provided, skipping job");
+            return;
+        }
+
+        try {
+            $targetAccount = Helpers::profileFetch($target);
+            $actorAccount = Helpers::profileFetch($actor);
+        } catch (\Exception $e) {
+            Log::warning("MoveMigrateFollowersPipeline: Failed to fetch profiles: " . $e->getMessage());
+            throw $e;
+        }
 
         if (! $targetAccount || ! $actorAccount) {
+            Log::warning("MoveMigrateFollowersPipeline: Could not fetch target or actor accounts");
             throw new Exception('Invalid move accounts');
         }
 
