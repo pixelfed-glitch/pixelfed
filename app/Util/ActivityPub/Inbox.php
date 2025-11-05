@@ -637,7 +637,7 @@ class Inbox
 
         $parent = Helpers::statusFetch($activity);
 
-        if (! $parent || empty($parent)) {
+        if (! $parent) {
             return;
         }
 
