@@ -475,7 +475,7 @@ class Inbox
             ]
         );
 
-        if (count($activity['attachment'])) {
+        if (count($activity['attachment'] ?? [])) {
             $photos = 0;
             $videos = 0;
             $allowed = explode(',', config_cache('pixelfed.media_types'));
