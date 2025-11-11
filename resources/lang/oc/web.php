@@ -46,11 +46,11 @@ return [
 		// Timelines
 		'homeFeed' => 'Flux principal',
 		'localFeed' => 'Flux local',
-		'globalFeed' => 'Global Feed',
+		'globalFeed' => 'Fil global',
 
 		// Core features
 		'discover' => 'Descobrir',
-		'directMessages' => 'Direct Messages',
+		'directMessages' => 'Messatges dirèctes',
 		'notifications' => 'Notifications',
 		'groups' => 'Grops',
 		'stories' => 'Contes',
@@ -70,21 +70,21 @@ return [
 		'terms' => 'Condicions d’utilizacion',
 
 		// Temporary links
-		'backToPreviousDesign' => 'Go back to previous design'
+		'backToPreviousDesign' => 'Tornar al design precedent'
 	],
 
 	'directMessages' => [
 		'inbox' => 'Dintrant',
 		'sent' => 'Mandats',
-		'requests' => 'Requests'
+		'requests' => 'Requèstas'
 	],
 
 	'notifications' => [
-		'liked' => 'liked your',
-		'commented' => 'commented on your',
-		'reacted' => 'reacted to your',
-		'shared' => 'shared your',
-		'tagged' => 'tagged you in a',
+		'liked' => 'a aimat vòstra',
+		'commented' => 'a comentat vòstra',
+		'reacted' => 'a reagit a vòstra',
+		'shared' => 'a partit vòstra',
+		'tagged' => 'vos a etiquetat dins una',
 
 		'updatedA' => 'actualizat un',
 		'sentA' => 'a enviat un',
@@ -98,47 +98,47 @@ return [
 		'applicationRejected' => 'es estada regetada.',
 
 		'dm' => 'messatge privat',
-		'groupPost' => 'group post',
+		'groupPost' => 'gropar las publicacions',
 		'modlog' => 'modlog',
-		'post' => 'post',
-		'story' => 'story',
-		'noneFound' => 'No notifications found',
+		'post' => 'publicacion',
+		'story' => 'istòria',
+		'noneFound' => 'Cap de notificacion pas trobada',
 	],
 
 	'post' => [
-		'shareToFollowers' => 'Share to followers',
-		'shareToOther' => 'Share to other',
-		'noLikes' => 'No likes yet',
-		'uploading' => 'Uploading',
+		'shareToFollowers' => 'Partejar als seguidors',
+		'shareToOther' => 'Partejar als autres',
+		'noLikes' => 'Cap d’adesion pel moment',
+		'uploading' => 'Mandadís',
 	],
 
 	'profile' => [
-		'posts' => 'Posts',
-		'followers' => 'Followers',
-		'following' => 'Following',
+		'posts' => 'Publicacions',
+		'followers' => 'Seguidors',
+		'following' => 'Abonaments',
 		'admin' => 'Admin',
-		'collections' => 'Collections',
-		'follow' => 'Follow',
-		'unfollow' => 'Unfollow',
-		'editProfile' => 'Edit Profile',
-		'followRequested' => 'Follow Requested',
-		'joined' => 'Joined',
+		'collections' => 'Colleccions',
+		'follow' => 'Seguir',
+		'unfollow' => 'Quitar de seguir',
+		'editProfile' => 'Modificar lo perfil',
+		'followRequested' => 'Demanda d’abonament enviada',
+		'joined' => 'Arribada',
 
-		'emptyCollections' => 'We can\'t seem to find any collections',
-		'emptyPosts' => 'We can\'t seem to find any posts',
+		'emptyCollections' => 'Sembla que i aja cap de colleccion',
+		'emptyPosts' => 'Sembla pas que i a cap de publicacion',
 	],
 
 	'menu' => [
-		'viewPost' => 'View Post',
-		'viewProfile' => 'View Profile',
-		'moderationTools' => 'Moderation Tools',
-		'report' => 'Report',
-		'archive' => 'Archive',
-		'unarchive' => 'Unarchive',
-		'embed' => 'Embed',
+		'viewPost' => 'Veire publicacion',
+		'viewProfile' => 'Veire perfil',
+		'moderationTools' => 'Aisinas de moderacion',
+		'report' => 'Senhalar',
+		'archive' => 'Archivar',
+		'unarchive' => 'Desarchivar',
+		'embed' => 'Integrar',
 
-		'selectOneOption' => 'Select one of the following options',
-		'unlistFromTimelines' => 'Unlist from Timelines',
+		'selectOneOption' => 'Seleccionatz una de las opcions que seguentas',
+		'unlistFromTimelines' => 'Tirar dels fils',
 		'addCW' => 'Add Content Warning',
 		'removeCW' => 'Lo tèxte es rescondut jos l’avertiment',
 		'markAsSpammer' => 'Mark as Spammer',
