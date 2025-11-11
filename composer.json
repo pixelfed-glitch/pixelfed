@@ -17,6 +17,7 @@
         "brick/math": "^0.11",
         "buzz/laravel-h-captcha": "^1.0.4",
         "endroid/qr-code": "^6.0",
+        "guzzlehttp/guzzle": "^7.10",
         "intervention/image": "^3.11.2",
         "intervention/image-driver-vips": "^1.0",
         "jenssegers/agent": "^2.6",
