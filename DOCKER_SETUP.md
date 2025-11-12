@@ -11,13 +11,13 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
 ## Quick Start
 
 1. **Clone and prepare the privledges**
-```bash
-git clone https://github.com/pixelfed/pixelfed
-cd pixelfed
-sudo chown -R www-data:www-data .
-sudo find . -type f -exec chmod 644 {} \;
-sudo find . -type d -exec chmod 755 {} \;
-```
+    ```bash
+    git clone https://github.com/pixelfed/pixelfed
+    cd pixelfed
+    sudo chown -R www-data:www-data .
+    sudo find . -type f -exec chmod 644 {} \;
+    sudo find . -type d -exec chmod 755 {} \;
+    ```
 
 2. **Copy the environment file:**
    ```bash
