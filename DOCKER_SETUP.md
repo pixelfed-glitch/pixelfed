@@ -6,7 +6,8 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
 
 - Docker and Docker Compose installed
 - A reverse proxy (e.g., Nginx Proxy Manager) for HTTPS
-- Domain name configured
+- Domain name
+- Email Provider for sending emails
 
 ## Quick Start
 
@@ -55,7 +56,7 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
 
 ### Cloudflare Tunnel
 
-<Add doco here>
+1. Doco coming soon
 
 ### Nginx Proxy Manager
 
@@ -117,38 +118,3 @@ docker compose down
 # Stop and remove volumes (WARNING: deletes data)
 docker compose down -v
 ```
-
-## Environment Variables
-
-Key environment variables configured in the Dockerfile/docker-compose:
-
-- `PHP_POST_MAX_SIZE=500M` - Maximum POST data size
-- `PHP_UPLOAD_MAX_FILE_SIZE=500M` - Maximum upload file size
-- `PHP_OPCACHE_ENABLE=1` - Enable OPcache for performance
-- `AUTORUN_ENABLED=true` - Enable Laravel auto-run features
-- `AUTORUN_LARAVEL_MIGRATION=true` - Auto-run migrations on startup
-- `AUTORUN_LARAVEL_STORAGE_LINK=true` - Auto-create storage symlink
-- `AUTORUN_LARAVEL_EVENT_CACHE=true` - Auto-cache events
-- `AUTORUN_LARAVEL_ROUTE_CACHE=true` - Auto-cache routes
-- `AUTORUN_LARAVEL_VIEW_CACHE=true` - Auto-cache views
-- `AUTORUN_LARAVEL_CONFIG_CACHE=true` - Auto-cache config
-
-## Troubleshooting
-
-### Permission Issues
-```bash
-docker compose exec pixelfed chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-```
-
-### Clear Cache
-```bash
-docker compose exec pixelfed php artisan cache:clear
-docker compose exec pixelfed php artisan config:clear
-docker compose exec pixelfed php artisan route:clear
-docker compose exec pixelfed php artisan view:clear
-```
-
-### Database Connection Issues
-- Verify database credentials in `.env`
-- Check if database container is running: `docker compose ps`
-- View database logs: `docker compose logs -f db`
