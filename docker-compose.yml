@@ -1,54 +1,16 @@
-version: '3.8'
-
 services:
-  pixelfed:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: pixelfed-app
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env.docker
-    environment:
-      # PHP Configuration
-      AUTORUN_LARAVEL_MIGRATION_ISOLATION: "true"
-      PHP_POST_MAX_SIZE: "500M"
-      PHP_UPLOAD_MAX_FILE_SIZE: "500M"
-      PHP_OPCACHE_ENABLE: "1"
-      
-      # Laravel Auto-run Configuration
-      AUTORUN_ENABLED: "true"
-      AUTORUN_LARAVEL_MIGRATION: "true"
-      AUTORUN_LARAVEL_STORAGE_LINK: "true"
-      AUTORUN_LARAVEL_EVENT_CACHE: "true"
-      AUTORUN_LARAVEL_ROUTE_CACHE: "true"
-      AUTORUN_LARAVEL_VIEW_CACHE: "true"
-      AUTORUN_LARAVEL_CONFIG_CACHE: "true"
-      
-      # SSL Configuration (handled by reverse proxy)
-      SSL_MODE: "off"
-    volumes:
-      - ./storage:/var/www/html/storage
-      - ./bootstrap/cache:/var/www/html/bootstrap/cache
-    depends_on:
-      - db
-      - redis
-    networks:
-      - pixelfed-network
-
+## MariaDB and Redis (optional)
   db:
     image: mariadb:11
     container_name: pixelfed-db
     restart: unless-stopped
     env_file:
-      - .env.docker
+      - .env
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - ./mariadb-11-data:/var/lib/mysql
     networks:
@@ -64,17 +26,61 @@ services:
     networks:
       - pixelfed-network
 
+## Pixelfed containers - App (Web/API), Horizon Queue, Scheduled task.
+  pixelfed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pixelfed-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      # SSL Configuration (handled by reverse proxy)
+      SSL_MODE: "off"
+
+      # PHP Configuration
+      PHP_POST_MAX_SIZE: "500M"
+      PHP_UPLOAD_MAX_FILE_SIZE: "500M"
+      PHP_OPCACHE_ENABLE: "1"
+      
+      # Laravel Auto-run Configuration
+      AUTORUN_ENABLED: "true"
+      AUTORUN_LARAVEL_MIGRATION: "true"
+      AUTORUN_LARAVEL_MIGRATION_ISOLATION: "true"
+      AUTORUN_LARAVEL_STORAGE_LINK: "true"
+      AUTORUN_LARAVEL_EVENT_CACHE: "true"
+      AUTORUN_LARAVEL_ROUTE_CACHE: "true"
+      AUTORUN_LARAVEL_VIEW_CACHE: "true"
+      AUTORUN_LARAVEL_CONFIG_CACHE: "true"
+
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    depends_on:
+      - db
+      - redis
+    networks:
+      - pixelfed-network
+
   horizon:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: pixelfed-horizon
     restart: unless-stopped
-    command: php artisan horizon
+    command: ["php", "/var/www/html/artisan", "horizon"]
     env_file:
-      - .env.docker
+      - .env
     environment:
-      AUTORUN_ENABLED: "false"
+      # Laravel Auto-run Configuration
+      AUTORUN_LARAVEL_STORAGE_LINK: "true"
+      AUTORUN_LARAVEL_EVENT_CACHE: "true"
+      AUTORUN_LARAVEL_ROUTE_CACHE: "true"
+      AUTORUN_LARAVEL_VIEW_CACHE: "true"
+      AUTORUN_LARAVEL_CONFIG_CACHE: "true"
       PHP_POST_MAX_SIZE: "500M"
       PHP_UPLOAD_MAX_FILE_SIZE: "500M"
       PHP_OPCACHE_ENABLE: "1"
@@ -84,6 +90,38 @@ services:
     depends_on:
       - db
       - redis
+    networks:
+      - pixelfed-network
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pixelfed-scheduler
+    restart: unless-stopped
+    command: ["php", "/var/www/html/artisan", "schedule:work"]
+    stop_signal: SIGTERM
+    env_file:
+      - .env
+    environment:
+      # Laravel Auto-run Configuration
+      AUTORUN_LARAVEL_STORAGE_LINK: "true"
+      AUTORUN_LARAVEL_EVENT_CACHE: "true"
+      AUTORUN_LARAVEL_ROUTE_CACHE: "true"
+      AUTORUN_LARAVEL_VIEW_CACHE: "true"
+      AUTORUN_LARAVEL_CONFIG_CACHE: "true"
+      PHP_POST_MAX_SIZE: "500M"
+      PHP_UPLOAD_MAX_FILE_SIZE: "500M"
+      PHP_OPCACHE_ENABLE: "1"
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: ["CMD", "healthcheck-schedule"]
+      start_period: 10s
     networks:
       - pixelfed-network
 

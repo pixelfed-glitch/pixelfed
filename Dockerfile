@@ -31,19 +31,20 @@ RUN install-php-extensions \
     zip \
     pdo_mysql \
     redis \
-    vips
+    vips \
+    ffi
 
 # Copy application files
 COPY --chown=www-data:www-data . /var/www/html
-
-# Install composer dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type f -exec chmod 644 {} \; \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && chmod -R ug+rwx /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Install composer dependencies
+RUN composer install --no-ansi --no-interaction --optimize-autoloader
 
 # Switch back to www-data user
 USER www-data
