@@ -14,40 +14,46 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
     ```bash
     git clone https://github.com/pixelfed/pixelfed
     cd pixelfed
-    sudo chown -R www-data:www-data .
-    sudo find . -type f -exec chmod 644 {} \;
-    sudo find . -type d -exec chmod 755 {} \;
     ```
 
-2. **Copy the environment file:**
+1. **Copy the environment file:**
    ```bash
    cp .env.docker.example .env
    ```
 
-3. **Update `.env` with your configuration:**
+2. **Update `.env` with your configuration:**
    - Set `APP_KEY` ( generate with https://laravel-encryption-key-generator.vercel.app/ )
    - Update `APP_URL`, `APP_DOMAIN`, `ADMIN_DOMAIN`, `SESSION_DOMAIN` with your domain
    - Set secure database passwords for `DB_PASSWORD` and `DB_ROOT_PASSWORD`
    - Configure mail settings
 
-4. **Build container**
+3. **Build container**
    ```bash
    docker compose build
    ```
 
-5. **Build and start the containers:**
+    ### **(Optional Troubleshooting) Fix permissions locally**
+    This should not be required.
+    ```bash
+    sudo chown -R www-data:www-data .
+    sudo find . -type f -exec chmod 644 {} \;
+    sudo find . -type d -exec chmod 755 {} \;
+    ```
+
+
+4. **Build and start the containers:**
    ```bash
    docker compose up -d
    ```
 
-6. **Generate application keys (Critical for Federation) and other tasks:**
+5. **Generate application keys (Critical for Federation) and other tasks:**
    ```bash
    docker compose exec pixelfed php artisan instance:actor
    docker compose exec pixelfed php artisan import:cities
    docker compose exec pixelfed php artisan passport:keys
    ```
 
-7. **Create admin user:**
+6. **Create admin user:**
    ```bash
    docker compose exec pixelfed php artisan user:create
    ```
