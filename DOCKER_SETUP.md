@@ -40,7 +40,7 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
    docker compose up -d
    ```
 
-6. **Generate application key (if not done in step 2):**
+6. **Generate application keys (Critical for Federation) and other tasks:**
    ```bash
    docker compose exec pixelfed php artisan instance:actor
    docker compose exec pixelfed php artisan import:cities
