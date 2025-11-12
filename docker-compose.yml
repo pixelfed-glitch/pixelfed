@@ -13,6 +13,12 @@ services:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - ./mariadb-11-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     networks:
       - pixelfed-network
 
@@ -23,6 +29,12 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - ./redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
     networks:
       - pixelfed-network
 
