@@ -33,15 +33,6 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
    docker compose build
    ```
 
-    ### **(Optional Troubleshooting) Fix permissions locally**
-    This should not be required.
-    ```bash
-    sudo chown -R www-data:www-data .
-    sudo find . -type f -exec chmod 644 {} \;
-    sudo find . -type d -exec chmod 755 {} \;
-    ```
-
-
 4. **Build and start the containers:**
    ```bash
    docker compose up -d
