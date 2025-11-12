@@ -35,6 +35,7 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
 
 4. **Build and start the containers:**
    ```bash
+   docker compose up -d db redis  # Bootstrap the database and Redis.
    docker compose up -d
    ```
 
@@ -51,6 +52,10 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
    ```
 
 ## Reverse Proxy Configuration
+
+### Cloudflare Tunnel
+
+<Add doco here>
 
 ### Nginx Proxy Manager
 
