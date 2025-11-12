@@ -13,7 +13,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property bool $is_admin
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property bool $2fa_enabled
  * @property string|null $register_source
  * @property string|null $app_register_ip
  * @property bool $has_interstitial
@@ -22,6 +21,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class AdminUser extends JsonResource
 {
+    /**
+     * @phpstan-ignore-next-line
+     */
+    private $2fa_enabled;
     /**
      * Transform the resource into an array.
      *
