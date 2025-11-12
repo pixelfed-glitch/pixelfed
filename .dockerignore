@@ -5,8 +5,6 @@ mariadb-11-data/
 redis-data/
 node_modules/
 vendor/
-storage/
-bootstrap/cache/
 .ddev/
 
 #Files
