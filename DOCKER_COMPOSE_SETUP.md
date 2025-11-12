@@ -1,4 +1,4 @@
-# Pixelfed Docker Setup with serversideup/php
+# Pixelfed Docker Compose Setup with serversideup/php container
 
 This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is designed to work behind a reverse proxy like Cloudflare Tunnel, or Nginx (Proxy Manager) for HTTPS termination.
 
