@@ -83,7 +83,7 @@ services:
       dockerfile: Dockerfile
     container_name: pixelfed-horizon
     restart: unless-stopped
-    command: ["php", "/var/www/html/artisan", "horizon"]
+    command: ["php", "artisan", "horizon"]
     env_file:
       - .env
     environment:
@@ -102,6 +102,11 @@ services:
     depends_on:
       - db
       - redis
+    healthcheck:
+      test: ["CMD", "php", "artisan", "horizon:status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
       - pixelfed-network
 
@@ -111,7 +116,7 @@ services:
       dockerfile: Dockerfile
     container_name: pixelfed-scheduler
     restart: unless-stopped
-    command: ["php", "/var/www/html/artisan", "schedule:work"]
+    command: ["php", "artisan", "schedule:work"]
     stop_signal: SIGTERM
     env_file:
       - .env
