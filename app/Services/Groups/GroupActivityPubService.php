@@ -152,6 +152,7 @@ class GroupActivityPubService
 
         if($validator->fails()) {
             return $validator->errors();
+            //Dead return false;
         }
 
         return $validator->validated();
