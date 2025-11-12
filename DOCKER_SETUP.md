@@ -10,7 +10,7 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
 
 ## Quick Start
 
-0. **Clone and prepare the privledges**
+1. **Clone and prepare the privledges**
 ```bash
 git clone https://github.com/pixelfed/pixelfed
 cd pixelfed
@@ -19,35 +19,35 @@ sudo find . -type f -exec chmod 644 {} \;
 sudo find . -type d -exec chmod 755 {} \;
 ```
 
-1. **Copy the environment file:**
+2. **Copy the environment file:**
    ```bash
    cp .env.docker.example .env
    ```
 
-2. **Update `.env` with your configuration:**
+3. **Update `.env` with your configuration:**
    - Set `APP_KEY` ( generate with https://laravel-encryption-key-generator.vercel.app/ )
    - Update `APP_URL`, `APP_DOMAIN`, `ADMIN_DOMAIN`, `SESSION_DOMAIN` with your domain
    - Set secure database passwords for `DB_PASSWORD` and `DB_ROOT_PASSWORD`
    - Configure mail settings
 
-3. **Build container**
+4. **Build container**
    ```bash
    docker compose build
    ```
 
-4. **Build and start the containers:**
+5. **Build and start the containers:**
    ```bash
    docker compose up -d
    ```
 
-5. **Generate application key (if not done in step 2):**
+6. **Generate application key (if not done in step 2):**
    ```bash
    docker compose exec pixelfed php artisan instance:actor
    docker compose exec pixelfed php artisan import:cities
    docker compose exec pixelfed php artisan passport:keys
    ```
 
-6. **Create admin user:**
+7. **Create admin user:**
    ```bash
    docker compose exec pixelfed php artisan user:create
    ```
