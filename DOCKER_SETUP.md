@@ -10,6 +10,15 @@ This setup uses `serversideup/php:8.4-fpm-nginx` as the base image and is design
 
 ## Quick Start
 
+0. **Clone and prepare the privledges**
+```bash
+git clone https://github.com/pixelfed/pixelfed
+cd pixelfed
+sudo chown -R www-data:www-data .
+sudo find . -type f -exec chmod 644 {} \;
+sudo find . -type d -exec chmod 755 {} \;
+```
+
 1. **Copy the environment file:**
    ```bash
    cp .env.docker.example .env
