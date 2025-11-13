@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property bool $is_admin
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property bool $2fa_enabled
  * @property string|null $register_source
  * @property string|null $app_register_ip
  * @property bool $has_interstitial
@@ -39,7 +40,7 @@ class AdminUser extends JsonResource
             'is_admin' => (bool) $this->is_admin,
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at,
-            'two_factor_enabled' => (bool) $this->{'2fa_enabled'}, // @phpstan-ignore-line
+            'two_factor_enabled' => (bool) $this->{'2fa_enabled'},
             'register_source' => $this->register_source,
             'app_register_ip' => $this->app_register_ip,
             'has_interstitial' => (bool) $this->has_interstitial,
