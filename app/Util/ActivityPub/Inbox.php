@@ -23,6 +23,7 @@ use App\Jobs\StoryPipeline\StoryFetch;
 use App\Like;
 use App\Media;
 use App\Models\Conversation;
+use App\Models\PollVote;
 use App\Models\RemoteReport;
 use App\Notification;
 use App\Profile;
@@ -30,8 +31,6 @@ use App\Services\AccountService;
 use App\Services\FollowerService;
 use App\Services\NotificationAppGatewayService;
 use App\Services\PollService;
-use App\Models\PollVote;
-use App\User;
 use App\Services\PushNotificationService;
 use App\Services\ReblogService;
 use App\Services\RelationshipService;
@@ -41,6 +40,7 @@ use App\Services\UserFilterService;
 use App\Status;
 use App\Story;
 use App\StoryView;
+use App\User;
 use App\UserFilter;
 use App\Util\ActivityPub\Validator\Accept as AcceptValidator;
 use App\Util\ActivityPub\Validator\Announce as AnnounceValidator;
@@ -918,12 +918,15 @@ class Inbox
                     ->whereReblogOfId($status->id)
                     ->delete();
                 ReblogService::removePostReblog($profile->id, $status->id);
-                Notification::whereProfileId($status->profile_id)
+                $notifications = Notification::whereProfileId($status->profile_id)
                     ->whereActorId($profile->id)
                     ->whereAction('share')
                     ->whereItemId($status->reblog_of_id)
                     ->whereItemType('App\Status')
-                    ->forceDelete();
+                    ->get();
+                foreach ($notifications as $notification) {
+                    $notification->forceDelete();
+                }
                 break;
 
             case 'Block':
@@ -943,12 +946,15 @@ class Inbox
                 FollowRequest::whereFollowingId($following->id)
                     ->whereFollowerId($profile->id)
                     ->forceDelete();
-                Notification::whereProfileId($following->id)
+                $notifications = Notification::whereProfileId($following->id)
                     ->whereActorId($profile->id)
                     ->whereAction('follow')
                     ->whereItemId($following->id)
                     ->whereItemType('App\Profile')
-                    ->forceDelete();
+                    ->get();
+                foreach ($notifications as $notification) {
+                    $notification->forceDelete();
+                }
                 FollowerService::remove($profile->id, $following->id);
                 RelationshipService::refresh($following->id, $profile->id);
                 AccountService::del($profile->id);
@@ -974,15 +980,18 @@ class Inbox
                 Like::whereProfileId($profile->id)
                     ->whereStatusId($status->id)
                     ->forceDelete();
-                Notification::whereProfileId($status->profile_id)
+                $notifications = Notification::whereProfileId($status->profile_id)
                     ->whereActorId($profile->id)
                     ->whereAction('like')
                     ->whereItemId($status->id)
                     ->whereItemType('App\Status')
-                    ->forceDelete();
+                    ->get();
+
+                foreach ($notifications as $notification) {
+                    $notification->forceDelete();
+                }
                 break;
         }
-
     }
 
     public function handleViewActivity()
