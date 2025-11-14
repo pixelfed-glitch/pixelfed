@@ -778,7 +778,6 @@ class Inbox
                     DeleteRemoteProfilePipeline::dispatch($profile)->onQueue('inbox');
 
                     return;
-                    break;
 
                 case 'Tombstone':
                     $profile = Profile::whereRemoteUrl($actor)->first();
@@ -804,7 +803,6 @@ class Inbox
                     RemoteStatusDelete::dispatch($status)->onQueue('high');
 
                     return;
-                    break;
 
                 case 'Story':
                     $story = Story::whereObjectId($id)
@@ -814,11 +812,9 @@ class Inbox
                     }
 
                     return;
-                    break;
 
                 default:
                     return;
-                    break;
             }
         }
 
