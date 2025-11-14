@@ -462,7 +462,6 @@ class GroupController extends GroupFederationController
                 );
 
                 return response()->json([200]);
-                break;
 
             case 'ignore':
                 GroupReport::whereGroupId($group->id)
@@ -486,7 +485,6 @@ class GroupController extends GroupFederationController
                 );
 
                 return response()->json([200]);
-                break;
         }
     }
 
