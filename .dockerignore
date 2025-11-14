@@ -1,8 +1,9 @@
 # Folders
 .git/
-tests/
+storage/app/public/
 mariadb-11-data/
 redis-data/
+tests/
 node_modules/
 vendor/
 .ddev/
