@@ -931,7 +931,12 @@ class Inbox
                 FeedRemoveRemotePipeline::dispatch($status->id, $status->profile_id)->onQueue('feed');
                 Status::whereProfileId($profile->id)
                     ->whereReblogOfId($status->id)
-                    ->delete();
+                    ->forceDelete();
+
+                if ($status->reblogs_count) {
+                    $status->reblogs_count = $status->reblogs_count - 1;
+                    $status->saveQuietly();
+                }
                 ReblogService::removePostReblog($profile->id, $status->id);
                 $notifications = Notification::whereProfileId($status->profile_id)
                     ->whereActorId($profile->id)
