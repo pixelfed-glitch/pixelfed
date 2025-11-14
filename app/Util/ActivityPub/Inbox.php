@@ -921,7 +921,7 @@ class Inbox
                 $notifications = Notification::whereProfileId($status->profile_id)
                     ->whereActorId($profile->id)
                     ->whereAction('share')
-                    ->whereItemId($status->reblog_of_id)
+                    ->whereItemId($status->id)
                     ->whereItemType('App\Status')
                     ->get();
                 foreach ($notifications as $notification) {
