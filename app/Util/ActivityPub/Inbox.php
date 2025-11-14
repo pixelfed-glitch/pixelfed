@@ -775,6 +775,13 @@ class Inbox
                     if (! $profile || $profile->private_key != null) {
                         return;
                     }
+
+                    Notification::whereActorId($profile->id)
+                        ->chunkById(100, function ($notifications) {
+                            foreach ($notifications as $notification) {
+                                $notification->forceDelete();
+                            }
+                        });
                     DeleteRemoteProfilePipeline::dispatch($profile)->onQueue('inbox');
 
                     return;
