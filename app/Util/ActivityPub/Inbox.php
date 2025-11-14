@@ -775,6 +775,13 @@ class Inbox
                     if (! $profile || $profile->private_key != null) {
                         return;
                     }
+
+                    Notification::whereActorId($profile->id)
+                        ->chunkById(100, function ($notifications) {
+                            foreach ($notifications as $notification) {
+                                $notification->forceDelete();
+                            }
+                        });
                     DeleteRemoteProfilePipeline::dispatch($profile)->onQueue('inbox');
 
                     return;
@@ -795,6 +802,14 @@ class Inbox
                     if ($status->profile_id != $profile->id) {
                         return;
                     }
+                    $notifications = Notification::whereActorId($status->profile_id)
+                        ->whereItemId($status->id)
+                        ->whereItemType('App\Status')
+                        ->get();
+                    foreach ($notifications as $notification) {
+                        $notification->forceDelete();
+                    }
+
                     if ($status->scope && in_array($status->scope, ['public', 'unlisted', 'private'])) {
                         if ($status->type && ! in_array($status->type, ['story:reaction', 'story:reply', 'reply'])) {
                             FeedRemoveRemotePipeline::dispatch($status->id, $status->profile_id)->onQueue('feed');
@@ -916,12 +931,17 @@ class Inbox
                 FeedRemoveRemotePipeline::dispatch($status->id, $status->profile_id)->onQueue('feed');
                 Status::whereProfileId($profile->id)
                     ->whereReblogOfId($status->id)
-                    ->delete();
+                    ->forceDelete();
+
+                if ($status->reblogs_count) {
+                    $status->reblogs_count = $status->reblogs_count - 1;
+                    $status->saveQuietly();
+                }
                 ReblogService::removePostReblog($profile->id, $status->id);
                 $notifications = Notification::whereProfileId($status->profile_id)
                     ->whereActorId($profile->id)
                     ->whereAction('share')
-                    ->whereItemId($status->reblog_of_id)
+                    ->whereItemId($status->id)
                     ->whereItemType('App\Status')
                     ->get();
                 foreach ($notifications as $notification) {
