@@ -4,6 +4,8 @@
 ## local storage of media excluided from image
 !storage/app/public/m/
 storage/app/public/m/*
+!bootstrap/cache/
+bootstrap/cache/*
 tests/
 # Docker
 mariadb-11-data/
