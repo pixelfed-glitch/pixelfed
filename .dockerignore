@@ -1,6 +1,7 @@
 # Folders
 .git/
 storage/app/public/
+mysql-9-data/
 mariadb-11-data/
 redis-data/
 tests/
