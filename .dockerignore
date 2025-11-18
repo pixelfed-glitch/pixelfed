@@ -2,9 +2,17 @@
 .git/
 storage/app/public/
 mysql-9-data/
+# Laravel
+## local storage of media excluided from image
+!storage/app/public/m/
+storage/app/public/m/*
+!bootstrap/cache/
+bootstrap/cache/*
+tests/
+# Docker
 mariadb-11-data/
 redis-data/
-tests/
+# Packages
 node_modules/
 vendor/
 .ddev/
