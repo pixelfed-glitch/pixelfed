@@ -25,6 +25,7 @@ RUN install-php-extensions \
     bcmath \
     curl \
     gd \
+    imagick \
     intl \
     mbstring \
     xml \
