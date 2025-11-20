@@ -1,18 +1,18 @@
 services:
 ## MariaDB and Redis (optional)
   db:
-    image: mariadb:11
+    image: mysql:9
     container_name: pixelfed-db
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      MARIADB_DATABASE: ${DB_DATABASE}
-      MARIADB_USER: ${DB_USERNAME}
-      MARIADB_PASSWORD: ${DB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
-      - ./mariadb-11-data:/var/lib/mysql
+      - ./mysql-9-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -88,10 +88,13 @@ services:
       - .env
     environment:
       # Laravel Auto-run Configuration
+      AUTORUN_ENABLED: "false"
+      AUTORUN_LARAVEL_MIGRATION: "false"
+      AUTORUN_LARAVEL_MIGRATION_ISOLATION: "false"
       AUTORUN_LARAVEL_STORAGE_LINK: "true"
-      AUTORUN_LARAVEL_EVENT_CACHE: "true"
-      AUTORUN_LARAVEL_ROUTE_CACHE: "true"
-      AUTORUN_LARAVEL_VIEW_CACHE: "true"
+      AUTORUN_LARAVEL_EVENT_CACHE: "false"
+      AUTORUN_LARAVEL_ROUTE_CACHE: "false"
+      AUTORUN_LARAVEL_VIEW_CACHE: "false"
       AUTORUN_LARAVEL_CONFIG_CACHE: "true"
       PHP_POST_MAX_SIZE: "500M"
       PHP_UPLOAD_MAX_FILE_SIZE: "500M"
@@ -122,10 +125,13 @@ services:
       - .env
     environment:
       # Laravel Auto-run Configuration
+      AUTORUN_ENABLED: "false"
+      AUTORUN_LARAVEL_MIGRATION: "false"
+      AUTORUN_LARAVEL_MIGRATION_ISOLATION: "false"
       AUTORUN_LARAVEL_STORAGE_LINK: "true"
-      AUTORUN_LARAVEL_EVENT_CACHE: "true"
-      AUTORUN_LARAVEL_ROUTE_CACHE: "true"
-      AUTORUN_LARAVEL_VIEW_CACHE: "true"
+      AUTORUN_LARAVEL_EVENT_CACHE: "false"
+      AUTORUN_LARAVEL_ROUTE_CACHE: "false"
+      AUTORUN_LARAVEL_VIEW_CACHE: "false"
       AUTORUN_LARAVEL_CONFIG_CACHE: "true"
       PHP_POST_MAX_SIZE: "500M"
       PHP_UPLOAD_MAX_FILE_SIZE: "500M"
