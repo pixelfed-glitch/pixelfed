@@ -38,7 +38,7 @@
                                 class="form-control form-control-lg"
                                 placeholder="What should everyone call you?"
                                 minlength="2"
-                                maxlength="15"
+u                                maxlength="30"
                                 v-model="form.username" />
 
                             <p v-if="errors.username" class="form-text text-danger">

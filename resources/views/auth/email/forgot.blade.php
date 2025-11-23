@@ -55,7 +55,7 @@
                                         type="text"
                                         class="form-control form-control-lg bg-glass text-white"
                                         name="username"
-                                        maxlength="15"
+                                        maxlength="30"
                                         placeholder="{{ __('Your username') }}" required>
                                      @if ($errors->has('username') )
                                         <span class="text-danger small mb-3">
