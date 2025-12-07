@@ -6,7 +6,7 @@ use App\User;
 
 class PushNotificationService {
 
-    public const NOTIFY_TYPES = ['follow', 'like', 'mention', 'comment'];
+    public const NOTIFY_TYPES = ['follow', 'like', 'mention', 'comment', 'reblog'];
 
     public const PUSH_GATEWAY_VERSION = '1.0';
 
