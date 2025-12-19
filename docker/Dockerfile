@@ -380,11 +380,12 @@ ENV PHP_VERSION=${PHP_VERSION}
 RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/lib/apt \
     --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/cache/apt \
     set -ex \
-    && gpg1 --keyserver "hkp://keyserver.ubuntu.com:80" --keyserver-options timeout=10 --recv-keys "${NGINX_GPGKEY}" \
-    && gpg1 --export "$NGINX_GPGKEY" > "$NGINX_GPGKEY_PATH" \
-    && echo "deb [signed-by=${NGINX_GPGKEY_PATH}] https://nginx.org/packages/mainline/debian/ ${PHP_DEBIAN_RELEASE} nginx" >> /etc/apt/sources.list.d/nginx.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends nginx=${NGINX_VERSION}*
+    && apt-get install -y --no-install-recommends wget gnupg ca-certificates \
+    && wget -qO- https://nginx.org/keys/nginx_signing.key | gpg --dearmor > "${NGINX_GPGKEY_PATH}" \
+    && echo "deb [signed-by=${NGINX_GPGKEY_PATH}] https://nginx.org/packages/mainline/debian/ ${PHP_DEBIAN_RELEASE} nginx" > /etc/apt/sources.list.d/nginx.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends nginx=${NGINX_VERSION}* 
 
 # copy docker entrypoints from the *real* nginx image directly
 COPY --link --from=nginx-image /docker-entrypoint.d /docker/entrypoint.d/
