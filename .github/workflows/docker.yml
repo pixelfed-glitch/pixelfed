@@ -211,7 +211,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           tags: ${{ steps.meta.outputs.tags != '' && steps.meta.outputs.tags || format('manual-{0}', github.run_number) }}
           annotations: ${{ steps.meta.outputs.annotations }}
-          push: true
+          push: ${{ steps.meta.outputs.tags != '' && true || false }}
           sbom: true
           provenance: true
           build-args: |
