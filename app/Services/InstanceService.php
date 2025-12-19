@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Instance;
 use App\Util\Blurhash\Blurhash;
-use Cache;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class InstanceService
 {
@@ -100,7 +102,17 @@ class InstanceService
 
     public static function totalLocalStatuses()
     {
-        return config_cache('instance.stats.total_local_posts');
+	if (config('instance.enable_cc')) {
+        	return config_cache('instance.stats.total_local_posts');
+	}
+	
+	return Cache::remember(self::CACHE_KEY_TOTAL_POSTS, now()->addHour(), function () {
+            return DB::table('statuses')
+                ->whereNull('deleted_at')
+                ->where('local', true)
+                ->whereNot('type', 'share')
+                ->count();
+        });
     }
 
     public static function totalRealLocalStatuses()

@@ -336,7 +336,7 @@
             </div>
 
             <div class="d-none d-md-block sidebar-attribution">
-                <a href="https://pixelfed-glitch.github.io/docs/" class="font-weight-bold">Powered by Pixelfed Glitch</a>
+                <a href="https://pixelfed.org" class="font-weight-bold">Powered by Pixelfed</a>
             </div>
         </div>
 

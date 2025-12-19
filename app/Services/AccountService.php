@@ -228,7 +228,6 @@ class AccountService
                 # Normalize this username to just user
                 $username = $matches[1];
             }
-
             $profile = DB::table('profiles')
                 ->whereUsername($username)
                 ->first();

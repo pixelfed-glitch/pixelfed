@@ -102,7 +102,7 @@ class AppRegisterController extends Controller
         }
 
         $this->validate($request, [
-            'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email',
+            'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email|exists:app_registers,email',
             'verify_code' => ['required', 'digits:6', 'numeric'],
         ]);
 
@@ -204,7 +204,7 @@ class AppRegisterController extends Controller
         }
 
         $this->validate($request, [
-            'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email',
+            'email' => 'required|email:rfc,dns,spoof,strict|unique:users,email|exists:app_registers,email',
             'verify_code' => ['required', 'digits:6', 'numeric'],
             'username' => $this->validateUsernameRule(),
             'name' => 'nullable|string|max:'.config('pixelfed.max_name_length'),

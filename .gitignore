@@ -3,7 +3,6 @@
 /.bash_profile
 /.bashrc
 /.composer
-/.direnv
 /.env
 /.env.dottie-backup
 #/.git
@@ -14,7 +13,6 @@
 /.phpunit.cache
 /.phpunit.result.cache
 /.vagrant
-/.vscode
 /bootstrap/cache
 /docker-compose-state/
 /Homestead.json
@@ -31,7 +29,5 @@
 /public/build
 
 # Exceptions - these *MUST* be last
-!/.vscode/settings.json
-!/.vscode/extensions.json
 !/bootstrap/cache/.gitignore
 !/public/vendor/horizon/.gitignore

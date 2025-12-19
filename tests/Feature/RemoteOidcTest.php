@@ -12,13 +12,11 @@ use League\OAuth2\Client\Token\AccessToken;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
 class RemoteOidcTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    #[Test]
     public function view_oidc_start()
     {
         config([
@@ -37,7 +35,6 @@ class RemoteOidcTest extends TestCase
         $response->assertRedirect("http://fakeserver.oidc/authorizeURL?scope=openid%20profile%20email&state={$state}&response_type=code&approval_prompt=auto&redirect_uri={$callbackUrl}&client_id=fake");
     }
 
-    //#[Test]
     public function view_oidc_callback_new_user()
     {
         $originalUserCount = User::count();
@@ -73,7 +70,6 @@ class RemoteOidcTest extends TestCase
         $this->assertDatabaseCount('users', $originalUserCount+1);
     }
 
-    //#[Test]
     public function view_oidc_callback_existing_user()
     {
         $user = User::create([

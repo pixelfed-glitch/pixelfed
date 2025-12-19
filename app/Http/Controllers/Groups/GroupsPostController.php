@@ -26,6 +26,10 @@ use App\Models\GroupMedia;
 use App\Jobs\GroupsPipeline\ImageResizePipeline;
 use App\Jobs\GroupsPipeline\ImageS3UploadPipeline;
 use App\Jobs\GroupsPipeline\NewPostPipeline;
+use App\Jobs\VideoPipeline\VideoThumbnail;
+use App\Jobs\StatusPipeline\StatusDelete;
+use App\Media;
+use App\Services\PollService;
 
 class GroupsPostController extends Controller
 {

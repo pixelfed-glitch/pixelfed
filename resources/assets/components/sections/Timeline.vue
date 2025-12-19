@@ -325,24 +325,29 @@
 
                 this.isFetchingMore = true;
 
-                let url = this.baseApi + this.getScope();
-                let params = {
-                    max_id: this.max_id,
-                    limit: 6,
-                    '_pe': 1,
-                };
+                let url, params;
+                if(this.getScope() === 'home' && this.settings && this.settings.hasOwnProperty('enable_reblogs') && this.settings.enable_reblogs) {
+                    url = this.baseApi + `home`;
 
-                switch(this.getScope()) {
-                    case 'home':
-                        params.include_reblogs = this?.settings?.enable_reblogs ?? false;
-                        params.photos_reblogs_only = this?.settings?.photo_reblogs_only ?? true;
-                        break;
-                    case 'network':
-                        params.remote = true;
-                        url = this.baseApi + `public`;
-                        break;
+                    params = {
+                        '_pe': 1,
+                        max_id: this.max_id,
+                        limit: 6,
+                        include_reblogs: true,
+                    }
+                } else {
+                    url = this.baseApi + this.getScope();
+                    params = {
+                        max_id: this.max_id,
+                        limit: 6,
+                        '_pe': 1,
+                    }
                 }
+                if(this.getScope() === 'network') {
+                    params.remote = true;
+                    url = this.baseApi + `public`;
 
+                }
                 axios.get(url, {
                     params: params
                 }).then(res => {

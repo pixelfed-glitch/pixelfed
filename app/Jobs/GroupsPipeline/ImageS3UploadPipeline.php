@@ -16,6 +16,7 @@ use GuzzleHttp\Exception\ClientException;
 use Aws\S3\Exception\S3Exception;
 use GuzzleHttp\Exception\ConnectException;
 use League\Flysystem\UnableToWriteFile;
+use Illuminate\Support\Facades\Log;
 
 class ImageS3UploadPipeline implements ShouldQueue
 {
@@ -86,15 +87,18 @@ class ImageS3UploadPipeline implements ShouldQueue
     protected function handleResilientStore($storagePath, $path, $name)
     {
         $attempts = 0;
-        return retry(4, function() use($storagePath, $path, $name, $attempts) {
+        return retry(4, function() use($storagePath, $path, $name) {
             self::$attempts++;
             usleep(100000);
             $baseDisk = self::$attempts > 1 ? $this->getAltDriver() : config('filesystems.cloud');
             try {
                 $disk = Storage::disk($baseDisk);
                 $file = $disk->putFileAs($storagePath, new File($path), $name, 'public');
-            } catch (S3Exception | ClientException | ConnectException | UnableToWriteFile | Exception $e) {}
-            return $disk->url($file);
+                return $disk->url($file);
+            } catch (S3Exception | ClientException | ConnectException | UnableToWriteFile | Exception $e) {
+                Log::warning("Groups ImageS3UploadPipeline: Failed to handle Resilient Store {$file} : " . $e->getMessage());
+                throw $e;
+            }
         }, function (int $attempt, Exception $exception) {
             return $attempt * 200;
         });

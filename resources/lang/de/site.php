@@ -16,7 +16,7 @@ return [
 	'contact-us'	=> 'Kontaktiere uns',
 	'places'		=> 'Orte',
 	'profiles'		=> 'Profile',
-
+	
 	// site/contact
 	'you_can_contact_the_admins'                            => 'Du kannst die Administration kontaktieren, indem du',
     'by_using_the_form_below'                               => 'das folgende Formular verwendest',
@@ -28,7 +28,7 @@ return [
     'Submit'                                                => 'Absenden',
     'log_in_to_send_a_message'                              => 'melde dich an, um eine Nachricht zu senden',
     'Please'                                                => 'Bitte',
-
+    
     // site/about
     'photo_sharing_for_everyone'                            => 'Fotos teilen. Für Alle',
     'pixelfed_is_an_image_sharing_platform_etc'             => 'Pixelfed ist eine Plattform zum Teilen von Bildern. Eine ethische Alternative zu zentralisierten Plattformen', // this is actually never used because it's a fallback for config_cache('app.description') and config_cache('app.short_description') which seem to be impossible to set to empty when saved via /admin/settings?t=branding
@@ -65,5 +65,5 @@ return [
     'opensource.or'                                         => 'oder ihren Quellcode',
     'view'                                                  => 'ansehen',
     'the_source_code_and_run_their_own_instance'            => 'und eine eigene Instanz betreiben!',
-    'open_source_in_pixelfed_glitch'                        => 'Open source in Pixelfed Glitch',
+    'open_source_in_pixelfed'                               => 'Open Source in Pixelfed',
 ];

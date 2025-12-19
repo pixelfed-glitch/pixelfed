@@ -20,10 +20,9 @@ class MediaStorageService
 {
     public static function store(Media $media)
     {
-        if ((bool) config_cache('pixelfed.cloud_storage') == true) {
+        if ((bool) config_cache('pixelfed.cloud_storage') == true && config('filesystems.default') === 'local') {
             (new self)->cloudStore($media);
         }
-
     }
 
     public static function move(Media $media)
@@ -32,7 +31,7 @@ class MediaStorageService
             return;
         }
 
-        if ((bool) config_cache('pixelfed.cloud_storage') == true) {
+        if ((bool) config_cache('pixelfed.cloud_storage') == true && config('filesystems.default') === 'local') {
             return (new self)->cloudMove($media);
         }
 
@@ -103,6 +102,9 @@ class MediaStorageService
     protected function localToCloud($media)
     {
         $path = storage_path('app/'.$media->media_path);
+        $thumb = null;
+        $thumbname = null;
+
         if ($media->thumbnail_path) {
             $thumb = storage_path('app/'.$media->thumbnail_path);
         }
@@ -326,7 +328,9 @@ class MediaStorageService
         }
 
         $path = storage_path('app/'.$media->media_path);
-        $thumb = false;
+        $thumb = null;
+        $thumbname = null;
+
         if ($media->thumbnail_path) {
             $thumb = storage_path('app/'.$media->thumbnail_path);
             $pt = explode('/', $media->thumbnail_path);

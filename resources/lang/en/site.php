@@ -65,5 +65,5 @@ return [
     'opensource.or'                                         => 'or',
     'view'                                                  => 'view',
     'the_source_code_and_run_their_own_instance'            => 'the source code and run their own instance!',
-    'open_source_in_pixelfed_glitch'                        => 'Open source in Pixelfed Glitch',
+    'open_source_in_pixelfed'                               => 'Open source in Pixelfed',
 ];

@@ -34,7 +34,7 @@ class CommentPipeline implements ShouldQueue
 
     public $timeout = 5;
     public $tries = 1;
-
+    
     /**
      * Create a new job instance.
      *
@@ -56,9 +56,28 @@ class CommentPipeline implements ShouldQueue
         $status = $this->status;
         $comment = $this->comment;
 
+        // Verify status and comment exists
+        if (!$status) {
+            Log::info("CommentPipeline: Status no longer exists, skipping job");
+            return;
+        }
+        if (!$comment) {
+            Log::info("CommentPipeline: Comment no longer exists, skipping job");
+            return;
+        }
+
         $target = $status->profile;
         $actor = $comment->profile;
 
+        // Verify target and actor profiles exist
+        if (!$target) {
+            Log::info("CommentPipeline: Target profile no longer exists for status {$status->id}, skipping job");
+            return;
+        }
+        if (!$actor) {
+            Log::info("CommentPipeline: Actor profile no longer exists for comment {$comment->id}, skipping job");
+            return;
+        }
         if(config('database.default') == 'mysql' || config('database.default') == 'mariadb') {
         	// todo: refactor
             // $exp = DB::raw("select id, in_reply_to_id from statuses, (select @pv := :kid) initialisation where id > @pv and find_in_set(in_reply_to_id, @pv) > 0 and @pv := concat(@pv, ',', id)");
@@ -80,7 +99,7 @@ class CommentPipeline implements ShouldQueue
         if ($actor->id === $target->id || $status->comments_disabled == true) {
             return true;
         }
-
+        
         $filtered = UserFilter::whereUserId($target->id)
             ->whereFilterableType('App\Profile')
             ->whereIn('filter_type', ['mute', 'block'])

@@ -3,8 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\{Status, StatusHashtag};
+use App\{Status, StatusHashtag, Media};
 
+/**
+ * @property int $id
+ * @property string $slug
+ * @property int|null $media_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Media|null $media
+ */
 class DiscoverCategory extends Model
 {
     protected $fillable = ['slug'];

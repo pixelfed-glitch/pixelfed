@@ -4,6 +4,7 @@ namespace App\Jobs\AvatarPipeline;
 
 use App\Avatar;
 use App\Profile;
+use App\Util\Media\ImageDriverManager;
 use Cache;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -57,19 +58,7 @@ class AvatarOptimize implements ShouldQueue
         $fileInfo = pathinfo($file);
         $extension = strtolower($fileInfo['extension'] ?? 'jpg');
 
-        $driver = match(config('image.driver')) {
-            'imagick' => \Intervention\Image\Drivers\Imagick\Driver::class,
-            'vips' => \Intervention\Image\Drivers\Vips\Driver::class,
-            default => \Intervention\Image\Drivers\Gd\Driver::class
-        };
-
-        $imageManager = new ImageManager(
-            $driver,
-            autoOrientation: true,
-            decodeAnimation: true,
-            blendingColor: 'ffffff',
-            strip: true
-        );
+        $imageManager = ImageDriverManager::createImageManager();
 
         $quality = config_cache('pixelfed.image_quality');
 
@@ -116,7 +105,7 @@ class AvatarOptimize implements ShouldQueue
                 $avatar->cdn_url = null;
                 $avatar->save();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
         }
     }
 

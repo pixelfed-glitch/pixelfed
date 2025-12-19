@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\AccountLog;
 use App\EmailVerification;
+use App\Follower;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\StatusController;
 use App\Http\Resources\StatusStateless;
@@ -31,10 +32,13 @@ use App\Services\NotificationAppGatewayService;
 use App\Services\ProfileStatusService;
 use App\Services\PublicTimelineService;
 use App\Services\PushNotificationService;
+use App\Services\SanitizeService;
 use App\Services\StatusService;
+use App\Services\UserRoleService;
 use App\Services\UserStorageService;
 use App\Status;
 use App\StatusArchived;
+use App\Story;
 use App\User;
 use App\UserSetting;
 use App\Util\Lexer\RestrictedNames;
@@ -145,9 +149,28 @@ class ApiV1Dot1Controller extends Controller
                 $rpid = $object->id;
                 break;
 
+            case 'story':
+                $object = Story::whereActive(true)->find($object_id);
+                if (! $object) {
+                    return $this->error('Invalid object id', 400, ['error_code' => 'ERROR_INVALID_OBJECT_ID']);
+                }
+                if ($object->profile_id == $user->profile_id) {
+                    return $this->error('Cannot self report', 400, ['error_code' => 'ERROR_NO_SELF_REPORTS']);
+                }
+                if (! Follower::whereProfileId($user->profile_id)->whereFollowingId($object->profile_id)->exists()) {
+                    return $this->error('Invalid object id', 400, ['error_code' => 'ERROR_INVALID_OBJECT_ID']);
+                }
+                $object_type = 'App\Story';
+                $exists = Report::whereUserId($user->id)
+                    ->whereObjectId($object->id)
+                    ->whereObjectType('App\Story')
+                    ->count();
+
+                $rpid = $object->profile_id;
+                break;
+
             default:
                 return $this->error('Invalid report type', 400, ['error_code' => 'ERROR_REPORT_OBJECT_TYPE_INVALID']);
-                break;
         }
 
         if ($exists !== 0) {
@@ -1272,7 +1295,8 @@ class ApiV1Dot1Controller extends Controller
             return [];
         }
         $defaultCaption = '';
-        $content = $request->filled('status') ? strip_tags(Purify::clean($request->input('status'))) : $defaultCaption;
+        $cleanedStatus = app(SanitizeService::class)->html($request->input('status', ''));
+        $content = $request->filled('status') ? strip_tags($cleanedStatus) : $defaultCaption;
         $cw = $user->profile->cw == true ? true : $request->boolean('sensitive', false);
         $spoilerText = $cw && $request->filled('spoiler_text') ? $request->input('spoiler_text') : null;
 
