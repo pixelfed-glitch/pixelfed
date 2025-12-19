@@ -209,7 +209,7 @@ jobs:
           target: ${{ matrix.target_runtime }}-runtime
           platforms: linux/amd64,linux/arm64
           builder: ${{ steps.buildx.outputs.name }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags != '' && steps.meta.outputs.tags || format('manual-{0}', github.run_number) }}
           annotations: ${{ steps.meta.outputs.annotations }}
           push: true
           sbom: true
