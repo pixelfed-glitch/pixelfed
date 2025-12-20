@@ -101,24 +101,6 @@ class LoginController extends Controller
             return;
         }
 
-        if ($user->email_verified_at == null) {
-            $request->session()->invalidate();
-            $request->session()->regenerate();
-            $request->session()->put('login_session_id', $user->id);
-            $request->session()->put('login_error', 'email_not_verified');
-
-            return redirect('/login')->withErrors('Unverified email, please verify your email before proceeding.');
-        }
-
-        if ($user->{'2fa_enabled'}) {
-            $request->session()->invalidate();
-            $request->session()->regenerate();
-            $request->session()->put('login_session_id', $user->id);
-            $request->session()->put('login_2fa', now());
-
-            return view('auth.two-factor');
-        }
-
         $log = new AccountLog;
         $log->user_id = $user->id;
         $log->item_id = $user->id;
