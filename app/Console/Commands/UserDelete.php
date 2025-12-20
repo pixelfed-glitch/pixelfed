@@ -2,11 +2,18 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\User;
 use App\Jobs\DeletePipeline\DeleteAccountPipeline;
+use App\Profile;
+use App\Services\AccountService;
+use App\User;
+use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\PromptsForMissingInput;
 
-class UserDelete extends Command
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\table;
+use function Laravel\Prompts\text;
+
+class UserDelete extends Command implements PromptsForMissingInput
 {
     /**
      * The name and signature of the console command.
@@ -33,6 +40,18 @@ class UserDelete extends Command
     }
 
     /**
+     * Prompt for missing input arguments using the returned questions.
+     *
+     * @return array
+     */
+    protected function promptForMissingArgumentsUsing()
+    {
+        return [
+            'id' => 'Which user ID or username should be deleted?',
+        ];
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -42,39 +61,82 @@ class UserDelete extends Command
         $id = $this->argument('id');
         $force = $this->option('force');
 
-        if(ctype_digit($id) == true) {
+        $user = Profile::where('username', 'like', '%'.$id.'%')->orWhere('user_id', $id)->orWhere('id', $id)->orderByDesc('followers_count')->get();
+        if (! $user || ! $user->count()) {
+            $this->error('Invalid user id or username');
+
+            return;
+        }
+        $user = select(
+            'Select the account',
+            $user->map(function ($u) {
+                return $u->username;
+            })
+        );
+        $user = Profile::whereUsername($user)->first();
+
+        if (! $user) {
+            $this->error('Invalid id or username');
+
+            return;
+        }
+
+        $this->info($user->username);
+
+        return;
+
+        if (ctype_digit($id) == true) {
             $user = User::find($id);
         } else {
             $user = User::whereUsername($id)->first();
         }
 
-        if(!$user) {
+        if (! $user) {
             $this->error('Could not find any user with that username or id.');
             exit;
         }
 
-        if($user->status == 'deleted' && $force == false) {
+        if ($user->status == 'deleted' && $force == false) {
             $this->error('Account has already been deleted.');
+
             return;
         }
 
-        if($user->is_admin == true) {
+        if ($user->is_admin == true) {
             $this->error('Cannot delete an admin account from CLI.');
             exit;
         }
 
-        if(!$this->confirm('Are you sure you want to delete this account?')) {
+        $account = AccountService::get($user->profile_id);
+
+        $data = [
+            'Username' => $account['username'],
+            'Statuses' => $account['statuses_count'],
+            'Followers' => $account['followers_count'],
+            'Following' => $account['following_count'],
+            'Joined' => now()->parse($account['created_at'])->format('M Y'),
+        ];
+
+        table(
+            ['Username', 'Statuses', 'Followers', 'Following', 'Joined'],
+            [
+                $data,
+            ]
+        );
+
+        if (! $this->confirm('Are you sure you want to delete this account?')) {
             exit;
         }
 
-        $confirmation = $this->ask('Enter the username to confirm deletion');
+        $confirmation = text('Enter the username to confirm deletion');
 
-        if($confirmation !== $user->username) {
+        if ($confirmation != $user->username) {
             $this->error('Username does not match, exiting...');
             exit;
         }
 
-        if($user->status !== 'deleted') {
+        return;
+        if ($user->status !== 'deleted') {
             $profile = $user->profile;
             $profile->status = $user->status = 'deleted';
             $profile->save();

@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
-use \PDO;
+use PDO;
 
 class Installer extends Command
 {
@@ -68,7 +68,7 @@ class Installer extends Command
         $this->info('    Welcome to the Pixelfed Installer!');
         $this->info(' ');
         $this->info(' ');
-        $this->info('Pixelfed version: ' . config('pixelfed.version'));
+        $this->info('Pixelfed version: '.config('pixelfed.version'));
         $this->line(' ');
         $this->installerSteps();
     }
@@ -99,7 +99,7 @@ class Installer extends Command
     {
         if (file_exists(base_path('.env')) &&
             filesize(base_path('.env')) !== 0 &&
-            !$this->option('dangerously-overwrite-env')
+            ! $this->option('dangerously-overwrite-env')
         ) {
             $this->line('');
             $this->error('Existing .env File Found - Installation Aborted');
@@ -113,7 +113,7 @@ class Installer extends Command
     {
         $this->line('');
         $this->info('Creating .env if required');
-        if (!file_exists(app()->environmentFilePath())) {
+        if (! file_exists(app()->environmentFilePath())) {
             copy(base_path('.env.example'), app()->environmentFilePath());
         }
     }
@@ -148,10 +148,11 @@ class Installer extends Command
             }
         }
 
-        if (!empty($missing)) {
+        if (! empty($missing)) {
             $continue = $this->choice('Some extensions are missing. Do you wish to continue?', ['yes', 'no'], 1);
             if ($continue === 'no') {
                 $this->info('Exiting Installer.');
+
                 return 1;
             }
         }
@@ -170,6 +171,7 @@ class Installer extends Command
             $continue = $this->choice('Do you want to continue without FFmpeg?', ['yes', 'no'], 1);
             if ($continue === 'no') {
                 $this->info('Exiting Installer. Please install FFmpeg and try again.');
+
                 return 1;
             }
         } else {
@@ -212,8 +214,8 @@ class Installer extends Command
 
         foreach ($paths as $path) {
             if (is_writable($path) == false) {
-                $this->error("- Invalid permission found! Aborting installation.");
-                $this->error("  Please make the following path writeable by the web server:");
+                $this->error('- Invalid permission found! Aborting installation.');
+                $this->error('  Please make the following path writeable by the web server:');
                 $this->error("  $path");
                 exit;
             } else {
@@ -236,7 +238,7 @@ class Installer extends Command
     {
         $this->line('');
         $this->info('Database Settings:');
-        
+
         $database = $this->choice('Select database driver', ['mysql', 'pgsql'], $this->option('db-driver') ?: 0);
         $database_host = $this->ask('Select database host', $this->option('db-host') ?: '127.0.0.1');
         $database_port_default = $database === 'mysql' ? 3306 : 5432;
@@ -260,7 +262,7 @@ class Installer extends Command
             $dbh = null; // Close connection
         } catch (\PDOException $e) {
             $this->error('Cannot connect to database, check your details and try again');
-            $this->error('Error: ' . $e->getMessage());
+            $this->error('Error: '.$e->getMessage());
             exit;
         }
         $this->info('- Connected to DB Successfully');
@@ -293,7 +295,7 @@ class Installer extends Command
             }
         } catch (\Exception $e) {
             $this->error('Cannot connect to Redis, check your details and try again');
-            $this->error('Error: ' . $e->getMessage());
+            $this->error('Error: '.$e->getMessage());
             exit;
         }
     }
@@ -308,28 +310,31 @@ class Installer extends Command
         while (empty($domain)) {
             $domain = $this->ask('Site Domain [ex: pixelfed.com]', $this->option('domain') ?: null);
             $domain = strtolower(trim($domain));
-            
+
             if (empty($domain)) {
                 $this->error('You must set the site domain');
+
                 continue;
             }
-            
+
             if (str_starts_with($domain, 'http://') || str_starts_with($domain, 'https://')) {
                 $this->error('The site domain cannot start with http:// or https://, you must use the FQDN (eg: example.org)');
                 $domain = '';
+
                 continue;
             }
-            
+
             // Better domain validation
-            if (!preg_match('/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i', $domain)) {
+            if (! preg_match('/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i', $domain)) {
                 $this->error('Invalid domain format. Please enter a valid domain (eg: example.org)');
                 $domain = '';
+
                 continue;
             }
         }
 
         $this->updateEnvFile('APP_NAME', $name);
-        $this->updateEnvFile('APP_URL', 'https://' . $domain);
+        $this->updateEnvFile('APP_URL', 'https://'.$domain);
         $this->updateEnvFile('APP_DOMAIN', $domain);
         $this->updateEnvFile('ADMIN_DOMAIN', $domain);
         $this->updateEnvFile('SESSION_DOMAIN', $domain);
@@ -352,11 +357,11 @@ class Installer extends Command
     {
         $this->line('');
         $this->info('Laravel Settings (Defaults are recommended):');
-        $session = $this->choice('Select session driver', ["database", "file", "cookie", "redis", "memcached", "array"], 0);
-        $cache = $this->choice('Select cache driver', ["redis", "apc", "array", "database", "file", "memcached"], 0);
-        $queue = $this->choice('Select queue driver', ["redis", "database", "sync", "beanstalkd", "sqs", "null"], 0);
-        $broadcast = $this->choice('Select broadcast driver', ["log", "redis", "pusher", "null"], 0);
-        $log = $this->choice('Select Log Channel', ["stack", "single", "daily", "stderr", "syslog", "null"], 0);
+        $session = $this->choice('Select session driver', ['database', 'file', 'cookie', 'redis', 'memcached', 'array'], 0);
+        $cache = $this->choice('Select cache driver', ['redis', 'apc', 'array', 'database', 'file', 'memcached'], 0);
+        $queue = $this->choice('Select queue driver', ['redis', 'database', 'sync', 'beanstalkd', 'sqs', 'null'], 0);
+        $broadcast = $this->choice('Select broadcast driver', ['log', 'redis', 'pusher', 'null'], 0);
+        $log = $this->choice('Select Log Channel', ['stack', 'single', 'daily', 'stderr', 'syslog', 'null'], 0);
         $horizon = $this->ask('Set Horizon Prefix [ex: horizon-]', 'horizon-');
 
         $this->updateEnvFile('SESSION_DRIVER', $session);
@@ -371,15 +376,15 @@ class Installer extends Command
     {
         $this->line('');
         $this->info('Instance Settings:');
-        
+
         $max_registration = '';
-        while (!is_numeric($max_registration) || $max_registration < 1) {
+        while (! is_numeric($max_registration) || $max_registration < 1) {
             $max_registration = $this->ask('Set Maximum users on this instance', '1000');
-            if (!is_numeric($max_registration) || $max_registration < 1) {
+            if (! is_numeric($max_registration) || $max_registration < 1) {
                 $this->error('Please enter a valid number greater than 0');
             }
         }
-        
+
         $open_registration = $this->choice('Allow new registrations?', ['false', 'true'], 0);
         $enforce_email_verification = $this->choice('Enforce email verification?', ['false', 'true'], 0);
         $enable_mobile_apis = $this->choice('Enable mobile app/apis support?', ['false', 'true'], 1);
@@ -396,36 +401,36 @@ class Installer extends Command
         $this->line('');
         $this->info('Media Settings:');
         $optimize_media = $this->choice('Optimize media uploads? Requires jpegoptim and other dependencies!', ['false', 'true'], 1);
-        
+
         $image_quality = '';
-        while (!is_numeric($image_quality) || $image_quality < 1 || $image_quality > 100) {
+        while (! is_numeric($image_quality) || $image_quality < 1 || $image_quality > 100) {
             $image_quality = $this->ask('Set image optimization quality between 1-100 (default: 80)', '80');
-            if (!is_numeric($image_quality) || $image_quality < 1 || $image_quality > 100) {
+            if (! is_numeric($image_quality) || $image_quality < 1 || $image_quality > 100) {
                 $this->error('Please enter a number between 1 and 100');
             }
         }
-        
+
         $this->info('Note: Max photo size cannot exceed `post_max_size` in php.ini.');
         $max_photo_size = '';
-        while (!is_numeric($max_photo_size) || $max_photo_size < 1) {
+        while (! is_numeric($max_photo_size) || $max_photo_size < 1) {
             $max_photo_size = $this->ask('Max photo upload size in kilobytes (default: 15000 = 15MB)', '15000');
-            if (!is_numeric($max_photo_size) || $max_photo_size < 1) {
+            if (! is_numeric($max_photo_size) || $max_photo_size < 1) {
                 $this->error('Please enter a valid number greater than 0');
             }
         }
 
         $max_caption_length = '';
-        while (!is_numeric($max_caption_length) || $max_caption_length < 1 || $max_caption_length > 5000) {
+        while (! is_numeric($max_caption_length) || $max_caption_length < 1 || $max_caption_length > 5000) {
             $max_caption_length = $this->ask('Max caption limit (1-5000, default: 500)', '500');
-            if (!is_numeric($max_caption_length) || $max_caption_length < 1 || $max_caption_length > 5000) {
+            if (! is_numeric($max_caption_length) || $max_caption_length < 1 || $max_caption_length > 5000) {
                 $this->error('Please enter a number between 1 and 5000');
             }
         }
 
         $max_album_length = '';
-        while (!is_numeric($max_album_length) || $max_album_length < 1 || $max_album_length > 10) {
+        while (! is_numeric($max_album_length) || $max_album_length < 1 || $max_album_length > 10) {
             $max_album_length = $this->ask('Max photos per album (1-10, default: 4)', '4');
-            if (!is_numeric($max_album_length) || $max_album_length < 1 || $max_album_length > 10) {
+            if (! is_numeric($max_album_length) || $max_album_length < 1 || $max_album_length > 10) {
                 $this->error('Please enter a number between 1 and 10');
             }
         }
@@ -445,24 +450,24 @@ class Installer extends Command
 
         if ($confirm === 'Yes') {
             sleep(3);
-            
+
             // Clear any cached config
             $this->call('config:clear');
-            
+
             // Force reload environment variables
             $app = app();
             $app->bootstrapWith([
                 \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
             ]);
-            
+
             // Purge database connections to force reconnect with new credentials
             $app->forgetInstance('db');
             $app->forgetInstance('db.connection');
             \Illuminate\Support\Facades\DB::purge();
-            
+
             // Rebuild config cache
             $this->call('config:cache');
-            
+
             $this->line('');
             $this->info('Migrating DB:');
             $this->call('migrate', ['--force' => true]);
@@ -472,12 +477,13 @@ class Installer extends Command
 
     protected function setupPrep()
     {
-        if (!$this->migrationsRan) {
+        if (! $this->migrationsRan) {
             $this->warn('Skipping setup tasks because migrations were not run.');
             $this->warn('You can run these commands manually later:');
             $this->warn('  php artisan import:cities');
             $this->warn('  php artisan instance:actor');
             $this->warn('  php artisan passport:keys');
+
             return;
         }
 
@@ -501,9 +507,9 @@ class Installer extends Command
 
     protected function validateEnv()
     {
-        $this->checkEnvKeys('APP_KEY', "key:generate failed?");
-        $this->checkEnvKeys('APP_ENV', "APP_ENV value should be production");
-        $this->checkEnvKeys('APP_DEBUG', "APP_DEBUG value should be false");
+        $this->checkEnvKeys('APP_KEY', 'key:generate failed?');
+        $this->checkEnvKeys('APP_ENV', 'APP_ENV value should be production');
+        $this->checkEnvKeys('APP_DEBUG', 'APP_DEBUG value should be false');
     }
 
     protected function resetArtisanCache()
@@ -515,9 +521,9 @@ class Installer extends Command
         $this->line('');
     }
 
-#####
-    # Installer Functions
-    #####
+    // ####
+    // Installer Functions
+    // ####
 
     protected function checkEnvKeys($key, $error)
     {
@@ -534,7 +540,7 @@ class Installer extends Command
     {
         $envPath = app()->environmentFilePath();
         $payload = file_get_contents($envPath);
-        
+
         // Escape special characters for .env format
         $value = str_replace(['\\', '"', "\n", "\r"], ['\\\\', '\\"', '\\n', '\\r'], $value);
 
@@ -542,7 +548,7 @@ class Installer extends Command
             $payload = str_replace("{$key}={$existing}", "{$key}=\"{$value}\"", $payload);
             $this->storeEnv($payload);
         } else {
-            $payload = $payload . "\n{$key}=\"{$value}\"\n";
+            $payload = $payload."\n{$key}=\"{$value}\"\n";
             $this->storeEnv($payload);
         }
     }
@@ -553,27 +559,28 @@ class Installer extends Command
         if ($matches && count($matches)) {
             return substr($matches[0], strlen($needle) + 1);
         }
+
         return false;
     }
 
     protected function storeEnv($payload)
     {
         $envPath = app()->environmentFilePath();
-        $tempPath = $envPath . '.tmp';
-        
+        $tempPath = $envPath.'.tmp';
+
         // Write to temp file first
         $file = fopen($tempPath, 'w');
         if ($file === false) {
             throw new \RuntimeException("Cannot write to {$tempPath}");
         }
-        
+
         fwrite($file, $payload);
         fclose($file);
-        
+
         // Atomic rename
-        if (!rename($tempPath, $envPath)) {
+        if (! rename($tempPath, $envPath)) {
             @unlink($tempPath);
-            throw new \RuntimeException("Cannot update .env file");
+            throw new \RuntimeException('Cannot update .env file');
         }
     }
 }
