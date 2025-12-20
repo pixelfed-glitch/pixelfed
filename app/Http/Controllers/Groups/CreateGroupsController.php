@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Groups;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\GroupService;
 use App\Models\Group;
 use App\Models\GroupMember;
+use App\Services\GroupService;
+use Illuminate\Http\Request;
 
 class CreateGroupsController extends Controller
 {
@@ -17,10 +17,10 @@ class CreateGroupsController extends Controller
 
     public function checkCreatePermission(Request $request)
     {
-        abort_if(!$request->user(), 404);
+        abort_if(! $request->user(), 404);
         $pid = $request->user()->profile_id;
         $config = GroupService::config();
-        if($request->user()->is_admin) {
+        if ($request->user()->is_admin) {
             $allowed = true;
         } else {
             $max = $config['limits']['user']['create']['max'];
@@ -32,12 +32,14 @@ class CreateGroupsController extends Controller
 
     public function storeGroup(Request $request)
     {
-        abort_if(!$request->user(), 404);
+        abort_if(! $request->user(), 404);
 
         $this->validate($request, [
             'name' => 'required',
             'description' => 'nullable|max:500',
-            'membership' => 'required|in:public,private,local'
+            'membership' => 'required|in:public',
+            // limit membership to public groups until private groups are implemented
+            // 'membership' => 'required|in:public,private,local'
         ]);
 
         $pid = $request->user()->profile_id;
@@ -45,7 +47,7 @@ class CreateGroupsController extends Controller
         $config = GroupService::config();
         abort_if($config['limits']['user']['create']['new'] == false && $request->user()->is_admin == false, 422, 'Invalid operation');
         $max = $config['limits']['user']['create']['max'];
-        // abort_if(Group::whereProfileId($pid)->count() <= $max, 422, 'Group limit reached');
+        abort_if(Group::whereProfileId($pid)->count() < $max, 422, 'Group limit reached');
 
         $group = new Group;
         $group->profile_id = $pid;
@@ -77,7 +79,7 @@ class CreateGroupsController extends Controller
 
         return [
             'id' => $group->id,
-            'url' => $group->url()
+            'url' => $group->url(),
         ];
     }
 }

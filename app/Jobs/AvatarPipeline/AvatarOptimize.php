@@ -13,12 +13,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
-use Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Encoders\JpegEncoder;
-use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\Encoders\AvifEncoder;
+use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\Encoders\WebpEncoder;
+use Storage;
 
 class AvatarOptimize implements ShouldQueue
 {
@@ -69,7 +68,7 @@ class AvatarOptimize implements ShouldQueue
                 $encoder = new JpegEncoder($quality);
                 break;
             case 'png':
-                $encoder = new PngEncoder();
+                $encoder = new PngEncoder;
                 break;
             case 'webp':
                 $encoder = new WebpEncoder($quality);

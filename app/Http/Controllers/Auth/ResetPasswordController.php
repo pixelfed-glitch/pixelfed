@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Http\Request;
 use App\Services\BouncerService;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
@@ -49,15 +49,15 @@ class ResetPasswordController extends Controller
      */
     protected function rules()
     {
-    	usleep(random_int(100000, 3000000));
+        usleep(random_int(100000, 3000000));
 
-        if((bool) config_cache('captcha.enabled')) {
+        if ((bool) config_cache('captcha.enabled')) {
             return [
-	            'token' => 'required',
-	            'email' => 'required|email',
-	            'password' => ['required', 'confirmed', 'max:72', Rules\Password::defaults()],
-            	'h-captcha-response' => ['required' ,'filled', 'captcha']
-	       	];
+                'token' => 'required',
+                'email' => 'required|email',
+                'password' => ['required', 'confirmed', 'max:72', Rules\Password::defaults()],
+                'h-captcha-response' => ['required', 'filled', 'captcha'],
+            ];
         }
 
         return [
@@ -75,10 +75,10 @@ class ResetPasswordController extends Controller
     protected function validationErrorMessages()
     {
         return [
-        	'password.max' => 'Passwords should not exceed 72 characters.',
-        	'h-captcha-response.required' => 'Failed to validate the captcha.',
-        	'h-captcha-response.filled' => 'Failed to validate the captcha.',
-        	'h-captcha-response.captcha' => 'Failed to validate the captcha.',
+            'password.max' => 'Passwords should not exceed 72 characters.',
+            'h-captcha-response.required' => 'Failed to validate the captcha.',
+            'h-captcha-response.filled' => 'Failed to validate the captcha.',
+            'h-captcha-response.captcha' => 'Failed to validate the captcha.',
         ];
     }
 
@@ -87,16 +87,15 @@ class ResetPasswordController extends Controller
      *
      * If no token is present, display the link request form.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function showResetForm(Request $request)
     {
-		if(config('pixelfed.bouncer.cloud_ips.ban_logins')) {
-			abort_if(BouncerService::checkIp($request->ip()), 404);
-		}
+        if (config('pixelfed.bouncer.cloud_ips.ban_logins')) {
+            abort_if(BouncerService::checkIp($request->ip()), 404);
+        }
 
-		usleep(random_int(100000, 300000));
+        usleep(random_int(100000, 300000));
 
         $token = $request->route()->parameter('token');
 
@@ -107,9 +106,9 @@ class ResetPasswordController extends Controller
 
     public function reset(Request $request)
     {
-		if(config('pixelfed.bouncer.cloud_ips.ban_logins')) {
-			abort_if(BouncerService::checkIp($request->ip()), 404);
-		}
+        if (config('pixelfed.bouncer.cloud_ips.ban_logins')) {
+            abort_if(BouncerService::checkIp($request->ip()), 404);
+        }
 
         $request->validate($this->rules(), $this->validationErrorMessages());
 
@@ -133,7 +132,6 @@ class ResetPasswordController extends Controller
     /**
      * Get the password reset credentials from the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     protected function credentials(Request $request)
@@ -146,7 +144,6 @@ class ResetPasswordController extends Controller
     /**
      * Get the response for a failed password reset.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  string  $response
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
@@ -155,9 +152,9 @@ class ResetPasswordController extends Controller
         if ($request->wantsJson()) {
             throw ValidationException::withMessages(['email' => [trans($response)]]);
         }
+
         return redirect()->back()
             ->withInput($request->only('email'))
             ->withErrors(['email' => [trans($response)]]);
     }
-
 }

@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Profile;
 
 /**
  * @property int $id
@@ -20,17 +19,17 @@ use App\Profile;
  */
 class FollowRequest extends Model
 {
-	protected $fillable = ['follower_id', 'following_id', 'activity', 'handled_at'];
+    protected $fillable = ['follower_id', 'following_id', 'activity', 'handled_at'];
 
-	protected $casts = [
-		'activity' => 'array',
-	];
+    protected $casts = [
+        'activity' => 'array',
+    ];
 
     public function actor()
     {
         return $this->belongsTo(Profile::class, 'follower_id', 'id');
     }
-	
+
     public function follower()
     {
         return $this->belongsTo(Profile::class, 'follower_id', 'id');
@@ -49,6 +48,7 @@ class FollowRequest extends Model
     public function permalink($append = null, $namespace = '#accepts')
     {
         $path = $this->target->permalink("{$namespace}/follows/{$this->id}{$append}");
+
         return url($path);
     }
 }

@@ -1383,11 +1383,11 @@ class ApiV1Controller extends Controller
      */
     public function statusFavouriteById(Request $request, $id)
     {
-        abort_if(!$request->user() || !$request->user()->token(), 403);
+        abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('write'), 403);
 
         $user = $request->user();
-        abort_if($user->has_roles && !UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
+        abort_if($user->has_roles && ! UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
 
         $napi = $request->has(self::PF_API_ENTITY_KEY);
         $status = $napi ? StatusService::get($id, false) : StatusService::getMastodon($id, false);
@@ -1406,9 +1406,9 @@ class ApiV1Controller extends Controller
 
         if (intval($spid) !== intval($user->profile_id)) {
             if ($status['visibility'] == 'private') {
-                abort_if(!FollowerService::follows($user->profile_id, $spid), 403);
+                abort_if(! FollowerService::follows($user->profile_id, $spid), 403);
             } else {
-                abort_if(!in_array($status['visibility'], ['public', 'unlisted']), 403);
+                abort_if(! in_array($status['visibility'], ['public', 'unlisted']), 403);
             }
         }
 
@@ -1424,10 +1424,10 @@ class ApiV1Controller extends Controller
             abort(422);
         }
 
-        $like = DB::transaction(function () use ($user, $status, $spid, $id) {
+        $like = DB::transaction(function () use ($user, $status, $spid) {
             $statusModel = Status::lockForUpdate()->find($status['id']);
 
-            if (!$statusModel) {
+            if (! $statusModel) {
                 abort(404, 'Status not found');
             }
 
@@ -1438,7 +1438,7 @@ class ApiV1Controller extends Controller
                 ],
                 [
                     'status_profile_id' => $spid,
-                    'is_comment' => !empty($status['in_reply_to_id']),
+                    'is_comment' => ! empty($status['in_reply_to_id']),
                 ]
             );
 
@@ -1460,6 +1460,7 @@ class ApiV1Controller extends Controller
             $freshStatus['favourited'] = true;
             $freshStatus['bookmarked'] = BookmarkService::get($user->profile_id, $status['id']);
             $freshStatus['reblogged'] = ReblogService::get($user->profile_id, $status['id']);
+
             return $this->json($freshStatus);
         }
 
@@ -1479,11 +1480,11 @@ class ApiV1Controller extends Controller
      */
     public function statusUnfavouriteById(Request $request, $id)
     {
-        abort_if(!$request->user() || !$request->user()->token(), 403);
+        abort_if(! $request->user() || ! $request->user()->token(), 403);
         abort_unless($request->user()->tokenCan('write'), 403);
 
         $user = $request->user();
-        abort_if($user->has_roles && !UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
+        abort_if($user->has_roles && ! UserRoleService::can('can-like', $user->id), 403, 'Invalid permissions for this action');
 
         $napi = $request->has(self::PF_API_ENTITY_KEY);
         $status = $napi ? StatusService::get($id, false) : StatusService::getMastodon($id, false);
@@ -1502,9 +1503,9 @@ class ApiV1Controller extends Controller
 
         if (intval($spid) !== intval($user->profile_id)) {
             if ($status['visibility'] == 'private') {
-                abort_if(!FollowerService::follows($user->profile_id, $spid), 403);
+                abort_if(! FollowerService::follows($user->profile_id, $spid), 403);
             } else {
-                abort_if(!in_array($status['visibility'], ['public', 'unlisted']), 403);
+                abort_if(! in_array($status['visibility'], ['public', 'unlisted']), 403);
             }
         }
 
@@ -1515,7 +1516,7 @@ class ApiV1Controller extends Controller
                 ->whereStatusId($status['id'])
                 ->first();
 
-            if (!$like) {
+            if (! $like) {
                 return false;
             }
 
@@ -1533,6 +1534,7 @@ class ApiV1Controller extends Controller
             $freshStatus['favourited'] = false;
             $freshStatus['bookmarked'] = BookmarkService::get($user->profile_id, $status['id']);
             $freshStatus['reblogged'] = ReblogService::get($user->profile_id, $status['id']);
+
             return $this->json($freshStatus);
         }
 

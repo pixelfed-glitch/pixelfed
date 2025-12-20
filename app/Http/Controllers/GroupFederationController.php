@@ -48,7 +48,7 @@ class GroupFederationController extends Controller
                 'url' => $group->permalink(),
             ];
 
-            //Dead - after a return
+            // Dead - after a return
             // if ($group->metadata && isset($group->metadata['avatar'])) {
             //     $res['icon'] = [
             //         'type' => 'Image',

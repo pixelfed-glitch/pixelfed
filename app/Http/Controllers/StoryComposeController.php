@@ -25,7 +25,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Encoders\PngEncoder;
-use Intervention\Image\ImageManager;
 use Storage;
 
 class StoryComposeController extends Controller
