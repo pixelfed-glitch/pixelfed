@@ -22,7 +22,7 @@ class Media extends Model
     protected $casts = [
         'srcset' => 'array',
         'deleted_at' => 'datetime',
-        'skip_optimize' => 'boolean'
+        'skip_optimize' => 'boolean',
     ];
 
     public function status()

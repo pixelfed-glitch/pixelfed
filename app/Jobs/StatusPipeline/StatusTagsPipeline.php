@@ -49,14 +49,16 @@ class StatusTagsPipeline implements ShouldQueue
         $status = $this->status;
 
         // Verify status exists
-        if (!$status) {
-            Log::info("StatusTagsPipeline: Status no longer exists, skipping job");
+        if (! $status) {
+            Log::info('StatusTagsPipeline: Status no longer exists, skipping job');
+
             return;
         }
 
         // Verify activity data exists
-        if (!$res || !isset($res['tag'])) {
+        if (! $res || ! isset($res['tag'])) {
             Log::info("StatusTagsPipeline: No tag data in activity for status {$status->id}, skipping job");
+
             return;
         }
 

@@ -40,18 +40,21 @@ class StatusRemoteUpdatePipeline implements ShouldQueue
         $activity = $this->activity;
 
         // Verify activity exists and has required fields
-        if (!$activity) {
-            Log::info("StatusRemoteUpdatePipeline: Activity not found, skipping job");
+        if (! $activity) {
+            Log::info('StatusRemoteUpdatePipeline: Activity not found, skipping job');
+
             return;
         }
-        if (!isset($activity['id'])) {
-            Log::info("StatusRemoteUpdatePipeline: Invalid activity data, skipping job");
+        if (! isset($activity['id'])) {
+            Log::info('StatusRemoteUpdatePipeline: Invalid activity data, skipping job');
+
             return;
         }
 
         $status = Status::with('media')->whereObjectUrl($activity['id'])->first();
         if (! $status) {
             Log::info("StatusRemoteUpdatePipeline: Status not found for activity {$activity['id']}, skipping job");
+
             return;
         }
 
@@ -61,7 +64,7 @@ class StatusRemoteUpdatePipeline implements ShouldQueue
             $this->updateImmediateAttributes($status, $activity);
             $this->createEdit($status, $activity);
         } catch (\Exception $e) {
-            Log::warning("StatusRemoteUpdatePipeline: Failed to update status {$status->id}: " . $e->getMessage());
+            Log::warning("StatusRemoteUpdatePipeline: Failed to update status {$status->id}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -81,7 +84,7 @@ class StatusRemoteUpdatePipeline implements ShouldQueue
                 ]);
             }
         } catch (\Exception $e) {
-            Log::warning("StatusRemoteUpdatePipeline: Failed to create previous edit for status {$status->id}: " . $e->getMessage());
+            Log::warning("StatusRemoteUpdatePipeline: Failed to create previous edit for status {$status->id}: ".$e->getMessage());
             throw $e;
         }
     }

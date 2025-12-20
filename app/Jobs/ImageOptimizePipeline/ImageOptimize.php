@@ -42,16 +42,18 @@ class ImageOptimize implements ShouldQueue
     public function handle()
     {
         $media = $this->media;
-        
+
         // Verify media exists
-        if (!$media) {
-            Log::info("ImageOptimize: Media no longer exists, skipping job");
+        if (! $media) {
+            Log::info('ImageOptimize: Media no longer exists, skipping job');
+
             return;
         }
 
         // Verify media has required path
-        if (!$media->media_path) {
+        if (! $media->media_path) {
             Log::info("ImageOptimize: Media {$media->id} has no media_path, skipping job");
+
             return;
         }
 

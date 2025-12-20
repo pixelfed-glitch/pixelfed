@@ -3,6 +3,7 @@
 namespace App\Jobs\GroupPipeline;
 
 use App\Hashtag;
+use App\Jobs\MentionPipeline\MentionPipeline;
 use App\Mention;
 use App\Models\GroupPost;
 use App\Models\GroupPostHashtag;
@@ -11,7 +12,6 @@ use App\Services\StatusService;
 use App\Status;
 use App\Util\Lexer\Autolink;
 use App\Util\Lexer\Extractor;
-use App\Jobs\MentionPipeline\MentionPipeline;
 use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

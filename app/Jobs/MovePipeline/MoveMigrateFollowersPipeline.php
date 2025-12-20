@@ -87,12 +87,14 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
         $actor = $this->activity;
 
         // Verify target and actor are provided
-        if (!$target) {
-            Log::info("MoveMigrateFollowersPipeline: No target provided, skipping job");
+        if (! $target) {
+            Log::info('MoveMigrateFollowersPipeline: No target provided, skipping job');
+
             return;
         }
-        if (!$actor) {
-            Log::info("MoveMigrateFollowersPipeline: No actor provided, skipping job");
+        if (! $actor) {
+            Log::info('MoveMigrateFollowersPipeline: No actor provided, skipping job');
+
             return;
         }
 
@@ -100,12 +102,12 @@ class MoveMigrateFollowersPipeline implements ShouldQueue
             $targetAccount = Helpers::profileFetch($target);
             $actorAccount = Helpers::profileFetch($actor);
         } catch (\Exception $e) {
-            Log::warning("MoveMigrateFollowersPipeline: Failed to fetch profiles: " . $e->getMessage());
+            Log::warning('MoveMigrateFollowersPipeline: Failed to fetch profiles: '.$e->getMessage());
             throw $e;
         }
 
         if (! $targetAccount || ! $actorAccount) {
-            Log::warning("MoveMigrateFollowersPipeline: Could not fetch target or actor accounts");
+            Log::warning('MoveMigrateFollowersPipeline: Could not fetch target or actor accounts');
             throw new Exception('Invalid move accounts');
         }
 

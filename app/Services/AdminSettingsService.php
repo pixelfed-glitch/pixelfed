@@ -21,6 +21,7 @@ class AdminSettingsService
             'posts' => self::getPosts(),
             'platform' => self::getPlatform(),
             'storage' => self::getStorage(),
+            'curated_onboarding' => self::getCuratedOnboarding(),
         ];
     }
 
@@ -163,5 +164,26 @@ class AdminSettingsService
             'cloud_disk' => $cloud_disk,
             'disk_config' => $disk,
         ];
+    }
+
+    public static function getCuratedOnboarding()
+    {
+        $openReg = (bool) config_cache('pixelfed.open_registration');
+        $curOnboarding = (bool) config_cache('instance.curated_registration.enabled');
+        $regState = $openReg ? 'open' : ($curOnboarding ? 'filtered' : 'closed');
+
+        if ($regState !== 'filtered') {
+            return [];
+        }
+
+        $res = [
+            'enabled' => (bool) config_cache('instance.curated_registration.enabled'),
+            'resend_confirmation_limit' => config_cache('instance.curated_registration.resend_confirmation_limit'),
+            'captcha_enabled' => config_cache('instance.curated_registration.captcha_enabled'),
+            'state' => config_cache('instance.curated_registration.state'),
+            'notify' => config_cache('instance.curated_registration.notify'),
+        ];
+
+        return $res;
     }
 }

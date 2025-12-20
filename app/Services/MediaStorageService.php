@@ -82,11 +82,11 @@ class MediaStorageService
             (new self)->localToCloud($media);
         }
 
-        if ($media->status_id && config_cache('pixelfed.cloud_storage') && !config('pixelfed.media_fast_process')) {
+        if ($media->status_id && config_cache('pixelfed.cloud_storage') && ! config('pixelfed.media_fast_process')) {
             $still_processing = Media::whereStatusId($media->status_id)
                 ->whereNull('cdn_url')
                 ->exists();
-            if (!$still_processing) {
+            if (! $still_processing) {
                 // In this configuration, publishing the status is delayed until the media uploads
                 // Since all media have been processed, we can kick the NewStatusPipeline job
                 // N.B. there's a timing condition with multiple MediaStorageService workers matching this if statement

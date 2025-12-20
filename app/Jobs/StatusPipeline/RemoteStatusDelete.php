@@ -97,8 +97,9 @@ class RemoteStatusDelete implements ShouldBeUniqueUntilProcessing, ShouldQueue
         $status = $this->status;
 
         // Verify status exists
-        if (!$status) {
-            Log::info("RemoteStatusDelete: Status no longer exists, skipping job");
+        if (! $status) {
+            Log::info('RemoteStatusDelete: Status no longer exists, skipping job');
+
             return;
         }
 

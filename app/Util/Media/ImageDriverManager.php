@@ -8,8 +8,6 @@ class ImageDriverManager
 {
     /**
      * Get the appropriate image driver class based on configuration.
-     *
-     * @return string
      */
     public static function getDriverClass(): string
     {
@@ -24,8 +22,7 @@ class ImageDriverManager
     /**
      * Create a new ImageManager instance with the configured driver.
      *
-     * @param array $options Additional options for ImageManager
-     * @return ImageManager
+     * @param  array  $options  Additional options for ImageManager
      */
     public static function createImageManager(array $options = []): ImageManager
     {

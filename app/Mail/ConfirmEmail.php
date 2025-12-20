@@ -30,6 +30,6 @@ class ConfirmEmail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.confirm_email')->with(['verify'=>$this->verify]);
+        return $this->markdown('emails.confirm_email')->with(['verify' => $this->verify]);
     }
 }

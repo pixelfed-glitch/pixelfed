@@ -39,13 +39,15 @@ class HandleUpdateActivity implements ShouldQueue
         $payload = $this->payload;
 
         // Verify payload exists
-        if (!$payload) {
-            Log::info("HandleUpdateActivity: Payload not provided, skipping job");
+        if (! $payload) {
+            Log::info('HandleUpdateActivity: Payload not provided, skipping job');
+
             return;
         }
 
         if (! $payload || ! isset($payload['actor'])) {
-            Log::info("HandleUpdateActivity: Invalid payload or missing actor, skipping job");
+            Log::info('HandleUpdateActivity: Invalid payload or missing actor, skipping job');
+
             return;
         }
 

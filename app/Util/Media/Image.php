@@ -4,12 +4,10 @@ namespace App\Util\Media;
 
 use App\Media;
 use App\Services\StatusService;
-use App\Util\Media\ImageDriverManager;
 use Cache;
 use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Encoders\PngEncoder;
 use Intervention\Image\Encoders\WebpEncoder;
-use Intervention\Image\ImageManager;
 use Log;
 use Storage;
 

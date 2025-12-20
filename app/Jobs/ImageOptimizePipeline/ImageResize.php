@@ -43,16 +43,18 @@ class ImageResize implements ShouldQueue
     public function handle()
     {
         $media = $this->media;
-        
+
         // Verify media exists
-        if (!$media) {
-            Log::info("ImageResize: Media no longer exists, skipping job");
+        if (! $media) {
+            Log::info('ImageResize: Media no longer exists, skipping job');
+
             return;
         }
 
         // Verify media has required path
-        if (!$media->media_path) {
+        if (! $media->media_path) {
             Log::info("ImageResize: Media {$media->id} has no media_path, skipping job");
+
             return;
         }
 

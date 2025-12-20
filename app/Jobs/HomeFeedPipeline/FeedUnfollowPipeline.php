@@ -2,29 +2,31 @@
 
 namespace App\Jobs\HomeFeedPipeline;
 
+use App\Services\HomeTimelineService;
+use App\Services\StatusService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
-use App\Services\AccountService;
-use App\Services\StatusService;
-use App\Services\HomeTimelineService;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class FeedUnfollowPipeline implements ShouldQueue, ShouldBeUniqueUntilProcessing
+class FeedUnfollowPipeline implements ShouldBeUniqueUntilProcessing, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $actorId;
+
     protected $followingId;
 
     public $timeout = 900;
+
     public $tries = 3;
+
     public $maxExceptions = 1;
+
     public $failOnTimeout = true;
 
     /**
@@ -39,7 +41,7 @@ class FeedUnfollowPipeline implements ShouldQueue, ShouldBeUniqueUntilProcessing
      */
     public function uniqueId(): string
     {
-        return 'hts:feed:remove:follows:aid:' . $this->actorId . ':fid:' . $this->followingId;
+        return 'hts:feed:remove:follows:aid:'.$this->actorId.':fid:'.$this->followingId;
     }
 
     /**
@@ -70,22 +72,24 @@ class FeedUnfollowPipeline implements ShouldQueue, ShouldBeUniqueUntilProcessing
         $followingId = $this->followingId;
 
         // Verify actor ID exists
-        if (!$actorId) {
-            Log::info("FeedUnfollowPipeline: Actor ID not provided, skipping job");
+        if (! $actorId) {
+            Log::info('FeedUnfollowPipeline: Actor ID not provided, skipping job');
+
             return;
         }
 
         // Verify following ID exists
-        if (!$followingId) {
-            Log::info("FeedUnfollowPipeline: Following ID not provided, skipping job");
+        if (! $followingId) {
+            Log::info('FeedUnfollowPipeline: Following ID not provided, skipping job');
+
             return;
         }
 
         $ids = HomeTimelineService::get($actorId, 0, -1);
-        foreach($ids as $id) {
+        foreach ($ids as $id) {
             $status = StatusService::get($id, false);
-            if($status && isset($status['account'], $status['account']['id'])) {
-                if($status['account']['id'] == $followingId) {
+            if ($status && isset($status['account'], $status['account']['id'])) {
+                if ($status['account']['id'] == $followingId) {
                     HomeTimelineService::rem($actorId, $id);
                 }
             }

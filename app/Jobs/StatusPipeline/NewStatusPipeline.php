@@ -4,21 +4,19 @@ namespace App\Jobs\StatusPipeline;
 
 use App\Media;
 use App\Status;
-use Cache;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 
 class NewStatusPipeline implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $status;
-    
+
     /**
      * Delete the job if its models no longer exist.
      *
@@ -27,8 +25,9 @@ class NewStatusPipeline implements ShouldQueue
     public $deleteWhenMissingModels = true;
 
     public $timeout = 5;
+
     public $tries = 1;
-    
+
     /**
      * Create a new job instance.
      *
@@ -49,17 +48,18 @@ class NewStatusPipeline implements ShouldQueue
         $status = $this->status;
 
         // Verify status exists
-        if (!$status) {
-            Log::info("NewStatusPipeline: Status no longer exists, skipping job");
+        if (! $status) {
+            Log::info('NewStatusPipeline: Status no longer exists, skipping job');
+
             return;
         }
 
-        if (!Status::where('id', $status->id)->exists()) {
+        if (! Status::where('id', $status->id)->exists()) {
             // The status has already been deleted by the time the job is running
             // Don't publish the status, and just no-op
             return;
         }
-        if (config_cache('pixelfed.cloud_storage') && !config('pixelfed.media_fast_process')) {
+        if (config_cache('pixelfed.cloud_storage') && ! config('pixelfed.media_fast_process')) {
             $still_processing = Media::whereStatusId($this->status->id)
                 ->whereNull('cdn_url')
                 ->exists();
@@ -71,11 +71,11 @@ class NewStatusPipeline implements ShouldQueue
                 return;
             }
         }
-        
+
         try {
             StatusEntityLexer::dispatch($status);
         } catch (\Exception $e) {
-            Log::warning("NewStatusPipeline: Failed to dispatch StatusEntityLexer for status {$status->id}: " . $e->getMessage());
+            Log::warning("NewStatusPipeline: Failed to dispatch StatusEntityLexer for status {$status->id}: ".$e->getMessage());
             throw $e;
         }
     }

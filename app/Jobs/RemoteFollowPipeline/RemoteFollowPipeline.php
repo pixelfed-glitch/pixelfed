@@ -13,8 +13,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class RemoteFollowPipeline implements ShouldQueue
 {
@@ -48,12 +48,14 @@ class RemoteFollowPipeline implements ShouldQueue
         $url = $this->url;
 
         // Verify follower and url exists
-        if (!$follower) {
-            Log::info("RemoteFollowPipeline: Follower no longer exists, skipping job");
+        if (! $follower) {
+            Log::info('RemoteFollowPipeline: Follower no longer exists, skipping job');
+
             return;
         }
-        if (!$url) {
-            Log::info("RemoteFollowPipeline: No URL provided, skipping job");
+        if (! $url) {
+            Log::info('RemoteFollowPipeline: No URL provided, skipping job');
+
             return;
         }
 
@@ -64,7 +66,8 @@ class RemoteFollowPipeline implements ShouldQueue
         try {
             $this->discover($url);
         } catch (\Exception $e) {
-            Log::warning("RemoteFollowPipeline: Failed to discover profile at {$url}: " . $e->getMessage());
+            Log::warning("RemoteFollowPipeline: Failed to discover profile at {$url}: ".$e->getMessage());
+
             return;
         }
 
@@ -93,20 +96,23 @@ class RemoteFollowPipeline implements ShouldQueue
     public function storeProfile()
     {
         $res = $this->response;
-        
+
         // Verify response has required fields
-        if (!isset($res['url'])) {
-            Log::warning("RemoteFollowPipeline: Invalid response, missing required field url");
+        if (! isset($res['url'])) {
+            Log::warning('RemoteFollowPipeline: Invalid response, missing required field url');
+
             return;
         }
-        if (!isset($res['preferredUsername'])) {
-            Log::warning("RemoteFollowPipeline: Invalid response, missing required field preferredUsername");
+        if (! isset($res['preferredUsername'])) {
+            Log::warning('RemoteFollowPipeline: Invalid response, missing required field preferredUsername');
+
             return;
         }
 
         $domain = parse_url($res['url'], PHP_URL_HOST);
-        if (!$domain) {
-            Log::warning("RemoteFollowPipeline: Could not parse domain from URL: " . $res['url']);
+        if (! $domain) {
+            Log::warning('RemoteFollowPipeline: Could not parse domain from URL: '.$res['url']);
+
             return;
         }
 
@@ -127,7 +133,7 @@ class RemoteFollowPipeline implements ShouldQueue
             RemoteFollowImportRecent::dispatch($this->response, $profile);
             CreateAvatar::dispatch($profile);
         } catch (\Exception $e) {
-            Log::warning("RemoteFollowPipeline: Failed to store profile for {$remoteUsername}: " . $e->getMessage());
+            Log::warning("RemoteFollowPipeline: Failed to store profile for {$remoteUsername}: ".$e->getMessage());
         }
     }
 

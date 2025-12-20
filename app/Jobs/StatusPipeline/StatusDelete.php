@@ -71,16 +71,18 @@ class StatusDelete implements ShouldQueue
         $status = $this->status;
 
         // Verify status exists
-        if (!$status) {
-            Log::info("StatusDelete: Status no longer exists, skipping job");
+        if (! $status) {
+            Log::info('StatusDelete: Status no longer exists, skipping job');
+
             return;
         }
 
         $profile = $status->profile;
 
         // Verify profile exists
-        if (!$profile) {
+        if (! $profile) {
             Log::info("StatusDelete: Profile no longer exists for status {$status->id}, skipping job");
+
             return;
         }
 
@@ -184,9 +186,9 @@ class StatusDelete implements ShouldQueue
 
         $audience = $status->profile->getAudienceInbox();
 
-        $fractal = new Fractal\Manager();
-        $fractal->setSerializer(new ArraySerializer());
-        $resource = new Fractal\Resource\Item($status, new DeleteNote());
+        $fractal = new Fractal\Manager;
+        $fractal->setSerializer(new ArraySerializer);
+        $resource = new Fractal\Resource\Item($status, new DeleteNote);
         $activity = $fractal->createData($resource)->toArray();
 
         $this->unlinkRemoveMedia($status);
@@ -221,10 +223,8 @@ class StatusDelete implements ShouldQueue
 
         $pool = new Pool($client, $requests($audience), [
             'concurrency' => config('federation.activitypub.delivery.concurrency'),
-            'fulfilled' => function ($response, $index) {
-            },
-            'rejected' => function ($reason, $index) {
-            },
+            'fulfilled' => function ($response, $index) {},
+            'rejected' => function ($reason, $index) {},
         ]);
 
         $promise = $pool->promise();

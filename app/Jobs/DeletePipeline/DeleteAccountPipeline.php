@@ -78,14 +78,16 @@ class DeleteAccountPipeline implements ShouldQueue
         $user = $this->user;
 
         // Verify user exists
-        if (!$user) {
-            Log::info("DeleteAccountPipeline: User no longer exists, skipping job");
+        if (! $user) {
+            Log::info('DeleteAccountPipeline: User no longer exists, skipping job');
+
             return;
         }
 
         // Verify user has a profile
-        if (!$user->profile_id) {
+        if (! $user->profile_id) {
             Log::info("DeleteAccountPipeline: User {$user->id} has no profile_id, skipping job");
+
             return;
         }
 

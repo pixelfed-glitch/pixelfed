@@ -2,29 +2,26 @@
 
 namespace App\Jobs\DeletePipeline;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use App\Bookmark;
 use App\DirectMessage;
+use App\Jobs\MediaPipeline\MediaDeletePipeline;
 use App\Like;
 use App\Media;
 use App\MediaTag;
 use App\Mention;
+use App\Notification;
 use App\Report;
+use App\Services\Account\AccountStatService;
+use App\Services\NetworkTimelineService;
+use App\Services\StatusService;
 use App\Status;
 use App\StatusHashtag;
 use App\StatusView;
-use App\Notification;
-use App\Services\AccountService;
-use App\Services\NetworkTimelineService;
-use App\Services\StatusService;
-use App\Jobs\MediaPipeline\MediaDeletePipeline;
-use Cache;
-use App\Services\Account\AccountStatService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
 class DeleteRemoteStatusPipeline implements ShouldQueue
@@ -34,8 +31,11 @@ class DeleteRemoteStatusPipeline implements ShouldQueue
     protected $status;
 
     public $timeout = 30;
+
     public $tries = 2;
+
     public $maxExceptions = 1;
+
     public $deleteWhenMissingModels = true;
 
     /**
@@ -58,14 +58,16 @@ class DeleteRemoteStatusPipeline implements ShouldQueue
         $status = $this->status;
 
         // Verify status exists
-        if (!$status) {
-            Log::info("DeleteRemoteStatusPipeline: Status no longer exists, skipping job");
+        if (! $status) {
+            Log::info('DeleteRemoteStatusPipeline: Status no longer exists, skipping job');
+
             return;
         }
 
         // Verify status has a profile
-        if (!$status->profile_id) {
+        if (! $status->profile_id) {
             Log::info("DeleteRemoteStatusPipeline: Status {$status->id} has no profile_id, skipping job");
+
             return;
         }
 
@@ -73,29 +75,29 @@ class DeleteRemoteStatusPipeline implements ShouldQueue
             AccountStatService::decrementPostCount($status->profile_id);
             NetworkTimelineService::del($status->id);
             StatusService::del($status->id, true);
-        Bookmark::whereStatusId($status->id)->delete();
-        Notification::whereItemType('App\Status')
-            ->whereItemId($status->id)
-            ->forceDelete();
-        DirectMessage::whereStatusId($status->id)->delete();
-        Like::whereStatusId($status->id)->forceDelete();
-        MediaTag::whereStatusId($status->id)->delete();
-        Media::whereStatusId($status->id)
-            ->get()
-            ->each(function($media) {
-                MediaDeletePipeline::dispatch($media)->onQueue('mmo');
-            });
-        Mention::whereStatusId($status->id)->forceDelete();
-        Report::whereObjectType('App\Status')->whereObjectId($status->id)->delete();
-        StatusHashtag::whereStatusId($status->id)->delete();
-        StatusView::whereStatusId($status->id)->delete();
-        Status::whereReblogOfId($status->id)->forceDelete();
-        $status->forceDelete();
+            Bookmark::whereStatusId($status->id)->delete();
+            Notification::whereItemType('App\Status')
+                ->whereItemId($status->id)
+                ->forceDelete();
+            DirectMessage::whereStatusId($status->id)->delete();
+            Like::whereStatusId($status->id)->forceDelete();
+            MediaTag::whereStatusId($status->id)->delete();
+            Media::whereStatusId($status->id)
+                ->get()
+                ->each(function ($media) {
+                    MediaDeletePipeline::dispatch($media)->onQueue('mmo');
+                });
+            Mention::whereStatusId($status->id)->forceDelete();
+            Report::whereObjectType('App\Status')->whereObjectId($status->id)->delete();
+            StatusHashtag::whereStatusId($status->id)->delete();
+            StatusView::whereStatusId($status->id)->delete();
+            Status::whereReblogOfId($status->id)->forceDelete();
+            $status->forceDelete();
         } catch (\Exception $e) {
-            Log::warning("DeleteRemoteStatusPipeline: Failed to delete status {$status->id}: " . $e->getMessage());
+            Log::warning("DeleteRemoteStatusPipeline: Failed to delete status {$status->id}: ".$e->getMessage());
             throw $e;
         }
-        
+
         return 1;
     }
 }
