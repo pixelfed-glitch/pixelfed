@@ -19,7 +19,7 @@ return [
 		'copyLink' => 'Bağlantıyı Kopyala',
 		'delete' => 'Sil',
 		'error' => 'Hata',
-		'errorMsg' => 'Bir şeyler yanlış gitti. Lütfen daha sonra tekrar deneyiniz.',
+		'errorMsg' => 'Bir sorun oluştu. Lütfen daha sonra tekrar deneyin.',
 		'oops' => 'Hay aksi!',
 		'other' => 'Diğer',
 		'readMore' => 'Daha fazlası',

@@ -41,7 +41,7 @@ return [
 
 	'navmenu' => [
 		'search' => 'Søg',
-		'admin' => 'Admin Dashboard',
+		'admin' => 'Admin-kontrolpanel',
 
 		// Timelines
 		'homeFeed' => 'Home Feed',
@@ -124,15 +124,15 @@ return [
 		'followRequested' => 'Følg anmodet',
 		'joined' => 'Blev medlem',
 
-		'emptyCollections' => 'We can\'t seem to find any collections',
-		'emptyPosts' => 'We can\'t seem to find any posts',
+		'emptyCollections' => 'Vi kan ikke finde nogen samlinger',
+		'emptyPosts' => 'Vi kan ikke finde nogen indlæg',
 	],
 
 	'menu' => [
 		'viewPost' => 'Se opslag',
 		'viewProfile' => 'Se profil',
 		'moderationTools' => 'Moderatorværktøjer',
-		'report' => 'Report',
+		'report' => 'Anmeld',
 		'archive' => 'Arkivér',
 		'unarchive' => 'Anuller arkivering',
 		'embed' => 'Indlejr',
