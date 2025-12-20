@@ -50,6 +50,7 @@ if($displayName && $captionPreview) {
 <meta property="og:image" content="{{$s['media_attachments'][0]['url']}}">
     <meta name="twitter:card" content="summary_large_image">
     @elseif($mediaCount && $s['pf_type'] === "video" || $s['pf_type'] === "video:album")<meta property="og:video" content="{{$s['media_attachments'][0]['url']}}">
+    <meta property="og:image" content="{{$s['media_attachments'][0]['preview_url']}}">
     <meta name="twitter:card" content="summary">
     @else
     <meta name="twitter:card" content="summary">
