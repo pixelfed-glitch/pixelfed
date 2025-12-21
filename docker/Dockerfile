@@ -8,17 +8,17 @@
 # See: https://nginx.org/
 #
 # renovate: datasource=docker depName=nginx versioning=semver
-ARG NGINX_VERSION="1.27.5"
+ARG NGINX_VERSION="1.29.4"
 
 # See: https://github.com/ddollar/forego
 #
 # renovate: datasource=docker depName=nginxproxy/forego
-ARG FOREGO_VERSION="0.18.3"
+ARG FOREGO_VERSION="0.18.4"
 
 # See: https://github.com/hairyhenderson/gomplate
 #
 # renovate: datasource=github-releases depName=hairyhenderson/gomplate
-ARG GOMPLATE_VERSION="4.3.2"
+ARG GOMPLATE_VERSION="4.3.3"
 
 # See: https://github.com/jippi/dottie
 #
@@ -28,12 +28,12 @@ ARG DOTTIE_VERSION="v0.16.0"
 # See: https://github.com/composer/composer
 #
 # renovate: datasource=github-releases depName=composer/composer
-ARG COMPOSER_VERSION="2.8.9"
+ARG COMPOSER_VERSION="2.9.2"
 
 # See: https://github.com/jippi/dottie
 #
 # renovate: datasource=docker depName=ghcr.io/jippi/dottie
-ARG MARIADB_CLIENT_VERSION="10.11"
+ARG MARIADB_CLIENT_VERSION="11.8"
 
 # See: https://github.com/jippi/dottie
 #
@@ -66,7 +66,7 @@ ARG PHP_PECL_EXTENSIONS_EXTRA=
 # PHP extensions installed via https://deb.sury.org/
 # ! NOTE: Must not include the "php8.x-" prefix for packages
 # !       so [php8.4-bcmath] should just be [bcmath] here
-ARG PHP_EXTENSIONS="bcmath curl gd imagick intl mbstring redis vips xml yaml zip"
+ARG PHP_EXTENSIONS="bcmath curl gd imagick intl mbstring redis vips xml yaml zip ffi"
 ARG PHP_EXTENSIONS_EXTRA=""
 ARG PHP_EXTENSIONS_DATABASE="pgsql mysql sqlite"
 
