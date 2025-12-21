@@ -43,6 +43,16 @@ jobs:
     container:
       image: php:${{ matrix.php_version }}-cli
 
+    services:
+
+      redis:
+        image: redis:7.4
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     # See: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-concurrency-and-the-default-behavior
     concurrency:
       group: php-test-${{ github.ref }}-${{ matrix.php_version }}
@@ -88,6 +98,8 @@ jobs:
       - name: Setup Environment
         run: |
           cp .env.testing .env
+
+          dottie set REDIS_HOST=redis
 
       - run: php artisan config:cache
       - run: php artisan route:clear
