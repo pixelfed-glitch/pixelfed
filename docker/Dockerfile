@@ -54,7 +54,7 @@ ARG PHP_VERSION="8.4"
 
 # See: https://github.com/docker-library/docs/blob/master/php/README.md#image-variants
 ARG PHP_BASE_TYPE="fpm"
-ARG PHP_DEBIAN_RELEASE="bookworm"
+ARG PHP_DEBIAN_RELEASE="trixie"
 
 # APT extra packages
 ARG APT_PACKAGES_EXTRA=
