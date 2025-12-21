@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=all
 #ddev-generated
 
 ## Description: Use a different key-value store for Redis
