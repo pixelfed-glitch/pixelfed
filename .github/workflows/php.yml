@@ -81,6 +81,19 @@ jobs:
           tag: ${{env.COMPOSER_VERSION}}
           fileName: composer.phar
 
+      - name: Download jippi/dottie
+        uses: robinraju/release-downloader@v1.12
+        with:
+          repository: jippi/dottie
+          latest: true
+          fileName: "*_amd64.deb"
+
+      - name: Install dottie
+        run: |
+          dpkg -i *.deb
+          rm -f *.deb
+          dottie -v
+
       - name: Install PHP extensions
         run: |
           chmod +x install-php-extensions
