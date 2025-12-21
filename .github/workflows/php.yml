@@ -23,9 +23,9 @@ on:
       - synchronize
 
 env:
-  EXTRA_PHP_EXTENSIONS: intl bcmath zip pcntl exif curl gd pdo_pgsql pdo_mysql pdo_sqlite
-  DOCKER_PHP_EXTENSION_INSTALLER_VERSION: 2.7.13
-  COMPOSER_VERSION: 2.8.4
+  EXTRA_PHP_EXTENSIONS: intl bcmath zip pcntl exif curl gd pdo_pgsql pdo_mysql pdo_sqlite ffi
+  DOCKER_PHP_EXTENSION_INSTALLER_VERSION: 2.9.24
+  COMPOSER_VERSION: 2.9.2
 
 jobs:
   test:
@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # NOTE: we lint PHP files before composer to avoid wasting time
       # linting everything in vendor/
@@ -58,14 +58,14 @@ jobs:
         run: find . -name '*.php' -exec php --syntax-check {} \; > /dev/null
 
       - name: Download mlocati/docker-php-extension-installer
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: mlocati/docker-php-extension-installer
           tag: ${{env.DOCKER_PHP_EXTENSION_INSTALLER_VERSION}}
           fileName: install-php-extensions
 
       - name: Download composer
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: composer/composer
           tag: ${{env.COMPOSER_VERSION}}
@@ -77,7 +77,7 @@ jobs:
           ./install-php-extensions ${{env.EXTRA_PHP_EXTENSIONS}}
 
       - name: Cache composer dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: vendor/
           key: composer-${{matrix.php_version}}-${{ hashFiles('composer.lock') }}
@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload JUnit test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: junit-results
           path: tests/_output/junit.xml

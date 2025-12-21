@@ -23,9 +23,10 @@ on:
       - synchronize
 
 env:
-  EXTRA_PHP_EXTENSIONS: intl bcmath zip pcntl exif curl gd pdo_pgsql pdo_mysql pdo_sqlite
-  DOCKER_PHP_EXTENSION_INSTALLER_VERSION: 2.7.13
-  COMPOSER_VERSION: 2.8.4
+  EXTRA_PHP_EXTENSIONS: intl bcmath zip pcntl exif curl gd pdo_pgsql pdo_mysql pdo_sqlite ffi
+  DOCKER_PHP_EXTENSION_INSTALLER_VERSION: 2.9.24
+  COMPOSER_VERSION: 2.9.2
+  MARIADB_VERSION: 11.8
 
 jobs:
   migrations:
@@ -90,24 +91,24 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download mlocati/docker-php-extension-installer
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: mlocati/docker-php-extension-installer
           tag: ${{env.DOCKER_PHP_EXTENSION_INSTALLER_VERSION}}
           fileName: install-php-extensions
 
       - name: Download composer
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: composer/composer
           tag: ${{env.COMPOSER_VERSION}}
           fileName: composer.phar
 
       - name: Download jippi/dottie
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: jippi/dottie
           latest: true
@@ -124,7 +125,7 @@ jobs:
         run: |
           apt update
           apt install -y --no-install-recommends curl ca-certificates apt-transport-https
-          curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version mariadb-10.11
+          curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version mariadb-${{env.MARIADB_VERSION}}
 
       - name: Add postgres repository
         if: ${{ matrix.db_type == 'postgres' }}
