@@ -28,7 +28,6 @@ packages+=(
     moreutils
     nano
     procps
-    software-properties-common
     unzip
     wget
     tzdata
