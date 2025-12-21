@@ -150,7 +150,7 @@ jobs:
       - name: Install database client
         run: |
           apt update
-          apt install -y --no-install-recommends ${{ matrix.db_type == 'postgres' && 'postgresql' || (matrix.db_type == 'mysql' && 'default-mysql' || 'mariadb') }}-client
+          apt install -y --no-install-recommends ${{ matrix.db_type == 'postgres' && 'postgresql' || (matrix.db_type == 'mysql' && 'mysql' || 'mariadb') }}-client
 
       - name: Install PHP extensions
         run: |
@@ -183,6 +183,13 @@ jobs:
       - run: php artisan route:clear
       - run: php artisan storage:link
       - run: php artisan key:generate
+
+      # MySQL fix for dumps : https://github.com/laravel/framework/issues/57059#issuecomment-3396540287
+      - name: Fix MySQL SSL bug with laravel dumps
+        if: ${{ matrix.db_type == 'mysql' }}
+        run: |
+          mkdir -p /etc/mysql/conf.d \
+            && printf "[client]\nssl=0\n" > /etc/mysql/conf.d/00-disable-ssl.cnf
 
       - run: php artisan migrate --force
       - run: php artisan backup:run --only-db
