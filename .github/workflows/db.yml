@@ -170,7 +170,7 @@ jobs:
         run: |
           cp .env.testing .env
 
-          dottie set DB_CONNECTION=${{ matrix.db_type == 'postgres' && 'pgsql' || (matrix.db_type == 'mysql' && 'mysql' || 'mariadb') }}
+          dottie set DB_CONNECTION=${{ matrix.db_type == 'postgres' && 'pgsql' || (matrix.db_type == 'mysql' && 'default-mysql' || 'mariadb') }}
           dottie set DB_HOST=db
           dottie set DB_PORT=${{ matrix.db_type == 'postgres' && '5432' || '3306' }}
           dottie set DB_DATABASE=pixelfed
