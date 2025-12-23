@@ -2,28 +2,25 @@
 
 namespace App\Http\Controllers\Groups;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\RateLimiter;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\AccountService;
-use App\Services\GroupService;
+use App\Jobs\GroupsPipeline\DeleteCommentPipeline;
+use App\Jobs\GroupsPipeline\ImageResizePipeline;
+use App\Jobs\GroupsPipeline\ImageS3UploadPipeline;
+use App\Jobs\GroupsPipeline\NewCommentPipeline;
+use App\Models\Group;
+use App\Models\GroupComment;
+use App\Models\GroupLike;
+use App\Models\GroupMedia;
+use App\Models\GroupPost;
 use App\Services\Groups\GroupCommentService;
 use App\Services\Groups\GroupMediaService;
 use App\Services\Groups\GroupPostService;
 use App\Services\Groups\GroupsLikeService;
-use App\Models\Group;
-use App\Models\GroupLike;
-use App\Models\GroupMedia;
-use App\Models\GroupPost;
-use App\Models\GroupComment;
-use Purify;
+use App\Services\GroupService;
 use App\Util\Lexer\Autolink;
-use App\Jobs\GroupsPipeline\ImageResizePipeline;
-use App\Jobs\GroupsPipeline\ImageS3UploadPipeline;
-use App\Jobs\GroupsPipeline\NewPostPipeline;
-use App\Jobs\GroupsPipeline\NewCommentPipeline;
-use App\Jobs\GroupsPipeline\DeleteCommentPipeline;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Purify;
 
 class GroupsCommentController extends Controller
 {
@@ -33,19 +30,19 @@ class GroupsCommentController extends Controller
             'gid' => 'required',
             'sid' => 'required',
             'cid' => 'sometimes',
-            'limit' => 'nullable|integer|min:3|max:10'
+            'limit' => 'nullable|integer|min:3|max:10',
         ]);
 
         $pid = optional($request->user())->profile_id;
         $gid = $request->input('gid');
         $sid = $request->input('sid');
-        $cid = $request->has('cid') && $request->input('cid') == 1;
+        $cid = $request->has('cid') && $request->filled('cid') ? $request->input('cid') : false;
         $limit = $request->input('limit', 3);
         $maxId = $request->input('max_id', 0);
 
         $group = Group::findOrFail($gid);
 
-        abort_if($group->is_private && !$group->isMember($pid), 403, 'Not a member of group.');
+        abort_if($group->is_private && ! $group->isMember($pid), 403, 'Not a member of group.');
 
         $status = $cid ? GroupComment::findOrFail($sid) : GroupPost::findOrFail($sid);
 
@@ -53,18 +50,24 @@ class GroupsCommentController extends Controller
 
         $replies = GroupComment::whereGroupId($group->id)
             ->whereStatusId($status->id)
+            ->when($cid, function ($query, $cid) {
+                $query->where('in_reply_to_id', $cid);
+            }, function ($query) {
+                $query->whereNull('in_reply_to_id');
+            })
             ->orderByDesc('id')
-            ->when($maxId, function($query, $maxId) {
+            ->when($maxId, function ($query, $maxId) {
                 return $query->where('id', '<', $maxId);
             })
             ->take($limit)
             ->get()
-            ->map(function($gp) use($pid) {
+            ->map(function ($gp) use ($pid) {
                 $status = GroupCommentService::get($gp['group_id'], $gp['id']);
                 $status['reply_count'] = $gp['reply_count'];
                 $status['url'] = $gp->url();
                 $status['favourited'] = (bool) GroupsLikeService::liked($pid, $gp['id']);
                 $status['account']['url'] = url("/groups/{$gp['group_id']}/user/{$gp['profile_id']}");
+
                 return $status;
             });
 
@@ -77,7 +80,7 @@ class GroupsCommentController extends Controller
             'gid' => 'required|exists:groups,id',
             'sid' => 'required|exists:group_posts,id',
             'cid' => 'sometimes',
-            'content' => 'required|string|min:1|max:1500'
+            'content' => 'required|string|min:1|max:1500',
         ]);
 
         $pid = $request->user()->profile_id;
@@ -89,20 +92,24 @@ class GroupsCommentController extends Controller
 
         $group = Group::findOrFail($gid);
 
-        abort_if(!$group->isMember($pid), 403, 'Not a member of group.');
-        abort_if(!GroupService::canComment($gid, $pid), 422, 'You cannot interact with this content at this time');
-
-
-        $parent = $cid == 1 ?
-            GroupComment::findOrFail($sid) :
-            GroupPost::whereGroupId($gid)->findOrFail($sid);
-        // $autolink = Purify::clean(Autolink::create()->autolink($caption));
-        // $autolink = str_replace('/discover/tags/', '/groups/' . $gid . '/topics/', $autolink);
+        abort_if(! $group->isMember($pid), 403, 'Not a member of group.');
+        abort_if(! GroupService::canComment($gid, $pid), 422, 'You cannot interact with this content at this time');
 
         $status = new GroupComment;
         $status->group_id = $group->id;
         $status->profile_id = $pid;
-        $status->status_id = $parent->id;
+
+        if ($request->filled('cid')) {
+            $parent = GroupComment::whereGroupId($gid)->findOrFail($cid);
+            $status->status_id = $parent->status_id;
+            $status->in_reply_to_id = $cid;
+        } else {
+            $parent = GroupPost::whereGroupId($gid)->findOrFail($sid);
+            $status->status_id = $parent->id;
+        }
+        // $autolink = Purify::clean(Autolink::create()->autolink($caption));
+        // $autolink = str_replace('/discover/tags/', '/groups/' . $gid . '/topics/', $autolink);
+
         $status->caption = Purify::clean($caption);
         $status->visibility = 'public';
         $status->is_nsfw = false;
@@ -111,9 +118,9 @@ class GroupsCommentController extends Controller
 
         NewCommentPipeline::dispatch($parent, $status)->onQueue('groups');
         // todo: perform in job
-        $parent->reply_count = $parent->reply_count ? $parent->reply_count + $parent->reply_count : 1;
-        $parent->save();
-        GroupPostService::del($parent->group_id, $parent->id);
+        // $parent->reply_count = $parent->reply_count ? $parent->reply_count + $parent->reply_count : 1;
+        // $parent->save();
+        // GroupPostService::del($parent->group_id, $parent->id);
 
         GroupService::log(
             $group->id,
@@ -121,15 +128,15 @@ class GroupsCommentController extends Controller
             'group:comment:created',
             [
                 'type' => 'group:post:comment',
-                'status_id' => $status->id
+                'status_id' => $status->id,
             ],
             GroupPost::class,
             $status->id
         );
 
-        //GroupCommentPipeline::dispatch($parent, $status, $gp);
-        //NewStatusPipeline::dispatch($status, $gp);
-        //GroupPostService::del($group->id, GroupService::sidToGid($group->id, $parent->id));
+        // GroupCommentPipeline::dispatch($parent, $status, $gp);
+        // NewStatusPipeline::dispatch($status, $gp);
+        // GroupPostService::del($group->id, GroupService::sidToGid($group->id, $parent->id));
 
         // todo: perform in job
         $s = GroupCommentService::get($status->group_id, $status->id);
@@ -146,7 +153,7 @@ class GroupsCommentController extends Controller
         $this->validate($request, [
             'gid' => 'required|exists:groups,id',
             'sid' => 'required|exists:group_posts,id',
-            'photo' => 'required|image'
+            'photo' => 'required|image',
         ]);
 
         $pid = $request->user()->profile_id;
@@ -157,8 +164,8 @@ class GroupsCommentController extends Controller
 
         $group = Group::findOrFail($gid);
 
-        abort_if(!$group->isMember($pid), 403, 'Not a member of group.');
-        abort_if(!GroupService::canComment($gid, $pid), 422, 'You cannot interact with this content at this time');
+        abort_if(! $group->isMember($pid), 403, 'Not a member of group.');
+        abort_if(! GroupService::canComment($gid, $pid), 422, 'You cannot interact with this content at this time');
         $parent = GroupPost::whereGroupId($gid)->findOrFail($sid);
 
         $status = new GroupComment;
@@ -172,10 +179,10 @@ class GroupsCommentController extends Controller
 
         $photo = $request->file('photo');
         $storagePath = GroupMediaService::path($group->id, $pid, $status->id);
-        $storagePath = 'public/g/' . $group->id . '/p/' . $parent->id;
+        $storagePath = 'public/g/'.$group->id.'/p/'.$parent->id;
         $path = $photo->storePublicly($storagePath);
 
-        $media = new GroupMedia();
+        $media = new GroupMedia;
         $media->group_id = $group->id;
         $media->status_id = $status->id;
         $media->profile_id = $request->user()->profile_id;
@@ -228,23 +235,23 @@ class GroupsCommentController extends Controller
 
     public function deleteComment(Request $request)
     {
-        abort_if(!$request->user(), 403);
+        abort_if(! $request->user(), 403);
 
         $this->validate($request, [
-          'id'  => 'required|integer|min:1',
-          'gid' => 'required|integer|min:1'
+            'id' => 'required|integer|min:1',
+            'gid' => 'required|integer|min:1',
         ]);
 
         $pid = $request->user()->profile_id;
         $gid = $request->input('gid');
         $group = Group::findOrFail($gid);
-        abort_if(!$group->isMember($pid), 403, 'Not a member of group.');
+        abort_if(! $group->isMember($pid), 403, 'Not a member of group.');
 
         $gp = GroupComment::whereGroupId($group->id)->findOrFail($request->input('id'));
         abort_if($gp->profile_id != $pid && $group->profile_id != $pid, 403);
 
         $parent = GroupPost::find($gp->status_id);
-        abort_if(!$parent, 422, 'Invalid parent');
+        abort_if(! $parent, 422, 'Invalid parent');
 
         DeleteCommentPipeline::dispatch($parent, $gp)->onQueue('groups');
         GroupService::log(
@@ -260,7 +267,7 @@ class GroupsCommentController extends Controller
         );
         $gp->delete();
 
-        if($request->wantsJson()) {
+        if ($request->wantsJson()) {
             return response()->json(['Status successfully deleted.']);
         } else {
             return redirect('/groups/feed');
@@ -271,7 +278,7 @@ class GroupsCommentController extends Controller
     {
         $this->validate($request, [
             'gid' => 'required',
-            'sid' => 'required'
+            'sid' => 'required',
         ]);
 
         $pid = $request->user()->profile_id;
@@ -279,11 +286,11 @@ class GroupsCommentController extends Controller
         $sid = $request->input('sid');
 
         $group = GroupService::get($gid);
-        abort_if(!$group || $gid != $group['id'], 422, 'Invalid group');
-        abort_if(!GroupService::canLike($gid, $pid), 422, 'You cannot interact with this content at this time');
-        abort_if(!GroupService::isMember($gid, $pid), 403, 'Not a member of group');
+        abort_if(! $group || $gid != $group['id'], 422, 'Invalid group');
+        abort_if(! GroupService::canLike($gid, $pid), 422, 'You cannot interact with this content at this time');
+        abort_if(! GroupService::isMember($gid, $pid), 403, 'Not a member of group');
         $gp = GroupCommentService::get($gid, $sid);
-        abort_if(!$gp, 422, 'Invalid status');
+        abort_if(! $gp, 422, 'Invalid status');
         $count = $gp['favourites_count'] ?? 0;
 
         $like = GroupLike::firstOrCreate([
@@ -292,10 +299,10 @@ class GroupsCommentController extends Controller
             'comment_id' => $sid,
         ]);
 
-        if($like->wasRecentlyCreated) {
+        if ($like->wasRecentlyCreated) {
             // update parent post like count
             $parent = GroupComment::find($sid);
-            abort_if(!$parent || $parent->group_id != $gid, 422, 'Invalid status');
+            abort_if(! $parent || $parent->group_id != $gid, 422, 'Invalid status');
             $parent->likes_count = $parent->likes_count + 1;
             $parent->save();
             GroupsLikeService::add($pid, $sid);
@@ -321,7 +328,7 @@ class GroupsCommentController extends Controller
     {
         $this->validate($request, [
             'gid' => 'required',
-            'sid' => 'required'
+            'sid' => 'required',
         ]);
 
         $pid = $request->user()->profile_id;
@@ -329,11 +336,11 @@ class GroupsCommentController extends Controller
         $sid = $request->input('sid');
 
         $group = GroupService::get($gid);
-        abort_if(!$group || $gid != $group['id'], 422, 'Invalid group');
-        abort_if(!GroupService::canLike($gid, $pid), 422, 'You cannot interact with this content at this time');
-        abort_if(!GroupService::isMember($gid, $pid), 403, 'Not a member of group');
+        abort_if(! $group || $gid != $group['id'], 422, 'Invalid group');
+        abort_if(! GroupService::canLike($gid, $pid), 422, 'You cannot interact with this content at this time');
+        abort_if(! GroupService::isMember($gid, $pid), 403, 'Not a member of group');
         $gp = GroupCommentService::get($gid, $sid);
-        abort_if(!$gp, 422, 'Invalid status');
+        abort_if(! $gp, 422, 'Invalid status');
         $count = $gp['favourites_count'] ?? 0;
 
         $like = GroupLike::where([
@@ -342,10 +349,10 @@ class GroupsCommentController extends Controller
             'comment_id' => $sid,
         ])->first();
 
-        if($like) {
+        if ($like) {
             $like->delete();
             $parent = GroupComment::find($sid);
-            abort_if(!$parent || $parent->group_id != $gid, 422, 'Invalid status');
+            abort_if(! $parent || $parent->group_id != $gid, 422, 'Invalid status');
             $parent->likes_count = $parent->likes_count - 1;
             $parent->save();
             GroupsLikeService::remove($pid, $sid);

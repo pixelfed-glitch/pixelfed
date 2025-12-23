@@ -14,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use League\Fractal;
 use League\Fractal\Serializer\ArraySerializer;
 
@@ -88,10 +89,10 @@ class ProfileMigrationDeliverMoveActivityPipeline implements ShouldBeUniqueUntil
         }
 
         $audience = $profile->getAudienceInbox();
-        $activitypubObject = new Move();
+        $activitypubObject = new Move;
 
-        $fractal = new Fractal\Manager();
-        $fractal->setSerializer(new ArraySerializer());
+        $fractal = new Fractal\Manager;
+        $fractal->setSerializer(new ArraySerializer);
         $resource = new Fractal\Resource\Item($migration, $activitypubObject);
         $activity = $fractal->createData($resource)->toArray();
 
@@ -127,9 +128,8 @@ class ProfileMigrationDeliverMoveActivityPipeline implements ShouldBeUniqueUntil
 
         $pool = new Pool($client, $requests($audience), [
             'concurrency' => config('federation.activitypub.delivery.concurrency'),
-            'fulfilled' => function ($response, $index) {
-            },
-            'rejected' => function ($reason, $index) {
+            'fulfilled' => function ($response, $index) {}, 'rejected' => function ($reason, $index) {
+                Log::error($reason);
             },
         ]);
 

@@ -2,12 +2,26 @@
 
 namespace App\Models;
 
+use App\Services\AccountService;
+use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\User;
-use App\Services\AccountService;
 
+/**
+ * @property int $id
+ * @property int $parent_id
+ * @property int $child_id
+ * @property array|null $permissions
+ * @property string|null $verify_code
+ * @property \Illuminate\Support\Carbon|null $email_sent_at
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\User $parent
+ * @property-read \App\User $child
+ */
 class ParentalControls extends Model
 {
     use HasFactory, SoftDeletes;
@@ -15,7 +29,7 @@ class ParentalControls extends Model
     protected $casts = [
         'permissions' => 'array',
         'email_sent_at' => 'datetime',
-        'email_verified_at' => 'datetime'
+        'email_verified_at' => 'datetime',
     ];
 
     protected $guarded = [];
@@ -32,8 +46,8 @@ class ParentalControls extends Model
 
     public function childAccount()
     {
-        if($u = $this->child) {
-            if($u->profile_id) {
+        if ($u = $this->child) {
+            if ($u->profile_id) {
                 return AccountService::get($u->profile_id, true);
             } else {
                 return [];
@@ -45,11 +59,11 @@ class ParentalControls extends Model
 
     public function manageUrl()
     {
-        return url('/settings/parental-controls/manage/' . $this->id);
+        return url('/settings/parental-controls/manage/'.$this->id);
     }
 
     public function inviteUrl()
     {
-        return url('/auth/pci/' . $this->id . '/' . $this->verify_code);
+        return url('/auth/pci/'.$this->id.'/'.$this->verify_code);
     }
 }

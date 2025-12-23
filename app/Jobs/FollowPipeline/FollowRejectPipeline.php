@@ -2,68 +2,92 @@
 
 namespace App\Jobs\FollowPipeline;
 
+use App\FollowRequest;
+use App\Transformer\ActivityPub\Verb\RejectFollow;
+use App\Util\ActivityPub\Helpers;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
-use Cache, Log;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
 use League\Fractal;
 use League\Fractal\Serializer\ArraySerializer;
-use App\FollowRequest;
-use App\Util\ActivityPub\Helpers;
-use App\Transformer\ActivityPub\Verb\RejectFollow;
 
 class FollowRejectPipeline implements ShouldQueue
 {
-	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	protected $followRequest;
+    protected $followRequest;
 
-	/**
-	 * Delete the job if its models no longer exist.
-	 *
-	 * @var bool
-	 */
-	public $deleteWhenMissingModels = true;
+    /**
+     * Delete the job if its models no longer exist.
+     *
+     * @var bool
+     */
+    public $deleteWhenMissingModels = true;
 
-	/**
-	 * Create a new job instance.
-	 *
-	 * @return void
-	 */
-	public function __construct(FollowRequest $followRequest)
-	{
-		$this->followRequest = $followRequest;
-	}
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct(FollowRequest $followRequest)
+    {
+        $this->followRequest = $followRequest;
+    }
 
-	/**
-	 * Execute the job.
-	 *
-	 * @return void
-	 */
-	public function handle()
-	{
-		$follow = $this->followRequest;
-		$actor = $follow->actor;
-		$target = $follow->target;
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $follow = $this->followRequest;
 
-		if($actor->domain == null || $actor->inbox_url == null || !$target->private_key) {
-			return;
-		}
+        // Verify follow request exists
+        if (! $follow) {
+            Log::info('FollowRejectPipeline: Follow request no longer exists, skipping job');
 
-		$fractal = new Fractal\Manager();
-		$fractal->setSerializer(new ArraySerializer());
-		$resource = new Fractal\Resource\Item($follow, new RejectFollow());
-		$activity = $fractal->createData($resource)->toArray();
-		$url = $actor->sharedInbox ?? $actor->inbox_url;
+            return;
+        }
 
-		Helpers::sendSignedObject($target, $url, $activity);
+        $actor = $follow->actor;
+        $target = $follow->target;
 
-		$follow->delete();
+        // Verify actor and target exist
+        if (! $actor) {
+            Log::info("FollowRejectPipeline: Actor no longer exists for follow request {$follow->id}, skipping job");
 
-		return;
-	}
+            return;
+        }
+        if (! $target) {
+            Log::info("FollowRejectPipeline: Target no longer exists for follow request {$follow->id}, skipping job");
+
+            return;
+        }
+
+        if ($actor->domain == null || $actor->inbox_url == null || ! $target->private_key) {
+            Log::info("FollowRejectPipeline: Missing required fields for follow request {$follow->id}, skipping job");
+
+            return;
+        }
+
+        try {
+            $fractal = new Fractal\Manager;
+            $fractal->setSerializer(new ArraySerializer);
+            $resource = new Fractal\Resource\Item($follow, new RejectFollow);
+            $activity = $fractal->createData($resource)->toArray();
+            $url = $actor->sharedInbox ?? $actor->inbox_url;
+
+            Helpers::sendSignedObject($target, $url, $activity);
+
+            $follow->delete();
+        } catch (\Exception $e) {
+            Log::warning("FollowRejectPipeline: Failed to process follow request {$follow->id}: ".$e->getMessage());
+            throw $e;
+        }
+
+    }
 }

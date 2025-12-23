@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Instance;
-use App\Profile;
-use App\Services\InstanceService;
 use App\Jobs\InstancePipeline\FetchNodeinfoPipeline;
-use function Laravel\Prompts\select;
+use App\Services\InstanceService;
+use Illuminate\Console\Command;
+
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\progress;
 use function Laravel\Prompts\search;
+use function Laravel\Prompts\select;
 use function Laravel\Prompts\table;
 
 class InstanceManager extends Command
@@ -47,42 +47,35 @@ class InstanceManager extends Command
             ],
         );
 
-        switch($action) {
+        switch ($action) {
             case 'Recalculate Stats':
                 return $this->recalculateStats();
-            break;
 
             case 'Unlisted Instances':
                 return $this->viewUnlistedInstances();
-            break;
 
             case 'Banned Instances':
                 return $this->viewBannedInstances();
-            break;
 
             case 'Unlist Instance':
                 return $this->unlistInstance();
-            break;
 
             case 'Ban Instance':
                 return $this->banInstance();
-            break;
 
             case 'Unban Instance':
                 return $this->unbanInstance();
-            break;
 
             case 'Relist Instance':
                 return $this->relistInstance();
-            break;
         }
     }
 
     protected function recalculateStats()
     {
         $instanceCount = Instance::count();
-        $confirmed = confirm('Do you want to recalculate stats for all ' . $instanceCount . ' instances?');
-        if(!$confirmed) {
+        $confirmed = confirm('Do you want to recalculate stats for all '.$instanceCount.' instances?');
+        if (! $confirmed) {
             $this->error('Aborting...');
             exit;
         }
@@ -109,7 +102,7 @@ class InstanceManager extends Command
         );
 
         $instance = Instance::find($id);
-        if(!$instance) {
+        if (! $instance) {
             $this->error('Oops, an error occured');
             exit;
         }
@@ -119,7 +112,7 @@ class InstanceManager extends Command
                 $instance->domain,
                 number_format($instance->status_count),
                 number_format($instance->user_count),
-            ]
+            ],
         ];
         table(
             ['Domain', 'Status Count', 'User Count'],
@@ -127,7 +120,7 @@ class InstanceManager extends Command
         );
 
         $confirmed = confirm('Are you sure you want to unlist this instance?');
-        if(!$confirmed) {
+        if (! $confirmed) {
             $this->error('Aborting instance unlisting');
             exit;
         }
@@ -135,7 +128,7 @@ class InstanceManager extends Command
         $instance->unlisted = true;
         $instance->save();
         InstanceService::refresh();
-        $this->info('Successfully unlisted ' . $instance->domain . '!');
+        $this->info('Successfully unlisted '.$instance->domain.'!');
         exit;
     }
 
@@ -149,7 +142,7 @@ class InstanceManager extends Command
         );
 
         $instance = Instance::find($id);
-        if(!$instance) {
+        if (! $instance) {
             $this->error('Oops, an error occured');
             exit;
         }
@@ -159,7 +152,7 @@ class InstanceManager extends Command
                 $instance->domain,
                 number_format($instance->status_count),
                 number_format($instance->user_count),
-            ]
+            ],
         ];
         table(
             ['Domain', 'Status Count', 'User Count'],
@@ -167,7 +160,7 @@ class InstanceManager extends Command
         );
 
         $confirmed = confirm('Are you sure you want to re-list this instance?');
-        if(!$confirmed) {
+        if (! $confirmed) {
             $this->error('Aborting instance re-listing');
             exit;
         }
@@ -175,7 +168,7 @@ class InstanceManager extends Command
         $instance->unlisted = false;
         $instance->save();
         InstanceService::refresh();
-        $this->info('Successfully re-listed ' . $instance->domain . '!');
+        $this->info('Successfully re-listed '.$instance->domain.'!');
         exit;
     }
 
@@ -189,7 +182,7 @@ class InstanceManager extends Command
         );
 
         $instance = Instance::find($id);
-        if(!$instance) {
+        if (! $instance) {
             $this->error('Oops, an error occured');
             exit;
         }
@@ -199,7 +192,7 @@ class InstanceManager extends Command
                 $instance->domain,
                 number_format($instance->status_count),
                 number_format($instance->user_count),
-            ]
+            ],
         ];
         table(
             ['Domain', 'Status Count', 'User Count'],
@@ -207,7 +200,7 @@ class InstanceManager extends Command
         );
 
         $confirmed = confirm('Are you sure you want to ban this instance?');
-        if(!$confirmed) {
+        if (! $confirmed) {
             $this->error('Aborting instance ban');
             exit;
         }
@@ -215,7 +208,7 @@ class InstanceManager extends Command
         $instance->banned = true;
         $instance->save();
         InstanceService::refresh();
-        $this->info('Successfully banned ' . $instance->domain . '!');
+        $this->info('Successfully banned '.$instance->domain.'!');
         exit;
     }
 
@@ -229,7 +222,7 @@ class InstanceManager extends Command
         );
 
         $instance = Instance::find($id);
-        if(!$instance) {
+        if (! $instance) {
             $this->error('Oops, an error occured');
             exit;
         }
@@ -239,7 +232,7 @@ class InstanceManager extends Command
                 $instance->domain,
                 number_format($instance->status_count),
                 number_format($instance->user_count),
-            ]
+            ],
         ];
         table(
             ['Domain', 'Status Count', 'User Count'],
@@ -247,7 +240,7 @@ class InstanceManager extends Command
         );
 
         $confirmed = confirm('Are you sure you want to unban this instance?');
-        if(!$confirmed) {
+        if (! $confirmed) {
             $this->error('Aborting instance unban');
             exit;
         }
@@ -255,7 +248,7 @@ class InstanceManager extends Command
         $instance->banned = false;
         $instance->save();
         InstanceService::refresh();
-        $this->info('Successfully un-banned ' . $instance->domain . '!');
+        $this->info('Successfully un-banned '.$instance->domain.'!');
         exit;
     }
 
@@ -263,7 +256,7 @@ class InstanceManager extends Command
     {
         $data = Instance::whereBanned(true)
             ->get(['domain', 'user_count', 'status_count'])
-            ->map(function($d) {
+            ->map(function ($d) {
                 return [
                     'domain' => $d->domain,
                     'user_count' => number_format($d->user_count),
@@ -281,12 +274,12 @@ class InstanceManager extends Command
     {
         $data = Instance::whereUnlisted(true)
             ->get(['domain', 'user_count', 'status_count', 'banned'])
-            ->map(function($d) {
+            ->map(function ($d) {
                 return [
                     'domain' => $d->domain,
                     'user_count' => number_format($d->user_count),
                     'status_count' => number_format($d->status_count),
-                    'banned' => $d->banned ? '✅' : null
+                    'banned' => $d->banned ? '✅' : null,
                 ];
             })
             ->toArray();

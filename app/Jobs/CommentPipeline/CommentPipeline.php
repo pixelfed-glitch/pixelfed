@@ -2,27 +2,26 @@
 
 namespace App\Jobs\CommentPipeline;
 
-use App\{
-    Notification,
-    Status,
-    UserFilter
-};
+use App\Notification;
 use App\Services\NotificationService;
 use App\Services\StatusService;
-use DB, Cache, Log;
-use Illuminate\Support\Facades\Redis;
-
+use App\Status;
+use App\UserFilter;
+use Cache;
+use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class CommentPipeline implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $status;
+
     protected $comment;
 
     /**
@@ -33,6 +32,7 @@ class CommentPipeline implements ShouldQueue
     public $deleteWhenMissingModels = true;
 
     public $timeout = 5;
+
     public $tries = 1;
 
     /**
@@ -56,11 +56,35 @@ class CommentPipeline implements ShouldQueue
         $status = $this->status;
         $comment = $this->comment;
 
+        // Verify status and comment exists
+        if (! $status) {
+            Log::info('CommentPipeline: Status no longer exists, skipping job');
+
+            return;
+        }
+        if (! $comment) {
+            Log::info('CommentPipeline: Comment no longer exists, skipping job');
+
+            return;
+        }
+
         $target = $status->profile;
         $actor = $comment->profile;
 
-        if(config('database.default') == 'mysql' || config('database.default') == 'mariadb') {
-        	// todo: refactor
+        // Verify target and actor profiles exist
+        if (! $target) {
+            Log::info("CommentPipeline: Target profile no longer exists for status {$status->id}, skipping job");
+
+            return;
+        }
+        if (! $actor) {
+            Log::info("CommentPipeline: Actor profile no longer exists for comment {$comment->id}, skipping job");
+
+            return;
+        }
+
+        if (config('database.default') === 'mysql' || config('database.default') === 'mariadb') {
+            // todo: refactor
             // $exp = DB::raw("select id, in_reply_to_id from statuses, (select @pv := :kid) initialisation where id > @pv and find_in_set(in_reply_to_id, @pv) > 0 and @pv := concat(@pv, ',', id)");
             // $expQuery = $exp->getValue(DB::connection()->getQueryGrammar());
             // $count = DB::select($expQuery, [ 'kid' => $status->id ]);
@@ -74,8 +98,8 @@ class CommentPipeline implements ShouldQueue
 
         StatusService::del($comment->id);
         StatusService::del($status->id);
-        Cache::forget('status:replies:all:' . $comment->id);
-        Cache::forget('status:replies:all:' . $status->id);
+        Cache::forget('status:replies:all:'.$comment->id);
+        Cache::forget('status:replies:all:'.$status->id);
 
         if ($actor->id === $target->id || $status->comments_disabled == true) {
             return true;
@@ -87,13 +111,13 @@ class CommentPipeline implements ShouldQueue
             ->whereFilterableId($actor->id)
             ->exists();
 
-        if($filtered == true) {
+        if ($filtered == true) {
             return;
         }
 
-        if($target->user_id && $target->domain === null) {
-            DB::transaction(function() use($target, $actor, $comment) {
-                $notification = new Notification();
+        if ($target->user_id && $target->domain === null) {
+            DB::transaction(function () use ($target, $actor, $comment) {
+                $notification = new Notification;
                 $notification->profile_id = $target->id;
                 $notification->actor_id = $actor->id;
                 $notification->action = 'comment';
@@ -107,13 +131,13 @@ class CommentPipeline implements ShouldQueue
             });
         }
 
-        if($exists = Cache::get('status:replies:all:' . $status->id)) {
-        	if($exists && $exists->count() == 3) {
-        	} else {
-        		Cache::forget('status:replies:all:' . $status->id);
-        	}
+        if ($exists = Cache::get('status:replies:all:'.$status->id)) {
+            if ($exists && $exists->count() == 3) {
+            } else {
+                Cache::forget('status:replies:all:'.$status->id);
+            }
         } else {
-        	Cache::forget('status:replies:all:' . $status->id);
+            Cache::forget('status:replies:all:'.$status->id);
         }
     }
 }

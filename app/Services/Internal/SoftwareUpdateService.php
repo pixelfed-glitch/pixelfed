@@ -2,10 +2,10 @@
 
 namespace App\Services\Internal;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class SoftwareUpdateService
 {
@@ -13,7 +13,7 @@ class SoftwareUpdateService
 
     public static function cacheKey()
     {
-        return self::CACHE_KEY . 'latest:v1.0.0';
+        return self::CACHE_KEY.'latest:v1.0.0';
     }
 
     public static function get()
@@ -28,6 +28,7 @@ class SoftwareUpdateService
 
         if(!$version || !isset($version['tag_name']) || !preg_match($version_regex, $version['tag_name'], $latest_matches)) {
             $hideWarning = (bool) config('instance.software-update.disable_failed_warning');
+
             return [
                 'current' => $curVersion,
                 'latest' => [
@@ -35,7 +36,7 @@ class SoftwareUpdateService
                     'published_at' => null,
                     'url' => null,
                 ],
-                'running_latest' => $hideWarning ? true : null
+                'running_latest' => $hideWarning ? true : null,
             ];
         }
 
@@ -68,11 +69,11 @@ class SoftwareUpdateService
             return;
         } catch (ConnectionException $e) {
             return;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return;
         }
 
-        if(!$res->ok()) {
+        if (! $res->ok()) {
             return;
         }
 

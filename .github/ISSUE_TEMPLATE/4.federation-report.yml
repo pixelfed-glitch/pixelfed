@@ -1,7 +1,7 @@
-name: 🐞 Bug report
-title: "[Bug]: "
-labels: ["bug", "triage"]
-description: Report an issue with Pixelfed here
+name: 🕸️ Federation Issue (ActivityPub)
+title: "[Federation]: "
+labels: ["🕸️ Federation"]
+description: Report an issue with Pixelfed and the Fediverse/ActivityPub here
 body:
   - type: markdown
     attributes:

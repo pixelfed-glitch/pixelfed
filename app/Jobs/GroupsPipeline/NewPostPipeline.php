@@ -2,26 +2,27 @@
 
 namespace App\Jobs\GroupsPipeline;
 
-use App\Util\Media\Image;
+use App\Models\GroupHashtag;
+use App\Models\GroupPost;
+use App\Models\GroupPostHashtag;
+use App\Util\Lexer\Autolink;
+use App\Util\Lexer\Extractor;
+use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Group;
-use App\Models\GroupPost;
-use App\Models\GroupHashtag;
-use App\Models\GroupPostHashtag;
-use App\Util\Lexer\Autolink;
-use App\Util\Lexer\Extractor;
-use DB;
+use Illuminate\Support\Facades\Log;
 
 class NewPostPipeline implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $status;
+
     protected $entities;
+
     protected $autolink;
 
     /**
@@ -50,6 +51,27 @@ class NewPostPipeline implements ShouldQueue
     {
         $profile = $this->status->profile;
         $status = $this->status;
+
+        // Verify status exists
+        if (! $status) {
+            Log::info('NewPostPipeline: Status no longer exists, skipping job');
+
+            return;
+        }
+
+        // Verify status has a profile
+        if (! $status->profile_id) {
+            Log::info("NewPostPipeline: Status {$status->id} has no profile_id, skipping job");
+
+            return;
+        }
+
+        $profile = $status->profile;
+        if (! $profile) {
+            Log::info("NewPostPipeline: Profile no longer exists for status {$status->id}, skipping job");
+
+            return;
+        }
 
         if ($profile->no_autolink == false) {
             $this->parseEntities();

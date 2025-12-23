@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Follower;
 use App\Jobs\FollowPipeline\FollowPipeline;
 use App\Profile;
+use Exception;
 use Illuminate\Console\Command;
 
 class SeedFollows extends Command
@@ -47,15 +48,15 @@ class SeedFollows extends Command
                 $actor = Profile::whereDomain(false)->inRandomOrder()->firstOrFail();
                 $target = Profile::whereDomain(false)->inRandomOrder()->firstOrFail();
 
-                if($actor->id == $target->id) {
+                if ($actor->id == $target->id) {
                     continue;
                 }
 
                 $follow = Follower::firstOrCreate([
-                    'profile_id'    => $actor->id,
-                    'following_id'  => $target->id
+                    'profile_id' => $actor->id,
+                    'following_id' => $target->id,
                 ]);
-                if($follow->wasRecentlyCreated == true) {
+                if ($follow->wasRecentlyCreated == true) {
                     FollowPipeline::dispatch($follow);
                 }
             } catch (Exception $e) {

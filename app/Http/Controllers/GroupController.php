@@ -462,7 +462,6 @@ class GroupController extends GroupFederationController
                 );
 
                 return response()->json([200]);
-                break;
 
             case 'ignore':
                 GroupReport::whereGroupId($group->id)
@@ -486,7 +485,6 @@ class GroupController extends GroupFederationController
                 );
 
                 return response()->json([200]);
-                break;
         }
     }
 
@@ -636,7 +634,7 @@ class GroupController extends GroupFederationController
     {
         abort_unless(config('groups.enabled'), 404);
         $group = GroupService::get($id);
-        abort_if(! $group || empty($group), 404);
+        abort_if(! $group, 404);
 
         return view('groups.invite-claim', compact('group'));
     }

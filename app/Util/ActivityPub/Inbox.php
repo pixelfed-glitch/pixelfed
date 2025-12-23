@@ -23,6 +23,7 @@ use App\Jobs\StoryPipeline\StoryFetch;
 use App\Like;
 use App\Media;
 use App\Models\Conversation;
+use App\Models\PollVote;
 use App\Models\RemoteReport;
 use App\Notification;
 use App\Profile;
@@ -33,10 +34,13 @@ use App\Services\PollService;
 use App\Services\PushNotificationService;
 use App\Services\ReblogService;
 use App\Services\RelationshipService;
+use App\Services\SanitizeService;
+use App\Services\StoryIndexService;
 use App\Services\UserFilterService;
 use App\Status;
 use App\Story;
 use App\StoryView;
+use App\User;
 use App\UserFilter;
 use App\Util\ActivityPub\Validator\Accept as AcceptValidator;
 use App\Util\ActivityPub\Validator\Announce as AnnounceValidator;
@@ -49,7 +53,6 @@ use Cache;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Purify;
 use Storage;
 use Throwable;
 
@@ -422,7 +425,7 @@ class Inbox
             return;
         }
 
-        $msg = Purify::clean($activity['content']);
+        $msg = app(SanitizeService::class)->html($activity['content']);
         $msgText = strip_tags($msg);
 
         if (Str::startsWith($msgText, '@'.$profile->username)) {
@@ -472,7 +475,7 @@ class Inbox
             ]
         );
 
-        if (count($activity['attachment'])) {
+        if (count($activity['attachment'] ?? [])) {
             $photos = 0;
             $videos = 0;
             $allowed = explode(',', config_cache('pixelfed.media_types'));
@@ -636,7 +639,7 @@ class Inbox
 
         $parent = Helpers::statusFetch($activity);
 
-        if (! $parent || empty($parent)) {
+        if (! $parent) {
             return;
         }
 
@@ -772,10 +775,16 @@ class Inbox
                     if (! $profile || $profile->private_key != null) {
                         return;
                     }
+
+                    Notification::whereActorId($profile->id)
+                        ->chunkById(100, function ($notifications) {
+                            foreach ($notifications as $notification) {
+                                $notification->forceDelete();
+                            }
+                        });
                     DeleteRemoteProfilePipeline::dispatch($profile)->onQueue('inbox');
 
                     return;
-                    break;
 
                 case 'Tombstone':
                     $profile = Profile::whereRemoteUrl($actor)->first();
@@ -793,6 +802,14 @@ class Inbox
                     if ($status->profile_id != $profile->id) {
                         return;
                     }
+                    $notifications = Notification::whereActorId($status->profile_id)
+                        ->whereItemId($status->id)
+                        ->whereItemType('App\Status')
+                        ->get();
+                    foreach ($notifications as $notification) {
+                        $notification->forceDelete();
+                    }
+
                     if ($status->scope && in_array($status->scope, ['public', 'unlisted', 'private'])) {
                         if ($status->type && ! in_array($status->type, ['story:reaction', 'story:reply', 'reply'])) {
                             FeedRemoveRemotePipeline::dispatch($status->id, $status->profile_id)->onQueue('feed');
@@ -801,7 +818,6 @@ class Inbox
                     RemoteStatusDelete::dispatch($status)->onQueue('high');
 
                     return;
-                    break;
 
                 case 'Story':
                     $story = Story::whereObjectId($id)
@@ -811,11 +827,9 @@ class Inbox
                     }
 
                     return;
-                    break;
 
                 default:
                     return;
-                    break;
             }
         }
 
@@ -917,14 +931,22 @@ class Inbox
                 FeedRemoveRemotePipeline::dispatch($status->id, $status->profile_id)->onQueue('feed');
                 Status::whereProfileId($profile->id)
                     ->whereReblogOfId($status->id)
-                    ->delete();
+                    ->forceDelete();
+
+                if ($status->reblogs_count) {
+                    $status->reblogs_count = $status->reblogs_count - 1;
+                    $status->saveQuietly();
+                }
                 ReblogService::removePostReblog($profile->id, $status->id);
-                Notification::whereProfileId($status->profile_id)
+                $notifications = Notification::whereProfileId($status->profile_id)
                     ->whereActorId($profile->id)
                     ->whereAction('share')
-                    ->whereItemId($status->reblog_of_id)
+                    ->whereItemId($status->id)
                     ->whereItemType('App\Status')
-                    ->forceDelete();
+                    ->get();
+                foreach ($notifications as $notification) {
+                    $notification->forceDelete();
+                }
                 break;
 
             case 'Block':
@@ -944,12 +966,15 @@ class Inbox
                 FollowRequest::whereFollowingId($following->id)
                     ->whereFollowerId($profile->id)
                     ->forceDelete();
-                Notification::whereProfileId($following->id)
+                $notifications = Notification::whereProfileId($following->id)
                     ->whereActorId($profile->id)
                     ->whereAction('follow')
                     ->whereItemId($following->id)
                     ->whereItemType('App\Profile')
-                    ->forceDelete();
+                    ->get();
+                foreach ($notifications as $notification) {
+                    $notification->forceDelete();
+                }
                 FollowerService::remove($profile->id, $following->id);
                 RelationshipService::refresh($following->id, $profile->id);
                 AccountService::del($profile->id);
@@ -975,15 +1000,18 @@ class Inbox
                 Like::whereProfileId($profile->id)
                     ->whereStatusId($status->id)
                     ->forceDelete();
-                Notification::whereProfileId($status->profile_id)
+                $notifications = Notification::whereProfileId($status->profile_id)
                     ->whereActorId($profile->id)
                     ->whereAction('like')
                     ->whereItemId($status->id)
                     ->whereItemType('App\Status')
-                    ->forceDelete();
+                    ->get();
+
+                foreach ($notifications as $notification) {
+                    $notification->forceDelete();
+                }
                 break;
         }
-
     }
 
     public function handleViewActivity()
@@ -1038,6 +1066,9 @@ class Inbox
             'profile_id' => $profile->id,
         ]);
 
+        $index = app(StoryIndexService::class);
+        $index->markSeen($profile->id, $story->profile_id, $story->id, $story->created_at);
+
         if ($view->wasRecentlyCreated == true) {
             $story->view_count++;
             $story->save();
@@ -1060,7 +1091,7 @@ class Inbox
         $actor = $this->payload['actor'];
         $storyUrl = $this->payload['inReplyTo'];
         $to = $this->payload['to'];
-        $text = Purify::clean($this->payload['content']);
+        $text = app(SanitizeService::class)->html($this->payload['content']);
 
         if (parse_url($id, PHP_URL_HOST) !== parse_url($actor, PHP_URL_HOST)) {
             return;
@@ -1180,7 +1211,7 @@ class Inbox
         $actor = $this->payload['actor'];
         $storyUrl = $this->payload['inReplyTo'];
         $to = $this->payload['to'];
-        $text = Purify::clean($this->payload['content']);
+        $text = app(SanitizeService::class)->html($this->payload['content']);
 
         if (parse_url($id, PHP_URL_HOST) !== parse_url($actor, PHP_URL_HOST)) {
             return;
@@ -1306,9 +1337,9 @@ class Inbox
         $content = null;
         if (isset($this->payload['content'])) {
             if (strlen($this->payload['content']) > 5000) {
-                $content = Purify::clean(substr($this->payload['content'], 0, 5000).' ... (truncated message due to exceeding max length)');
+                $content = app(SanitizeService::class)->html(substr($this->payload['content'], 0, 5000).' ... (truncated message due to exceeding max length)');
             } else {
-                $content = Purify::clean($this->payload['content']);
+                $content = app(SanitizeService::class)->html($this->payload['content']);
             }
         }
         $object = $this->payload['object'];

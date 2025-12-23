@@ -2,14 +2,14 @@
 
 namespace App\Jobs\ParentalControlsPipeline;
 
+use App\Mail\ParentChildInvite;
+use App\Models\ParentalControls;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\ParentalControls;
-use App\Mail\ParentChildInvite;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class DispatchChildInvitePipeline implements ShouldQueue
@@ -32,6 +32,13 @@ class DispatchChildInvitePipeline implements ShouldQueue
     public function handle(): void
     {
         $pc = $this->pc;
+
+        // Verify parental control exists
+        if (! $pc) {
+            Log::info('DispatchChildInvitePipeline: Parental control no longer exists, skipping job');
+
+            return;
+        }
 
         Mail::to($pc->email)->send(new ParentChildInvite($pc));
     }

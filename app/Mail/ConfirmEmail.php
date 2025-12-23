@@ -11,6 +11,8 @@ class ConfirmEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    protected $verify;
+
     /**
      * Create a new message instance.
      *
@@ -28,6 +30,6 @@ class ConfirmEmail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.confirm_email')->with(['verify'=>$this->verify]);
+        return $this->markdown('emails.confirm_email')->with(['verify' => $this->verify]);
     }
 }

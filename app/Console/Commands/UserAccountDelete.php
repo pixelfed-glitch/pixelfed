@@ -68,56 +68,68 @@ class UserAccountDelete extends Command
 
         $profile = Profile::withTrashed()->find($user->profile_id);
 
-        $fractal = new Fractal\Manager();
-        $fractal->setSerializer(new ArraySerializer());
-        $resource = new Fractal\Resource\Item($profile, new DeleteActor());
+        $fractal = new Fractal\Manager;
+        $fractal->setSerializer(new ArraySerializer);
+        $resource = new Fractal\Resource\Item($profile, new DeleteActor);
         $activity = $fractal->createData($resource)->toArray();
-
-        $audience = Instance::whereNotNull(['shared_inbox', 'nodeinfo_last_fetched'])
-            ->where('nodeinfo_last_fetched', '>', now()->subDays(14))
-            ->distinct()
-            ->pluck('shared_inbox');
-
         $payload = json_encode($activity);
 
         $client = new Client([
             'timeout' => 5,
+            'connect_timeout' => 2,
         ]);
 
         $version = config('pixelfed.version');
         $appUrl = config('app.url');
         $userAgent = "(Pixelfed/{$version}; +{$appUrl})";
 
-        $requests = function ($audience) use ($client, $activity, $profile, $payload, $userAgent) {
-            foreach ($audience as $url) {
-                $headers = HttpSignature::sign($profile, $url, $activity, [
-                    'Content-Type' => 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-                    'User-Agent' => $userAgent,
-                ]);
-                yield function () use ($client, $url, $headers, $payload) {
-                    return $client->postAsync($url, [
-                        'curl' => [
-                            CURLOPT_HTTPHEADER => $headers,
-                            CURLOPT_POSTFIELDS => $payload,
-                            CURLOPT_HEADER => true,
-                            CURLOPT_SSL_VERIFYPEER => true,
-                            CURLOPT_SSL_VERIFYHOST => false,
-                        ],
-                    ]);
+        $totalSent = 0;
+        $bar = $this->output->createProgressBar();
+        $bar->start();
+
+        Instance::whereNotNull('shared_inbox')
+            ->whereNotNull('nodeinfo_last_fetched')
+            ->where('nodeinfo_last_fetched', '>', now()->subDays(14))
+            ->select(['shared_inbox'])
+            ->distinct()
+            ->chunk(500, function ($instances) use ($client, $activity, $profile, $payload, $userAgent, &$totalSent, $bar) {
+                $audience = $instances->pluck('shared_inbox')->unique();
+
+                $requests = function ($audience) use ($client, $activity, $profile, $payload, $userAgent) {
+                    foreach ($audience as $url) {
+                        $headers = HttpSignature::sign($profile, $url, $activity, [
+                            'Content-Type' => 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+                            'User-Agent' => $userAgent,
+                        ]);
+                        yield function () use ($client, $url, $headers, $payload) {
+                            return $client->postAsync($url, [
+                                'curl' => [
+                                    CURLOPT_HTTPHEADER => $headers,
+                                    CURLOPT_POSTFIELDS => $payload,
+                                    CURLOPT_HEADER => true,
+                                ],
+                            ]);
+                        };
+                    }
                 };
-            }
-        };
 
-        $pool = new Pool($client, $requests($audience), [
-            'concurrency' => 50,
-            'fulfilled' => function ($response, $index) {
-            },
-            'rejected' => function ($reason, $index) {
-            },
-        ]);
+                $pool = new Pool($client, $requests($audience), [
+                    'concurrency' => 100,
+                    'fulfilled' => function ($response, $index) use (&$totalSent, $bar) {
+                        $totalSent++;
+                        $bar->advance();
+                    },
+                    'rejected' => function ($reason, $index) use ($bar) {
+                        $bar->advance();
+                    },
+                ]);
 
-        $promise = $pool->promise();
+                $promise = $pool->promise();
+                $promise->wait();
+            });
 
-        $promise->wait();
+        $bar->finish();
+        $this->newLine();
+        $this->info("Successfully sent Delete activity to {$totalSent} instances.");
     }
 }

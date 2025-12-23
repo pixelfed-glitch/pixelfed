@@ -2,33 +2,34 @@
 
 namespace App\Jobs\HomeFeedPipeline;
 
+use App\Follower;
+use App\Hashtag;
+use App\Services\HomeTimelineService;
+use App\Services\StatusService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Support\Facades\Cache;
-use App\Follower;
-use App\Hashtag;
-use App\StatusHashtag;
-use App\Services\HashtagFollowService;
-use App\Services\StatusService;
-use App\Services\HomeTimelineService;
+use Illuminate\Support\Facades\Log;
 
 class HashtagUnfollowPipeline implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $pid;
+
     protected $hid;
+
     protected $slug;
 
     public $timeout = 900;
+
     public $tries = 3;
+
     public $maxExceptions = 1;
+
     public $failOnTimeout = true;
 
     /**
@@ -48,31 +49,56 @@ class HashtagUnfollowPipeline implements ShouldQueue
     {
         $hid = $this->hid;
         $pid = $this->pid;
-        $slug = strtolower($this->slug);
+        $slug = $this->slug;
+
+        // Verify hashtag ID exists
+        if (! $hid) {
+            Log::info('HashtagUnfollowPipeline: Hashtag ID not provided, skipping job');
+
+            return;
+        }
+
+        // Verify profile ID exists
+        if (! $pid) {
+            Log::info('HashtagUnfollowPipeline: Profile ID not provided, skipping job');
+
+            return;
+        }
+
+        // Verify slug exists
+        if (! $slug) {
+            Log::info('HashtagUnfollowPipeline: Slug not provided, skipping job');
+
+            return;
+        }
+
+        $slug = strtolower($slug);
 
         $statusIds = HomeTimelineService::get($pid, 0, -1);
 
-        $followingIds = Cache::remember('profile:following:'.$pid, 1209600, function() use($pid) {
+        $followingIds = Cache::remember('profile:following:'.$pid, 1209600, function () use ($pid) {
             $following = Follower::whereProfileId($pid)->pluck('following_id');
+
             return $following->push($pid)->toArray();
         });
 
-        foreach($statusIds as $id) {
+        foreach ($statusIds as $id) {
             $status = StatusService::get($id, false);
-            if(!$status || empty($status['tags'])) {
+            if (! $status || empty($status['tags'])) {
                 HomeTimelineService::rem($pid, $id);
+
                 continue;
             }
             $following = in_array((int) $status['account']['id'], $followingIds);
-            if($following === true) {
+            if ($following === true) {
                 continue;
             }
 
-            $tags = collect($status['tags'])->map(function($tag) {
+            $tags = collect($status['tags'])->map(function ($tag) {
                 return strtolower($tag['name']);
             })->filter()->values()->toArray();
 
-            if(in_array($slug, $tags)) {
+            if (in_array($slug, $tags)) {
                 HomeTimelineService::rem($pid, $id);
             }
         }

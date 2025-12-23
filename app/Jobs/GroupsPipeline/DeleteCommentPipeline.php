@@ -13,6 +13,8 @@ use App\Models\GroupComment;
 use App\Models\GroupPost;
 use App\Models\GroupHashtag;
 use App\Models\GroupPostHashtag;
+use App\Services\GroupFeedService;
+use App\Services\GroupPostService;
 use App\Util\Lexer\Autolink;
 use App\Util\Lexer\Extractor;
 use DB;
@@ -23,13 +25,6 @@ class DeleteCommentPipeline implements ShouldQueue
 
     protected $parent;
     protected $status;
-
-    /**
-     * Delete the job if its models no longer exist.
-     *
-     * @var bool
-     */
-    public $deleteWhenMissingModels = true;
 
     /**
      * Create a new job instance.
@@ -49,10 +44,16 @@ class DeleteCommentPipeline implements ShouldQueue
      */
     public function handle()
     {
+        $groupId = $this->status->group_id;
+        $postId = $this->status->id;
+        if($this->status->)
         $parent = $this->parent;
         $parent->reply_count = GroupComment::whereStatusId($parent->id)->count();
         $parent->save();
 
+        GroupPostService::del($groupId, $postId);
+        GroupFeedService::del($groupId, $postId);
+        GroupPostService::del($groupId, $parent->id);
         return;
     }
 }
