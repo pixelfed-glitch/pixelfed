@@ -6,6 +6,11 @@ webserver_type: nginx-fpm
 disable_settings_management: true
 web_environment:
   - REDIS_HOST=ddev-pixelfed-redis
+  - QUEUE_DRIVER=redis
+  - BROADCAST_DRIVER=redis
+  - CACHE_DRIVER=redis
+  - SESSION_DRIVER=redis
+  - QUEUE_DRIVER=redis
   - MAIL_MAILER=smtp
   - MAIL_HOST=localhost
   - MAIL_PORT=1025

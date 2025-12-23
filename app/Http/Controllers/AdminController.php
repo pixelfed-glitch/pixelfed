@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Contact;
-use App\Http\Controllers\Admin\AdminActivityPubFilterSystemController;
 use App\Http\Controllers\Admin\AdminAutospamController;
 use App\Http\Controllers\Admin\AdminDirectoryController;
 use App\Http\Controllers\Admin\AdminDiscoverController;
@@ -37,8 +36,7 @@ use Storage;
 
 class AdminController extends Controller
 {
-    use AdminActivityPubFilterSystemController,
-        AdminAutospamController,
+    use AdminAutospamController,
         AdminDirectoryController,
         AdminDiscoverController,
         AdminHashtagsController,
