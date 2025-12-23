@@ -142,7 +142,7 @@ trait AdminReportController
         });
 
         $avg = Cache::remember('admin-dash:reports:spam-count:avg', 43200, function () {
-            if (config('database.default') != 'mysql' && config('database.default') != 'mariadb') {
+            if (config('database.default') !== 'mysql' && config('database.default') !== 'mariadb') {
                 return 0;
             }
 
@@ -154,7 +154,7 @@ trait AdminReportController
         });
 
         $avgOpen = Cache::remember('admin-dash:reports:spam-count:avgopen', 43200, function () {
-            if (config('database.default') != 'mysql' && config('database.default') != 'mariadb') {
+            if (config('database.default') !== 'mysql' && config('database.default') !== 'mariadb') {
                 return '0';
             }
             $seconds = AccountInterstitial::selectRaw('DATE(created_at) AS start_date, AVG(TIME_TO_SEC(TIMEDIFF(appeal_handled_at, created_at))) AS timediff')->whereType('post.autospam')->whereNotNull('appeal_handled_at')->where('created_at', '>', now()->subMonth())->get();

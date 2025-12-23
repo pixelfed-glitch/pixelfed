@@ -307,6 +307,15 @@ trait AdminSettingsController
                 ];
                 break;
 
+            case 'mariadb':
+                $exp = DB::raw('select version()');
+                $expQuery = $exp->getValue(DB::connection()->getQueryGrammar());
+                $sys['database'] = [
+                    'name' => 'MariaDB',
+                    'version' => DB::select($expQuery)[0]->{'version()'},
+                ];
+                break;
+
             default:
                 $sys['database'] = [
                     'name' => 'Unknown',

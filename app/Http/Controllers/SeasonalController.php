@@ -21,7 +21,7 @@ class SeasonalController extends Controller
     public function yearInReview()
     {
         abort_if(now()->gt('2021-03-01 00:00:00'), 404);
-        abort_if(config('database.default') != 'mysql' && config('database.default') != 'mariadb', 404);
+        abort_if(config('database.default') !== 'mysql' && config('database.default') !== 'mariadb', 404);
 
         $profile = Auth::user()->profile;
 
@@ -31,7 +31,7 @@ class SeasonalController extends Controller
     public function getData(Request $request)
     {
         abort_if(now()->gt('2021-03-01 00:00:00'), 404);
-        abort_if(config('database.default') != 'mysql' && config('database.default') != 'mariadb', 404);
+        abort_if(config('database.default') !== 'mysql' && config('database.default') !== 'mariadb', 404);
 
         $uid = $request->user()->id;
         $pid = $request->user()->profile_id;
@@ -219,7 +219,7 @@ class SeasonalController extends Controller
     public function store(Request $request)
     {
         abort_if(now()->gt('2021-03-01 00:00:00'), 404);
-        abort_if(config('database.default') != 'mysql' && config('database.default') != 'mariadb', 404);
+        abort_if(config('database.default') !== 'mysql' && config('database.default') !== 'mariadb', 404);
 
         $user = $request->user();
 
