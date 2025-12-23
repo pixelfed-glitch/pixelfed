@@ -379,7 +379,7 @@ ENV PHP_VERSION=${PHP_VERSION}
 # Install nginx dependencies
 RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/lib/apt \
     --mount=type=cache,id=pixelfed-apt-cache-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TARGETPLATFORM},target=/var/cache/apt \
-    set -ex \
+    set -ex -o pipefail \
     && apt-get update \
     && apt-get install -y --no-install-recommends wget gnupg ca-certificates \
     && wget -qO- https://nginx.org/keys/nginx_signing.key | gpg --dearmor > "${NGINX_GPGKEY_PATH}" \
