@@ -480,14 +480,14 @@ function await-database-ready()
     load-config-files
 
     case "${DB_CONNECTION:-}" in
-        mysql)
+        mariadb)
             # shellcheck disable=SC2154
             while ! echo "SELECT 1" | mariadb --user="${DB_USERNAME}" --password="${DB_PASSWORD}" --host="${DB_HOST}" --port="${DB_PORT}" "${DB_DATABASE}" --silent >/dev/null; do
                 staggered-sleep
             done
             ;;
 
-        mariadb)
+        mysql)
             # shellcheck disable=SC2154
             while ! echo "SELECT 1" | mysql --user="${DB_USERNAME}" --password="${DB_PASSWORD}" --host="${DB_HOST}" --port="${DB_PORT}" "${DB_DATABASE}" --silent >/dev/null; do
                 staggered-sleep

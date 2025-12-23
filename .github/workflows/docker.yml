@@ -225,6 +225,7 @@ jobs:
         env:
           CI: true
           DOCKER_APP_TAG: "${{ steps.meta.outputs.version }}"
+          DOCKER_APP_PHP_VERSION: "${{ matrix.php_version }}"
 
       # goss validate the image
       #

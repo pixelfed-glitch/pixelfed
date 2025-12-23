@@ -26,9 +26,6 @@ scripts/dottie set \
     DB_PASSWORD="helloworld" \
     DOCKER_APP_TAG="${DOCKER_APP_TAG:?missing}" \
     DOCKER_APP_PHP_VERSION="${DOCKER_APP_PHP_VERSION:?missing}" \
-    DOCKER_PROXY_ACME_PROFILE="disabled" \
-    DOCKER_PROXY_LETSENCRYPT_TEST="disabled" \
-    DOCKER_PROXY_PROFILE="disabled" \
     ENFORCE_EMAIL_VERIFICATION="false" \
     INSTANCE_CONTACT_EMAIL="github@example.com" \
     ACTIVITY_PUB="true" \

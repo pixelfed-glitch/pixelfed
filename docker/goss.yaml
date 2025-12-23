@@ -197,7 +197,7 @@ command:
     exit-status: 0
     exec: 'gosu --version'
     stdout:
-      - '1.14'
+      - '1.17'
     stderr: []
 
 {{ if eq .Env.PHP_BASE_TYPE "nginx" }}
