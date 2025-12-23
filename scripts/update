@@ -10,29 +10,21 @@ source "${project_root}/scripts/lib/shared.sh"
 # shellcheck source=../.env
 source "${project_root}/.env"
 
-# pixelfed/pixelfed branch/tag
+# pixelfed-glitch/pixelfed branch/tag
 pixelfed_release="${1:?missing argument, please specify a pixelfed-glitch release}"
-
-# jippi/docker-pixelfed branch/tag
-docker_release="${2-main}"
 
 action_start_newline "fetching docker updates"
 git fetch origin || action_error_exit "failed"
 action_ok "OK"
 echo
 
-action_start_newline "changing to release branch [${docker_release}]"
-git checkout "${docker_release}" || action_error_exit "could not checkout branch ${docker_release}"
+action_start_newline "changing to release branch [${pixelfed_release}]"
+git checkout "${pixelfed_release}" || action_error_exit "could not checkout branch ${pixelfed_release}"
 action_ok "OK"
 echo
 
-action_start_newline "pulling updates from remote branch [${docker_release}]"
-git pull || action_error_exit "could not update branch ${docker_release}"
-action_ok "OK"
-echo
-
-action_start_newline "Updating 'DOCKER_APP_RELEASE' in '.env' file (via dottie)"
-scripts/dottie set DOCKER_APP_RELEASE="${pixelfed_release}" || action_error_exit "could not update DOCKER_APP_RELEASE"
+action_start_newline "pulling updates from remote branch [${pixelfed_release}]"
+git pull || action_error_exit "could not update branch ${pixelfed_release}"
 action_ok "OK"
 echo
 

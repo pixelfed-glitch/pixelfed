@@ -309,7 +309,7 @@ class StatusController extends Controller
         abort_if(! $statusAccount || isset($statusAccount['moved'], $statusAccount['moved']['id']), 422, 'Account moved');
 
         $count = $status->reblogs_count;
-        $defaultCaption = config_cache(('database.default') === 'mysql' || 'database.default') === 'mariadb') ? null : '';
+        $defaultCaption = config_cache(('database.default') === 'mysql' || 'database.default') === 'mariadb')) ? null : '';
         $exists = Status::whereProfileId(Auth::user()->profile->id)
             ->whereReblogOfId($status->id)
             ->exists();

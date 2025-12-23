@@ -26,7 +26,7 @@ await-database-ready
 # Make sure only one container run the remainder of this script at a time
 acquire-lock
 
-# Following https://docs.pixelfed.org/running-pixelfed/installation/#one-time-setup-tasks
+# Following https://pixelfed-glitch.github.io/docs/running-pixelfed/native/installation.html#one-time-setup-tasks
 #
 # NOTE: Caches happens in [30-cache.sh]
 
