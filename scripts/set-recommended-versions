@@ -9,16 +9,16 @@ command -v git &>/dev/null && project_root=$(git rev-parse --show-toplevel)
 source "${project_root}/scripts/lib/shared.sh"
 
 # @renovate datasource=docker depName=mariadb
-DB_VERSION="11.6"
+DB_VERSION="11.8"
 
 # @renovate datasource=docker depName=php versioning=semver-coerced
 DOCKER_APP_PHP_VERSION="8.4"
 
-# @renovate datasource=github-releases depName=jippi/docker-pixelfed versioning=semver-coerced
-DOCKER_APP_RELEASE="v0.14"
+# @renovate datasource=github-releases depName=ghcr.io/pixelfed-glitch/pixelfed versioning=semver-coerced
+DOCKER_APP_RELEASE="latest"
 
 # @renovate datasource=docker depName=nginxproxy/nginx-proxy versioning=semver-coerced
-DOCKER_PROXY_VERSION="1.7.1"
+DOCKER_PROXY_VERSION="1.9.0"
 
 # @renovate datasource=docker depName=redis versioning=semver-coerced
 DOCKER_REDIS_VERSION="7.4.2"

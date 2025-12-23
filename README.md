@@ -16,7 +16,9 @@
 </p>
 
 <p align="center">
-<a href="https://fedidb.org/software/pixelfed"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.fedidb.org%2Fv1%2Fsoftware%2Fpixelfed&query=%24.user_count&logo=pixelfed&logoColor=white&label=Total%20Users" alt="Total Pixelfed users from FediDB" /></a>
+<a target="_blank" href="https://discord.gg/HuZc6jr25X"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/HuZc6jr25X" alt="" /></a>
+</p>
+
 </p>
 
 ## Introduction

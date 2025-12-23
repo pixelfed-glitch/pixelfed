@@ -104,3 +104,41 @@ teardown() {
 
     ! directory-is-empty test_dir
 }
+
+@test "test [trim-whitespace] - empty string" {
+    run trim-whitespace ""
+
+    [ "$output" = "" ]
+}
+
+@test "test [trim-whitespace] - only spaces" {
+    run trim-whitespace "        "
+
+    [ "$output" = "" ]
+}
+
+@test "test [trim-whitespace] - string" {
+    run trim-whitespace "    hello    "
+
+    [ "$output" = "hello" ]
+}
+
+@test "test [trim-whitespace] - multiple args" {
+    run trim-whitespace " " " hello " "    " " world"
+
+    [ "$output" = "hello        world" ]
+}
+
+@test "test [POST_MAX_SIZE] - defaults" {
+    source "$ROOT/rootfs/shared/docker/entrypoint.d/04-defaults.envsh"
+
+    [ "$POST_MAX_SIZE" = "61M" ]
+}
+
+@test "test [POST_MAX_SIZE] - over 1GB should say in M unit" {
+    export MAX_PHOTO_SIZE="275000"
+
+    source "$ROOT/rootfs/shared/docker/entrypoint.d/04-defaults.envsh"
+
+    [ "$POST_MAX_SIZE" = "1101M" ]
+}

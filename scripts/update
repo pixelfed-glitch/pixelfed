@@ -11,7 +11,7 @@ source "${project_root}/scripts/lib/shared.sh"
 source "${project_root}/.env"
 
 # pixelfed/pixelfed branch/tag
-pixelfed_release="$1"
+pixelfed_release="${1:?missing argument, please specify a pixelfed-glitch release}"
 
 # jippi/docker-pixelfed branch/tag
 docker_release="${2-main}"

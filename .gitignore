@@ -1,34 +1,22 @@
 .DS_Store
-/.bash_history
-/.bash_profile
-/.bashrc
 /.composer
 /.direnv
 /.env
 /.env.dottie-backup
-#/.git
-/.git-credentials
-/.gitconfig
-#/.gitignore
 /.idea
-/.phpunit.cache
-/.phpunit.result.cache
-/.vagrant
 /.vscode
+/.phpunit*
 /bootstrap/cache
 /docker-compose-state/
-/Homestead.json
-/Homestead.yaml
 /node_modules
-/npm-debug.log
 /public/hot
 /public/storage
 /public/vendor/horizon
+/public/build
 /storage/*.key
 /storage/docker
 /vendor
-/yarn-error.log
-/public/build
+*.log
 
 # Exceptions - these *MUST* be last
 !/.vscode/settings.json
@@ -36,4 +24,3 @@
 !/bootstrap/cache/.gitignore
 !/public/vendor/horizon/.gitignore
 
-.direnv

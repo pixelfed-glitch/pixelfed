@@ -118,6 +118,8 @@ services:
       POSTGRES_DB: "${DB_DATABASE:?error}"
     volumes:
       - "${DOCKER_DB_HOST_DATA_PATH:?error}:${DOCKER_DB_CONTAINER_DATA_PATH:?error}"
+      # MySQL / MariaDB only
+      - "${DOCKER_DB_HOST_CONFIG_PATH:?error}:/etc/mysql/conf.d/"
     ports:
       - "${DOCKER_DB_HOST_PORT:?error}:${DOCKER_DB_CONTAINER_PORT:?error}"
     healthcheck:
