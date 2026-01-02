@@ -160,6 +160,7 @@ CREATE TABLE `app_registers` (
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `uses` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_registers_email_verify_code_unique` (`email`,`verify_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -502,6 +503,54 @@ CREATE TABLE `custom_emoji_categories` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `custom_emoji_categories_name_unique` (`name`),
   KEY `custom_emoji_categories_disabled_index` (`disabled`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `custom_filter_keywords`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `custom_filter_keywords` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `custom_filter_id` bigint unsigned NOT NULL,
+  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `whole_word` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `custom_filter_keywords_custom_filter_id_foreign` (`custom_filter_id`),
+  CONSTRAINT `custom_filter_keywords_custom_filter_id_foreign` FOREIGN KEY (`custom_filter_id`) REFERENCES `custom_filters` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `custom_filter_statuses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `custom_filter_statuses` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `custom_filter_id` bigint unsigned NOT NULL,
+  `status_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `custom_filter_statuses_custom_filter_id_foreign` (`custom_filter_id`),
+  KEY `custom_filter_statuses_status_id_foreign` (`status_id`),
+  CONSTRAINT `custom_filter_statuses_custom_filter_id_foreign` FOREIGN KEY (`custom_filter_id`) REFERENCES `custom_filters` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `custom_filter_statuses_status_id_foreign` FOREIGN KEY (`status_id`) REFERENCES `statuses` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `custom_filters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `custom_filters` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` bigint unsigned NOT NULL,
+  `phrase` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action` int NOT NULL DEFAULT '0',
+  `context` json DEFAULT NULL,
+  `expires_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `custom_filters_profile_id_foreign` (`profile_id`),
+  CONSTRAINT `custom_filters_profile_id_foreign` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `default_domain_blocks`;
@@ -2250,6 +2299,7 @@ CREATE TABLE `statuses` (
   `edited_at` timestamp NULL DEFAULT NULL,
   `trendable` tinyint(1) DEFAULT NULL,
   `media_ids` json DEFAULT NULL,
+  `pinned_order` tinyint DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `statuses_uri_unique` (`uri`),
   UNIQUE KEY `statuses_object_url_unique` (`object_url`),
@@ -2266,7 +2316,8 @@ CREATE TABLE `statuses` (
   KEY `statuses_place_id_index` (`place_id`),
   KEY `statuses_in_reply_to_id_index` (`in_reply_to_id`),
   KEY `statuses_reblog_of_id_index` (`reblog_of_id`),
-  KEY `statuses_url_index` (`url`)
+  KEY `statuses_url_index` (`url`),
+  KEY `statuses_pinned_order_index` (`pinned_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `stories`;
@@ -2285,7 +2336,7 @@ CREATE TABLE `stories` (
   `cdn_url` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `public` tinyint(1) NOT NULL DEFAULT '0',
   `local` tinyint(1) NOT NULL DEFAULT '0',
-  `view_count` int unsigned DEFAULT NULL,
+  `view_count` int unsigned NOT NULL DEFAULT '0',
   `comment_count` int unsigned DEFAULT NULL,
   `story` json DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
@@ -2488,6 +2539,21 @@ CREATE TABLE `user_invites` (
   KEY `user_invites_user_id_index` (`user_id`),
   KEY `user_invites_profile_id_index` (`profile_id`),
   KEY `user_invites_used_at_index` (`used_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `user_oidc_mappings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_oidc_mappings` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `oidc_id` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_oidc_mappings_oidc_id_unique` (`oidc_id`),
+  KEY `user_oidc_mappings_user_id_index` (`user_id`),
+  CONSTRAINT `user_oidc_mappings_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_pronouns`;
@@ -2868,3 +2934,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (231,'2024_10_15_04
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (232,'2025_01_18_061532_fix_local_statuses',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (233,'2025_01_28_102016_create_app_registers_table',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (234,'2025_02_10_194847_fix_non_nullable_postgres_errors',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (235,'2025_01_30_061434_create_user_oidc_mapping_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (236,'2025_03_02_060626_add_count_to_app_registers_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (237,'2025_03_19_022553_add_pinned_columns_statuses_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (238,'2025_04_08_102711_create_custom_filters_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (239,'2025_04_08_103425_create_custom_filter_keywords_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (240,'2025_04_08_103433_create_custom_filter_statuses_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (241,'2025_08_30_044247_fix_stories_table_set_view_counts_default',2);

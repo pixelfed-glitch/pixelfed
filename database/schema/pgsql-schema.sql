@@ -2,8 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
--- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
+\restrict crXPrDPAOdlcZ2lE1DcgqNyxHDu756CnFP5WdhgOdwdfQZLFHSI5Sd6gFlgdC1D
+
+-- Dumped from database version 17.7 (Debian 17.7-3.pgdg13+1)
+-- Dumped by pg_dump version 17.7 (Debian 17.7-3.pgdg12+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -249,7 +251,8 @@ CREATE TABLE public.app_registers (
     email_delivered_at timestamp(0) without time zone,
     email_verified_at timestamp(0) without time zone,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    uses integer DEFAULT 0 NOT NULL
 );
 
 
@@ -882,6 +885,106 @@ CREATE SEQUENCE public.custom_emoji_id_seq
 --
 
 ALTER SEQUENCE public.custom_emoji_id_seq OWNED BY public.custom_emoji.id;
+
+
+--
+-- Name: custom_filter_keywords; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custom_filter_keywords (
+    id bigint NOT NULL,
+    custom_filter_id bigint NOT NULL,
+    keyword character varying(255) NOT NULL,
+    whole_word boolean DEFAULT true NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: custom_filter_keywords_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.custom_filter_keywords_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: custom_filter_keywords_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.custom_filter_keywords_id_seq OWNED BY public.custom_filter_keywords.id;
+
+
+--
+-- Name: custom_filter_statuses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custom_filter_statuses (
+    id bigint NOT NULL,
+    custom_filter_id bigint NOT NULL,
+    status_id bigint NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: custom_filter_statuses_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.custom_filter_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: custom_filter_statuses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.custom_filter_statuses_id_seq OWNED BY public.custom_filter_statuses.id;
+
+
+--
+-- Name: custom_filters; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.custom_filters (
+    id bigint NOT NULL,
+    profile_id bigint NOT NULL,
+    phrase text DEFAULT ''::text NOT NULL,
+    action integer DEFAULT 0 NOT NULL,
+    context json,
+    expires_at timestamp(0) without time zone,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: custom_filters_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.custom_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: custom_filters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.custom_filters_id_seq OWNED BY public.custom_filters.id;
 
 
 --
@@ -3747,6 +3850,7 @@ CREATE TABLE public.statuses (
     edited_at timestamp(0) without time zone,
     trendable boolean,
     media_ids json,
+    pinned_order smallint,
     CONSTRAINT statuses_visibility_check CHECK (((visibility)::text = ANY (ARRAY[('public'::character varying)::text, ('unlisted'::character varying)::text, ('private'::character varying)::text, ('direct'::character varying)::text, ('draft'::character varying)::text])))
 );
 
@@ -3785,7 +3889,7 @@ CREATE TABLE public.stories (
     cdn_url character varying(191),
     public boolean DEFAULT false NOT NULL,
     local boolean DEFAULT false NOT NULL,
-    view_count integer,
+    view_count integer DEFAULT 0 NOT NULL,
     comment_count integer,
     story json,
     expires_at timestamp(0) without time zone,
@@ -4154,6 +4258,38 @@ ALTER SEQUENCE public.user_invites_id_seq OWNED BY public.user_invites.id;
 
 
 --
+-- Name: user_oidc_mappings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_oidc_mappings (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    oidc_id character varying(191) NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
+-- Name: user_oidc_mappings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_oidc_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_oidc_mappings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_oidc_mappings_id_seq OWNED BY public.user_oidc_mappings.id;
+
+
+--
 -- Name: user_pronouns; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -4513,6 +4649,27 @@ ALTER TABLE ONLY public.custom_emoji ALTER COLUMN id SET DEFAULT nextval('public
 --
 
 ALTER TABLE ONLY public.custom_emoji_categories ALTER COLUMN id SET DEFAULT nextval('public.custom_emoji_categories_id_seq'::regclass);
+
+
+--
+-- Name: custom_filter_keywords id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filter_keywords ALTER COLUMN id SET DEFAULT nextval('public.custom_filter_keywords_id_seq'::regclass);
+
+
+--
+-- Name: custom_filter_statuses id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filter_statuses ALTER COLUMN id SET DEFAULT nextval('public.custom_filter_statuses_id_seq'::regclass);
+
+
+--
+-- Name: custom_filters id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filters ALTER COLUMN id SET DEFAULT nextval('public.custom_filters_id_seq'::regclass);
 
 
 --
@@ -5076,6 +5233,13 @@ ALTER TABLE ONLY public.user_invites ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: user_oidc_mappings id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_oidc_mappings ALTER COLUMN id SET DEFAULT nextval('public.user_oidc_mappings_id_seq'::regclass);
+
+
+--
 -- Name: user_pronouns id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -5404,6 +5568,30 @@ ALTER TABLE ONLY public.custom_emoji
 
 ALTER TABLE ONLY public.custom_emoji
     ADD CONSTRAINT custom_emoji_shortcode_domain_unique UNIQUE (shortcode, domain);
+
+
+--
+-- Name: custom_filter_keywords custom_filter_keywords_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filter_keywords
+    ADD CONSTRAINT custom_filter_keywords_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: custom_filter_statuses custom_filter_statuses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filter_statuses
+    ADD CONSTRAINT custom_filter_statuses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: custom_filters custom_filters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filters
+    ADD CONSTRAINT custom_filters_pkey PRIMARY KEY (id);
 
 
 --
@@ -6748,6 +6936,22 @@ ALTER TABLE ONLY public.user_invites
 
 ALTER TABLE ONLY public.user_devices
     ADD CONSTRAINT user_ip_agent_index UNIQUE (user_id, ip, user_agent, fingerprint);
+
+
+--
+-- Name: user_oidc_mappings user_oidc_mappings_oidc_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_oidc_mappings
+    ADD CONSTRAINT user_oidc_mappings_oidc_id_unique UNIQUE (oidc_id);
+
+
+--
+-- Name: user_oidc_mappings user_oidc_mappings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_oidc_mappings
+    ADD CONSTRAINT user_oidc_mappings_pkey PRIMARY KEY (id);
 
 
 --
@@ -8998,6 +9202,13 @@ CREATE INDEX statuses_local_index ON public.statuses USING btree (local);
 
 
 --
+-- Name: statuses_pinned_order_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX statuses_pinned_order_index ON public.statuses USING btree (pinned_order);
+
+
+--
 -- Name: statuses_place_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -9229,6 +9440,13 @@ CREATE INDEX user_invites_user_id_index ON public.user_invites USING btree (user
 
 
 --
+-- Name: user_oidc_mappings_user_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX user_oidc_mappings_user_id_index ON public.user_oidc_mappings USING btree (user_id);
+
+
+--
 -- Name: users_deleted_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -9275,6 +9493,38 @@ CREATE INDEX users_role_id_index ON public.users USING btree (role_id);
 --
 
 CREATE INDEX users_status_index ON public.users USING btree (status);
+
+
+--
+-- Name: custom_filter_keywords custom_filter_keywords_custom_filter_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filter_keywords
+    ADD CONSTRAINT custom_filter_keywords_custom_filter_id_foreign FOREIGN KEY (custom_filter_id) REFERENCES public.custom_filters(id) ON DELETE CASCADE;
+
+
+--
+-- Name: custom_filter_statuses custom_filter_statuses_custom_filter_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filter_statuses
+    ADD CONSTRAINT custom_filter_statuses_custom_filter_id_foreign FOREIGN KEY (custom_filter_id) REFERENCES public.custom_filters(id) ON DELETE CASCADE;
+
+
+--
+-- Name: custom_filter_statuses custom_filter_statuses_status_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filter_statuses
+    ADD CONSTRAINT custom_filter_statuses_status_id_foreign FOREIGN KEY (status_id) REFERENCES public.statuses(id) ON DELETE CASCADE;
+
+
+--
+-- Name: custom_filters custom_filters_profile_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.custom_filters
+    ADD CONSTRAINT custom_filters_profile_id_foreign FOREIGN KEY (profile_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
 
 
 --
@@ -9334,15 +9584,27 @@ ALTER TABLE ONLY public.telescope_entries_tags
 
 
 --
+-- Name: user_oidc_mappings user_oidc_mappings_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_oidc_mappings
+    ADD CONSTRAINT user_oidc_mappings_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
+
+\unrestrict crXPrDPAOdlcZ2lE1DcgqNyxHDu756CnFP5WdhgOdwdfQZLFHSI5Sd6gFlgdC1D
 
 --
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
--- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
+\restrict o3fwAiBdARbwooo1BNnyjsJobrw81TcanB2FKdfhTekw9vebdBvPFwB7pPXQBxC
+
+-- Dumped from database version 17.7 (Debian 17.7-3.pgdg13+1)
+-- Dumped by pg_dump version 17.7 (Debian 17.7-3.pgdg12+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -9595,6 +9857,13 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 232	2025_01_18_061532_fix_local_statuses	1
 233	2025_01_28_102016_create_app_registers_table	1
 234	2025_02_10_194847_fix_non_nullable_postgres_errors	1
+235	2025_01_30_061434_create_user_oidc_mapping_table	2
+236	2025_03_02_060626_add_count_to_app_registers_table	2
+237	2025_03_19_022553_add_pinned_columns_statuses_table	2
+238	2025_04_08_102711_create_custom_filters_table	2
+239	2025_04_08_103425_create_custom_filter_keywords_table	2
+240	2025_04_08_103433_create_custom_filter_statuses_table	2
+241	2025_08_30_044247_fix_stories_table_set_view_counts_default	2
 \.
 
 
@@ -9602,10 +9871,12 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 234, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 241, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict o3fwAiBdARbwooo1BNnyjsJobrw81TcanB2FKdfhTekw9vebdBvPFwB7pPXQBxC
 
