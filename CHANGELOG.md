@@ -1,6 +1,14 @@
 # Release Notes
 
-## [Unreleased](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.5-glitch.1.11.0...develop)
+## [v0.12.6-glitch.1.12.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.5-glitch.1.11.0...v0.12.6-glitch.1.12.0)
+
+### Glitch Updates
+
+- Fixes on MariaDB handling (https://github.com/pixelfed-glitch/pixelfed/commit/b62cca9)
+- Updated database schema dumps (https://github.com/pixelfed-glitch/pixelfed/commit/733f30e)
+- Update on docker setup and environment variables (https://github.com/pixelfed-glitch/pixelfed/commit/16b2e5c, https://github.com/pixelfed-glitch/pixelfed/commit/c695de4, https://github.com/pixelfed-glitch/pixelfed/commit/6c4678a)
+- Several fixes on CI, dev and install scripts (https://github.com/pixelfed-glitch/pixelfed/commit/56e1ad8, https://github.com/pixelfed-glitch/pixelfed/commit/74f1afb, https://github.com/pixelfed-glitch/pixelfed/commit/dac64d6, https://github.com/pixelfed-glitch/pixelfed/commit/235d1b2, https://github.com/pixelfed-glitch/pixelfed/commit/664a111, https://github.com/pixelfed-glitch/pixelfed/commit/066698a, https://github.com/pixelfed-glitch/pixelfed/commit/77c5e3a, https://github.com/pixelfed-glitch/pixelfed/commit/716d67c)
+- Documentation and code cleanup (https://github.com/pixelfed-glitch/pixelfed/commit/7df1429)
 
 ### Added (from Upstream)
 - Update Status storage, add SanitizerService to fix spacing in html stripped content ([3686c9212](https://github.com/pixelfed/pixelfed/commit/3686c9212))
@@ -482,7 +490,7 @@
 ## [v0.11.9-glitch.1.0.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9-glitch.1.0.0...v0.11.9-glitch.1.0.1)
 
 ### Glitch improvements
--  Fix nginx permissions ([#6](https://github.com/pixelfed-glitch/pixelfed/pull/6)) ([dbb9fed](https://github.com/pixelfed-glitch/pixelfed/commit/dbb9fed9b6b4c9cbdcba039ea208e71a29b12171))
+-  Fix nginx permissions ([#6](https://github.com/pixelfed-glitch/pixelfed/pull/6)) ([dbb9fed](https://github.com/pixelfed-glitch/pixelfed/commit/dbb9fed))
 
 ## [v0.11.9-glitch.1.0.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.11.9...v0.11.9-glitch.1.0.0)
 
@@ -1767,7 +1775,7 @@
 - Updated ```notification``` api endpoint to use ```NotificationService``` ([f4039ce2](https://github.com/pixelfed/pixelfed/commit/f4039ce2)) ([6ef7597](https://github.com/pixelfed/pixelfed/commit/6ef7597))
 - Update footer to use localization for the ```Places``` link ([39712714](https://github.com/pixelfed/pixelfed/commit/39712714))
 - Updated ComposeModal.vue, added a caption counter. Fixes [#1722](https://github.com/pixelfed/pixelfed/issues/1722). ([009c6ee8](https://github.com/pixelfed/pixelfed/commit/009c6ee8))
-- Updated Notifications to use the NotificationService ([f4039ce2](https://github.com/pixelfed/pixelfed/commit/f4039ce218f93a5578225dfdba66f0359c8fc72c))
+- Updated Notifications to use the NotificationService ([f4039ce2](https://github.com/pixelfed/pixelfed/commit/f4039ce))
 - Updated PrivacySettings controller, clear cache after updating ([d8d11d7b](https://github.com/pixelfed/pixelfed/commit/d8d11d7b))
 - Updated BaseApiController, add timestamp to signed media previews for client side cache invalidation ([73c08987](https://github.com/pixelfed/pixelfed/commit/73c08987))
 - Updated AdminInstanceController, remove db transaction from instance scan ([5773434a](https://github.com/pixelfed/pixelfed/commit/5773434a))
@@ -1877,7 +1885,7 @@
 - Added ```software``` back to AccountTransformer [93c687c7](https://github.com/pixelfed/pixelfed/commit/93c687c7)
 
 ### Fixed
-- Fixed cache bug in privacy and terms pages [#1712](https://github.com/pixelfed/pixelfed/commit/fe522da8db7a8b0d7c18d405abcb885f8678f35c)
+- Fixed cache bug in privacy and terms pages [#1712](https://github.com/pixelfed/pixelfed/commit/fe522da)
 
 ### Changed
 
@@ -1886,7 +1894,7 @@
 
 ### Added
 - Added Welsh translations [#1706](https://github.com/pixelfed/pixelfed/pull/1706)
-- Added Api v1 controller [85835f5a](https://github.com/pixelfed/pixelfed/commit/85835f5a6712dea0562df4be897087de5305750f)
+- Added Api v1 controller [85835f5a](https://github.com/pixelfed/pixelfed/commit/85835f5)
 - Added database migration that adds a language column to the users table [c87d8c16](https://github.com/pixelfed/pixelfed/commit/c87d8c16)
 - Added persistent preferred language [18bc9c30](https://github.com/pixelfed/pixelfed/commit/18bc9c30)
 
@@ -1901,17 +1909,17 @@
 - Cache ProfileController [#1700](https://github.com/pixelfed/pixelfed/pull/1700)
 - Updated ComposeUI v4, made cropping optional [#1702](https://github.com/pixelfed/pixelfed/pull/1702)
 - Updated DiscoverController, limit Loops to local only posts [#1703](https://github.com/pixelfed/pixelfed/pull/1703)
-- Namespaced internal apis [3c306c5e](https://github.com/pixelfed/pixelfed/commit/3c306c5e179d35dbe19a6a1bd9533350e4b96524)
-- Updated .env.example with proper remote follow variable [0697f780](https://github.com/pixelfed/pixelfed/commit/0697f780d3a5cba72148f0a767d5a35124a3d9b4)
-- Updated show all comments view [0a5eaa31](https://github.com/pixelfed/pixelfed/pull/1708/commits/0a5eaa3118cb09c61d3e5442fe3bf8439a2a12af)
-- Updated language page layout [01fb5af](https://github.com/pixelfed/pixelfed/pull/1708/commits/01fb5af19e803488c5794b545d218771f6fce6d7)
-- Updated privacy policy page layout [a4229d5](https://github.com/pixelfed/pixelfed/pull/1708/commits/a4229d5d30faea11e7a72d122c4a5762d867aaf3)
-- Updated terms page layout [4f8c5e5](https://github.com/pixelfed/pixelfed/pull/1708/commits/4f8c5e5519949c63c702c724a00d8575db4e0014)
+- Namespaced internal apis [3c306c5e](https://github.com/pixelfed/pixelfed/commit/3c306c5)
+- Updated .env.example with proper remote follow variable [0697f780](https://github.com/pixelfed/pixelfed/commit/0697f78)
+- Updated show all comments view [0a5eaa31](https://github.com/pixelfed/pixelfed/pull/1708/commits/0a5eaa3)
+- Updated language page layout [01fb5af](https://github.com/pixelfed/pixelfed/pull/1708/commits/01fb5af)
+- Updated privacy policy page layout [a4229d5](https://github.com/pixelfed/pixelfed/pull/1708/commits/a4229d5)
+- Updated terms page layout [4f8c5e5](https://github.com/pixelfed/pixelfed/pull/1708/commits/4f8c5e5)
 - Update v1 API, added /api/v1/instance endpoint [951b6fa0](https://github.com/pixelfed/pixelfed/commit/951b6fa0) [9dc2234b](https://github.com/pixelfed/pixelfed/commit/99dc2234b)
 
 ## Deprecated
 - Remove deprecated profile following/followers [#1697](https://github.com/pixelfed/pixelfed/pull/1697)
-- Remove old comment permalink [05f6598](https://github.com/pixelfed/pixelfed/pull/1708/commits/05f659896d903e1ff41dba810f125d721fa057e7)
+- Remove old comment permalink [05f6598](https://github.com/pixelfed/pixelfed/pull/1708/commits/05f6598)
 
 
 ## [v0.10.3 (2019-09-08)](https://github.com/pixelfed/pixelfed/compare/v0.10.2...v0.10.3)
