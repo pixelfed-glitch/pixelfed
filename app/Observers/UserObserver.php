@@ -95,11 +95,6 @@ class UserObserver
                 $user->profile_id = $profile->id;
                 $user->save();
 
-                UserNotify::updateOrCreate([
-                    'profile_id' => $profile->id,
-                    'user_id' => $user->id,
-                ]);
-
                 CreateAvatar::dispatch($profile);
             });
 
