@@ -57,3 +57,4 @@ web_environment:
   - TRUST_PROXIES=*
   - LOG_CHANNEL=stack
   - STORIES_ENABLED=true
+  - PF_ENABLE_CLOUD=false

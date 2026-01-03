@@ -1,14 +1,20 @@
 # Release Notes
 
+## [v0.12.6-glitch.1.12.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.6-glitch.1.12.0...v0.12.6-glitch.1.12.1)
+
+### Glitch Updates
+- Fix malformed database guard (#67) + remove obsolete notify ([079615d](https://github.com/pixelfed-glitch/pixelfed/commit/079615d))
+- Fix story not handling uploads properly + more formats allowed ([3ec5233](https://github.com/pixelfed-glitch/pixelfed/commit/3ec5233))
+- Better handling of stories duration + fixes on stories error handling ([8ea6437](https://github.com/pixelfed-glitch/pixelfed/commit/8ea6437))
+
 ## [v0.12.6-glitch.1.12.0](https://github.com/pixelfed-glitch/pixelfed/compare/v0.12.5-glitch.1.11.0...v0.12.6-glitch.1.12.0)
 
 ### Glitch Updates
-
-- Fixes on MariaDB handling (https://github.com/pixelfed-glitch/pixelfed/commit/b62cca9)
-- Updated database schema dumps (https://github.com/pixelfed-glitch/pixelfed/commit/733f30e)
-- Update on docker setup and environment variables (https://github.com/pixelfed-glitch/pixelfed/commit/16b2e5c, https://github.com/pixelfed-glitch/pixelfed/commit/c695de4, https://github.com/pixelfed-glitch/pixelfed/commit/6c4678a)
-- Several fixes on CI, dev and install scripts (https://github.com/pixelfed-glitch/pixelfed/commit/56e1ad8, https://github.com/pixelfed-glitch/pixelfed/commit/74f1afb, https://github.com/pixelfed-glitch/pixelfed/commit/dac64d6, https://github.com/pixelfed-glitch/pixelfed/commit/235d1b2, https://github.com/pixelfed-glitch/pixelfed/commit/664a111, https://github.com/pixelfed-glitch/pixelfed/commit/066698a, https://github.com/pixelfed-glitch/pixelfed/commit/77c5e3a, https://github.com/pixelfed-glitch/pixelfed/commit/716d67c)
-- Documentation and code cleanup (https://github.com/pixelfed-glitch/pixelfed/commit/7df1429)
+- Fixes on MariaDB handling ([b62cca9](https://github.com/pixelfed-glitch/pixelfed/commit/b62cca9))
+- Updated database schema dumps ([733f30e](https://github.com/pixelfed-glitch/pixelfed/commit/733f30e))
+- Update on docker setup and environment variables ([16b2e5c](https://github.com/pixelfed-glitch/pixelfed/commit/16b2e5c), [c695de4](https://github.com/pixelfed-glitch/pixelfed/commit/c695de4), [6c4678a](https://github.com/pixelfed-glitch/pixelfed/commit/6c4678a))
+- Several fixes on CI, dev and install scripts ([56e1ad8](https://github.com/pixelfed-glitch/pixelfed/commit/56e1ad8), [74f1afb](https://github.com/pixelfed-glitch/pixelfed/commit/74f1afb), [dac64d6](https://github.com/pixelfed-glitch/pixelfed/commit/dac64d6), [235d1b2](https://github.com/pixelfed-glitch/pixelfed/commit/235d1b2), [664a111](https://github.com/pixelfed-glitch/pixelfed/commit/664a111), [066698a](https://github.com/pixelfed-glitch/pixelfed/commit/066698a), [77c5e3a](https://github.com/pixelfed-glitch/pixelfed/commit/77c5e3a), [716d67c](https://github.com/pixelfed-glitch/pixelfed/commit/716d67c))
+- Documentation and code cleanup ([7df1429](https://github.com/pixelfed-glitch/pixelfed/commit/7df1429))
 
 ### Added (from Upstream)
 - Update Status storage, add SanitizerService to fix spacing in html stripped content ([3686c9212](https://github.com/pixelfed/pixelfed/commit/3686c9212))
