@@ -286,11 +286,6 @@
 			return {
 				loaded: false,
 				config: window.App.config,
-				mimes: [
-					'image/jpeg',
-					'image/png',
-					'video/mp4'
-				],
 				page: 'landing',
 				pages: [
 					'landing',
@@ -400,9 +395,10 @@
 						return;
 					}
 					let type = io.type;
-					let validated = $.inArray(type, self.mimes);
+					let acceptedMimes = self.config.uploader.media_types.split(',');
+					let validated = $.inArray(type, acceptedMimes);
 					if(validated == -1) {
-						swal('Invalid File Type', 'The file you are trying to add is not a valid mime type. Please upload a '+self.mimes+' only.', 'error');
+						swal('Invalid File Type', 'The file you are trying to add is not a valid mime type. Please upload a '+self.config.uploader.media_types+' only.', 'error');
 						self.uploading = false;
 						self.page = 'error';
 						return;

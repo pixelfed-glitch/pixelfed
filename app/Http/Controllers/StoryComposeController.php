@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\Encoders\WebpEncoder;
 use Storage;
 
 class StoryComposeController extends Controller
@@ -44,33 +45,41 @@ class StoryComposeController extends Controller
             'file' => function () {
                 return [
                     'required',
-                    'mimetypes:image/jpeg,image/png,video/mp4,image/jpg',
+                    'mimetypes:'.config_cache('pixelfed.media_types'),
                     'max:'.config_cache('pixelfed.max_photo_size'),
                 ];
             },
         ]);
 
         $user = $request->user();
-        abort_if($user->has_roles && ! UserRoleService::can('can-use-stories', $user->id), 403, 'Invalid permissions for this action');
+        abort_if($user->has_roles && ! UserRoleService::can('can-use-stories', $user->id), 403, __('Invalid permissions for this action'));
         $count = Story::whereProfileId($user->profile_id)
             ->whereActive(true)
             ->where('expires_at', '>', now())
             ->count();
 
         if ($count >= Story::MAX_PER_DAY) {
-            abort(418, 'You have reached your limit for new Stories today.');
+            abort(418, __('You have reached your limit for new Stories today.'));
         }
 
+        $path = null;
         $photo = $request->file('file');
-        $path = $this->storePhoto($photo, $user);
 
-        $localFs = config('filesystems.default') === 'local';
-        $disk = $localFs ? Storage::disk('local') : Storage::disk(config('filesystems.default'));
+        try {
+            $path = $this->storePhoto($photo, $user);
+        }
+        catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+
+        $disk = Storage::disk(config('filesystems.default'));
 
         $story = new Story;
         $story->duration = 3;
         $story->profile_id = $user->profile_id;
-        $story->type = Str::endsWith($photo->getMimeType(), 'mp4') ? 'video' : 'photo';
+        $story->type = Str::startsWith($photo->getMimeType(), 'video') ? 'video' : 'photo';
         $story->mime = $photo->getMimeType();
         $story->path = $path;
         $story->local = true;
@@ -83,41 +92,13 @@ class StoryComposeController extends Controller
 
         $res = [
             'code' => 200,
-            'msg' => 'Successfully added',
+            'msg' => __('Successfully added'),
             'media_id' => (string) $story->id,
-            'media_url' => $localFs ? url(Storage::url($url)).'?v='.time() : $disk->url($url).'?v='.time(),
+            'media_url' => (config('filesystems.default') === 'local') ?
+                url(Storage::url($url)).'?v='.time() :
+                $disk->url($url).'?v='.time(),
             'media_type' => $story->type,
         ];
-
-        if ($story->type === 'video') {
-
-            if ($localFs) {
-                $videoPath = storage_path('app/'.$path);
-            } else {
-                $tempPath = sys_get_temp_dir().'/'.Str::random(40).'.mp4';
-                file_put_contents($tempPath, $disk->get($path));
-                $videoPath = $tempPath;
-            }
-
-            try {
-                $video = FFMpeg::open($videoPath);
-                $duration = $video->getDurationInSeconds();
-                $res['media_duration'] = $duration;
-
-                if ($duration > 500) {
-                    $disk->delete($story->path);
-                    $story->delete();
-
-                    return response()->json([
-                        'message' => 'Video duration cannot exceed 60 seconds',
-                    ], 422);
-                }
-            } finally {
-                if (! $localFs && isset($tempPath) && file_exists($tempPath)) {
-                    unlink($tempPath);
-                }
-            }
-        }
 
         return $res;
     }
@@ -125,49 +106,68 @@ class StoryComposeController extends Controller
     protected function storePhoto($photo, $user)
     {
         $mimes = explode(',', config_cache('pixelfed.media_types'));
-        if (in_array($photo->getMimeType(), [
-            'image/jpeg',
-            'image/png',
-            'video/mp4',
-        ]) == false) {
-            abort(400, 'Invalid media type');
+        if (in_array($photo->getMimeType(), $mimes) == false) {
+            abort(400, __('Unauthorized media type'));
 
             return;
         }
 
+        $disk = Storage::disk(config('filesystems.default'));
         $storagePath = MediaPathService::story($user->profile);
         $filename = Str::random(random_int(2, 12)).'_'.Str::random(random_int(32, 35)).'_'.Str::random(random_int(1, 14)).'.'.$photo->extension();
         $path = $photo->storePubliclyAs($storagePath, $filename);
 
-        if (in_array($photo->getMimeType(), ['image/jpeg', 'image/jpg', 'image/png'])) {
-            $localFs = config('filesystems.default') === 'local';
+        try {
+            $img = null;
 
-            if ($localFs) {
-                $fpath = storage_path('app/'.$path);
-
-                $img = $this->imageManager->read($fpath);
+            if (Str::startsWith($photo->getMimeType(),'image')
+                && ($img = $this->imageManager->read($disk->get($path)))
+                && $img && !$img->isAnimated()) {
                 $quality = config_cache('pixelfed.image_quality');
-                $encoder = in_array($photo->getMimeType(), ['image/jpeg', 'image/jpg']) ?
-                    new JpegEncoder($quality) :
-                    new PngEncoder;
 
-                $encoded = $img->encode($encoder);
-                file_put_contents($fpath, (string) $encoded);
-            } else {
-                $disk = Storage::disk(config('filesystems.default'));
+                $extension = array_last(explode('/', $photo->getMimeType()));
 
-                $fileContent = $disk->get($path);
-
-                $img = $this->imageManager->read($fileContent);
-                $quality = config_cache('pixelfed.image_quality');
-                $encoder = in_array($photo->getMimeType(), ['image/jpeg', 'image/jpg']) ?
-                    new JpegEncoder($quality) :
-                    new PngEncoder;
+                switch ($extension) {
+                    case 'png':
+                        $encoder = new PngEncoder;
+                        $outputExtension = 'png';
+                        break;
+                    case 'webp':
+                        $encoder = new WebpEncoder($quality);
+                        $outputExtension = 'webp';
+                        break;
+                    case 'jpeg':
+                    case 'jpg':
+                    case 'gif':
+                    case 'avif':
+                    case 'heic':
+                    default:
+                        $encoder = new JpegEncoder($quality);
+                        $outputExtension = 'jpg';
+                }
 
                 $encoded = $img->encode($encoder);
 
                 $disk->put($path, (string) $encoded);
             }
+            else {
+                $video = FFMpeg::fromDisk(config('filesystems.default'))->open($path);
+                $duration = $video->getDurationInSeconds();
+                $res['media_duration'] = $duration;
+
+                if ($duration > 500) {
+                    throw new Exception(__('Video duration cannot exceed :time seconds', ['time' => '60']), 1);
+                }
+            }
+
+        } catch(DecodeException $e) {
+            throw new Exception(__('Could not decode provided image format (:error)', ['error' => $e->getMessage()]), 1, $e);
+
+            $disk->delete($path);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 1, $e);
+
+            $disk->delete($path);
         }
 
         return $path;
