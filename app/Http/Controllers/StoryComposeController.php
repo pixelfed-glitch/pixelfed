@@ -114,20 +114,18 @@ class StoryComposeController extends Controller
 
         $disk = Storage::disk(config('filesystems.default'));
         $storagePath = MediaPathService::story($user->profile);
-        $filename = Str::random(random_int(2, 12)).'_'.Str::random(random_int(32, 35)).'_'.Str::random(random_int(1, 14)).'.'.$photo->extension();
-        $path = $photo->storePubliclyAs($storagePath, $filename);
+        $filename = Str::random(random_int(2, 12)).'_'.Str::random(random_int(32, 35)).'_'.Str::random(random_int(1, 14));
+        $originalPath = $photo->storePubliclyAs($storagePath, $filename.'.'.$photo->extension());
 
         try {
             $img = null;
 
             if (Str::startsWith($photo->getMimeType(),'image')
-                && ($img = $this->imageManager->read($disk->get($path)))
+                && ($img = $this->imageManager->read($disk->get($originalPath)))
                 && $img && !$img->isAnimated()) {
                 $quality = config_cache('pixelfed.image_quality');
 
-                $extension = array_last(explode('/', $photo->getMimeType()));
-
-                switch ($extension) {
+                switch ($photo->extension()) {
                     case 'png':
                         $encoder = new PngEncoder;
                         $outputExtension = 'png';
@@ -148,29 +146,45 @@ class StoryComposeController extends Controller
 
                 $encoded = $img->encode($encoder);
 
-                $disk->put($path, (string) $encoded);
+                $encodedPath = $storagePath.'/'.$filename.'.'.$outputExtension;
+                $disk->put($encodedPath, (string) $encoded);
+                if ($outputExtension !== $photo->extension()) $disk->delete($originalPath);
             }
             else {
-                $video = FFMpeg::fromDisk(config('filesystems.default'))->open($path);
+                $video = FFMpeg::fromDisk(config('filesystems.default'))->open($originalPath);
                 $duration = $video->getDurationInSeconds();
                 $res['media_duration'] = $duration;
+                $outputExtension = 'webm';
 
                 if ($duration > 500) {
                     throw new Exception(__('Video duration cannot exceed :time seconds', ['time' => '60']), 1);
                 }
+
+                $format = new \FFMpeg\Format\Video\WebM;
+                
+                // Transparency encoding with auto_alt_ref does not work with GIF https://github.com/PHP-FFMpeg/PHP-FFMpeg/issues/254
+                if ($photo->extension() === "gif") {
+                    $format = $format->setAdditionalParameters(["-auto-alt-ref", "0"]);
+                }
+
+                $encodedPath = $storagePath.'/'.$filename.'.'.$outputExtension;
+                $video->export()->inFormat($format)->save($encodedPath);
+                if ($outputExtension !== $photo->extension()) $disk->delete($originalPath);
             }
 
         } catch(DecodeException $e) {
             throw new Exception(__('Could not decode provided image format (:error)', ['error' => $e->getMessage()]), 1, $e);
 
-            $disk->delete($path);
+            if ($disk->exists($originalPath)) $disk->delete($originalPath);
+            if ($disk->exists($encodedPath)) $disk->delete($encodedPath);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), 1, $e);
 
-            $disk->delete($path);
+            if ($disk->exists($originalPath)) $disk->delete($originalPath);
+            if ($disk->exists($encodedPath)) $disk->delete($encodedPath);
         }
 
-        return $path;
+        return $encodedPath;
     }
 
     public function cropPhoto(Request $request)
