@@ -66,9 +66,9 @@ class StoryComposeController extends Controller
         $photo = $request->file('file');
 
         try {
-            $path = $this->storePhoto($photo, $user);
+            [$path, $duration, $mimeType] = $this->storePhoto($photo, $user);
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], 422);
@@ -77,13 +77,13 @@ class StoryComposeController extends Controller
         $disk = Storage::disk(config('filesystems.default'));
 
         $story = new Story;
-        $story->duration = 3;
+        $story->duration = $duration;
         $story->profile_id = $user->profile_id;
-        $story->type = Str::startsWith($photo->getMimeType(), 'video') ? 'video' : 'photo';
-        $story->mime = $photo->getMimeType();
+        $story->mime = $mimeType;
+        $story->type = Str::startsWith($mimeType, 'video') ? 'video' : 'photo';
         $story->path = $path;
         $story->local = true;
-        $story->size = $photo->getSize();
+        $story->size = $disk->size($path);
         $story->bearcap_token = str_random(64);
         $story->expires_at = now()->addMinutes(1440);
         $story->save();
@@ -115,7 +115,11 @@ class StoryComposeController extends Controller
         $disk = Storage::disk(config('filesystems.default'));
         $storagePath = MediaPathService::story($user->profile);
         $filename = Str::random(random_int(2, 12)).'_'.Str::random(random_int(32, 35)).'_'.Str::random(random_int(1, 14));
-        $originalPath = $photo->storePubliclyAs($storagePath, $filename.'.'.$photo->extension());
+        $originalExtension = strtolower($photo->extension());
+        $originalPath = $photo->storePubliclyAs($storagePath, $filename.'.'.$originalExtension);
+        $encodedPath = null;
+        $mimeType = null;
+        $duration = config_cache('instance.stories.duration.preferred');
 
         try {
             $img = null;
@@ -125,14 +129,16 @@ class StoryComposeController extends Controller
                 && $img && !$img->isAnimated()) {
                 $quality = config_cache('pixelfed.image_quality');
 
-                switch ($photo->extension()) {
+                switch ($originalExtension) {
                     case 'png':
                         $encoder = new PngEncoder;
                         $outputExtension = 'png';
+                        $mimeType = 'image/png';
                         break;
                     case 'webp':
                         $encoder = new WebpEncoder($quality);
                         $outputExtension = 'webp';
+                        $mimeType = 'image/webp';
                         break;
                     case 'jpeg':
                     case 'jpg':
@@ -142,22 +148,25 @@ class StoryComposeController extends Controller
                     default:
                         $encoder = new JpegEncoder($quality);
                         $outputExtension = 'jpg';
+                        $mimeType = 'image/jpeg';
                 }
 
                 $encoded = $img->encode($encoder);
 
                 $encodedPath = $storagePath.'/'.$filename.'.'.$outputExtension;
                 $disk->put($encodedPath, (string) $encoded);
-                if ($outputExtension !== $photo->extension()) $disk->delete($originalPath);
+                if ($outputExtension !== $originalExtension) $disk->delete($originalPath);
             }
             else {
                 $video = FFMpeg::fromDisk(config('filesystems.default'))->open($originalPath);
                 $duration = $video->getDurationInSeconds();
-                $res['media_duration'] = $duration;
                 $outputExtension = 'webm';
+                $mimeType = 'video/webm';
 
-                if ($duration > 500) {
-                    throw new Exception(__('Video duration cannot exceed :time seconds', ['time' => '60']), 1);
+                if ($duration > config_cache('instance.stories.duration.max')) {
+                    throw new \Exception(__('Stories cannot exceed :time seconds', ['time' => config_cache('instance.stories.duration.max')]), 1);
+                } else if ($duration < config_cache('instance.stories.duration.min')) {
+                    throw new \Exception(__('Stories cannot be shorter than :time seconds', ['time' => config_cache('instance.stories.duration.min')]), 1);
                 }
 
                 $format = new \FFMpeg\Format\Video\WebM;
@@ -169,22 +178,22 @@ class StoryComposeController extends Controller
 
                 $encodedPath = $storagePath.'/'.$filename.'.'.$outputExtension;
                 $video->export()->inFormat($format)->save($encodedPath);
-                if ($outputExtension !== $photo->extension()) $disk->delete($originalPath);
+                if ($outputExtension !== $originalExtension) $disk->delete($originalPath);
             }
 
         } catch(DecodeException $e) {
-            throw new Exception(__('Could not decode provided image format (:error)', ['error' => $e->getMessage()]), 1, $e);
+            throw new \Exception(__('Could not decode provided image format (:error)', ['error' => $e->getMessage()]), 1, $e);
 
             if ($disk->exists($originalPath)) $disk->delete($originalPath);
             if ($disk->exists($encodedPath)) $disk->delete($encodedPath);
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 1, $e);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage(), 1, $e);
 
             if ($disk->exists($originalPath)) $disk->delete($originalPath);
             if ($disk->exists($encodedPath)) $disk->delete($encodedPath);
         }
 
-        return $encodedPath;
+        return [$encodedPath, $duration, $mimeType];
     }
 
     public function cropPhoto(Request $request)

@@ -71,6 +71,11 @@ return [
 
     'stories' => [
         'enabled' => env('STORIES_ENABLED', false),
+        'duration' => [
+            'min' => env('STORIES_DURATION_MIN', 3),
+            'preferred' => env('STORIES_DURATION_PREFERRED', 10),
+            'max' => env('STORIES_DURATION_MAX', 500),
+        ]
     ],
 
     'restricted' => [
