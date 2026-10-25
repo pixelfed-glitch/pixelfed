@@ -4,9 +4,9 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     act
     docker
-    php84
-    php84Packages.composer
-    (pkgs.php84.buildEnv {
+    php85
+    php85Packages.composer
+    (pkgs.php85.buildEnv {
       extensions = ({ enabled, all }: enabled ++ (with all; [
         # bcmath
         # curl
@@ -27,7 +27,6 @@ pkgs.mkShell {
       '';
     })
     nodejs
-    nodePackages.npm
     mkcert
     ddev
     hadolint
