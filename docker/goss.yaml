@@ -8,6 +8,7 @@ package:
   jpegoptim: { installed: true }
   locales: { installed: true }
   mariadb-client: { installed: true }
+  mariadb-client-compat: { installed: true }
   nano: { installed: true }
   optipng: { installed: true }
   pngquant: { installed: true }

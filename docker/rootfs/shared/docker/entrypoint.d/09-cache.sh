@@ -10,6 +10,10 @@ entrypoint-set-script-name "$0"
 
 acquire-lock
 
+# A fresh [storage/] volume is empty until [10-storage.sh] runs, but the caches below need its layout.
+# Only add missing files here; [10-storage.sh] still refreshes the skeleton.
+run-as-runtime-user cp --recursive --update=none storage.skel/. ./storage/
+
 # force delete cache files as they sometimes break php artisan (great work Laravel)
 run-as-runtime-user rm -f ./bootstrap/cache/config.php
 run-as-runtime-user rm -f ./bootstrap/cache/events.php

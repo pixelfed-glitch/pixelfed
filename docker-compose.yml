@@ -123,13 +123,14 @@ services:
     ports:
       - "${DOCKER_DB_HOST_PORT:?error}:${DOCKER_DB_CONTAINER_PORT:?error}"
     healthcheck:
-      test: [
-          "CMD",
-          "healthcheck.sh",
-          "--su-mysql",
-          "--connect",
-          "--innodb_initialized",
-        ]
+      # [db] runs MariaDB, MySQL or PostgreSQL images, so use the check the running image ships.
+      # TCP (127.0.0.1) skips the socket-only server the images run while initialising.
+      test:
+        - CMD-SHELL
+        - >-
+          if command -v healthcheck.sh >/dev/null; then healthcheck.sh --su-mysql --connect --innodb_initialized;
+          elif command -v pg_isready >/dev/null; then pg_isready -h 127.0.0.1 -U "$$POSTGRES_USER" -d "$$POSTGRES_DB";
+          else MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" mysqladmin ping -h 127.0.0.1 -u root --silent; fi
       interval: "${DOCKER_DB_HEALTHCHECK_INTERVAL:?error}"
       retries: 2
       timeout: 5s

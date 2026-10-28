@@ -47,6 +47,8 @@ packages+=(
 # Database
 packages+=(
     mariadb-client
+    # Provides the [mysql] name used by helpers.sh and Laravel's schema loader for DB_CONNECTION=mysql
+    mariadb-client-compat
     "postgresql-client-${POSTGRESQL_CLIENT_VERSION}"
 )
 
