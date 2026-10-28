@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\CuratedOnboarding\CuratedOnboardingNotifyAdminNewApplicationPipeline;
+use App\Jobs\CuratedOnboarding\CuratedOnboardingNotifyAdminUserResponsePipeline;
 use App\Mail\CuratedRegisterConfirmEmail;
 use App\Models\CuratedRegister;
 use App\Models\CuratedRegisterActivity;
@@ -134,6 +135,12 @@ class CuratedRegisterController extends Controller
         ]);
 
         CuratedRegister::findOrFail($crid)->update(['user_has_responded' => true]);
+
+        // GLITCH MODIFIED: email admins about the reply (upstream: on_user_response never read)
+        if (config('instance.curated_registration.notify.admin.on_user_response')) {
+            CuratedOnboardingNotifyAdminUserResponsePipeline::dispatch($act);
+        }
+
         $request->session()->pull('cur-reg-con');
         $request->session()->pull('cur-reg-con-attempt');
 
