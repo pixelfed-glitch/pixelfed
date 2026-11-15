@@ -22,9 +22,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/var/www/storage
-      - ./cache:/var/www/bootstrap/cache
-      - "./.env:/var/www/.env"
+      - ./data:/var/www/storage:z
+      - "./.env:/var/www/.env:z"
     ports:
       - "8080:80"
     environment:
@@ -48,9 +47,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/var/www/storage
-      - ./cache:/var/www/bootstrap/cache
-      - "./.env:/var/www/.env"
+      - ./data:/var/www/storage:z
+      - "./.env:/var/www/.env:z"
     environment:
       TZ: "${TZ:?error}"
       # Used by Pixelfed Docker init script
@@ -73,9 +71,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/var/www/storage
-      - ./cache:/var/www/bootstrap/cache
-      - "./.env:/var/www/.env"
+      - ./data:/var/www/storage:z
+      - "./.env:/var/www/.env:z"
     environment:
       TZ: "${TZ:?error}"
       # Used by Pixelfed Docker init script
@@ -107,7 +104,7 @@ services:
       MARIADB_PASSWORD: "${DB_PASSWORD:?error}"
       MARIADB_DATABASE: "${DB_DATABASE:?error}"
     volumes:
-      - "./db:/var/lib/mysql"
+      - "./db:/var/lib/mysql:z"
 
   redis:
     image: redis:7.4-alpine
@@ -122,4 +119,4 @@ services:
       timeout: 5s
       retries: 2
     volumes:
-      - "./redis:/data"
+      - "./redis:/data:z"

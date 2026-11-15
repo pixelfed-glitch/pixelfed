@@ -107,6 +107,38 @@ find "${ENTRYPOINT_D_ROOT}" -follow -type f -print | sort -V | while read -r fil
     esac
 done
 
+# [worker] and [cron] skip the entrypoint.d scripts that populate [storage/], so stop here with a
+# useful message instead of failing later on missing media or keys.
+storage_marker="./storage/app/public"
+
+# Run a check as the runtime user, since root can read paths the application can't
+function runtime-user-check()
+{
+    if ((EUID == 0)); then
+        gosu "${runtime_username}" "$@"
+    else
+        "$@"
+    fi
+}
+
+if ! runtime-user-check test -d "${storage_marker}"; then
+    # SELinux can allow path lookups but deny listing, so a missing path also needs the listing checked
+    log-if-selinux-denial "$(LC_ALL=C ls -d "${storage_marker}" 2>&1 || true; LC_ALL=C ls -A ./storage 2>&1 >/dev/null || true)" "./storage"
+    log-error-and-exit "[${storage_marker}] is missing or not accessible by [${runtime_username}]. The [web] container populates [storage/] when it starts, so check its logs if this does not clear."
+fi
+
+# The [web] container generates APP_KEY and fixes [.env] ownership on first start. Laravel silently
+# ignores an unreadable [.env], so caching config before then would bake in defaults.
+if [[ -z "${APP_KEY:-}" ]] && ! runtime-user-check grep -q '^APP_KEY="\?[^"[:space:]]' ./.env 2>/dev/null; then
+    log-error-and-exit "[APP_KEY] is not set in [.env], or [.env] is not readable by [${runtime_username}]. The [web] container sets both on first start, so this should clear on restart."
+fi
+
+# Each container builds its own config/route/event cache from its own image and .env
+# (paths come from APP_*_CACHE in the Dockerfile). Compiled views are built into the image.
+run-as-runtime-user php artisan config:cache
+run-as-runtime-user php artisan route:cache
+run-as-runtime-user php artisan event:cache
+
 touch /tmp/entrypoint-ran-to-completion
 
 log-info "Configuration complete; ready for start up"
