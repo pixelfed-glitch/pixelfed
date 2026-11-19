@@ -1,5 +1,12 @@
 # Release Notes
 
+# [v0.15.2-glitch.1.13.2](https://github.com/pixelfed-glitch/pixelfed/compare/v0.15.2-glitch.1.13.1...v0.15.2-glitch.1.13.2)
+
+## Glitch Updates
+- Docker image
+  - Update Nginx from 1.29.4 to 1.31.9 (#80) ([466e5c576](https://github.com/pixelfed-glitch/pixelfed/commit/466e5c576))
+
+
 ## [v0.15.2-glitch.1.13.1](https://github.com/pixelfed-glitch/pixelfed/compare/v0.15.2-glitch.1.13.0...v0.15.2-glitch.1.13.1)
 
 ### Glitch Updates
