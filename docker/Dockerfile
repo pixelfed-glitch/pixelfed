@@ -343,6 +343,15 @@ RUN --mount=type=cache,id=pixelfed-apt-${PHP_VERSION}-${PHP_DEBIAN_RELEASE}-${TA
 ENV APP_PACKAGES_CACHE=/var/www/bootstrap/image-cache/packages.php
 ENV APP_SERVICES_CACHE=/var/www/bootstrap/image-cache/services.php
 
+# Compiled Blade views only depend on the image, so they are built once here.
+ENV VIEW_COMPILED_PATH=/var/www/bootstrap/image-cache/views
+
+# Config, routes and events depend on .env (routes use config('pixelfed.domain.app')), so every
+# container builds its own copy at startup (see entrypoint.sh) instead of sharing a mounted volume.
+ENV APP_CONFIG_CACHE=/var/www/bootstrap/runtime-cache/config.php
+ENV APP_ROUTES_CACHE=/var/www/bootstrap/runtime-cache/routes-v7.php
+ENV APP_EVENTS_CACHE=/var/www/bootstrap/runtime-cache/events.php
+
 #! Changing user to runtime user
 USER ${RUNTIME_UID}:${RUNTIME_GID}
 
@@ -355,9 +364,11 @@ COPY --link --from=frontend-build --chown=${RUNTIME_UID}:${RUNTIME_GID} /var/www
 # Generate optimized autoloader now that we have all files around
 # (its post-autoload-dump hook runs package:discover, writing $APP_PACKAGES_CACHE)
 RUN set -ex \
-    && mkdir -p /var/www/bootstrap/image-cache \
+    && mkdir -p "$VIEW_COMPILED_PATH" /var/www/bootstrap/runtime-cache \
     && ENABLE_CONFIG_CACHE=false composer dump-autoload --optimize --no-dev \
-    && test -s "$APP_PACKAGES_CACHE"
+    && test -s "$APP_PACKAGES_CACHE" \
+    && ENABLE_CONFIG_CACHE=false php artisan view:cache \
+    && test -n "$(ls -A "$VIEW_COMPILED_PATH")"
 
 # for detail why storage is copied this way, pls refer to https://github.com/pixelfed/pixelfed/pull/2137#discussion_r434468862
 RUN set -ex \

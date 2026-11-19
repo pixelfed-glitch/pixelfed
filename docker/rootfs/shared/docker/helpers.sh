@@ -29,7 +29,8 @@ declare -a dot_env_files=(
 cd /var/www || log-error-and-exit "could not change to /var/www"
 
 declare -g docker_state_path
-docker_state_path="$(readlink -f ./storage/docker)"
+# readlink fails when [storage/] can't be traversed; don't exit silently, later checks explain why
+docker_state_path="$(readlink -f ./storage/docker || printf '%s' "${PWD}/storage/docker")"
 
 declare -g docker_locks_path="${docker_state_path}/lock"
 declare -g docker_once_path="${docker_state_path}/once"
@@ -345,6 +346,29 @@ function directory-is-empty()
 function ensure-directory-exists()
 {
     stream-prefix-command-output mkdir -pv "$@"
+}
+
+# @description Check if this process runs under an SELinux label. [/sys/fs/selinux] is usually
+# not visible inside a confined container, so the process label is used instead.
+# @exitcode 0 If the process has an SELinux label
+# @exitcode 1 If the process has no SELinux label
+function selinux-is-confining()
+{
+    local label
+
+    label=$(tr -d '\0' 2>/dev/null </proc/self/attr/current) || return 1
+
+    [[ "${label}" =~ :[a-z0-9_]+_t(:|$) ]]
+}
+
+# @description Log how to fix a bind mount when a failed command looks like an SELinux denial
+# @arg $1 string The error output of the failed command, in the C locale
+# @arg $2 string The path inside the container that could not be accessed
+function log-if-selinux-denial()
+{
+    if [[ "${1}" == *"Permission denied"* ]] && selinux-is-confining; then
+        log-error "SELinux denied access to [${2}]. Keep SELinux enforcing and relabel the host path: add [:z] to its volume in docker-compose.yml, or run [chcon -R -t container_file_t <host path>] on the host."
+    fi
 }
 
 # @description Find the relative path for a entrypoint script by removing the ENTRYPOINT_D_ROOT prefix

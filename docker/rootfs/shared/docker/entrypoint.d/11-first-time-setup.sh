@@ -28,7 +28,7 @@ acquire-lock
 
 # Following https://pixelfed-glitch.github.io/docs/running-pixelfed/native/installation.html#one-time-setup-tasks
 #
-# NOTE: Caches happens in [30-cache.sh]
+# NOTE: Caches are built at the end of [entrypoint.sh], after these tasks
 
 only-once "key:generate" run-as-runtime-user php artisan key:generate
 only-once "storage:link" run-as-runtime-user php artisan storage:link
